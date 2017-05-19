@@ -10,12 +10,31 @@ export default new Router({
             redirect: '/login'
         },
         {
-            path: '/readme',
+            path: '/home',
             component: resolve => require(['../components/common/Home.vue'], resolve),
             children:[
                 {
                     path: '/',
                     component: resolve => require(['../components/page/Readme.vue'], resolve)
+                },
+                {
+                    path:'/setting',
+                    component: resolve => require(['../components/page/Setting.vue'],resolve)
+                },
+                {
+                    path:'/editPassword',
+                    component: resolve => require(['../components/page/EditPassword.vue'],resolve)
+                },
+                {
+                    path:'/wechat',
+                    component: resolve => require(['../components/page/Wechat.vue'],resolve)
+                },{
+                    path:'/message',
+                    component: resolve => require(['../components/page/Message.vue'],resolve)
+                },
+                {
+                    path:'/calendar',
+                    component: resolve => require(['../components/page/calendar.vue'],resolve)
                 },
                 {
                     path: '/basetable',
@@ -48,7 +67,20 @@ export default new Router({
                 {
                     path: '/mixcharts',
                     component: resolve => require(['../components/page/MixCharts.vue'], resolve)    // vue-echarts-v3组件
-                }
+                },
+                {
+                    path: '/accountManage', params:new Date(),
+                    component: resolve => require(['../components/page/accountManage.vue'], resolve) ,name:'账号'    // vue-datasource组件
+                },{
+                    path: '/jobManage',
+                    component: resolve => require(['../components/page/jobManage.vue'], resolve)     // vue-datasource组件
+                },{
+                    path: '/characterManage',
+                    component: resolve => require(['../components/page/characterManage.vue'], resolve)     // vue-datasource组件
+                },{
+                    path: '/departmantManage',
+                    component: resolve => require(['../components/page/departmantManage.vue'], resolve) ,name:'部门'    // vue-datasource组件
+                },
             ]
         },
         {

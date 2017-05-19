@@ -67,27 +67,34 @@ a{text-decoration: none}
 }
 /*Upload*/
 .pure-button{
-    width:150px;
+    width:90px;
     height:40px;
-    line-height: 40px;
+    line-height: 36px;
     text-align: center;
     color: #fff;
     border-radius: 3px;
+    font-size: 14px;
+    margin-bottom: 10px;
+    margin-left: 10px
+
 }
 .g-core-image-corp-container .info-aside{
     height:45px;
 }
 .el-upload--text {
     background-color: #fff;
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
+    /*border: 1px dashed #967171;*/
+    /*border-radius:50%;*/
     box-sizing: border-box;
-    width: 360px;
-    height: 180px;
+    width: 260px;
+    height: 512px;
     text-align: center;
     cursor: pointer;
     position: relative;
     overflow: hidden;
+    left:50%;
+    margin-top: 50px;
+    margin-left: -128px
 }
 .el-upload--text .el-icon-upload {
     font-size: 67px;

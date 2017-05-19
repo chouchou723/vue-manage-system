@@ -3,7 +3,7 @@
         <v-head></v-head>
         <v-sidebar></v-sidebar>
         <div class="content">
-            <transition name="move" mode="out-in"><router-view></router-view></transition>
+            <transition name="move" mode="out-in"><router-view :key="key"></router-view></transition>
         </div>
     </div>
 </template>
@@ -14,6 +14,11 @@
     export default {
         components:{
             vHead, vSidebar
-        }
+        },
+        computed: {
+    key() {
+        return this.$route.name !== undefined? this.$route.name + +new Date(): this.$route + +new Date()
+    }
+ }
     }
 </script>
