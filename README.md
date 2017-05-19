@@ -21,3 +21,13 @@
 	npm run build
 
 #
+
+
+## 项目截图 ##
+### 默认皮肤 ###
+
+![Image text](https://github.com/chouchou723/manage-system/raw/master/screenshots/task.png)
+
+### 浅绿色皮肤 ###
+
+![Image text](https://github.com/chouchou723/manage-system/raw/master/screenshots/manage.png)
