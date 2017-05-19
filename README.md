@@ -24,10 +24,10 @@
 
 
 ## 项目截图 ##
-### 默认皮肤 ###
+### 任务提醒 ###
 
 ![Image text](https://github.com/chouchou723/manage-system/raw/master/screenshots/task.png)
 
-### 浅绿色皮肤 ###
+### 账号管理 ###
 
 ![Image text](https://github.com/chouchou723/manage-system/raw/master/screenshots/manage.png)
