@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import { character } from '../../api/api';
+import { character,departList } from '../../api/api';
   export default {
     methods: {
       createCh(){
@@ -128,74 +128,15 @@ import { character } from '../../api/api';
       addChar(){
         let b =this.form;
         let a = this.form.depart;
-        this.departs.map(function(item,index){
-
-          if(a ==item.id){
-           let c =b.leave; //=1
-            let d = item.ddata.length;
-            let count = 0;
-            let rcount = 0;
-              if(d=0){
-                item.ddata.push(b);
-              }else{
-                item.ddata.map(function(data,indexi){
-                  if(data.level ==0){
-                    rcount ++
-                  }
-                    if(c != data.level&& c > data.level){
-                      count++
-                    }
-
-              })
-                if(c ==0){
-
-                item.ddata.splice(rcount-1,0,b)
-                }
-                if(c ==1){
-                  item.ddata.splice(count-1,0,b)
-                }
-                if(c ==2){
-
-                }
-              }
-              
-
-
-
-            for(let i=0;i<d;i++){
-                if(c == item.ddata[i].level){
-                    count ++
-
-                  item.ddata.splice(i+1,0,b)
-                  return
-                }else{ //没有对应的lead
-                  item.ddata[d-1].push(b)
-                }
-            }
-            item.ddata[count] 
-
-
-            item.ddata.push(b) //没有level的情况
-          }
+        let para = {
+          depart:b
+        };
+        departList(para).then((res) => {
+          //NProgress.done();
+          this.departs = res;
+        }).then(()=>{
+           this.dialogFormVisible = false;
         })
-        // let a =this.$refs.tree.getCheckedKeys();
-        // let b = this.form.name;
-        // let c = this.in;
-        // if(a&&b&&c ===''){
-        // this.charData.push({ kind: b,
-        //   number: a});
-        // this.dialogFormVisible = false;
-
-        // }else if(a&&b&&c !==''){
-        //     this.charData[c].kind = b ;
-        //     this.charData[c].number = a ;
-        //      this.dialogFormVisible = false;
-        //      this.in = '';
-        // }
-        // character(this.charData);
-        // this.$refs.tree.setCheckedKeys([]);
-        // this.form.name = '';
-        // console.log(this.charData);
       }
     },
 
@@ -245,7 +186,7 @@ import { character } from '../../api/api';
         form: {
           kind: '',
           depart:'',
-          leave:'',
+          level:'',
           range:''
         },
         ranges: [{

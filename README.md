@@ -22,7 +22,7 @@
 
 #
 
-
+<!-- 
 ## 项目截图 ##
 ### 任务提醒 ###
 
@@ -30,4 +30,4 @@
 
 ### 账号管理 ###
 
-![Image text](https://github.com/chouchou723/manage-system/raw/master/screenshots/manage.png)
+![Image text](https://github.com/chouchou723/manage-system/raw/master/screenshots/manage.png) -->

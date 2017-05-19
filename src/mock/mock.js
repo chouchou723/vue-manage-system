@@ -1,6 +1,6 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import {LoginUsers, Users,Task,Counter,MailCode,MenuList,Department,Character,Account,CampusList,JobList,CityList} from './user.js';
+import {LoginUsers, Users,Task,Counter,MailCode,MenuList,Department,Character,Account,CampusList,JobList,CityList,DepartList} from './user.js';
 let _Users = Users;
 let _Task = Task;
 
@@ -137,6 +137,15 @@ mock.onGet('/cityList').reply(config => {
       return new Promise((resolve, reject) => {
         setTimeout(function(){
         resolve([200,CityList]); //[{},{}]
+    }, 0);
+      })
+    });
+
+
+mock.onGet('/departList').reply(config => {
+      return new Promise((resolve, reject) => {
+        setTimeout(function(){
+        resolve([200,DepartList]); //[{},{}]
     }, 0);
       })
     });

@@ -35,3 +35,5 @@ export const campusList = params => { return axios.get(`${base}/campusList`,para
 export const jobList = params => { return axios.get(`${base}/jobList`,params).then(res => res.data);  };
 
 export const cityList = params => { return axios.get(`${base}/cityList`,params).then(res => res.data);  };
+
+export const departList = params => { return axios.get(`${base}/departList`,params).then(res => res.data);  };

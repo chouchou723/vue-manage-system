@@ -431,4 +431,57 @@ var cityTemp =[
  ]
 
  const CityList = Mock.mock(cityTemp)
-export { LoginUsers, Users,Task,Counter,MailCode,MenuList,Department,Character,Account,CampusList,JobList,CityList };
+
+
+
+ var departTemp = [{
+          id:'sale',
+          label:'销售部',
+          ddata:[
+          {
+          level:0,
+          kind: '销售经理',
+        },
+        {
+          level:1,
+          kind: 'TMK主管',
+        },{
+          level:3,
+          kind: 'TMK',
+        },{
+          level:1,
+          kind: 'CC主管',
+        },{
+          level:3,
+          kind: 'CC',
+        }
+        ]
+
+        },{
+          id:'tech',
+          label:'技术部',
+          ddata:[
+          {
+          level:0,
+          kind: '技术经理',
+        },
+        {
+          level:1,
+          kind: '产品设计',
+        },{
+          level:3,
+          kind: '产品专员',
+        },{
+          level:1,
+          kind: '前端经理',
+        },{
+          level:3,
+          kind: '前端',
+        }
+        ]
+
+        },
+        
+]
+const DepartList = Mock.mock(departTemp)
+export { LoginUsers, Users,Task,Counter,MailCode,MenuList,Department,Character,Account,CampusList,JobList,CityList,DepartList };
