@@ -190,7 +190,16 @@ import { departList,levelList } from '../../api/api';
             }
         }
             
-      }
+      },
+      copyArr : function (arr){
+        return arr.map((e)=>{
+            if(typeof e === 'object'){
+                return Object.assign({},e)
+            }else{
+                return e
+            }
+        })
+          },
     },
 
     data() {
@@ -223,6 +232,12 @@ import { departList,levelList } from '../../api/api';
           //NProgress.done();
           this.departs = res.data;
           // this.adeparts = res.bb;
+          // res.data.map((item,index,arr)=>{
+          //   if(item._child._child){
+          //     let a = this.copyArr(item._child._child);
+          //     item.
+          //   }
+          // })
 
         }).then(()=>{
                // var cell = document.getElementsByClassName('cell');
