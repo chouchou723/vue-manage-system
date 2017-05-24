@@ -61,7 +61,7 @@
         </div>
   <el-table 
     v-for="depart in departs"
-    :data="depart._child"
+    :data="ddeparts"
     border
     style="width: 100%;"
     :row-class-name="space"
@@ -204,7 +204,7 @@ import { departList,levelList } from '../../api/api';
 
     data() {
       return {
-
+ddeparts:[],
         departs:[],
          adeparts:[],
          level:[],
@@ -231,13 +231,25 @@ import { departList,levelList } from '../../api/api';
         departList(para,token).then((res) => {
           //NProgress.done();
           this.departs = res.data;
-          // this.adeparts = res.bb;
-          // res.data.map((item,index,arr)=>{
-          //   if(item._child._child){
-          //     let a = this.copyArr(item._child._child);
-          //     item.
-          //   }
-          // })
+          res.data.map((item,index,arr)=>{
+
+              let{_child} = item;
+              let dd =this.copyArr(_child);
+              _child.map((a,b,c)=>{
+                // console.log(a)
+                let {_child} = a
+                let l = _child.length;
+                for(let i =0;i<l;i++){
+                  if(_child[i]._child){
+                        dd.push(_child[i]);
+                        dd.push.apply(dd,_child[i]._child)
+                      }else{
+                        dd.push(_child[i])
+                      }
+                }
+              })
+              this.ddeparts = dd;
+          })
 
         }).then(()=>{
                // var cell = document.getElementsByClassName('cell');

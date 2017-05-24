@@ -7,7 +7,7 @@
                 <el-breadcrumb-item>角色管理</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
-        <div  style="width: 100%;position:relative">
+        <div  class='crea' style="width: 100%;position:relative">
        <el-button type="primary" size="mid" style='position:absolute;right:0;top:10%' @click="createCh">创建角色</el-button>
          </div>
         <div>
@@ -225,7 +225,7 @@ import { character,create_character,put_character,delete_character } from '../..
 </script>
 
 <style >
-.el-button--primary{
+.crea .el-button--primary{
     background-color: #32a4d3;
     border-color: #32a4d3;
 }

@@ -6,7 +6,7 @@
                 <el-breadcrumb-item>账号管理</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
-        <div  style="width: 100%;position:relative;height:50px">
+        <div  class= 'accou' style="width: 100%;position:relative;height:50px">
         <div class="h1"><h2>
             
         账号管理({{number}}人)
@@ -123,8 +123,8 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="使用状态" :label-width="formLabelWidth"  prop="status">
-            <el-select v-model="aform.status" style='width:200px'>
+          <el-form-item label="使用状态" :label-width="formLabelWidth"  prop="fla">
+            <el-select v-model="aform.fla" style='width:200px'>
             <el-option label="正常" value="1"></el-option>
               <el-option label="停用" value="0"></el-option>
             </el-select>
@@ -176,9 +176,9 @@
       label="登录次数">
     </el-table-column>
     <el-table-column
-      prop="status"
+      prop="fla"
       label="使用状态"
-      column-key='status'>
+      column-key='fla'>
     </el-table-column>
 
     <el-table-column
@@ -260,7 +260,7 @@ import { account,campusList,cityList,sdjList ,departList,put_account,create_acco
          school:[],
          job_id:'',
          department:'',
-         status:''
+         fla:''
         },
         dialogFormVisible: false,
          formLabelWidth: '110px',
@@ -313,7 +313,7 @@ import { account,campusList,cityList,sdjList ,departList,put_account,create_acco
          school:[],
          job_id:'',
          department:'',
-         status:''
+         fla:''
         };
 
              
@@ -498,7 +498,7 @@ import { account,campusList,cityList,sdjList ,departList,put_account,create_acco
                 let tr = document.getElementsByTagName('tr')
                 let ac = this.accountData;
                 ac.map( function(item, index){
-                      if(item.status == '停用'){
+                      if(item.fla == '停用'){
                         tr[index+1].children[8].className = 'red';
 
                         }
