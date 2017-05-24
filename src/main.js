@@ -18,9 +18,9 @@ import 'vue-event-calendar/dist/style.css' //^1.1.10, CSS has been extracted as 
 import vueEventCalendar from 'vue-event-calendar'
 Vue.use(vueEventCalendar, {locale: 'zh'}) //locale can be 'zh' or 'en'
 
-import './mock/index.js';
-import Mock from './mock'
-Mock.bootstrap();
+// import './mock/index.js';
+// import Mock from './mock'
+// Mock.bootstrap();
 
 Vue.use(ElementUI);
 Vue.use(Vuex);

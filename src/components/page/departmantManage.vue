@@ -16,7 +16,7 @@
     border
     style="width: 100%;margin-top:70px">
     <el-table-column
-      prop="kind"
+      prop="full_name"
       label="部门管理" >
     </el-table-column>
     <el-table-column width='140px'
@@ -31,19 +31,16 @@
 </template>
 
 <script>
-import { department } from '../../api/api';
+var user = localStorage.getItem('user');
+var token = JSON.parse(user).token;
+import { department ,create_department,put_department,delete_department} from '../../api/api';
   export default {
     methods: {
-      createde(branch){
-        let index = this.tableData.length;
-        this.tableData.push(branch)
-        department(this.tableData);
-      },
       deleteRow(index, rows) {
         rows.splice(index, 1);
       },
-      open2(index,data) {
-        if(data[index].number){
+      open2(index,data) {     //删除部门
+        if(data[index].user_count !=0){
             this.$alert('当前部门有成员,无法删除部门', '删除部门', {
                  title:'删除部门',
                  type: 'warning',
@@ -59,13 +56,17 @@ import { department } from '../../api/api';
                   cancelButtonText: '取消',
                   type: 'warning'
         }).then(() => {
+          
+          // console.log(this.tableData)
+          let a ={
+            did:data[index].did
+          }
+          delete_department(a,token);
+          this.deleteRow(index,data);
           this.$message({
             type: 'success',
             message: '删除成功!'
           });
-          this.deleteRow(index,data);
-          console.log(this.tableData)
-          department(this.tableData);
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -73,9 +74,26 @@ import { department } from '../../api/api';
           });          
         });
         }
-        
       },
-      open3() {
+
+      createde(branch){
+        this.tableData.push(branch);
+        let l = this.tableData.length;
+        create_department(branch,token).then(res=>{
+          this.tableData[l-1] = res.data
+      //     this.tableData = res.data.map(item => {
+      // return {  did: item.did, 
+      //           full_name: item.full_name ,
+      //           user_count: item.user_count,
+      //           status: item.status,
+      //           created_at: this.created_at,
+      //           updated_at: this.updated_at,
+      //           job_count:this.job_count 
+      //         };
+      //     })
+        });
+      },
+      open3() {     //创建部门
         this.$prompt('请输入部门名称', '创建部门', {
             customClass:'green',
           confirmButtonText: '确定',
@@ -87,9 +105,8 @@ import { department } from '../../api/api';
             type: 'success',
             message: '部门名称是: ' + value
           });
-          let branch = {kind:value};
+          let branch = {full_name:value};
           this.createde(branch);
-          department(branch)
         }).catch(() => {
           // this.$message({
           //   type: 'info',
@@ -97,7 +114,7 @@ import { department } from '../../api/api';
           // });       
         });
       },
-      open4(index,data){
+      open4(index,data){   //修改部门
         this.$confirm('若该部门有成员,修改后原部门所有成员将自动更新到新部门！', '修改提示', {
                 customClass:'redwarn',
           confirmButtonText: '确定',
@@ -115,8 +132,8 @@ import { department } from '../../api/api';
             type: 'success',
             message: '部门名称是: ' + value
           });
-          data[index].kind = value;
-           department(this.tableData);
+          data[index].full_name = value;
+           put_department(data[index],token);
         })
         }).catch(() => {
           this.$message({
@@ -133,13 +150,21 @@ import { department } from '../../api/api';
       }
     },
     created(){
-        let self = this;
-        let para = {
-          tableData:this.tableData
-        };
-        department(para).then((res) => {
+        department(token).then((res) => {
           //NProgress.done();
-          this.tableData = res;
+          // console.log(res.data)
+          this.tableData = res.data.map(item => {
+      return { 
+        did: item.did, 
+        full_name: item.full_name ,
+        user_count: item.user_count,
+        status: item.status,
+        created_at: this.created_at,
+        updated_at: this.updated_at,
+        job_count:this.job_count
+      };
+      })
+
         })
             }
     

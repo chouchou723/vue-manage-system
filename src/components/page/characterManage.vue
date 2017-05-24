@@ -15,10 +15,10 @@
 <el-dialog :title="alter" :visible.sync="dialogFormVisible"  show-close style='z-index:100'>
 <el-form :model="form">
   <el-form-item label="角色名称" :label-width="formLabelWidth">
-      <el-input v-model="form.name" auto-complete="off" placeholder='请输入角色名称' style='width:200px'></el-input>
+      <el-input v-model="form.full_name" auto-complete="off" placeholder='请输入角色名称' style='width:200px'></el-input>
     </el-form-item>
     </el-form>
-  <el-tree :data="data2" show-checkbox=""  node-key="id" ref="tree" highlight-current :props="defaultProps">
+  <el-tree :data="data2" show-checkbox=""  v-model="form.access" node-key="id" ref="tree" highlight-current :props="defaultProps">
 </el-tree>
  
   <div slot="footer" class="dialog-footer">
@@ -34,7 +34,7 @@
     border
     style="width: 100%;margin-top:70px">
     <el-table-column
-      prop="kind"
+      prop="name"
       label="角色管理" >
     </el-table-column>
     <el-table-column width='140px'
@@ -49,12 +49,14 @@
 </template>
 
 <script>
-import { character } from '../../api/api';
+var user = localStorage.getItem('user');
+var token = JSON.parse(user).token;
+import { character,create_character,put_character,delete_character } from '../../api/api';
   export default {
     methods: {
-      createCh(){
+      createCh(){    //打开创建角色
         var that = this;
-            this.form.name = '';
+            this.form.full_name = '';
             this.dialogFormVisible = true;
             function dib(){
           that.$refs.tree.setCheckedKeys([]);
@@ -65,7 +67,7 @@ import { character } from '../../api/api';
       deleteRow(index, rows) {
         rows.splice(index, 1);
       },
-      open2(index,data) {
+      open2(index,data) {  //删除角色
         
             this.$confirm('是否确定要删除该角色?', '删除角色', {
                   customClass:'redwarn',
@@ -73,12 +75,16 @@ import { character } from '../../api/api';
                   cancelButtonText: '取消',
                   type: 'warning'
         }).then(() => {
+          let a ={
+            roleid:data[index].roleid
+          }
+          delete_character(a,token);
+          this.deleteRow(index,data);
           this.$message({
             type: 'success',
             message: '删除成功!'
           });
-          this.deleteRow(index,data);
-          character(this.charData);
+          character(this.charData);//替换上送接口
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -91,7 +97,7 @@ import { character } from '../../api/api';
       open4(index,data){
         this.dialogFormVisible = true;
         this.in = index;
-        this.form.name = data[index].kind;
+        this.form.full_name = data[index].name;
         var that = this;
         function dia(){
           that.$refs.tree.setCheckedKeys(data[index].number);
@@ -100,6 +106,7 @@ import { character } from '../../api/api';
       },
       addChar(){
         let a =this.$refs.tree.getCheckedKeys();
+        console.log(a)
         let b = this.form.name;
         let c = this.in;
         if(a&&b&&c ===''){
@@ -126,7 +133,7 @@ import { character } from '../../api/api';
         dialogFormVisible: false,
         in: '',
         form: {
-          name: ''
+          full_name: ''
         },
         formLabelWidth: '70px',
          data2: [{
@@ -200,13 +207,9 @@ import { character } from '../../api/api';
       }
     },
     created(){
-        let self = this;
-        let para = {
-          charData:this.charData
-        };
-        character(para).then((res) => {
+        character(token).then((res) => {
           //NProgress.done();
-          this.charData = res;
+          this.charData = res.data;
         })
     },
     computed:{

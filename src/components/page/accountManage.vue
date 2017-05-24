@@ -13,7 +13,7 @@
         </h2>
         <div  style='margin-left:200px;position:absolute;top:0;width:140px' >
           
-        <el-select v-model="value" placeholder="选择校区" @change="updateList">
+        <el-select v-model="value" clearable placeholder="选择校区" @change="updateList">
     <el-option
       v-for="item in options"
       :key="item.value"
@@ -24,7 +24,7 @@
         </div>
         <div  style='margin-left:350px;position:absolute;top:0;width:140px' >
           
-        <el-select v-model="value1" placeholder="选择部门" @change="updateList">
+        <el-select v-model="value1" clearable placeholder="选择部门" @change="updateList">
     <el-option
       v-for="item in options1"
       :key="item.value"
@@ -35,7 +35,7 @@
         </div>
         <div  style='margin-left:500px;position:absolute;top:0;width:140px' >
           
-        <el-select v-model="value2" placeholder="选择职位" @change="updateList">
+        <el-select v-model="value2" clearable placeholder="选择职位" @change="updateList">
     <el-option
       v-for="item in options2"
       :key="item.value"
@@ -51,22 +51,22 @@
       
       <el-form :model="aform" :rules="rules2" ref="aform">
         <el-form-item label="登录账号" :label-width="formLabelWidth" prop="username">
-            <el-input v-model="aform.username" auto-complete="off" placeholder='请输入邮箱地址' style='width:200px'></el-input>
+            <el-input v-model="aform.uname" auto-complete="off" placeholder='请输入邮箱地址' style='width:200px'></el-input>
           </el-form-item>
           <el-form-item label="姓名" :label-width="formLabelWidth"  prop="name">
             <el-input v-model="aform.name" auto-complete="off" placeholder='请输入用户姓名' style='width:200px'></el-input>
           </el-form-item>
           <el-form-item label="性别" :label-width="formLabelWidth"  prop="sexual">
-            <el-select v-model="aform.sexual" style='width:200px'>
-              <el-option label="男" value="man"></el-option>
-              <el-option label="女" value="woman"></el-option>
+            <el-select v-model="aform.sex" style='width:200px'>
+              <el-option label="男" value="1"></el-option>
+              <el-option label="女" value="2"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="手机号码" :label-width="formLabelWidth"  prop="phone">
-            <el-input v-model="aform.phone" auto-complete="off" placeholder='请输入手机号码' style='width:200px'></el-input>
+            <el-input v-model="aform.tel" auto-complete="off" placeholder='请输入手机号码' style='width:200px'></el-input>
           </el-form-item>
-          <el-form-item label="密码" prop="pass"  :label-width="formLabelWidth">
-              <el-input type="password" v-model="aform.pass" auto-complete="off" style='width:200px'></el-input>
+          <el-form-item label="密码" prop="pwd"  :label-width="formLabelWidth">
+              <el-input type="password" v-model="aform.pwd" auto-complete="off" style='width:200px'></el-input>
             </el-form-item>
             <el-form-item label="确认密码" prop="checkPass"  :label-width="formLabelWidth">
               <el-input type="password" v-model="aform.checkPass" auto-complete="off" style='width:200px'></el-input>
@@ -75,20 +75,20 @@
                     <el-select v-model="aform.region" filterable style='width:200px' @change='campusGet'>
                               <el-option-group
                         v-for="group in cities"
-                        :key="group.label"
-                        :label="group.label">
+                        :key="group.city_name"
+                        :label="group.city_name">
                         <el-option
-                          v-for="item in group.options"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value">
+                          v-for="item in group._child"
+                          :key="item.id"
+                          :label="item.city_name"
+                          :value="item.id">
                         </el-option>
                       </el-option-group>
                     </el-select>
             </el-form-item>
-             <el-form-item  :label-width="formLabelWidth"  prop="campus" style='height:36px;margin-left: 200px'>
+             <el-form-item  :label-width="formLabelWidth"  prop="school" style='height:36px;margin-left: 200px'>
             <el-select
-              v-model="aform.campus"
+              v-model="aform.school"
               multiple
               filterable
               remote
@@ -103,18 +103,18 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="部门" :label-width="formLabelWidth"  prop="depart">
-            <el-select v-model="aform.depart" style='width:200px' @change="updateJobList">
+          <el-form-item label="部门" :label-width="formLabelWidth"  prop="department">
+            <el-select v-model="aform.department" style='width:200px' @change="updateJobList">
             <el-option
-                v-for="item in departs"
+                v-for="item in options1"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">
               </el-option>
             </el-select>
           </el-form-item>
-            <el-form-item label="职位" :label-width="formLabelWidth"  prop="job">
-            <el-select v-model="aform.job" style='width:200px'>
+            <el-form-item label="职位" :label-width="formLabelWidth"  prop="job_id">
+            <el-select v-model="aform.job_id" style='width:200px'>
             <el-option
                 v-for="item in jobs"
                 :key="item.value"
@@ -125,8 +125,8 @@
           </el-form-item>
           <el-form-item label="使用状态" :label-width="formLabelWidth"  prop="status">
             <el-select v-model="aform.status" style='width:200px'>
-            <el-option label="正常" value="正常"></el-option>
-              <el-option label="停用" value="停用"></el-option>
+            <el-option label="正常" value="1"></el-option>
+              <el-option label="停用" value="0"></el-option>
             </el-select>
           </el-form-item>
 
@@ -144,19 +144,19 @@
     border
     style="width: 100%">
     <el-table-column
-      prop="username"
+      prop="name"
       label="登录名">
     </el-table-column>
     <el-table-column
-      prop="name"
+      prop="uname"
       label="姓名">
     </el-table-column>
     <el-table-column
-      prop="phone"
+      prop="tel"
       label="手机">
     </el-table-column>
     <el-table-column
-      prop="campus"
+      prop="school"
       label="校区">
     </el-table-column>
     <el-table-column
@@ -164,11 +164,11 @@
       label="职位">
     </el-table-column>
     <el-table-column
-      prop="depart"
+      prop="department"
       label="部门">
     </el-table-column>
     <el-table-column
-      prop="lastLoginTime"
+      prop="last_login_time"
       label="最近登录时间">
     </el-table-column>
     <el-table-column
@@ -206,7 +206,10 @@
 </template>
 
 <script>
-import { account,campusList,jobList,cityList } from '../../api/api';
+var user = localStorage.getItem('user');
+var token = JSON.parse(user).token;
+import { account,campusList,cityList,sdjList ,departList,put_account,create_account,delete_account} from '../../api/api';
+
   export default {
     data() {
       var validatePass = (rule, value, callback) => {
@@ -226,7 +229,7 @@ import { account,campusList,jobList,cityList } from '../../api/api';
       var validatePass2 = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('请再次输入密码'));
-        } else if (value !== this.aform.pass) {
+        } else if (value !== this.aform.pwd) {
           callback(new Error('两次输入密码不一致!'));
         } else {
           callback();
@@ -234,42 +237,29 @@ import { account,campusList,jobList,cityList } from '../../api/api';
 }
       return {
         currentPage: 1, //页数
-        pagesize: 10, //默认每页
+        pagesize: 15, //默认每页
         total:0,
         in:'',
         no:false,
         accountData: [],
-        number:'10',
+        number:'',
         options: [], //表单上方的select
         options1: [],//表单上方的select
         options2: [],//表单上方的select
-        value: '',
-        value1: '',
-        value2: '',
+        value: '',   //对应select的值
+        value1: '', //对应select的值
+        value2: '', //对应select的值
         aform: {
-          username:'',
+          uname:'',
           name: '',
-          sexual:'',
-          phone:'',
-          pass: '',
+          sex:'',
+          tel:'',
+          pwd: '',
          checkPass: '',
          region:'',
-         campus:[],
-         job:'',
-         depart:'',
-         status:''
-        },
-        bform: {
-          username:'',
-          name: '',
-          sexual:'',
-          phone:'',
-          pass: '',
-         checkPass: '',
-         region:'',
-         campus:[],
-         job:'',
-         depart:'',
+         school:[],
+         job_id:'',
+         department:'',
          status:''
         },
         dialogFormVisible: false,
@@ -279,7 +269,7 @@ import { account,campusList,jobList,cityList } from '../../api/api';
                      { required: true, message: '请输入邮箱地址', trigger: 'blur' },
                      { type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur,change' }
                     ],
-          pass: [
+          pwd: [
             { required: true,validator: validatePass, trigger: 'blur' }
           ],
           checkPass: [
@@ -291,42 +281,76 @@ import { account,campusList,jobList,cityList } from '../../api/api';
         loading: false,
         cities:[], //form中的城市
         jobs:[], //departs change之后更新
-        departs:[{label:'销售部',value:'sale'},{label:'技术部',value:'tech'}]
+        departs:[],
+        backUp:[]
       }
     },
     methods: {
       updateList(){
+        
         this.fetchData();
       },
       updateJobList(){
         let para = {
-          depart:this.aform.depart
+          did:this.aform.department
         };
-        jobList(para).then((res)=>{
-          this.jobs = res;
+        departList(para,token).then((res) => {
+            this.jobs = res.data.job
         })
       },
       createCh(formName){
             this.in = '';
             this.dialogFormVisible = true;
-            this.aform = this.bform;
+            this.aform = {
+              aid:'',
+          uname:'',
+          name: '',
+          sex:'',
+          tel:'',
+          pwd: '',
+         checkPass: '',
+         region:'',
+         school:[],
+         job_id:'',
+         department:'',
+         status:''
+        };
+
              
          },
       editCh(index,data){
-        this.dialogFormVisible = true;
-        let d = this.copyArr(data);
-        this.in = index;
-        d[index].campus = data[index].campus.split(',');
-        this.aform = d[index];
-        let r = d[index].region;
-        if(r){
-          campusList('{region:r}').then((res)=>{
-        this.list = res.map(item => {
-      return { value: item.value, label: item.label };
+        let para = {
+          city_id:''
+        };
+        campusList(para,token).then((res)=>{
+          let a = res.data;
+          this.options4 = a.data.map(item => {
+        return { value: item.id, label: item.title };
       });
         })
+
+        this.dialogFormVisible = true;
+        if(data[index].department){
+            let para = {
+          did:data[index].department
+        };
+        departList(para,token).then((res) => {
+            this.jobs = res.data.job
+        })
         }
-            
+        let aid = data[index].aid;
+         this.in = index;
+         let d = this.copyArr(data);
+        this.backUp.map((item,index,arr)=>{ //利用复制来的源数据进行school赋值[123,234]
+          if( aid == item.aid){
+            d[index].school = item.school.map((item)=>{
+              return item.id;
+            })
+            d[index].region = ''
+          }
+        })
+        // console.log(d[index])
+        this.aform = JSON.parse(JSON.stringify(d[index]))
       },
       copyArr : function (arr){
         return arr.map((e)=>{
@@ -337,7 +361,7 @@ import { account,campusList,jobList,cityList } from '../../api/api';
             }
         })
           },
-      open2(index,data) {
+      open2(index,data) {  //删除账号
         
             this.$confirm('是否确定要删除该账号?', '删除账号', {
                   customClass:'redwarn',
@@ -349,6 +373,8 @@ import { account,campusList,jobList,cityList } from '../../api/api';
         //     type: 'success',
         //     message: '删除成功!'
         //   });
+         let para = { aid:data[index].aid}
+          delete_account(para,token)
           this.deleteRow(index,data);
         }).then(()=>{
           this.beRed();
@@ -374,13 +400,15 @@ import { account,campusList,jobList,cityList } from '../../api/api';
          
         }
       },
-      campusGet(){
+      campusGet(){  //城市change之后获取校区
         let para = {
-          region:this.aform.region
+          city_id:this.aform.region
         };
-        campusList(para).then((res)=>{
-          this.list = res.map(item => {
-        return { value: item.value, label: item.label };
+        campusList(para,token).then((res)=>{
+          // console.log(res)
+          let a = res.data;
+          this.list = a.data.map(item => {
+        return { value: item.id, label: item.title };
       });
         })
       },
@@ -401,23 +429,26 @@ import { account,campusList,jobList,cityList } from '../../api/api';
       addAccount(formName){
         this.$refs[formName].validate((valid) => {
           let f = this.aform;
-        let c = f.campus;
+        let c = f.school;
         let i = this.in;
-        if(c instanceof Array ){
-          f.campus = f.campus.join(',');
-        }
+        // if(c instanceof Array ){
+        //   f.campus = f.campus.join(',');
+        // }
 
-                    if (valid) {
-                        
-                 if(i !== ''){
-            this.accountData.splice(0,1,f);
-          }else{
-            this.accountData.push(f);
-          }
+        if (valid) {
+            if(i !== ''){
+                          this.accountData.splice(i,1,f);
+                          let para = f;
+                          put_account(para,token);
+              }else{
+                    this.accountData.push(f);
+                    let para = f;
+                    create_account(para,token);
+                  }
         this.in = '';
-
+        
         this.dialogFormVisible = false;
-                    } else {
+          } else {
                         console.log('error submit!!');
                         return false;
                     }
@@ -430,23 +461,38 @@ import { account,campusList,jobList,cityList } from '../../api/api';
       },
       fetchData (){
         let self = this;
-        let para = { pageSize:this.pageSize,pageNum:this.currentPage}
+        let para = { page:this.currentPage,
+                    school_id:this.value,
+                    did:this.value1,
+                    job_id:this.value2,}
         
-        account(para).then((res) => {
-          let a = res.account;
-          let b = res.campus;
-          let c = res.page;
+        account(para,token).then((res) => {
+          this.number = res.data.total;
+          let a = res.data.data;
+           let d = this.copyArr(a);
+           this.backUp = d;
+          let c = res.data.last_page *this.pagesize;
           //NProgress.done();
           a.map(function(item,index,arr){
-            let c = item.campus 
+            let c = item.school;
+           //  let b = []
+           // c.map(function(cam,index){
+           //  b[cam.id] = cam.title
+           // })
+           // arr[index].school = b.concat();
+
             if(c instanceof Array) {
-              arr[index].campus = c.join(',')
+                  let arra = []
+                c.map(function(campus){
+                    arra.push(campus.title)
+                })
+                let str =  arra.join(',')
+              arr[index].school = str;
               // console.log(c)
             }
           })
           // console.log(res)
           this.accountData = a;
-          this.options = b;
           this.total = parseInt(c);
         }).then((res) => {
                 let tr = document.getElementsByTagName('tr')
@@ -458,8 +504,14 @@ import { account,campusList,jobList,cityList } from '../../api/api';
                         }
                 });
         })
-        cityList(para).then((res)=>{
-          this.cities = res
+        sdjList(token).then((res) => {
+            this.options = res.data.school;
+            this.options1 = res.data.department;
+            this.options2 = res.data.job
+        })
+        cityList(token).then((res)=>{
+          // console.log(res)
+          this.cities = res.data
         })
       },
       handleCurrentChange: function(val) {

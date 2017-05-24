@@ -5,6 +5,7 @@ const LoginUsers = [
     username: 'admin@qq.com',
     password: '123456',
     avatar: 'http://img1.3lian.com/img013/v2/51/d/101.jpg',
+    duty:'TMK',
     name: '张老师',
     mail:'admin@qq.com',
     wechat:'weixinzhanghao'
@@ -434,54 +435,94 @@ var cityTemp =[
 
 
 
- var departTemp = [{
-          id:'sale',
+ var departTemp = {
+ 'dd':[   {
           label:'销售部',
           ddata:[
           {
-          level:0,
           kind: '销售经理',
+          depart:'销售部',
+          level:'无',
+          range:[],
+          number: 0
         },
         {
-          level:1,
           kind: 'TMK主管',
+          depart:'销售部',
+          level:'销售经理',
+          range:[],
+          number: 1
         },{
-          level:3,
           kind: 'TMK',
+          depart:'销售部',
+          level:'TMK主管',
+          range:[],
+          number:1
         },{
-          level:1,
           kind: 'CC主管',
+          depart:'销售部',
+          level:'销售经理',
+          range:[],
+          number:1
         },{
-          level:3,
           kind: 'CC',
+          depart:'销售部',
+           level:'CC主管',
+          range:[],
+          number: 1
         }
         ]
 
         },{
-          id:'tech',
           label:'技术部',
-          ddata:[
-          {
-          level:0,
+          ddata:[{
           kind: '技术经理',
-        },
-        {
-          level:1,
-          kind: '产品设计',
+          depart:'技术部',
+          level:'无',
+          range:[],
+          number:0
         },{
-          level:3,
-          kind: '产品专员',
+          kind: '技术主管',
+          depart:'技术部',
+          level:'技术经理',
+          range:[],
+          number: 1
         },{
-          level:1,
-          kind: '前端经理',
-        },{
-          level:3,
           kind: '前端',
-        }
-        ]
-
-        },
+          depart:'技术部',
+           level:'技术主管',
+          range:[],
+          number: 1
+        }]
         
-]
+
+        }
+    ],
+'bb':[{label:'销售部',value:'sale'},{label:'技术部',value:'tech'}]
+        
+}
 const DepartList = Mock.mock(departTemp)
-export { LoginUsers, Users,Task,Counter,MailCode,MenuList,Department,Character,Account,CampusList,JobList,CityList,DepartList };
+
+
+var levelTemp ={
+  'level':[{label:'无',value:'0'},{label:'销售经理',value:'1'},{label:'TMK主管',value:'2'},{label:'CC主管',value:'22'}],
+  'ranges':[{
+          value: '1',
+          label: 'TMK专员权限'
+        }, {
+          value: '2',
+          label: 'CC专员权限'
+        }, {
+          value: '3',
+          label: 'TMK管理权限'
+        }, {
+          value: '4',
+          label: 'CC管理权限'
+        }, {
+          value: '5',
+          label: '系统管理员权限'
+        }]
+} 
+const LevelList = Mock.mock(levelTemp)
+
+export { LoginUsers, Users,Task,Counter,MailCode,MenuList,Department,Character,Account,CampusList,JobList,CityList,DepartList,LevelList };

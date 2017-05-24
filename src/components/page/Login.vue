@@ -2,7 +2,7 @@
     <div class="login-wrap">
         <!-- <div class="ms-title">Panda System</div> -->
         <div class="ms-login">
-        <img class= 'ms-title'src="../../img/登录页-邮箱.png" alt="">
+        <img class= 'ms-title'src="../../../static/img/logo.png" height="159" width="332" alt="">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="demo-ruleForm" v-bind:class='{hidden:ruleForm.hidden}'>
                 <el-form-item prop="username">
                     <el-input type='email' v-model="ruleForm.username" placeholder="请输入邮箱"></el-input>
@@ -29,23 +29,23 @@
                 <p style="font-size:14px;line-height:30px;text-align:center"><a id='forget'href="https://www.baidu.com">忘记密码？</a></p>
                 <div class="wechatlogin">
                     
-                <img src="../../img/登录页_02.png" height="14" width="380" alt="">
+                <img src="../../../static/img/login_02.png" height="14" width="380" alt="">
                 </div>
                 <div class="wechat" @click='switchWechat'>
                     
-                    <img style=''src="../../img/登录页_06.png" height="50" width="50" alt="">
+                    <img style=''src="../../../static/img/login_06.png" height="50" width="50" alt="">
                 </div>
             </el-form>
             <div class="mail"  v-bind:class='{display:ruleForm.isDisplay}'>
                 
-            <img src="../../img/mail.png"  alt="">
+            <img src="../../../static/img/mail.png"  alt="">
             <div class="maillogin">
                     
-                <img src="../../img/登录页_03.png" height="14" width="380" alt="">
+                <img src="../../../static/img/login_03.png" height="14" width="380" alt="">
                 </div>
                 <div class="maillog" @click='switchMail'>
                     
-                    <img style=''src="../../img/登录页_07.png" height="50" width="50"  alt="">
+                    <img style=''src="../../../static/img/login_07.png" height="50" width="50"  alt="">
                 </div>
             </div>
         </div>
@@ -53,7 +53,7 @@
 </template>
 
 <script>
-        import { requestLogin } from '../../api/api';
+        import { requestLogin ,getUserinfo} from '../../api/api';
         var color="";
         var str="0123456789abcdef";
         var span=document.getElementsByTagName("span");
@@ -159,20 +159,36 @@
                 self.$refs[formName].validate((valid) => {
                     if (valid) {
                         this.logining = true;
-                        var loginParams = {username:this.ruleForm.username,password:this.ruleForm.password};
-                        requestLogin(loginParams).then(data=>{
-                            this.logining = false;
-                            let{msg,code,user} = data;
-                            if(code !==200){
-                                this.$message({
-                                    message:msg,
-                                    type:'error'
-                                });
-                            }else{
-                                localStorage.setItem('user',JSON.stringify(user));
-                                self.$router.push('/home');
+                        var loginParams = {username:this.ruleForm.username,
+                                            password:this.ruleForm.password,
+                                            grant_type:'password',
+                                            client_id:'1',
+                                            client_secret:'EjKXjo27hXenF8a2MgqHvpYv7IhtJ678GfOgnHc5'};
 
+                        requestLogin(loginParams).then(data=>{
+                            // if()
+                            this.logining = false;
+                            let{access_token,status,token_type} = data;
+                                var token = {
+                                      'Authorization': token_type +' ' + access_token
+                                  }
+                                getUserinfo(token).then(u=>{
+                                     let {data} = u;
+                                     data.token = token;
+                                localStorage.setItem('user',JSON.stringify(data));
+                                self.$router.push('/home');
+                                })
+                        }).catch((error)=>{
+                            if (error.response) {
+                                this.$message({
+                                    type: 'error',
+                                    message: error.response.data.error
+                                  }); 
+                              // console.log(error.response);
                             }
+                            this.ruleForm.code = '';
+                            this.ruleForm.password = '';
+                            this.change();
                         });
                         
                     } else {

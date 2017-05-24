@@ -32,19 +32,19 @@
                 <el-menu-item index="mixcharts">混合图表</el-menu-item>
             </el-submenu> -->
             <div v-for="menu in menus">
-                    <div v-if="menu.caidan" >
-                         <el-submenu :index='menu.index'>
-                            <template slot="title"><i :class="menu.class"></i>{{menu.child}}</template>
-                            <div v-for='caidan in menu.caidan'>
+                    <div v-if="menu._child" >
+                         <el-submenu :index='menu.location'>
+                            <template slot="title"><i :class="menu.icon"></i>{{menu.menu_name}}</template>
+                            <div v-for='caidan in menu._child'>
                                 
-                        <el-menu-item :index="caidan.index">{{caidan.title}}</el-menu-item>
+                        <el-menu-item :index="caidan.location">{{caidan.menu_name}}</el-menu-item>
                             </div>
                     </el-submenu>
                     </div>
-                    <div v-else="!menu.caidan" >
+                    <div v-else="!menu._child" >
                         <div v-if="menu.index == 'calendar'">
-                            <el-menu-item  :index='menu.index' @click='clearCounter'>
-                                <i :class="menu.class"></i>{{menu.child}}
+                            <el-menu-item  :index='menu.location' @click='clearCounter'>
+                                <i :class="menu.icon"></i>{{menu.menu_name}}
                                  <div class="counterdiv" :class="{hidden:!acounter}"> 
                                 <span style="position:absolute;right:15%;bottom:-7%;line-height:normal;color:white;width:16px">
                                 {{acounter}}
@@ -52,9 +52,9 @@
                                 </div>
                              </el-menu-item>
                         </div> 
-                        <div v-else="menu.index != 'calendar'">
-                             <el-menu-item  :index='menu.index'>
-                                <i :class="menu.class"></i>{{menu.child}}
+                        <div v-else="menu.location != 'calendar'">
+                             <el-menu-item  :index='menu.location'>
+                                <i :class="menu.icon"></i>{{menu.menu_name}}
                             </el-menu-item>
                         </div>
                     </div>
@@ -65,6 +65,7 @@
 
 <script>
 var user = localStorage.getItem('user');
+var token = JSON.parse(user).token;
 import { mapGetters } from 'vuex';
 import { mapActions } from 'vuex';
  import { counterList } from '../../api/api';
@@ -120,9 +121,10 @@ import { mapActions } from 'vuex';
                 let para = {
           counter:this.counter
         };
-        menuList(para).then((res) => {
+        menuList(token).then((res) => {
+            // console.log(res)
           //NProgress.done();
-          this.menus = res;
+          this.menus = res.data;
         });
             }
         },

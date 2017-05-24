@@ -2,7 +2,7 @@
     <div>
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-date"></i> 首页</el-breadcrumb-item>
+                <el-breadcrumb-item :to="{ path: '/' }"><i class="el-icon-date"></i> 首页</el-breadcrumb-item>
                 <el-breadcrumb-item>微信绑定</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
@@ -22,8 +22,8 @@
      
     <el-button  v-if='active==1' type="primary" style='width:128px;margin-left:-64px;position:absolute;left:0;bottom:-80px' @click='changeWechat'>更换绑定</el-button>
   
-   <img class="pre-img" src="../../img/微信绑定_03.png" alt="" width="256px" height="256px" style="float:left;margin-left:186px;margin-top:50px" v-if='active==2'>
-   <img class="pre-img" src="../../img/gongxi_03.png" alt="" style="float:left;margin-left:496px;margin-top:150px" v-if='active==3'>
+   <img class="pre-img" src="../../../static/img/we_03.png" alt="" width="256px" height="256px" style="float:left;margin-left:186px;margin-top:50px" v-if='active==2'>
+   <img class="pre-img" src="../../../static/img/gongxi_03.png" alt="" style="float:left;margin-left:496px;margin-top:150px" v-if='active==3'>
    </div>
    
    
@@ -40,8 +40,8 @@
    <div style="position:relative;height:310px">
    
   
-   <img class="pre-img" src="../../img/微信绑定_03.png" alt="" width="256px" height="256px" style="float:left;margin-left:-128px;margin-top:50px" v-if='active==1'>
-   <img class="pre-img" src="../../img/gongxi_03.png" alt="" style="float:left;margin-left:496px;margin-top:150px" v-if='active==2'>
+   <img class="pre-img" src="../../../static/img/we_03.png" alt="" width="256px" height="256px" style="float:left;margin-left:-128px;margin-top:50px" v-if='active==1'>
+   <img class="pre-img" src="../../../static/img/gongxi_03.png" alt="" style="float:left;margin-left:496px;margin-top:150px" v-if='active==2'>
    </div>
    
    
@@ -65,7 +65,7 @@ var wechat = JSON.parse(user).wechat;
 
       return {
         active:1,
-        wechatsrc:'../../img/微信绑定_03.png'
+        wechatsrc:'../../../static/img/we_03.png'
       };
     },
     methods: {
@@ -107,7 +107,7 @@ var wechat = JSON.parse(user).wechat;
             },
         wechatName(){
                 let user = localStorage.getItem('user');
-                return JSON.parse(user).wechat;
+                return JSON.parse(user).wx_openid;
             }
     }
   }

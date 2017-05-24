@@ -4,7 +4,7 @@ import Router from 'vue-router';
 Vue.use(Router);
 
 export default new Router({
-    mode:'history',
+    // mode:'history',
     routes: [
         {
             path: '/',
@@ -70,18 +70,21 @@ export default new Router({
                     component: resolve => require(['../components/page/MixCharts.vue'], resolve)    // vue-echarts-v3组件
                 },
                 {
-                    path: '/accountManage', params:new Date(),
-                    component: resolve => require(['../components/page/accountManage.vue'], resolve) ,name:'账号'    // vue-datasource组件
+                    path: '/api/v1/admin',
+                    component: resolve => require(['../components/page/accountManage.vue'], resolve)     // vue-datasource组件
                 },{
-                    path: '/jobManage',
-                    component: resolve => require(['../components/page/jobManage.vue'], resolve)     // vue-datasource组件
+                    path: '/api/v1/job',
+                    component: resolve => require(['../components/page/jobManage.vue'], resolve)     // 职位管理
                 },{
-                    path: '/characterManage',
+                    path: '/api/v1/role',
                     component: resolve => require(['../components/page/characterManage.vue'], resolve)     // vue-datasource组件
                 },{
-                    path: '/departmantManage',
+                    path: '/api/v1/department',
                     component: resolve => require(['../components/page/departmantManage.vue'], resolve) ,name:'部门'    // vue-datasource组件
-                },
+                },{
+                    path: '/addUser',
+                    component: resolve => require(['../components/page/addUser.vue'], resolve) ,name:'添加'    // vue-datasource组件
+                }
             ]
         },
         {

@@ -1,13 +1,13 @@
 <template>
     <div class="header">
-        <div class="logo"><img src="../../img/头像设置_03.png" height="44" width="229" alt="" style="margin-top:20px"></div>
+        <div class="logo"><img src="../../../static/img/topic_03.png" height="44" width="229" alt="" style="margin-top:20px"></div>
         <div style="float:left;width:240px"><el-input
   placeholder="请输入姓名,手机号或合同编号"
   icon="search"
   v-model="input2"
   :on-icon-click="handleIconClick">
 </el-input></div>
-<div style="float:left;margin-left:5px"><a href=""><img src="../../img/add.png" height="70" width="55" alt=""></a></div>
+<div style="float:left;margin-left:5px"><a href=""><img src="../../../static/img/add.png" height="70" width="55" alt=""></a></div>
         <div class="user-info">
             <el-dropdown  @command="handleCommand">
                 <span class="el-dropdown-link">
@@ -29,7 +29,7 @@
                 </el-dropdown-menu>
             </el-dropdown>
         </div>
-        <div style="float:right;margin-top:10px;margin-right:20px;position:relative"><a href=""><img src="../../img/收件箱.png" height="30" width="30" alt=""></a>
+        <div style="float:right;margin-top:10px;margin-right:20px;position:relative"><a href=""><img src="../../../static/img/mess.png" height="30" width="30" alt=""></a>
             <div class="counterdiv" :class="{hidden:!messageAmount}"> 
                                 <span style="position:absolute;right:-3%;bottom:-3%;line-height:normal;color:white;width:16px;font-size:5px">
                                 {{messageAmount}}
@@ -91,9 +91,10 @@ import { mapGetters } from 'vuex';
             var user = localStorage.getItem('user');
             if (user) {
                 user = JSON.parse(user);
-                this.username = user.name || '';
+                // console.log(user);
+                this.username = user.uname || '';
                 this.agetSrc = user.avatar || '';
-                this.duty = user.duty || ''
+                this.duty = user.job.full_name || ''
                
             }
 

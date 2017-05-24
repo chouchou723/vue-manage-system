@@ -1,6 +1,6 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import {LoginUsers, Users,Task,Counter,MailCode,MenuList,Department,Character,Account,CampusList,JobList,CityList,DepartList} from './user.js';
+import {LoginUsers, Users,Task,Counter,MailCode,MenuList,Department,Character,Account,CampusList,JobList,CityList,DepartList,LevelList} from './user.js';
 let _Users = Users;
 let _Task = Task;
 
@@ -149,6 +149,17 @@ mock.onGet('/departList').reply(config => {
     }, 0);
       })
     });
+
+
+mock.onGet('/levelList').reply(config => {
+      return new Promise((resolve, reject) => {
+        setTimeout(function(){
+        resolve([200,LevelList]); //[{},{}]
+    }, 0);
+      })
+    });
+
+
 
     //获取用户列表
     mock.onGet('/user/list').reply(config => {
