@@ -6,12 +6,12 @@
                 <el-breadcrumb-item>学员回访</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
-        <div  class= 'accou' style="width: 100%;position:relative;height:50px">
+        <div  class= 'accou' >
         <div class="h1"><h2>
             
         学员回访({{number}}人)
         </h2>
-        <div  style='margin-left:200px;position:absolute;top:0;width:140px' >
+        <div  class='oneSelect' >
           
         <el-select v-model="value" clearable placeholder="选择校区" @change="updateList">
     <el-option
@@ -22,7 +22,7 @@
     </el-option>
   </el-select>
         </div>
-        <div  style='margin-left:350px;position:absolute;top:0;width:140px' >
+        <div class='twoSelect'>
           
         <el-select v-model="value1" clearable placeholder="回访状态" @change="updateList">
     <el-option
@@ -33,7 +33,7 @@
     </el-option>
   </el-select>
         </div>
-        <div  style='margin-left:500px;position:absolute;top:0;width:140px' >
+        <div class='threeSelect' >
           
         <el-date-picker
       v-model="value9"
@@ -51,11 +51,14 @@
     @cell-click="aaa"
      :default-sort = "{prop: 'last_return_time', order: 'descending'}"
     border
-    style="width: 100%">
+    >
     <el-table-column
       prop="name"
       label="学生"
       >
+      <template scope="scope" >
+        <span onclick='alert(1)'>{{scope.row.name}}</span>
+      </template>
     </el-table-column>
     <el-table-column
       prop="school"
@@ -130,9 +133,9 @@ import { account,campusList,cityList,sdjList ,departList,put_account,create_acco
     },
     methods: {
        updateList(){
-        
-        this.fetchData();
-      },copyArr : function (arr){
+          this.fetchData();
+      },
+      copyArr : function (arr){
         return arr.map((e)=>{
             if(typeof e === 'object'){
                 return Object.assign({},e)
@@ -202,7 +205,7 @@ import { account,campusList,cityList,sdjList ,departList,put_account,create_acco
         return row.tag === value;
       },
       aaa(row,column,cell,event) {
-        console.log(row)
+        // console.log(row)
       }
  },
     
@@ -220,12 +223,6 @@ import { account,campusList,cityList,sdjList ,departList,put_account,create_acco
  
 </script>
 <style >
-    .red{
-        color: red
-    }
-    .black{
-        color: black!important
-    }
     #table .el-table td ,#table  .el-table th{
       padding: 5px 5px;
       text-align: center
@@ -249,5 +246,28 @@ import { account,campusList,cityList,sdjList ,departList,put_account,create_acco
 .block{
   text-align: center;
   margin-top:10px;
+}
+.accou{
+  width: 100%;
+  position:relative;
+  height:50px
+}
+.oneSelect{
+  margin-left:200px;
+  position:absolute;
+  top:0;
+  width:140px
+}
+.twoSelect{
+  margin-left:350px;
+  position:absolute;
+  top:0;
+  width:140px
+}
+.threeSelect{
+  margin-left:500px;
+  position:absolute;
+  top:0;
+  width:140px
 }
 </style>

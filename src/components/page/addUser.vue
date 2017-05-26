@@ -3,109 +3,134 @@
 <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-menu"></i> 客户管理</el-breadcrumb-item>
-                <el-breadcrumb-item>我的资源</el-breadcrumb-item>
-                 <el-breadcrumb-item>添加客户</el-breadcrumb-item>
+                <el-breadcrumb-item :to="{ path: '/home' }">我的资源</el-breadcrumb-item>
+                 <el-breadcrumb-item >添加客户</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
-        <div  style="width: 100%;position:relative;padding:10px 10px 30px 10px;">
+        <div  class='addUserTitle' >
         <h2>添加用户资料</h2>
          </div>
 
 
         <div>
-<el-form ref="form" :model="form" label-width="80px">
-  <el-form-item label="学生姓名">
-    <el-input v-model="form.name" placeholder='请输入学生姓名' style="width:142px"></el-input>
+<el-form ref="form" :model="form"  :rules='rule' label-width="80px">
+  <el-form-item label="学生姓名" prop='name'>
+    <el-input v-model="form.name" placeholder='请输入学生姓名'  style="width:142px" ></el-input>
   </el-form-item>
-  <el-form-item label="性别">
-    <el-select v-model="form.region" placeholder="请选择性别" style="width:142px">
+  <el-form-item label="性别" prop='sex' >
+    <el-select v-model="form.sex" placeholder="请选择性别" style="width:142px">
       <el-option label="男" value="1"></el-option>
       <el-option label="女" value="0"></el-option>
     </el-select>
   </el-form-item>
-  <el-form-item label="联系家长">
+  <el-form-item label="联系家长" prop='parent'>
     <el-col :span="4">
-    <el-input v-model="form.name" placeholder='请输入家长姓名' ></el-input>
+    <el-input v-model="form.parent" placeholder='请输入家长姓名' ></el-input>
     </el-col>
     <el-col class="line" :span="1">&nbsp</el-col>
     <el-col :span="4">
-    <el-select v-model="form.region" placeholder="请选择关系">
-      <el-option label="男" value="1"></el-option>
-      <el-option label="女" value="0"></el-option>
+    <el-select v-model="form.con" placeholder="请选择关系" prop='con'>
+    <el-option
+      v-for="item in options"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value">
+    </el-option>
+     <!--  <el-option :label="connect" value="1"></el-option>
+      <el-option :label="connect1" value="0"></el-option> -->
     </el-select>
     </el-col>
     <el-col class="line" :span="1">&nbsp</el-col>
     <el-col :span="4">
-    <el-input v-model="form.name" placeholder='请输入手机号' ></el-input>
+    <el-input v-model="form.phone"  placeholder='请输入手机号' prop='phone'></el-input>
     </el-col>
   </el-form-item>
   <el-form-item label="">
     <el-col :span="4">
-    <el-input v-model="form.name" placeholder='请输入家长姓名'></el-input>
+    <el-input v-model="form.parent1" placeholder='请输入家长姓名' prop='parent1'></el-input>
     </el-col>
     <el-col class="line" :span="1">&nbsp</el-col>
     <el-col :span="4">
-    <el-select v-model="form.region" placeholder="请选择关系">
-      <el-option label="男" value="1"></el-option>
-      <el-option label="女" value="0"></el-option>
+    <el-select v-model="form.con1" placeholder="请选择关系" prop='con1'>
+      <el-option
+      v-for="item in options"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value">
+    </el-option>
     </el-select>
     </el-col>
     <el-col class="line" :span="1">&nbsp</el-col>
     <el-col :span="4">
-    <el-input v-model="form.name" placeholder='请输入手机号' ></el-input>
+    <el-input v-model="form.phone1" placeholder='请输入手机号' prop='phone1'></el-input>
     </el-col>
     <el-col :span="4">
-   <span style="margin-left:10px;width:200px" placeholder='请输入角色名称'> (选填)</span>
+   <span style="margin-left:10px;width:200px;color:grey" > (选填)</span>
     </el-col>
   </el-form-item>
 
-<el-form-item label="所在地区">
+<el-form-item label="所在地区" prop='city'>
     <el-col :span="4">
-    <el-select v-model="form.region" placeholder="请选择城市">
-      <el-option label="上海" value="1"></el-option>
-      <el-option label="北京" value="0"></el-option>
+    <el-select v-model="form.city" filterable placeholder="请选择城市" >
+    <el-option-group
+                        v-for="group in cities"
+                        :key="group.city_name"
+                        :label="group.city_name">
+                        <el-option
+                          v-for="item in group._child"
+                          :key="item.id"
+                          :label="item.city_name"
+                          :value="item.id">
+                        </el-option>
+                      </el-option-group>
+      <!-- <el-option
+      v-for="item in cities"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value">
+    </el-option> -->
     </el-select>
     </el-col>
     <el-col class="line" :span="1">&nbsp</el-col>
     <el-col :span="4">
-    <el-select v-model="form.region" placeholder="请选择城区">
-      <el-option label="男" value="1"></el-option>
-      <el-option label="女" value="0"></el-option>
+    <el-select v-model="form.region" placeholder="请选择城区" prop='region'>
+      <el-option label="徐汇" value="1"></el-option>
+      <el-option label="静安" value="0"></el-option>
     </el-select>
     </el-col>
     <el-col class="line" :span="1">&nbsp</el-col>
     <el-col :span="4">
-    <el-select v-model="form.region" placeholder="请选择地标">
-      <el-option label="男" value="1"></el-option>
-      <el-option label="女" value="0"></el-option>
+    <el-select v-model="form.add" placeholder="请选择地标" prop='add'>
+      <el-option label="徐家汇" value="1"></el-option>
+      <el-option label="美罗城" value="0"></el-option>
     </el-select>
     </el-col>
   </el-form-item>
 
-  <el-form-item label="就近校区">
-    <el-select v-model="form.region" placeholder="请选择校区" style="width:142px">
+  <el-form-item label="就近校区" prop='school'>
+    <el-select v-model="form.school" placeholder="请选择校区" style="width:142px" >
       <el-option label="徐汇校区" value="1"></el-option>
       <el-option label="静安校区" value="0"></el-option>
     </el-select>
   </el-form-item>
 
-  <el-form-item label="来源渠道">
+  <el-form-item label="来源渠道" prop='channel'>
     <el-col :span="4">
-    <el-select v-model="form.region" placeholder="请选择渠道">
+    <el-select v-model="form.channel" placeholder="请选择渠道" >
       <el-option label="转介绍" value="1"></el-option>
       <el-option label="上门" value="0"></el-option>
     </el-select>
     </el-col>
     <el-col class="line" :span="1">&nbsp</el-col>
     <el-col :span="4">
-    <el-input v-model="form.name" placeholder='请输入学生姓名' style="width:142px"></el-input>
+    <el-input v-if='this.form.channel == 1' v-model="form.referee" placeholder='请输入学生姓名' style="width:142px" prop='referee'></el-input>
     </el-col>
     <el-col :span="4">
    <span style="margin-left:10px;width:200px;color:red" > {{warning}}</span>
     </el-col>
   </el-form-item>
   <el-form-item style='margin-top:60px'>
-    <el-button type="primary" @click="onSubmit">确定</el-button>
+    <el-button type="primary" @click="onSubmit('form')">确定</el-button>
     <el-button>取消</el-button>
   </el-form-item>
 </el-form>
@@ -114,28 +139,86 @@
   </div>
 </template>
 <script>
+var user = localStorage.getItem('user');
+var token = JSON.parse(user).token;
+import { cityList} from '../../api/api';
   export default {
     data() {
       return {
-        warning:'*系统中没有该成员',
+        warning:'*系统中没有该成员',//以后改成调服务显示
         form: {
           name: '',
+          sex: '',
+          parent:'',
+          parent1:'',
+          con:'',
+          con1:'',
+          phone:'',
+          phone1: '',
+          city: '',
           region: '',
-          date1: '',
-          date2: '',
-          delivery: false,
-          type: [],
-          resource: '',
-          desc: ''
-        }
+          add: '',
+          school: '',
+          channel: '',
+          referee:''
+        },
+        cities:[],
+        rule: {
+          name: [
+            { required: true,  message: '请输入姓名',trigger: 'blur' },
+          ],
+          sex: [
+            { required: true, trigger: 'blur' },
+          ],
+          parent: [
+            { required: true, trigger: 'blur' },
+          ],
+          city: [
+            { required: true, trigger: 'blur' },
+          ],
+          school: [
+            { required: true, trigger: 'blur' },
+          ],
+          channel: [
+            { required: true, trigger: 'blur' },
+          ],
+        },
       }
     },
     methods: {
-      onSubmit() {
-        console.log('submit!');
+      onSubmit(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            alert('submit!');
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+
       }
+    },
+    computed:{
+      options(){
+        if(this.form.sex == ''){
+          return
+        }else if(this.form.sex ==1){
+            return [{label:'父子',value:'0'},{label:'母子',value:'1'},{label:'祖孙',value:'2'}]
+          }else{
+            return [{label:'父女',value:'0'},{label:'母女',value:'1'},{label:'祖孙',value:'2'}]
+          }
+      }
+    },
+    created(){
+      cityList(token).then((res)=>{
+          // console.log(res)
+          this.cities = res.data
+        })
     }
   }
 </script>
 <style>
+.addUserTitle{
+  padding:10px 10px 30px 10px;
+}
 </style>

@@ -12,16 +12,15 @@
                 </el-form-item>
                 <el-form-item  prop="code">
                  <el-col :span="15">
-                    <el-input  placeholder="请输入验证码" v-model.number="ruleForm.code" ></el-input>
+                    <el-input  placeholder="请输入验证码" v-model.number="ruleForm.code" @keyup.enter.native="submitForm('ruleForm')">
+                    </el-input>
                     </el-col>
                      <el-col :span="7" id='codeNumber' @click.native='change'>
-                     <!-- <div @click='change'> -->
                         <span>{{codeNumber1}}</span>
                         <span>{{codeNumber2}}</span>
-                        <span> {{codeNumber3}}</span>
+                        <span>{{codeNumber3}}</span>
                         <span>{{codeNumber4}}</span>
-                     <!-- </div> -->
-                     </el-col>
+                    </el-col>
                 </el-form-item>
                 <div class="login-btn">
                     <el-button type="success" @click="submitForm('ruleForm')">登录</el-button>
@@ -56,12 +55,13 @@
         import { requestLogin ,getUserinfo} from '../../api/api';
         var color="";
         var str="0123456789abcdef";
+        var length = str.length +1;
         var span=document.getElementsByTagName("span");
         window.onload=randomNumber;
         function randomNumber(){
-            for(var i=0;i<4;i++){//生成四位数
-                for(var j=0;j<6;j++){//随机改变每个数字的颜色
-                     color+=str.substr(parseInt(Math.random()*str.length),1);//取颜色(循环，每次提取一位，进行拼接组成6为颜色的值)
+            for(let i=0;i<4;i++){//生成四位数
+                for(let j=0;j<6;j++){//随机改变每个数字的颜色
+                     color+=str.substr(parseInt(Math.random()*length),1);//取颜色(循环，每次提取一位，进行拼接组成6为颜色的值)
                 }
                 span[i].style.color=("#"+color);//随机改变每个span的颜色
                 color="";
@@ -70,7 +70,6 @@
 
     export default {
         data: function(){
-             // var correct = this.codeNumber1*1000+this.codeNumber2*100+this.codeNumber3*10+this.codeNumber4*1;
             var valid = (rule,value,callback )=>{
                 if (!value ){
                     return callback(new Error('请输入验证码'))
@@ -166,7 +165,6 @@
                                             client_secret:'EjKXjo27hXenF8a2MgqHvpYv7IhtJ678GfOgnHc5'};
 
                         requestLogin(loginParams).then(data=>{
-                            // if()
                             this.logining = false;
                             let{access_token,status,token_type} = data;
                                 var token = {

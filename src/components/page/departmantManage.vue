@@ -40,7 +40,7 @@ import { department ,create_department,put_department,delete_department} from '.
         rows.splice(index, 1);
       },
       open2(index,data) {     //删除部门
-        if(data[index].user_count !=0){
+        if(data[index].user_count != 0){
             this.$alert('当前部门有成员,无法删除部门', '删除部门', {
                  title:'删除部门',
                  type: 'warning',
@@ -59,8 +59,9 @@ import { department ,create_department,put_department,delete_department} from '.
           
           // console.log(this.tableData)
           let a ={
-            did:data[index].did
+            job_id:data[index].job_id
           }
+          console.log(a)
           delete_department(a,token);
           this.deleteRow(index,data);
           this.$message({
@@ -151,19 +152,7 @@ import { department ,create_department,put_department,delete_department} from '.
     },
     created(){
         department(token).then((res) => {
-          //NProgress.done();
-          // console.log(res.data)
-          this.tableData = res.data.map(item => {
-      return { 
-        did: item.did, 
-        full_name: item.full_name ,
-        user_count: item.user_count,
-        status: item.status,
-        created_at: this.created_at,
-        updated_at: this.updated_at,
-        job_count:this.job_count
-      };
-      })
+          this.tableData = res.data
 
         })
             }

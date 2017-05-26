@@ -14,13 +14,13 @@
 
 <el-dialog :title="alter" :visible.sync="dialogFormVisible"  show-close style='z-index:100'>
 <el-form :model="form"  ref="form">
-  <el-form-item label="职位名称" :label-width="formLabelWidth" prop="kind">
-      <el-input v-model="form.kind" auto-complete="off" placeholder='请输入职位名称' style='width:200px'></el-input>
+  <el-form-item label="职位名称" :label-width="formLabelWidth" prop="full_name">
+      <el-input v-model="form.full_name" auto-complete="off" placeholder='请输入职位名称' style='width:200px'></el-input>
     </el-form-item>
-    <el-form-item label="所属部门" :label-width="formLabelWidth"  prop="depart">
-            <el-select v-model="form.depart" style='width:200px' @change='updateLevel'>
+    <el-form-item label="所属部门" :label-width="formLabelWidth"  prop="department">
+            <el-select v-model.number="form.did" style='width:200px' >
             <el-option
-                v-for="item in adeparts"
+                v-for="item in departments"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">
@@ -52,7 +52,7 @@
     </el-form>
  
   <div slot="footer" class="dialog-footer">
-    <el-button type="primary" @click="addChar">确 定</el-button>
+    <el-button type="primary" @click="addChar(form)">确 定</el-button>
     <el-button @click="dialogFormVisible = false">取 消</el-button>
   </div>
  
@@ -61,7 +61,7 @@
         </div>
   <el-table 
     v-for="depart in departs"
-    :data="ddeparts"
+    :data="depart._child"
     border
     style="width: 100%;"
     :row-class-name="space"
@@ -74,8 +74,8 @@
     <el-table-column width='140px'
       label="操作">
       <template scope="scope">
-        <el-button  type="text" size="small" @click="open4(scope.$index, depart.ddata)">修改</el-button>
-        <el-button type="text" size="small" @click="open2(scope.$index, depart.ddata)">删除</el-button>
+        <el-button  type="text" size="small" @click="open4(scope.$index, depart.children)">修改</el-button>
+        <el-button type="text" size="small" @click="open2(scope.$index, depart.children)">删除</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -85,30 +85,25 @@
 <script>
 var user = localStorage.getItem('user');
 var token = JSON.parse(user).token;
-import { departList,levelList } from '../../api/api';
+import { departList,create_departList,put_departList,delete_departList,levelList,department,character } from '../../api/api';
   export default {
     methods: {
-      updateLevel(){
-        let a = this.form.depart
+      updateLevel(){//后台未出服务，根据部门查询所属上级和权限
+        let a = this.form.did
         let para = {
-          depart:a
+          did:a
         };
         levelList(para).then((res)=>{
           this.level = res.level;
            this.ranges = res.ranges;
         })
       },
-      createCh(){
-        var that = this;
+      createCh(){//点击创建按钮
             this.dialogFormVisible = true;
-        //     function dia(){
-        //    that.$refs.form.resetFields()
-        // };
-        // setTimeout(dia,1);
-            // this.$refs.form.resetFields()
+            this.in = ''
             this.form = {
-                          kind: '',
-                          depart:'',
+                          full_name: '',
+                          did:'',
                           level:'',
                           range:[]
                         }
@@ -117,9 +112,9 @@ import { departList,levelList } from '../../api/api';
       deleteRow(index, rows) {
         rows.splice(index, 1);
       },
-      open2(index,data) {
+      open2(index,data) {//删除职位
         console.log(data)
-        if(data[index].number){
+        if(data[index].count){
             this.$alert('当前职位有成员,无法删除职位', '删除职位', {
                  title:'删除职位',
                  type: 'warning',
@@ -135,29 +130,33 @@ import { departList,levelList } from '../../api/api';
                   cancelButtonText: '取消',
                   type: 'warning'
         }).then(() => {
+          let para = {
+            did:data[index].did
+          }
+          delete_departList(para,token);
            this.deleteRow(index,data);
           this.$message({
             type: 'success',
             message: '删除成功!'
           });
-         
-          // department(this.tableData);
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });          
-        });
+        })
+        // .catch(() => {
+        //   this.$message({
+        //     type: 'info',
+        //     message: '已取消删除'
+        //   });          
+        // });
         }
         
       },
-      open4(index,data){
+      open4(index,data){//点击修改
         this.$confirm('若该部门有成员,修改后原部门所有成员将自动更新到新部门！', '修改提示', {
                 customClass:'redwarn',
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(()=>{
+          this.in = index;
           this.form = data[index];
           this.dialogFormVisible = true;
           this.updateLevel();
@@ -166,20 +165,32 @@ import { departList,levelList } from '../../api/api';
 
        
       },
-      addChar(){
-        let b =this.form;
-        let a = this.form.depart;
-        let para = {
-          depart:b
-        };
-        departList(para).then((res) => {
-          //NProgress.done();
-          this.departs = res;
-        }).then(()=>{
-           this.dialogFormVisible = false;
-        })
+      addChar(formName){
+        this.$refs[formName].validate((valid) => {
+        let f = this.form;
+        let i = this.in;
+        if(valid){
+            if(i !== ''){
+                          let para = {}
+                          put_departList(para,token).then((res) => {
+                            this.filterData(res);
+                          })
+              }else{
+                    let para = {}
+                    create_departList(para,token).then((res) => {
+                      this.filterData(res);
+                    })
+                  }
+
+        this.in = '';
+        this.dialogFormVisible = false;
+        }else{
+              console.log('error submit!!');
+              return false;
+              }
+        });
       },
-      space(row,index){
+      space(row,index){//缩进处理
         let r = row.level;
         if(r){
           if(r.indexOf('经理')>-1){
@@ -199,26 +210,54 @@ import { departList,levelList } from '../../api/api';
                 return e
             }
         })
-          },
+      },
+      // filterData(res){
+      //   if(res.data ==''){//判断是否有数据
+      //         return
+      //     }else{
+      //         this.departs = res.data;
+      //         res.data.map((item,index,arr)=>{
+      //           if(item._child ==''){//判断是否有经理级别
+      //             return 
+      //           }else{
+      //               let{_child} = item;
+      //             var dd =this.copyArr(_child);
+      //             _child.map((a,b,c)=>{
+      //               if(a._child ==''){//判断是否有主管级别
+      //                 return
+      //               }else{
+      //                 let {_child} = a
+      //                 console.log(_child)
+      //                 var l = _child.length;
+      //                 for(let i =0;i<l;i++){
+      //                 if(_child[i]._child){
+      //                       dd.push(_child[i]);
+      //                       dd.push.apply(dd,_child[i]._child)
+      //                     }else{
+      //                       dd.push(_child[i])
+      //                     }
+      //                 }
+      //               }
+                    
+      //             })
+      //           }
+                  
+      //         item.children = dd;
+      //         })
+      //     }
+      // }
     },
 
     data() {
       return {
-ddeparts:[],
         departs:[],
-         adeparts:[],
-         level:[],
+        departments:[],
+        level:[],
         dialogFormVisible: false,
         in: '',
         form: {
-          kind: '',
-          depart:'',
-          level:'',
-          range:[]
-        },
-        bform: {
-          kind: '',
-          depart:'',
+          full_name: '',
+          did:'',
           level:'',
           range:[]
         },
@@ -229,33 +268,22 @@ ddeparts:[],
     created(){
       let para = {}
         departList(para,token).then((res) => {
-          //NProgress.done();
-          this.departs = res.data;
-          res.data.map((item,index,arr)=>{
-
-              let{_child} = item;
-              let dd =this.copyArr(_child);
-              _child.map((a,b,c)=>{
-                // console.log(a)
-                let {_child} = a
-                let l = _child.length;
-                for(let i =0;i<l;i++){
-                  if(_child[i]._child){
-                        dd.push(_child[i]);
-                        dd.push.apply(dd,_child[i]._child)
-                      }else{
-                        dd.push(_child[i])
-                      }
-                }
-              })
-              this.ddeparts = dd;
-          })
-
+          // this.filterData(res);
+           this.departs = res.data;
         }).then(()=>{
-               // var cell = document.getElementsByClassName('cell');
-               // cell.map(function(item,index){
-               //    if(item.innerText =='')
-               // })
+            department(token).then(res=>{
+              // console.log(res)
+              this.departments = res.data.map(item=>{
+                return { value: item.job_id, label: item.full_name };
+              })
+              character(token).then(res=>{
+                this.ranges = res.data.map(item=>{
+                return { value: item.roleid, label: item.name };
+              })
+              })
+            })
+
+            
         })
     },
     computed:{

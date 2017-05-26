@@ -81,11 +81,11 @@ import { mapActions } from 'vuex';
             onRoutes(){
                 return this.$route.path.replace('/','');
             },
-            acounter:{
+            acounter:{//任务提醒数字共享
                 set: function(value) {
                 this.acounter = value;
             },
-            get: function() {
+                get: function() {
                  return this.counter+this.getCount
             }
 
@@ -97,16 +97,14 @@ import { mapActions } from 'vuex';
             ])
         },
         methods:{
-            getcounter(){
+            getcounter(){//调服务获取当天任务数
                  let self = this;
                 let para = {
-          counter:this.counter
+                    counter:this.counter
         };
-        //NProgress.start();
-        counterList(para).then((res) => {
-          //NProgress.done();
-          this.counter = res.counter;
-        });
+        // counterList(para).then((res) => {
+        //   this.counter = res.counter;
+        // });
             },
             clearCounter(){
                 this.counter = 0;
@@ -116,15 +114,13 @@ import { mapActions } from 'vuex';
                 'clear'
       // ...
             ]),
-            getMenu(){
+            getMenu(){//动态菜单获取
                 let self = this;
                 let para = {
-          counter:this.counter
-        };
-        menuList(token).then((res) => {
-            // console.log(res)
-          //NProgress.done();
-          this.menus = res.data;
+                counter:this.counter
+                };
+                menuList(token).then((res) => {
+                this.menus = res.data;
         });
             }
         },

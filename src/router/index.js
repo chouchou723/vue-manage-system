@@ -87,6 +87,9 @@ export default new Router({
                 },{
                     path: '/returnVisit',
                     component: resolve => require(['../components/page/returnVisit.vue'], resolve) ,    // vue-datasource组件
+                },{
+                    path: '/userDetail',
+                    component: resolve => require(['../components/page/userDetail.vue'], resolve) ,    // vue-datasource组件
                 }
             ]
         },

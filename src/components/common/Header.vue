@@ -1,20 +1,24 @@
 <template>
     <div class="header">
-        <div class="logo"><img src="../../../static/img/topic_03.png" height="44" width="229" alt="" style="margin-top:20px"></div>
-        <div style="float:left;width:240px"><el-input
-  placeholder="请输入姓名,手机号或合同编号"
-  icon="search"
-  v-model="input2"
-  :on-icon-click="handleIconClick">
-</el-input></div>
-<div style="float:left;margin-left:5px"><a href=""><img src="../../../static/img/add.png" height="70" width="55" alt=""></a></div>
+        <div class="logo"><img src="../../../static/img/topic_03.png" height="44" width="229"  ></div>
+            <div class='search'>
+            <el-input
+              placeholder="请输入姓名,手机号或合同编号"
+              icon="search"
+              v-model="input2"
+              :on-icon-click="handleIconClick">
+            </el-input>
+            </div>
+            <div style="float:left;margin-left:5px">
+            <a  href=""><img id='addUser' src="../../../static/img/add.png" height="70" width="55" alt=""></a>
+            </div>
         <div class="user-info">
             <el-dropdown  @command="handleCommand">
                 <span class="el-dropdown-link">
                     <img class="user-logo" :src="userAvatar">
                     <div >
                      {{username}}
-                     <span style="color:#1fb5ad">[{{duty}}]</span>
+                     <span class='duty_color'>[{{duty}}]</span>
                     </div>
                 </span>
                 <div>
@@ -29,12 +33,13 @@
                 </el-dropdown-menu>
             </el-dropdown>
         </div>
-        <div style="float:right;margin-top:10px;margin-right:20px;position:relative"><a href=""><img src="../../../static/img/mess.png" height="30" width="30" alt=""></a>
+        <div class='messageAmount'>
+            <a href=""><img src="../../../static/img/mess.png" height="30" width="30" alt=""></a>
             <div class="counterdiv" :class="{hidden:!messageAmount}"> 
-                                <span style="position:absolute;right:-3%;bottom:-3%;line-height:normal;color:white;width:16px;font-size:5px">
-                                {{messageAmount}}
-                                </span> 
-                                </div>
+                <span class='amountColor'>
+                {{messageAmount}}
+                </span> 
+            </div>
         </div>
     </div>
 </template>
@@ -69,24 +74,19 @@ import { mapGetters } from 'vuex';
                     this.$router.push('/message');
                 }
             },
-            handleIconClick(ev) {
-      console.log(ev);
-    }
+            handleIconClick(ev) {//点击搜索标志的fn
+                console.log(ev);
+            }
         },
         computed:{
             userAvatar(){
                 return this.getSrc ||this.agetSrc
             },
-        //         userAvatar(){
-        //              let user = localStorage.getItem('user');
-        //               let user1 = JSON.parse(user);
-        //                return getSrc;
-        // },
         ...mapGetters([
                 'getSrc'
       // ...
             ])
-    },
+        },
         mounted() {
             var user = localStorage.getItem('user');
             if (user) {
@@ -115,12 +115,35 @@ import { mapGetters } from 'vuex';
         float: left;
         width:250px;
         text-align: center;
+        margin-top:20px
+    }
+    .search{
+        float:left;
+        width:240px
     }
     .user-info {
         float: right;
         padding-right: 50px;
         font-size: 16px;
         color: #fff;
+    }
+    .duty_color{
+        color:#1fb5ad
+    }
+    .messageAmount{
+        float:right;
+        margin-top:10px;
+        margin-right:20px;
+        position:relative
+    }
+    .amountColor{
+        position:absolute;
+        right:-3%;
+        bottom:-3%;
+        line-height:normal;
+        color:white;
+        width:16px;
+        font-size:5px
     }
     .user-info .el-dropdown-link{
         position: relative;
@@ -154,4 +177,11 @@ import { mapGetters } from 'vuex';
     .hidden{
         display: none
     }
+    #addUser{
+     border: 1px solid #2b3a40;
+    }
+    #addUser:hover{
+      border-color: #6daba8;
+
+}
 </style>

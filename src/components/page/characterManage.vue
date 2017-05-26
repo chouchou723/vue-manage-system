@@ -18,7 +18,7 @@
       <el-input v-model="form.full_name" auto-complete="off" placeholder='请输入角色名称' style='width:200px'></el-input>
     </el-form-item>
     </el-form>
-  <el-tree :data="data2" show-checkbox=""  v-model="form.access" node-key="id" ref="tree" highlight-current :props="defaultProps">
+  <el-tree :data="data2" show-checkbox=""  v-model="form.access" node-key="module_id" default-expand-all ref="tree" highlight-current :props="defaultProps">
 </el-tree>
  
   <div slot="footer" class="dialog-footer">
@@ -51,10 +51,10 @@
 <script>
 var user = localStorage.getItem('user');
 var token = JSON.parse(user).token;
-import { character,create_character,put_character,delete_character } from '../../api/api';
+import { character,create_character,put_character,delete_character,rangeList } from '../../api/api';
   export default {
     methods: {
-      createCh(){    //打开创建角色
+      createCh(){    //点击创建角色
         var that = this;
             this.form.full_name = '';
             this.dialogFormVisible = true;
@@ -84,46 +84,51 @@ import { character,create_character,put_character,delete_character } from '../..
             type: 'success',
             message: '删除成功!'
           });
-          character(this.charData);//替换上送接口
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });          
-        });
+        })
+        // .catch(() => {
+        //   this.$message({
+        //     type: 'info',
+        //     message: '已取消删除'
+        //   });          
+        // });
         
         
       },
-      open4(index,data){
+      open4(index,data){ //修改角色
         this.dialogFormVisible = true;
         this.in = index;
         this.form.full_name = data[index].name;
         var that = this;
         function dia(){
-          that.$refs.tree.setCheckedKeys(data[index].number);
+          that.$refs.tree.setCheckedKeys(data[index].number);//number要替换
         };
         setTimeout(dia,1);
       },
       addChar(){
         let a =this.$refs.tree.getCheckedKeys();
-        console.log(a)
-        let b = this.form.name;
+        let b = this.form.full_name;
         let c = this.in;
         if(a&&b&&c ===''){
-        this.charData.push({ kind: b,
-          number: a});
+        let para = { full_name: b,
+          number: a}//number要替换
+            create_character(para,token);
+        this.charData.push({ full_name: b,
+          number: a});//number要替换
         this.dialogFormVisible = false;
-
-        }else if(a&&b&&c !==''){
-            this.charData[c].kind = b ;
-            this.charData[c].number = a ;
-             this.dialogFormVisible = false;
-             this.in = '';
-        }
-        character(this.charData);
         this.$refs.tree.setCheckedKeys([]);
         this.form.name = '';
-        console.log(this.charData);
+        }else if(a&&b&&c !==''){
+            let para = { full_name: b,
+            number: a}//number要替换
+            put_character(para,token);
+            this.charData[c].full_name = b ;
+            this.charData[c].number = a ;//number要替换
+            this.dialogFormVisible = false;
+            this.in = '';
+            this.$refs.tree.setCheckedKeys([]);
+            this.form.name = '';
+        }
+        
       }
     },
 
@@ -131,85 +136,123 @@ import { character,create_character,put_character,delete_character } from '../..
       return {
         charData: [],
         dialogFormVisible: false,
+        formLabelWidth: '70px',
         in: '',
         form: {
           full_name: ''
         },
-        formLabelWidth: '70px',
-         data2: [{
-          id: 1,
-          label: '任务提醒'
-        }, 
-        {
-          id: 2,
-          label: '系统通知'
-        }, {
-          id: 3,
-          label: '资源管理',
-          children: [{
-            id: 7,
-            label: '自己的资源'
-          }, {
-            id: 8,
-            label: '他人的资源'
-          },{
-            id: 9,
-            label: '自己的资源'
-          }, {
-            id: 10,
-            label: '他人的资源'
-          },{
-            id: 11,
-            label: '自己的资源'
-          }, {
-            id: 12,
-            label: '他人的资源'
-          },{
-            id: 13,
-            label: '自己的资源'
-          }, {
-            id: 14,
-            label: '他人的资源'
-          },{
-            id: 15,
-            label: '自己的资源'
-          }, {
-            id: 16,
-            label: '他人的资源'
-          }]
-        },
-        {
-          id: 4,
-          label: '学员回访',
-          children: [{
-            id: 17,
-            label: '自己的学员'
-          }, {
-            id: 18,
-            label: '他人的学员'
-          }]
-        },
-        {
-          id: 5,
-          label: '报表统计',
-          children: [{
-            id: 19,
-            label: '自己的学员'
-          }, {
-            id: 20,
-            label: '他人的学员'
-          }]
-        }],
+         data2: [],
+        //  [
+        //  {
+        //   id: 1,
+        //   label: '任务提醒'
+        // }, 
+        // {
+        //   id: 2,
+        //   label: '系统通知'
+        // }, {
+        //   id: 3,
+        //   label: '资源管理',
+        //   children: [{
+        //     id: 7,
+        //     label: '自己的资源',
+        //     children: [{
+        //     id: 7,
+        //     label: '自己的资源'
+        //   }, {
+        //     id: 8,
+        //     label: '他人的资源'
+        //   },{
+        //     id: 9,
+        //     label: '自己的资源'
+        //   }, {
+        //     id: 10,
+        //     label: '他人的资源'
+        //   },{
+        //     id: 11,
+        //     label: '自己的资源'
+        //   }, {
+        //     id: 12,
+        //     label: '他人的资源'
+        //   },{
+        //     id: 13,
+        //     label: '自己的资源'
+        //   }, {
+        //     id: 14,
+        //     label: '他人的资源'
+        //   },{
+        //     id: 15,
+        //     label: '自己的资源'
+        //   }, {
+        //     id: 16,
+        //     label: '他人的资源'
+        //   }]
+        //   }, {
+        //     id: 8,
+        //     label: '他人的资源'
+        //   },{
+        //     id: 9,
+        //     label: '自己的资源'
+        //   }, {
+        //     id: 10,
+        //     label: '他人的资源'
+        //   },{
+        //     id: 11,
+        //     label: '自己的资源'
+        //   }, {
+        //     id: 12,
+        //     label: '他人的资源'
+        //   },{
+        //     id: 13,
+        //     label: '自己的资源'
+        //   }, {
+        //     id: 14,
+        //     label: '他人的资源'
+        //   },{
+        //     id: 15,
+        //     label: '自己的资源'
+        //   }, {
+        //     id: 16,
+        //     label: '他人的资源'
+        //   }
+        //   ]
+        // },
+        // {
+        //   id: 4,
+        //   label: '学员回访',
+        //   children: [{
+        //     id: 17,
+        //     label: '自己的学员'
+        //   }, {
+        //     id: 18,
+        //     label: '他人的学员'
+        //   }]
+        // },
+        // {
+        //   id: 5,
+        //   label: '报表统计',
+        //   children: [{
+        //     id: 19,
+        //     label: '自己的学员'
+        //   }, {
+        //     id: 20,
+        //     label: '他人的学员'
+        //   }]
+        // }],
         defaultProps: {
-          children: 'children',
-          label: 'label'
+          children: '_child',
+          label: 'menu_name'
         }
       }
     },
     created(){
         character(token).then((res) => {
-          //NProgress.done();
           this.charData = res.data;
+        })
+        rangeList(token).then(res=>{
+
+          this.data2 = res.data
+          console.log(this.data2)
         })
     },
     computed:{
