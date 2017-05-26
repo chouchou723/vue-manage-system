@@ -16,26 +16,26 @@ export default new Router({
             children:[
                 {
                     path: '/',
-                    component: resolve => require(['../components/page/Readme.vue'], resolve)
+                    component: resolve => require(['../components/page/Index.vue'], resolve)   //首页
                 },
                 {
                     path:'/setting',
-                    component: resolve => require(['../components/page/Setting.vue'],resolve)
+                    component: resolve => require(['../components/page/Setting.vue'],resolve)   //设置头像
                 },
                 {
                     path:'/editPassword',
-                    component: resolve => require(['../components/page/EditPassword.vue'],resolve)
+                    component: resolve => require(['../components/page/EditPassword.vue'],resolve)      //密码修改
                 },
                 {
                     path:'/wechat',
-                    component: resolve => require(['../components/page/Wechat.vue'],resolve)
+                    component: resolve => require(['../components/page/Wechat.vue'],resolve)            //微信绑定
                 },{
                     path:'/message',
-                    component: resolve => require(['../components/page/Message.vue'],resolve)
+                    component: resolve => require(['../components/page/Message.vue'],resolve)              //消息设置
                 },
                 {
                     path:'/calendar',
-                    component: resolve => require(['../components/page/calendar.vue'],resolve)
+                    component: resolve => require(['../components/page/calendar.vue'],resolve)      //任务提醒
                 },
                 {
                     path: '/basetable',
@@ -63,7 +63,7 @@ export default new Router({
                 },
                 {
                     path: '/basecharts',
-                    component: resolve => require(['../components/page/BaseCharts.vue'], resolve)   // vue-echarts-v3组件
+                    component: resolve => require(['../components/page/BaseCharts.vue'], resolve)   // 报表统计
                 },
                 {
                     path: '/mixcharts',
@@ -71,25 +71,25 @@ export default new Router({
                 },
                 {
                     path: '/api/v1/admin',
-                    component: resolve => require(['../components/page/accountManage.vue'], resolve)     // vue-datasource组件
+                    component: resolve => require(['../components/page/accountManage.vue'], resolve)     // 账号管理
                 },{
                     path: '/api/v1/job',
                     component: resolve => require(['../components/page/jobManage.vue'], resolve)     // 职位管理
                 },{
                     path: '/api/v1/role',
-                    component: resolve => require(['../components/page/characterManage.vue'], resolve)     // vue-datasource组件
+                    component: resolve => require(['../components/page/characterManage.vue'], resolve)     // 角色管理
                 },{
                     path: '/api/v1/department',
-                    component: resolve => require(['../components/page/departmantManage.vue'], resolve) ,name:'部门'    // vue-datasource组件
+                    component: resolve => require(['../components/page/departmantManage.vue'], resolve) ,name:'部门'    //部门管理
                 },{
                     path: '/addUser',
-                    component: resolve => require(['../components/page/addUser.vue'], resolve) ,name:'添加'    // vue-datasource组件
+                    component: resolve => require(['../components/page/addUser.vue'], resolve) ,name:'添加'    // 添加用户
                 },{
                     path: '/returnVisit',
-                    component: resolve => require(['../components/page/returnVisit.vue'], resolve) ,    // vue-datasource组件
+                    component: resolve => require(['../components/page/returnVisit.vue'], resolve) ,    // 学员回访
                 },{
                     path: '/userDetail',
-                    component: resolve => require(['../components/page/userDetail.vue'], resolve) ,    // vue-datasource组件
+                    component: resolve => require(['../components/page/userDetail.vue'], resolve) ,    // 学员回访详情
                 }
             ]
         },
