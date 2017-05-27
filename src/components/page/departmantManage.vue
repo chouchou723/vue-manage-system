@@ -81,7 +81,9 @@ import { department ,create_department,put_department,delete_department} from '.
         this.tableData.push(branch);
         let l = this.tableData.length;
         create_department(branch,token).then(res=>{
+          res.data.user_count = 0;
           this.tableData[l-1] = res.data
+
       //     this.tableData = res.data.map(item => {
       // return {  did: item.did, 
       //           full_name: item.full_name ,

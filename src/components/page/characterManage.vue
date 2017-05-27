@@ -15,7 +15,7 @@
 <el-dialog :title="alter" :visible.sync="dialogFormVisible"  show-close style='z-index:100'>
 <el-form :model="form">
   <el-form-item label="角色名称" :label-width="formLabelWidth">
-      <el-input v-model="form.full_name" auto-complete="off" placeholder='请输入角色名称' style='width:200px'></el-input>
+      <el-input v-model="form.name" auto-complete="off" placeholder='请输入角色名称' style='width:200px'></el-input>
     </el-form-item>
     </el-form>
   <el-tree :data="data2" show-checkbox=""  v-model="form.access" node-key="module_id" default-expand-all ref="tree" highlight-current :props="defaultProps">
@@ -51,12 +51,12 @@
 <script>
 var user = localStorage.getItem('user');
 var token = JSON.parse(user).token;
-import { character,create_character,put_character,delete_character,rangeList } from '../../api/api';
+import { character,create_character,put_character,delete_character,rangeList,detail_character } from '../../api/api';
   export default {
     methods: {
       createCh(){    //点击创建角色
         var that = this;
-            this.form.full_name = '';
+            this.form.name = '';
             this.dialogFormVisible = true;
             function dib(){
           that.$refs.tree.setCheckedKeys([]);
@@ -95,34 +95,38 @@ import { character,create_character,put_character,delete_character,rangeList } f
         
       },
       open4(index,data){ //修改角色
+        let para = {
+          roleid:data[index].roleid
+        }
+        detail_character(para,token).then(res=>{
+          let a  = res.data.module_ids
+          this.$refs.tree.setCheckedKeys(a);
+          // console.log(a)
+        })
         this.dialogFormVisible = true;
         this.in = index;
-        this.form.full_name = data[index].name;
-        var that = this;
-        function dia(){
-          that.$refs.tree.setCheckedKeys(data[index].number);//number要替换
-        };
-        setTimeout(dia,1);
+        this.form.name = data[index].name;
       },
       addChar(){
-        let a =this.$refs.tree.getCheckedKeys();
-        let b = this.form.full_name;
+        let s =this.$refs.tree.getCheckedKeys();
+        let a = s.join(',');
+        let b = this.form.name;
         let c = this.in;
         if(a&&b&&c ===''){
-        let para = { full_name: b,
-          number: a}//number要替换
+        let para = { name: b,
+          module_id: a}//number要替换
             create_character(para,token);
-        this.charData.push({ full_name: b,
-          number: a});//number要替换
+        this.charData.push({ name: b,
+          module_id: a});//number要替换
         this.dialogFormVisible = false;
         this.$refs.tree.setCheckedKeys([]);
         this.form.name = '';
         }else if(a&&b&&c !==''){
-            let para = { full_name: b,
-            number: a}//number要替换
+            let para = { name: b,
+            module_id: a}//number要替换
             put_character(para,token);
-            this.charData[c].full_name = b ;
-            this.charData[c].number = a ;//number要替换
+            this.charData[c].name = b ;
+            this.charData[c].module_id = a ;//number要替换
             this.dialogFormVisible = false;
             this.in = '';
             this.$refs.tree.setCheckedKeys([]);
@@ -139,109 +143,12 @@ import { character,create_character,put_character,delete_character,rangeList } f
         formLabelWidth: '70px',
         in: '',
         form: {
-          full_name: ''
+          name: ''
         },
          data2: [],
-        //  [
-        //  {
-        //   id: 1,
-        //   label: '任务提醒'
-        // }, 
-        // {
-        //   id: 2,
-        //   label: '系统通知'
-        // }, {
-        //   id: 3,
-        //   label: '资源管理',
-        //   children: [{
-        //     id: 7,
-        //     label: '自己的资源',
-        //     children: [{
-        //     id: 7,
-        //     label: '自己的资源'
-        //   }, {
-        //     id: 8,
-        //     label: '他人的资源'
-        //   },{
-        //     id: 9,
-        //     label: '自己的资源'
-        //   }, {
-        //     id: 10,
-        //     label: '他人的资源'
-        //   },{
-        //     id: 11,
-        //     label: '自己的资源'
-        //   }, {
-        //     id: 12,
-        //     label: '他人的资源'
-        //   },{
-        //     id: 13,
-        //     label: '自己的资源'
-        //   }, {
-        //     id: 14,
-        //     label: '他人的资源'
-        //   },{
-        //     id: 15,
-        //     label: '自己的资源'
-        //   }, {
-        //     id: 16,
-        //     label: '他人的资源'
-        //   }]
-        //   }, {
-        //     id: 8,
-        //     label: '他人的资源'
-        //   },{
-        //     id: 9,
-        //     label: '自己的资源'
-        //   }, {
-        //     id: 10,
-        //     label: '他人的资源'
-        //   },{
-        //     id: 11,
-        //     label: '自己的资源'
-        //   }, {
-        //     id: 12,
-        //     label: '他人的资源'
-        //   },{
-        //     id: 13,
-        //     label: '自己的资源'
-        //   }, {
-        //     id: 14,
-        //     label: '他人的资源'
-        //   },{
-        //     id: 15,
-        //     label: '自己的资源'
-        //   }, {
-        //     id: 16,
-        //     label: '他人的资源'
-        //   }
-        //   ]
-        // },
-        // {
-        //   id: 4,
-        //   label: '学员回访',
-        //   children: [{
-        //     id: 17,
-        //     label: '自己的学员'
-        //   }, {
-        //     id: 18,
-        //     label: '他人的学员'
-        //   }]
-        // },
-        // {
-        //   id: 5,
-        //   label: '报表统计',
-        //   children: [{
-        //     id: 19,
-        //     label: '自己的学员'
-        //   }, {
-        //     id: 20,
-        //     label: '他人的学员'
-        //   }]
-        // }],
         defaultProps: {
           children: '_child',
-          label: 'menu_name'
+          label: 'full_name'
         }
       }
     },
@@ -252,7 +159,7 @@ import { character,create_character,put_character,delete_character,rangeList } f
         rangeList(token).then(res=>{
 
           this.data2 = res.data
-          console.log(this.data2)
+          // console.log(this.data2)
         })
     },
     computed:{

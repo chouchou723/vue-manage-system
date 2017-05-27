@@ -12,7 +12,7 @@
                账号管理({{number}}人)
                 </h2>
                       <div  class='oneSelect'  >
-                       <el-select v-model="value" clearable placeholder="选择校区" @change="updateList">
+                       <el-select v-model="value" clearable placeholder="选择校区" filterable @change="updateList">
                   <el-option
                     v-for="item in options"
                     :key="item.value"
@@ -49,8 +49,8 @@
 <el-dialog title="添加账号" :visible.sync="dialogFormVisible"  :close-on-click-modal="no"   >
       
       <el-form :model="aform" :rules="rules2" ref="aform">
-        <el-form-item label="登录账号" :label-width="formLabelWidth" prop="username">
-            <el-input v-model="aform.uname" auto-complete="off" placeholder='请输入邮箱地址' :style='{width:inputLabelWidth}'></el-input>
+        <el-form-item label="登录账号" :label-width="formLabelWidth" prop="uname">
+            <el-input v-model="aform.uname"  placeholder='请输入邮箱地址' :style='{width:inputLabelWidth}'></el-input>
           </el-form-item>
           <el-form-item label="姓名" :label-width="formLabelWidth"  prop="name">
             <el-input v-model="aform.name" auto-complete="off" placeholder='请输入用户姓名' :style='{width:inputLabelWidth}'></el-input>
@@ -210,7 +210,7 @@
 <script>
 var user = localStorage.getItem('user');
 var token = JSON.parse(user).token;
-import { account,campusList,cityList,sdjList ,departList,put_account,create_account,delete_account} from '../../api/api';
+import { account,campusList,cityList,sdjList ,departList,put_account,create_account,delete_account,department} from '../../api/api';
 export default {
     data() {
       var validatePass = (rule, value, callback) => {
@@ -259,15 +259,15 @@ export default {
          checkPass: '',
          region:'',
          school:[],
-         job_id:'',
          did:'',
+         job_id:'',
          fla:''
         },
         dialogFormVisible: false,
         formLabelWidth: '110px',
         inputLabelWidth:'200px',
         rules2: {
-          username: [
+          uname: [
                      { required: true, message: '请输入邮箱地址', trigger: 'blur' },
                      { type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur,change' }
                     ],
@@ -288,7 +288,6 @@ export default {
     },
     methods: {
       updateList(){  //表格上方3个select change之后刷新表格
-        
         this.fetchData();
       },
       updateJobList(){ //部门变更后,刷新职位
@@ -296,8 +295,7 @@ export default {
           did:this.aform.did
         };
         departList(para,token).then((res) => {
-          // console.log(res.data)
-            this.jobs = res.data.map(item => {
+            this.jobs = res.data[0]._child.map(item => {
         return { value: item.job_id, label: item.full_name };
       });
         })
@@ -315,41 +313,29 @@ export default {
                           checkPass: '',
                           region:'',
                           school:[],
-                          job_id:'',
                           did:'',
+                          job_id:'',
                           fla:''
             };
             this.$refs.aform.resetFields();
       },
       editCh(index,data){  //点击就修改
-        if(this.backUp[index].school!= ''){
-          let para = {
-          simple:'1'
-        };
-        campusList(para,token).then((res)=>{
-          let a = res.data;
-          this.schools = a.map(item => {
-        return { value: item.id, label: item.title };
-      });
-        }) //获取校区
-        }
-        
-        this.dialogFormVisible = true;
-       
-       if(data[index].did){
+        if(data[index].did){
         let para = {
           did:data[index].did
         };
         departList(para,token).then((res) => {
-          console.log(res)
-            this.jobs = res.data.map(item => {
+          // console.log(res)
+            this.jobs = res.data[0]._child.map(item => {
         return { value: item.job_id, label: item.full_name };
       });
         }) //假如有部门,必须刷新职位，方能更换同部门的不同职位
        }
             
-        
+         this.dialogFormVisible = true;
         let aid = data[index].aid;
+        data[index].did = data[index].did-0;
+              data[index].job_id = data[index].job_id-0;
          this.in = index;
          let d = this.copyArr(data);
         this.backUp.map((item,index,arr)=>{ //利用复制来的源数据进行school赋值[123,234]
@@ -381,8 +367,8 @@ export default {
         }).then(() => {
          let para = { aid:data[index].aid}
           delete_account(para,token)
-         
-           this.deleteRow(index,data);
+          this.fetchData();
+           // this.deleteRow(index,data);
           this.$message({
             type: 'success',
             message: '删除成功!'
@@ -457,13 +443,15 @@ export default {
 
         if(valid){
             if(i !== ''){
-                          this.accountData.splice(i,1,f);
+                          // this.accountData.splice(i,1,f);
                           let para = f;
                           put_account(para,token);
+                          this.fetchData();
               }else{
                     this.accountData.push(f);
                     let para = f;
                     create_account(para,token);
+                    this.fetchData();
                   }
 
         this.in = '';
@@ -475,7 +463,6 @@ export default {
         });
       },
       fetchData (){
-        let self = this;
         let para = { page:this.currentPage,
                     school_id:this.value,
                     did:this.value1,
@@ -483,23 +470,23 @@ export default {
         account(para,token).then((res) => {
           this.number = res.total;
           let a = res.data;
-           let d = this.copyArr(a);//考虑换json拷贝
-           this.backUp = d;
           let c = res.last_page *this.pagesize;
+          this.total = parseInt(c);
+          this.backUp = this.copyArr(a);//考虑换json拷贝
           a.map(function(item,index,arr){
             let c = item.school;
-                 if(c instanceof Array) {
+                 if(c.length != 0) {
                   let arra = []
                 c.map(function(campus){
                     arra.push(campus.title)
                 })
                 let str =  arra.join(',') //数组变字符
               arr[index].school = str;
+
             }
           })
           // console.log(res)
           this.accountData = a;
-          this.total = parseInt(c);
         }).then((res) => {
           let span = document.getElementsByClassName('redBlack');
         let length = span.length;
@@ -523,15 +510,7 @@ export default {
                 //         }
                 // });
         })
-        sdjList(token).then((res) => {  //获取校区部门职位
-            this.options = res.data.school;
-            // this.schools = res.data.school;
-            this.options1 = res.data.department;
-            this.options2 = res.data.job
-        })
-        cityList(token).then((res)=>{  //获取城市
-            this.cities = res.data
-        })
+        
       },
       handleCurrentChange: function(val) {  //变更页数
             this.currentPage = val;
@@ -540,6 +519,38 @@ export default {
  },
     created(){//创建组件时
         this.fetchData();
+        
+        let cam = {
+          simple:'1'
+        };
+        campusList(cam,token).then((res)=>{//获取校区
+          let a = res.data;
+          this.options = a.map(item => {
+        return { value: item.id, label: item.title };
+      });
+          this.schools = a.map(item => {
+        return { value: item.id, label: item.title };
+      });
+        }).then(()=>{
+          department(token).then(res=>{//获取部门
+          this.options1 = res.data.map(item=>{
+            return { label:item.full_name,value:item.job_id}
+          })
+        })
+        }).then(()=>{
+          sdjList(token).then((res) => {  //获取校区部门职位
+            // this.options = res.data.school;
+            // this.schools = res.data.school;
+            // this.options1 = res.data.department;
+            this.options2 = res.data.job
+        })
+        }).then(()=>{
+          cityList(token).then((res)=>{  //获取城市
+            this.cities = res.data
+        })
+        })
+        
+        
     }
   }
  

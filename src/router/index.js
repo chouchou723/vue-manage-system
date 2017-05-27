@@ -90,6 +90,9 @@ export default new Router({
                 },{
                     path: '/userDetail',
                     component: resolve => require(['../components/page/userDetail.vue'], resolve) ,    // 学员回访详情
+                },{
+                    path: '/api/v1/module',
+                    component: resolve => require(['../components/page/menuManage.vue'], resolve) ,    // 学员回访详情
                 }
             ]
         },

@@ -107,6 +107,10 @@ export const delete_character = (params,token) => {    axios.defaults.headers.co
 export const rangeList = (token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
 										return axios.get(`${base}/api/v1/module`).then(res => res.data);  };
 
+//获取角色详情
+export const detail_character = (params,token) => {    axios.defaults.headers.common['Authorization'] = token.Authorization;
+												return axios.get(`${base}/api/v1/role/1`,{params:params}).then(res => res.data);  };
+
 
 
 //获取职位
@@ -119,11 +123,15 @@ export const create_departList = (params,token) => { axios.defaults.headers.comm
 
 //修改职位
 export const put_departList = (params,token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
-										return axios.put(`${base}/api/v1/job`,params).then(res => res.data);  };
+										return axios.put(`${base}/api/v1/job/1`,params).then(res => res.data);  };
 
 //删除职位
 export const delete_departList = (params,token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
 										return axios.delete(`${base}/api/v1/job/18`,{params:params}).then(res => res.data);  };
+
+//获取职位详情
+export const detail_departList = (params,token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.get(`${base}/api/v1/job/2`,{params:params}).then(res => res.data);  };
 
 
 
