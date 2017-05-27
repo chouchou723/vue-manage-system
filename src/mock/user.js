@@ -526,3 +526,150 @@ var levelTemp ={
 const LevelList = Mock.mock(levelTemp)
 
 export { LoginUsers, Users,Task,Counter,MailCode,MenuList,Department,Character,Account,CampusList,JobList,CityList,DepartList,LevelList };
+
+
+['.el-icon-my-shouye','.el-icon-my--huoquxiaoxi','.el-icon-my--shezhi','.el-icon-my-shoujianxiang','.el-icon-my--xiaoxi']
+
+.icon-wendang
+
+.icon-shangchu
+
+.icon-sousuo
+
+.icon-xieyoujian
+
+.icon-jichubangong
+
+.icon-jihua
+
+.icon-hetongguanli
+
+.icon-shengpi
+
+.icon-daiban
+
+.icon-tongzhi
+
+.icon-baobiaoguanli
+
+.icon-yewuzhongxin
+
+.icon-guanliyuancaozuo
+
+.icon-xitongguanli
+
+.icon-xialatubiao
+
+.icon-xinzeng
+
+.icon-caidan
+
+.icon-xiugai
+
+.icon-xiazaibaocun
+
+.icon-shangchuanwenjian
+
+.icon-tongxunlu
+
+.icon-guanliyuan:before { content: "\e656"; }
+
+.icon-yonhu:before { content: "\e657"; }
+
+.el-icon-my-tongjifenxi:before { content: "\e65b"; }
+
+.icon-gerenxinxi:before { content: "\e65d"; }
+
+.icon-tongzhigonggao:before { content: "\e65e"; }
+
+.icon-zhuanxierizhi:before { content: "\e65f"; }
+
+.icon-rizhi:before { content: "\e660"; }
+
+.icon-chayuerizhi:before { content: "\e661"; }
+
+.el-icon-my-chengyuanguanli:before { content: "\e663"; }
+
+.el-icon-my-wodericheng:before { content: "\e665"; }
+
+.icon-richenganpai:before { content: "\e666"; }
+
+.icon-richeng:before { content: "\e667"; }
+
+.icon-chayuericheng:before { content: "\e668"; }
+
+.icon-huiyijiyao:before { content: "\e669"; }
+
+.icon-qita:before { content: "\e66a"; }
+
+.icon-yibanrenwu:before { content: "\e66b"; }
+
+.icon-daibanrenwu:before { content: "\e66d"; }
+
+.icon-cailiaopinpai:before { content: "\e66e"; }
+
+.icon-chengyuanyingyonchakanqi:before { content: "\e670"; }
+
+.icon-chuchai:before { content: "\e671"; }
+
+.icon-yonhuxinxipingtai:before { content: "\e672"; }
+
+.icon-laiwangdanweipingtai:before { content: "\e673"; }
+
+.icon-xitonggongju:before { content: "\e674"; }
+
+.icon-zaixianyonhu:before { content: "\e675"; }
+
+.el-icon-my-xuexiyuandi:before { content: "\e677"; }
+
+.icon-gongsilei:before { content: "\e678"; }
+
+.icon-zidian:before { content: "\e679"; }
+
+.icon-weituoguanxiguanli:before { content: "\e67a"; }
+
+.icon-kuaijieyingyon:before { content: "\e67b"; }
+
+.icon-yoncheguanli:before { content: "\e67c"; }
+
+.icon-kaoqinliuchengtongji:before { content: "\e67d"; }
+
+.icon-yingyonchengxumuban:before { content: "\e67e"; }
+
+.icon-jiaban:before { content: "\e680"; }
+
+.icon-weizhi:before { content: "\e681"; }
+
+.icon-tongyi:before { content: "\e684"; }
+
+.icon-jujue:before { content: "\e685"; }
+
+.icon-shouhui
+
+.icon-xingzhengbangongguanli
+
+.icon-dayinchulijian
+
+.icon-zidianxinxipingtai
+
+.icon-gongwen
+
+.icon-xiangmu
+
+.icon-cailiaochangjia
+
+.icon-suishoupai
+
+.icon-mima
+
+.icon-wodejihua
+
+.icon-huiyijiyao1
+
+.icon-ziyuanxinxipingtai
+
+.icon-liuchengchaoqitongji
+.el-icon-my-moban
+
+.icon-moban1
+

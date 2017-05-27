@@ -136,6 +136,22 @@ export const detail_departList = (params,token) => { axios.defaults.headers.comm
 
 
 
-export const levelList = params => { return axios.get(`${base}/levelList`,params).then(res => res.data);  };
+//创建菜单
+export const create_menuList = (params,token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.post(`${base}/api/v1/module`,params).then(res => res.data);  };										
 
-export const jobList = params => { return axios.get(`${base}/jobList`,params).then(res => res.data);  };
+//修改菜单
+export const put_menuList = (params,token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.put(`${base}/api/v1/module/1`,params).then(res => res.data);  };
+
+//删除菜单
+export const delete_menuList = (params,token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.delete(`${base}/api/v1/module/1`,{params:params}).then(res => res.data);  };
+
+//获取级别列表
+export const get_level = (params,token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.get(`${base}/api/v1/public/getMenuList`,{params:params}).then(res => res.data);  };	
+
+//获取级别详情
+export const detail_level = (params,token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.get(`${base}/api/v1/module/1`,{params:params}).then(res => res.data);  };																			
