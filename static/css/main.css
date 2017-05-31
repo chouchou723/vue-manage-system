@@ -9,14 +9,14 @@ body{
 }
 a{text-decoration: none}
 .content{
-    background: none repeat scroll 0 0 #fff;
+    background: none repeat scroll 0 0 #f3f3f3;
     position: absolute;
-    left: 250px;
+    left: 185px;
     right: 0;
     top: 70px;
     bottom:0;
     width: auto;
-    padding:40px;
+    padding:17px;
     box-sizing: border-box;
     overflow-y: scroll;
 }

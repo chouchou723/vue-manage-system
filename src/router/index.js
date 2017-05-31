@@ -93,7 +93,19 @@ export default new Router({
                 },{
                     path: '/api/v1/module',
                     component: resolve => require(['../components/page/menuManage.vue'], resolve) ,    // 学员回访详情
-                }
+                },
+                  {
+                    path:'/newyi',
+                    component: resolve => require(['../components/page/newyi.vue'],resolve) ,  //我的资源
+                },
+                                  {
+                    path:'/nodata',
+                    component: resolve => require(['../components/page/nodata.vue'],resolve) ,  //无需求资源
+                },
+                                  {
+                    path:'/noxdata',
+                    component: resolve => require(['../components/page/noxdata.vue'],resolve) ,  //无效资源
+                },
             ]
         },
         {

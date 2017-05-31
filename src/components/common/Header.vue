@@ -1,6 +1,10 @@
 <template>
     <div class="header">
-        <div class="logo"><img src="../../../static/img/topic_03.png" height="44" width="229"  ></div>
+    	<div class="logobg" style="width: 185px;height: 70px;background-color: #2b3a40;float: left;">
+        <div class="logo"><img src="../../../static/img/topic_03.png"  width="170"  ></div> 
+        </div>    
+        
+        <div class="hoverbg" style="width: 245px;height: 70px;float: left; ">
             <div class='search'>
             <el-input
               placeholder="请输入姓名,手机号或合同编号"
@@ -9,8 +13,10 @@
               :on-icon-click="handleIconClick">
             </el-input>
             </div>
-            <div style="float:left;margin-left:5px">
-            <a  href=""><img id='addUser' src="../../../static/img/add.png" height="70" width="55" alt=""></a>
+        </div>    
+
+            	<div class="hoverrt" style="float:left;margin-left:5px;width: 55px;height: 70px;">
+            <a  href="http://localhost:8080/#/addUser"><img id='addUser' src="../../../static/img/add.png" height="30" width="28" ></a>
             </div>
         <div class="user-info">
             <el-dropdown  @command="handleCommand">
@@ -102,6 +108,18 @@ import { mapGetters } from 'vuex';
     }
 </script>
 <style scoped>
+	.hoverbg{
+		background: #95a0aa;
+	}
+	.hoverrt{
+		background:#6daba8 ;
+	
+	}
+	.hoverrt:hover{
+		background-color: #2b3a40;
+	}
+	.hoverbg:hover
+	{background-color: #2b3a40;}
     .header {
         position: relative;
         box-sizing: border-box;
@@ -113,7 +131,7 @@ import { mapGetters } from 'vuex';
     }
     .header .logo{
         float: left;
-        width:250px;
+        width:183px;
         text-align: center;
         margin-top:20px
     }
@@ -128,7 +146,7 @@ import { mapGetters } from 'vuex';
         color: #fff;
     }
     .duty_color{
-        color:#1fb5ad
+        color:#1fb5ad;
     }
     .messageAmount{
         float:right;
@@ -149,18 +167,22 @@ import { mapGetters } from 'vuex';
         position: relative;
         display: inline-block;
         padding-left: 50px;
-        color: #fff;
+        color:#000000 ;
         cursor: pointer;
         vertical-align: middle;
     }
+
     .user-info .user-logo{
         position: absolute;
         left:0;
         top:15px;
         width:40px;
         height:40px;
-        border-radius: 50%;
+        border: none;
+        border: 1px solid #000000;
+        border-radius: 20px;
     }
+
     .el-dropdown-menu__item{
         text-align: center;
     }
@@ -177,11 +199,13 @@ import { mapGetters } from 'vuex';
     .hidden{
         display: none
     }
-    #addUser{
-     border: 1px solid #2b3a40;
-    }
+  	#addUser{
+  		margin-left: 13px;
+  		margin-top: 22px;
+  	}
     #addUser:hover{
-      border-color: #6daba8;
+    	background-color: #2b3a40;
+    }
 
-}
+
 </style>
