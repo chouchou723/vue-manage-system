@@ -23,6 +23,33 @@
       <el-option label="女" value="0"></el-option>
     </el-select>
   </el-form-item>
+
+  
+    <el-form-item label="年龄"  prop='age' >
+    <el-select v-model="form.age" placeholder="选择" style="width:80px">
+      <el-option label="2" value="2"></el-option>
+      <el-option label="3" value="3"></el-option>
+      <el-option label="4" value="4"></el-option>
+      <el-option label="5" value="5"></el-option>
+      <el-option label="6" value="6"></el-option>
+      <el-option label="7" value="7"></el-option>
+      <el-option label="8" value="8"></el-option>
+      <el-option label="9" value="9"></el-option>
+      <el-option label="10" value="10"></el-option>
+      <el-option label="11" value="11"></el-option>
+      <el-option label="12" value="12"></el-option>
+      <el-option label="13" value="13"></el-option>
+      <el-option label="14" value="14"></el-option>
+      <el-option label="15" value="15"></el-option>
+      <el-option label="16" value="16"></el-option>
+      <el-option label="17" value="17"></el-option>
+      <el-option label="18" value="18"></el-option>
+      
+    </el-select>
+  </el-form-item>
+  
+  
+  
   <el-form-item label="联系家长" prop='parent'>
     <el-col :span="4">
     <el-input v-model="form.parent" placeholder='请输入家长姓名' ></el-input>
