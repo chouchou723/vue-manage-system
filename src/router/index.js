@@ -92,7 +92,7 @@ export default new Router({
                     component: resolve => require(['../components/page/userDetail.vue'], resolve) ,    // 学员回访详情
                 },{
                     path: '/api/v1/module',
-                    component: resolve => require(['../components/page/menuManage.vue'], resolve) ,    // 学员回访详情
+                    component: resolve => require(['../components/page/menuManage.vue'], resolve) ,    // 菜单管理
                 },
                   {
                     path:'/newyi',

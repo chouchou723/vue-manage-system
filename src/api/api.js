@@ -45,7 +45,7 @@ export const create_department = (params,token) => {
 //修改部门
 export const put_department = (params,token) => { 
 												axios.defaults.headers.common['Authorization'] = token.Authorization;
-												return axios.put(`${base}//api/v1/department`,params).then(res => res.data);  };												
+												return axios.put(`${base}//api/v1/department/1`,params).then(res => res.data);  };												
 //删除部门
 export const delete_department = (params,token) => { 
 												axios.defaults.headers.common['Authorization'] = token.Authorization;

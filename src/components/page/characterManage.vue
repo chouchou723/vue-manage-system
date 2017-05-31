@@ -12,7 +12,7 @@
          </div>
         <div>
 
-<el-dialog :title="alter" :visible.sync="dialogFormVisible"  show-close style='z-index:100' class='charDialog'>
+<el-dialog :title="alter" :visible.sync="dialogFormVisible"  :close-on-click-modal="no" show-close style='z-index:100' class='charDialog'>
 <el-form :model="form">
   <el-form-item label="角色名称" :label-width="formLabelWidth">
       <el-input v-model="form.name" auto-complete="off" placeholder='请输入角色名称' style='width:200px'></el-input>
@@ -142,6 +142,7 @@ import { character,create_character,put_character,delete_character,rangeList,det
         dialogFormVisible: false,
         formLabelWidth: '70px',
         in: '',
+        no:false,
         form: {
           name: ''
         },
