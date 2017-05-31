@@ -373,9 +373,9 @@ import { departList,create_departList,put_departList,delete_departList,levelList
 .green .el-message-box__title{
     color:white;
 }
-.el-tree-node__children .el-tree-node{
+/*.el-tree-node__children .el-tree-node{
     float:left;
-}
+}*/
 .dialog-footer .el-button--primary{
     background-color: #1fb5ad;
     border-color: #1fb5ad;

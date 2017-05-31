@@ -12,13 +12,13 @@
          </div>
         <div>
 
-<el-dialog :title="alter" :visible.sync="dialogFormVisible"  show-close style='z-index:100'>
+<el-dialog :title="alter" :visible.sync="dialogFormVisible"  show-close style='z-index:100' class='charDialog'>
 <el-form :model="form">
   <el-form-item label="角色名称" :label-width="formLabelWidth">
       <el-input v-model="form.name" auto-complete="off" placeholder='请输入角色名称' style='width:200px'></el-input>
     </el-form-item>
     </el-form>
-  <el-tree :data="data2" show-checkbox=""  v-model="form.access" node-key="module_id" default-expand-all ref="tree" highlight-current :props="defaultProps">
+  <el-tree :data="data2" show-checkbox=""  v-model="form.access" node-key="module_id"  ref="tree" highlight-current :props="defaultProps">
 </el-tree>
  
   <div slot="footer" class="dialog-footer">
@@ -148,7 +148,7 @@ import { character,create_character,put_character,delete_character,rangeList,det
          data2: [],
         defaultProps: {
           children: '_child',
-          label: 'full_name'
+          label: 'menu_name'
         }
       }
     },
@@ -197,7 +197,7 @@ import { character,create_character,put_character,delete_character,rangeList,det
 .green .el-message-box__title{
     color:white;
 }
-.el-tree-node__children .el-tree-node{
+.charDialog .el-tree-node__children .el-tree-node{
     float:left;
 }
 .dialog-footer .el-button--primary{
