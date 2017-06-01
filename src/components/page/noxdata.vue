@@ -16,7 +16,7 @@
                 </h2>
 
 
-  <div  class='twoSelect'  >
+  <div  class='twoSelectp'  >
                        <el-select v-model="value" clearable placeholder="选择校区" filterable @change="updateList">
                   <el-option
                     <!--v-for="item in options"
@@ -28,7 +28,7 @@
                       </div>
                       
                       
-                      <div  class='threeSelect'  >
+                      <div  class='threeSelectp'  >
                         
                       <el-select v-model="value2" clearable placeholder="渠道来源" @change="updateList">
                   <el-option
@@ -414,13 +414,13 @@ h2 {
   
 }
 
-.twoSelect{
+.twoSelectp{
   margin-left:360px;
   position:absolute;
   top:0;
   width:100px
 }
-.threeSelect{
+.threeSelectp{
   margin-left:470px;
   position:absolute;
   top:0;

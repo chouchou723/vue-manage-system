@@ -301,6 +301,7 @@ export default {
       updateList(){  //表格上方3个select change之后刷新表格
         this.fetchData();
       },
+      
       updateJobList(){ //部门变更后,刷新职位
         let para = {
           did:this.aform.did
