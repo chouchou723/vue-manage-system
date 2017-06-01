@@ -555,7 +555,7 @@ export default {
   }
  
 </script>
-<style >
+<style>
     .red{
         color: red
     }
