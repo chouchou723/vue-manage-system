@@ -26,7 +26,7 @@
 
   
     <el-form-item label="年龄"  prop='age' >
-    <el-select v-model="form.age" placeholder="选择" style="width:80px">
+    <el-select v-model="form.age" placeholder="选择"  style="width:142px">
       <el-option label="2" value="2"></el-option>
       <el-option label="3" value="3"></el-option>
       <el-option label="4" value="4"></el-option>
@@ -51,12 +51,11 @@
   
   
   <el-form-item label="联系家长" prop='parent'>
-    <el-col :span="4">
-    <el-input v-model="form.parent" placeholder='请输入家长姓名' ></el-input>
-    </el-col>
-    <el-col class="line" :span="1">&nbsp</el-col>
-    <el-col :span="4">
-    <el-select v-model="form.con" placeholder="请选择关系" prop='con'>
+    
+    <el-input v-model="form.parent" placeholder='请输入家长姓名'  style="width:142px;margin-right:30px;float:left"></el-input>
+   
+  
+    <el-select v-model="form.con" placeholder="请选择关系" prop='con' style="width:142px;margin-right:30px;float:left" >
     <el-option
       v-for="item in options"
       :key="item.value"
@@ -66,19 +65,14 @@
      <!--  <el-option :label="connect" value="1"></el-option>
       <el-option :label="connect1" value="0"></el-option> -->
     </el-select>
-    </el-col>
-    <el-col class="line" :span="1">&nbsp</el-col>
-    <el-col :span="4">
-    <el-input v-model="form.phone"  placeholder='请输入手机号' prop='phone'></el-input>
-    </el-col>
+   
+   
+    <el-input v-model="form.phone"  placeholder='请输入手机号' prop='phone' style="width:142px;float:left"></el-input>
+   
   </el-form-item>
   <el-form-item label="">
-    <el-col :span="4">
-    <el-input v-model="form.parent1" placeholder='请输入家长姓名' prop='parent1'></el-input>
-    </el-col>
-    <el-col class="line" :span="1">&nbsp</el-col>
-    <el-col :span="4">
-    <el-select v-model="form.con1" placeholder="请选择关系" prop='con1'>
+    <el-input v-model="form.parent1" placeholder='请输入家长姓名' prop='parent1' style="width:142px;margin-right:30px;float:left"></el-input>
+    <el-select v-model="form.con1" placeholder="请选择关系" prop='con1' style="width:142px;margin-right:30px;float:left" >
       <el-option
       v-for="item in options"
       :key="item.value"
@@ -86,19 +80,15 @@
       :value="item.value">
     </el-option>
     </el-select>
-    </el-col>
-    <el-col class="line" :span="1">&nbsp</el-col>
-    <el-col :span="4">
-    <el-input v-model="form.phone1" placeholder='请输入手机号' prop='phone1'></el-input>
-    </el-col>
-    <el-col :span="4">
+    <el-input v-model="form.phone1" placeholder='请输入手机号' prop='phone1'  style="width:142px;float:left"></el-input>
+    <el-col :span="2">
    <span style="margin-left:10px;width:200px;color:grey" > (选填)</span>
     </el-col>
   </el-form-item>
 
 <el-form-item label="所在地区" prop='city'>
-    <el-col :span="4">
-    <el-select v-model="form.city" filterable placeholder="请选择城市" >
+    
+    <el-select v-model="form.city" filterable placeholder="请选择城市" style="width:142px;margin-right:30px;float:left">
     <el-option-group
                         v-for="group in cities"
                         :key="group.city_name"
@@ -117,21 +107,14 @@
       :value="item.value">
     </el-option> -->
     </el-select>
-    </el-col>
-    <el-col class="line" :span="1">&nbsp</el-col>
-    <el-col :span="4">
-    <el-select v-model="form.region" placeholder="请选择城区" prop='region'>
+    <el-select v-model="form.region" placeholder="请选择城区" prop='region' style="width:142px;margin-right:30px;float:left">
       <el-option label="徐汇" value="1"></el-option>
       <el-option label="静安" value="0"></el-option>
     </el-select>
-    </el-col>
-    <el-col class="line" :span="1">&nbsp</el-col>
-    <el-col :span="4">
-    <el-select v-model="form.add" placeholder="请选择地标" prop='add'>
+    <el-select v-model="form.add" placeholder="请选择地标" prop='add' style="width:142px;float:left">
       <el-option label="徐家汇" value="1"></el-option>
       <el-option label="美罗城" value="0"></el-option>
     </el-select>
-    </el-col>
   </el-form-item>
 
   <el-form-item label="就近校区" prop='school'>
@@ -142,19 +125,14 @@
   </el-form-item>
 
   <el-form-item label="来源渠道" prop='channel'>
-    <el-col :span="4">
-    <el-select v-model="form.channel" placeholder="请选择渠道" >
+    <el-select v-model="form.channel" placeholder="请选择渠道"  style="width:142px;margin-right:30px;float:left">
       <el-option label="转介绍" value="1"></el-option>
       <el-option label="上门" value="0"></el-option>
+       <el-option label="线上" value="2"></el-option>
     </el-select>
-    </el-col>
-    <el-col class="line" :span="1">&nbsp</el-col>
-    <el-col :span="4">
-    <el-input v-if='this.form.channel == 1' v-model="form.referee" placeholder='请输入学生姓名' style="width:142px" prop='referee'></el-input>
-    </el-col>
-    <el-col :span="4">
-   <span style="margin-left:10px;width:200px;color:red" > {{warning}}</span>
-    </el-col>
+    <el-input v-if='this.form.channel == 1' v-model="form.referee" placeholder='请输入学生姓名' @blur='searchStudent' style="width:142px;float:left" prop='referee'></el-input>
+   
+   <span v-if='nostudent' style="margin-left:10px;width:200px;color:red;float:left" > {{warning}}</span>
   </el-form-item>
   <el-form-item style='margin-top:60px'>
     <el-button type="primary" @click="onSubmit('form')">确定</el-button>
@@ -172,6 +150,7 @@ import { cityList} from '../../api/api';
   export default {
     data() {
       return {
+        nostudent:false,
         warning:'*系统中没有该成员',//以后改成调服务显示
         form: {
           name: '',
@@ -223,6 +202,11 @@ import { cityList} from '../../api/api';
           }
         });
 
+      },
+      searchStudent(){
+        if(this.form.referee){
+          this.nostudent = true; //调服务查询
+        }
       }
     },
     computed:{

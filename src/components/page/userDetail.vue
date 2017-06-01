@@ -7,52 +7,108 @@
                  <el-breadcrumb-item >用户资料</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
+        <div style="float:left;width:30%">
         <div  class='addUserTitle' >
-        <h3>用户资料</h3>
+        <i class=el-icon-my-tongxunlu style="font-size:31px"></i>
+        <span style="font-weight:600;font-size:22px">用户资料</span>
          </div>
 
 
-        <div>
-<el-form ref="form" :model="form"   label-width="90px" style='border:1px solid grey;width:38%'>
+<el-form ref="form" :model="form"   label-width="102px" label-position='left' style='border-top:1px solid #e8e8e8 ;padding-left:10px' >
   <el-form-item label="姓名:" prop='name'>
-    <span>张超</span>
+    <span>{{student.name}}</span>
   </el-form-item>
   <el-form-item label="性别:" prop='sex' >
-    <span>男</span>
+    <span>{{student.sex}}</span>
+  </el-form-item>
+  <el-form-item label="年龄:" prop='age' >
+    <span>{{student.age}}</span>
   </el-form-item>
   <el-form-item label="家长:" prop='parent'>
-    <el-col :span="4">
-    <span>余春娇(妈妈)</span>
+    <el-col :span="7">
+    <span>{{student.parent}}</span>
     </el-col>
-    <el-col class="line" :span="1">&nbsp</el-col>
-    <el-col :span="4">
-    <span>电话：14837364657</span>
+    <el-col :span="11">
+    <span>{{student.parent_phone}}</span>
     </el-col>
   </el-form-item>
   <el-form-item label="">
-    <el-col :span="4">
-    <span>张志明(父亲)</span>
+    <el-col :span="7">
+    <span>{{student.parent1}}</span>
     </el-col>
-    <el-col class="line" :span="1">&nbsp</el-col>
-    <el-col :span="4">
-    <span>电话：14837364657</span>
+    <el-col :span="11">
+    <span>{{student.parent1_phone}}</span>
     </el-col>
   </el-form-item>
-  <el-form-item label="渠道来源:" prop='sex' >
-    <span>大众点评</span>
+  <el-form-item label="渠道来源:" prop='channel' >
+    <span>{{student.channel}}</span>
   </el-form-item>
-  <el-form-item label="校区:" prop='sex' >
-    <span>徐汇校区</span>
+  <el-form-item label="校区:" prop='school' >
+    <span>{{student.school}}</span>
   </el-form-item>
-  <el-form-item label="录入时间:" prop='sex' >
-    <span>2017-05-25-12:00</span>
+  <el-form-item label="录入时间:" prop='time' >
+    <span>{{student.time}}</span>
   </el-form-item>
-  <el-form-item label="课程顾问(CC):" prop='sex' >
-    <span>林俊杰</span>
+  <el-form-item label="课程顾问(CC):" prop='teacher' >
+    <span>{{student.teacher}}</span>
   </el-form-item>
 </el-form>
+    </div>
 
-        </div>
+    <div style="float:left;width:32%">
+        <div  class='addUserTitle' >
+        <i class=el-icon-my-tongxunlu style="font-size:31px"></i>
+        <span style="font-weight:600;font-size:22px">回访记录({{number}})</span>
+        <div  style='position:absolute;top:10px;right:10px'><div class='addR' @click='addReturn'></div></div>
+         </div>
+         <div style='position:relative'>
+          <div v-for='item in items'class='listReturn' style='position:relative'>
+          <span style='position:absolute;top:-5px;left:5px'> <img src="../../../static/img/img.jpg" width='40' alt="" style='border-radius:50%;margin-top:10px'></span>
+          
+           <span style='font-size:14px;position:absolute;top:10px;left:50px'>{{item.name}}</span>
+           <span style='font-size:10px;color:grey;position:absolute;top:30px;left:50px'>{{item.content}}</span>
+           <span style='font-size:10px;color:grey;position:absolute;top:10px;right:10px'>3-17 8:30</span>
+           <div  style='position:absolute;top:40px;right:10px'><div class='editSpan' @click='editReturn(item.index,item)'></div></div>
+           <el-tag type='success' v-for='t in item.tag' class='tagTag'>{{t}}</el-tag>
+          </div>
+           
+         </div>
+         <div class="block">
+  
+            <el-pagination
+              layout="prev, pager, next"
+              :total="total"
+              :current-page="currentPage"
+               :page-size="pagesize"
+               @current-change="handleCurrentChange">
+            </el-pagination>
+          </div>
+    </div>
+
+    <el-dialog title="添加回访记录" :visible.sync="dialogFormVisible"  :close-on-click-modal="no" show-close style='z-index:100' class='tagDialog'>
+<el-form :model="returnform" id='detailForm'>
+  <el-form-item label="" >
+      <el-input
+          type="textarea"
+          :autosize="{ minRows: 2, maxRows: 4}"
+          placeholder="请输入内容"
+          v-model="returnform.record">
+        </el-input>
+    </el-form-item>
+  <el-form-item label="回访标签：">
+  <br>
+      <el-checkbox-group v-model="returnform.checkList">
+    <el-checkbox v-for="box in boxes" :label="box.value" :value='box.value'><el-tag type='success'>{{box.label}}</el-tag></el-checkbox>
+  </el-checkbox-group>
+    </el-form-item>
+
+    </el-form>
+ 
+  <div slot="footer" class="dialog-footer">
+    <el-button type="primary">确 定</el-button>
+    <el-button @click="dialogFormVisible = false">取 消</el-button>
+  </div>
+</el-dialog> 
   </div>
 </template>
 <script>
@@ -62,7 +118,35 @@ import { cityList} from '../../api/api';
   export default {
     data() {
       return {
+        student:{
+  name:'张超',
+  sex:'男',
+  age:'16',
+  parent:'余春娇(妈妈)',
+  parent_phone:'13596879024',
+  parent1:'张志明(父亲)',
+  parent1_phone:'13596879024',
+  channel:'大众点评',
+  school:'徐汇校区',
+  time:'2017-05-25-12:00',
+  teacher:'林俊杰'
+},
+        items:[{name:'苏里',tag:['暑期班','定期班'],content:'已发短信,周五再次沟通，比较有意向',index:0},
+        {name:'李东',tag:['定期班'],content:'已发短信,周五再次沟通，比较有意向,多次询问已经,不知道还有没有问题',index:1},
+        {name:'章程',tag:['暑期班'],content:'已发短信,周一再次沟通，可能有意向',index:2},
+        {name:'苏里',tag:['暑期班','定期班'],content:'已发短信,周五再次沟通，比较有意向',index:3}],
+        dialogFormVisible:false,
+        no:false,
+        number:10,
         warning:'*系统中没有该成员',//以后改成调服务显示
+        boxes:[{label:'暑期班',value:0},{label:'定期班',value:1},
+        {label:'暑期班2',value:2},{label:'定期班2',value:3},
+        {label:'暑期班3',value:4},{label:'定期班3',value:5},
+        {label:'暑期班4',value:6},{label:'定期班4',value:7}],
+        returnform:{
+          record:'',
+          checkList:[]
+        },
         form: {
           name: '',
           sex: '',
@@ -79,27 +163,10 @@ import { cityList} from '../../api/api';
           channel: '',
           referee:''
         },
-        cities:[],
-        rule: {
-          name: [
-            { required: true,  message: '请输入姓名',trigger: 'blur' },
-          ],
-          sex: [
-            { required: true, trigger: 'blur' },
-          ],
-          parent: [
-            { required: true, trigger: 'blur' },
-          ],
-          city: [
-            { required: true, trigger: 'blur' },
-          ],
-          school: [
-            { required: true, trigger: 'blur' },
-          ],
-          channel: [
-            { required: true, trigger: 'blur' },
-          ],
-        },
+        currentPage: 1, //页数
+        pagesize: 4, //默认每页
+        total:40,      //总页数
+
       }
     },
     methods: {
@@ -113,6 +180,30 @@ import { cityList} from '../../api/api';
           }
         });
 
+      },
+      addReturn(){
+        this.returnform.record = '';
+        this.returnform.checkList = [];
+        this.dialogFormVisible=true
+      },
+      handleCurrentChange: function(val) {  //变更页数
+            this.currentPage = val;
+            this.fetchData();
+      },
+      editReturn(index,item){
+        this.returnform.record = item.content
+        this.dialogFormVisible=true
+        let arr = [];
+        this.boxes.map(v=>{
+          for(let i =0;i<item.tag.length;i++){
+
+          if(v.label == item.tag[i] ){
+            arr.push(v.value)
+          }
+          }
+        })
+        console.log(arr)
+        this.returnform.checkList = arr
       }
     },
     computed:{
@@ -127,18 +218,73 @@ import { cityList} from '../../api/api';
       }
     },
     created(){
-      cityList(token).then((res)=>{
-          // console.log(res)
-          this.cities = res.data
-        })
+      // cityList(token).then((res)=>{
+      //     // console.log(res)
+      //     this.cities = res.data
+      //   })
     }
   }
 </script>
 <style scoped>
 .addUserTitle{
-  padding:10px 10px 30px 10px;
+  padding:10px;
+  position: relative;
+
 }
 .el-form-item{
   margin-bottom: 0
+}
+.listReturn{
+min-height: 100px;
+height: auto;
+border-top:1px solid #e8e8e8;
+/*border-bottom:1px solid grey;*/
+}
+.listReturn:last-child{
+border-bottom:1px solid #e8e8e8;
+/*border-bottom:1px solid grey;*/
+}
+.el-tag--success{
+  background-color: #1fb5ad;
+  border-color: #bcf1d4;
+  color:#FFFFFF;
+  border-radius: 25px;
+    
+}
+.tagTag{
+  /*margin-top:48px;*/
+  position: absolute;
+  bottom:0;
+}
+.listReturn :nth-child(6){
+  margin-left:48px
+}
+.editSpan{
+  width: 30px;
+  height: 30px;
+  background-image: url(../../../static/img/edit.png);
+  background-size: 30px 30px;
+  cursor: pointer;
+}
+.editSpan:hover{
+   background-image: url(../../../static/img/edit_h.png);
+  }
+
+  .addR{
+  width: 30px;
+  height: 30px;
+  background-image: url(../../../static/img/addR.png);
+  background-size: 30px 30px;
+  cursor: pointer;
+}
+.addR:hover{
+   background-image: url(../../../static/img/addR_h.png);
+  }
+  .block{
+  text-align: center;
+  margin-top:10px;
+}
+#detailForm .el-form-item .el-form-item__content .el-checkbox{
+  margin-left: 15px
 }
 </style>
