@@ -193,7 +193,7 @@ import { cityList} from '../../api/api';
     },
     methods: {
       onSubmit(formName) {
-        this.$refs[formName].validate((valid) => {
+        this.$refs[formName].validate((valid) => {//替换提交服务
           if (valid) {
             alert('submit!');
           } else {

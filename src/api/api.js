@@ -66,7 +66,7 @@ export const create_account = (params,token) => {
 //修改账号
 export const put_account = (params,token) => { 
 											axios.defaults.headers.common['Authorization'] = token.Authorization;
-											return axios.post(`${base}/api/v1/admin/1`,params).then(res => res.data);  };
+											return axios.put(`${base}/api/v1/admin/1`,params).then(res => res.data);  };
 
 //删除账号
 export const delete_account = (params,token) => { 

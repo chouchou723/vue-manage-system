@@ -14,7 +14,8 @@ Vue.use(Vuex)
 // 应用初始状态
 const state = {
     count: 0,
-    src: avatar
+    src: avatar,
+    user_id:''
 }
 
 // 定义所需的 mutations
@@ -30,6 +31,9 @@ const mutations = {
     },
     UPDATESRC(state,src){
         state.src = src
+    },
+    SENDUSER(state,userid){
+        state.user_id = userid
     }
 }
 

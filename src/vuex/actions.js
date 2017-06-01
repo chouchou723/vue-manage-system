@@ -12,3 +12,7 @@ export const clear = ({commit}) =>{
 export const updateSrc = ({commit},src) =>{
 	commit('UPDATESRC',src)
 }
+
+export const sendUser = ({commit},userid) =>{
+	commit('SENDUSER',userid)
+}

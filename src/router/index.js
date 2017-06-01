@@ -88,8 +88,8 @@ export default new Router({
                     path: '/returnVisit',
                     component: resolve => require(['../components/page/returnVisit.vue'], resolve) ,    // 学员回访
                 },{
-                    path: '/userDetail',
-                    component: resolve => require(['../components/page/userDetail.vue'], resolve) ,    // 学员回访详情
+                    path: '/returnDetail',
+                    component: resolve => require(['../components/page/returnDetail.vue'], resolve) ,    // 学员回访详情
                 },{
                     path: '/api/v1/module',
                     component: resolve => require(['../components/page/menuManage.vue'], resolve) ,    // 菜单管理
@@ -105,7 +105,10 @@ export default new Router({
                                   {
                     path:'/noxdata',
                     component: resolve => require(['../components/page/noxdata.vue'],resolve) ,  //无效资源
-                },
+                },{
+                    path: '/userDetail',
+                    component: resolve => require(['../components/page/userDetail.vue'], resolve) ,    // 学员回访详情
+                }
             ]
         },
         {

@@ -57,6 +57,7 @@ import { character,create_character,put_character,delete_character,rangeList,det
       createCh(){    //点击创建角色
         var that = this;
             this.form.name = '';
+            this.form.role_id = '';
             this.dialogFormVisible = true;
             function dib(){
           that.$refs.tree.setCheckedKeys([]);
@@ -95,6 +96,7 @@ import { character,create_character,put_character,delete_character,rangeList,det
         
       },
       open4(index,data){ //修改角色
+        this.form.roleid=data[index].roleid;
         let para = {
           roleid:data[index].roleid
         }
@@ -103,9 +105,9 @@ import { character,create_character,put_character,delete_character,rangeList,det
           this.$refs.tree.setCheckedKeys(a);
           // console.log(a)
         })
-        this.dialogFormVisible = true;
         this.in = index;
         this.form.name = data[index].name;
+        this.dialogFormVisible = true;
       },
       addChar(){
         let s =this.$refs.tree.getCheckedKeys();
@@ -113,20 +115,29 @@ import { character,create_character,put_character,delete_character,rangeList,det
         let b = this.form.name;
         let c = this.in;
         if(a&&b&&c ===''){
+
         let para = { name: b,
           module_id: a}//number要替换
-            create_character(para,token);
-        this.charData.push({ name: b,
-          module_id: a});//number要替换
+            create_character(para,token).then(()=>{
+              character(token).then((res) => {
+          this.charData = res.data;
+        })
+            });
+        // this.charData.push({ name: b,
+        //   module_id: a});//number要替换
         this.dialogFormVisible = false;
         this.$refs.tree.setCheckedKeys([]);
         this.form.name = '';
         }else if(a&&b&&c !==''){
-            let para = { name: b,
+            let para = { role_id:this.form.roleid,name: b,
             module_id: a}//number要替换
-            put_character(para,token);
-            this.charData[c].name = b ;
-            this.charData[c].module_id = a ;//number要替换
+            put_character(para,token).then(()=>{
+              character(token).then((res) => {
+          this.charData = res.data;
+        })
+            });;
+            // this.charData[c].name = b ;
+            // this.charData[c].module_id = a ;//number要替换
             this.dialogFormVisible = false;
             this.in = '';
             this.$refs.tree.setCheckedKeys([]);
@@ -144,6 +155,7 @@ import { character,create_character,put_character,delete_character,rangeList,det
         in: '',
         no:false,
         form: {
+          roleid:'',
           name: ''
         },
          data2: [],

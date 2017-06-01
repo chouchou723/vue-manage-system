@@ -6,3 +6,7 @@ export const getCount = state => {
 export const getSrc = state => {
     return state.src
 }
+
+export const getUserId = state => {
+    return state.user_id
+}

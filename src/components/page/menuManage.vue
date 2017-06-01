@@ -209,6 +209,7 @@ import { rangeList,create_menuList,put_menuList,delete_menuList,get_level,detail
       edit(store,data){//修改
         this.dialogFormVisible = true;
         this.dynamicValidateForm.menu_name = data.menu_name;
+         this.dynamicValidateForm.full_name = data.menu_name;
         this.dynamicValidateForm.module_id = data.module_id;
         this.dynamicValidateForm.location = data.location;
         this.dynamicValidateForm.icon = data.icon;
@@ -238,7 +239,7 @@ import { rangeList,create_menuList,put_menuList,delete_menuList,get_level,detail
         if(this.in !=0){
 put_menuList(para,token).then(()=>{
           rangeList(token).then(res=>{
-
+            console.log(res)
           this.data2 = res.data
           // console.log(this.data2)
         })

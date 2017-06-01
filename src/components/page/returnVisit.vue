@@ -65,8 +65,8 @@
       label="学生"
 
       >
-      <template scope="scope" >
-        <span onclick='alert(1)'>{{scope.row.name}}</span>
+      <template scope="scope">
+        <span  @click="switchDetail(scope.row)">{{scope.row.name}}</span>
       </template>
     </el-table-column>
     <el-table-column
@@ -87,7 +87,7 @@
       prop="tag"
       label="回访标签"
       width="100"
-      :filters="[{ text: '暑期班', value: '暑期班' }, { text: '定期班', value: '定期班' },{ text: '未回访', value: '未回访' }]"
+      :filters="filterT"
       :filter-method="filterTag"
       filter-placement="bottom-end">
       <template scope="scope">
@@ -157,10 +157,13 @@ var user = localStorage.getItem('user');
 var token = JSON.parse(user).token;
 import { account,campusList,cityList,sdjList ,departList,put_account,create_account,delete_account} from '../../api/api';
 
+import { mapActions } from 'vuex';
+
   export default {
     data() {
       return {
-        dynamicTags: ['暑期班', '定期班', '特色班'],
+        filterT:[{ text: '暑期班', value: '暑期班' }, { text: '定期班', value: '定期班' },{ text: '未回访', value: '未回访' }],
+        dynamicTags: ['暑期班', '定期班', '特色班'],//动态替换
         inputVisible: false,
         inputValue: '',
         dialogFormVisible:false,
@@ -171,10 +174,10 @@ import { account,campusList,cityList,sdjList ,departList,put_account,create_acco
         in:'',
         no:false,
         returnData: 
-        [{name:'zhang',school:'徐汇校区',last_return_time:'2017-5-15 08:00',times:'3',tag:['暑期班','定期班']},
-        {name:'chang',school:'徐汇校区',last_return_time:'2017-5-15 08:31',times:'3',tag:['定期班']},
-        {name:'wei',school:'徐汇校区',last_return_time:'2017-5-14 08:45',times:'3',tag:['未回访']},
-        {name:'chao',school:'徐汇校区',last_return_time:'2017-5-15 08:11',times:'3',tag:['暑期班','定期班']}],
+        [{id:'1',name:'zhang',school:'徐汇校区',last_return_time:'2017-5-15 08:00',times:'3',tag:['暑期班','定期班']},
+        {id:'2',name:'chang',school:'徐汇校区',last_return_time:'2017-5-15 08:31',times:'3',tag:['定期班']},
+        {id:'3',name:'wei',school:'徐汇校区',last_return_time:'2017-5-14 08:45',times:'3',tag:['未回访']},
+        {id:'4',name:'chao',school:'徐汇校区',last_return_time:'2017-5-15 08:11',times:'3',tag:['暑期班','定期班']}],
 //      {name:'wei',school:'徐汇校区',last_return_time:'2017-5-15 07:11',times:'3',tag:['未回访']}],
         number:'',
         options: [], //表单上方的select
@@ -182,16 +185,25 @@ import { account,campusList,cityList,sdjList ,departList,put_account,create_acco
         options2: [],//表单上方的select
         value: '',   //对应select的值
         value1: '', //对应select的值
-        value2: '', //对应select的值
-        value9:'',
+        value9: '', //对应select的值
         tagform:{
           name:''
         }
       }
     },
     methods: {
+      ...mapActions([
+      'sendUser'
+    ]),
+
+      switchDetail(row){
+        // console.log(row)
+        this.sendUser(row.id)
+       this.$router.push('/returnDetail');
+      },
        updateList(){
           this.fetchData();
+      
       },
       copyArr : function (arr){
         return arr.map((e)=>{
@@ -209,7 +221,7 @@ import { account,campusList,cityList,sdjList ,departList,put_account,create_acco
                     did:this.value1,
                     job_id:this.value2,}
         
-        account(para,token).then((res) => {
+        account(para,token).then((res) => {//替换服务
           this.number = res.data.total;
           let a = res.data.data;
            let d = this.copyArr(a);
@@ -237,15 +249,6 @@ import { account,campusList,cityList,sdjList ,departList,put_account,create_acco
           // console.log(res)
           this.accountData = a;
           this.total = parseInt(c);
-        }).then((res) => {
-                let tr = document.getElementsByTagName('tr')
-                let ac = this.accountData;
-                ac.map( function(item, index){
-                      if(item.fla == '停用'){
-                        tr[index+1].children[8].className = 'red';
-
-                        }
-                });
         })
         // sdjList(token).then((res) => {
         //     this.options = res.data.school;
@@ -261,7 +264,7 @@ import { account,campusList,cityList,sdjList ,departList,put_account,create_acco
       filterTag(value, row) {
         // let a = row.tag.join(',')
         // console.log(value.indexOf(row.tag.join('')))
-          console.log(value)
+          // console.log(value)
         let a = row.tag.some(item=>{
           // console.log(item)
           return item == value

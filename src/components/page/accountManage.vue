@@ -37,16 +37,16 @@
                       <el-select v-model="value2" clearable placeholder="选择职位" @change="updateList">
                   <el-option
                     v-for="item in options2"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
+                    :key="item.job_id"
+                    :label="item.full_name"
+                    :value="item.job_id">
                   </el-option>
                 </el-select>
                       </div>
-              </div>
        <el-button type="primary" size="mid" class='buttonAdd' @click="createCh('aform')">添加账号</el-button>
+              </div>
         
-<el-dialog title="添加账号" :visible.sync="dialogFormVisible"  :close-on-click-modal="no"   >
+<el-dialog :title="alter" :visible.sync="dialogFormVisible"  :close-on-click-modal="no"   >
       
       <el-form :model="aform" :rules="rules2" ref="aform">
         <el-form-item label="登录账号" :label-width="formLabelWidth" prop="uname">
@@ -58,7 +58,7 @@
           <el-form-item label="性别" :label-width="formLabelWidth"  prop="sexual">
             <el-select v-model="aform.sex" :style='{width:inputLabelWidth}'>
               <el-option label="男" value="1"></el-option>
-              <el-option label="女" value="0"></el-option>
+              <el-option label="女" value="2"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="手机号码" :label-width="formLabelWidth"  prop="phone">
@@ -102,7 +102,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="部门" :label-width="formLabelWidth"  prop="department">
+          <el-form-item label="部门" :label-width="formLabelWidth"  prop="did">
             <el-select v-model="aform.did" :style='{width:inputLabelWidth}' @change="updateJobList">
             <el-option
                 v-for="item in options1"
@@ -124,8 +124,8 @@
           </el-form-item>
           <el-form-item label="使用状态" :label-width="formLabelWidth"  prop="fla">
             <el-select v-model="aform.fla" :style='{width:inputLabelWidth}'>
-            <el-option label="正常" value="1"></el-option>
-              <el-option label="停用" value="0"></el-option>
+            <el-option label="正常" value="0"></el-option>
+              <el-option label="停用" value="1"></el-option>
             </el-select>
           </el-form-item>
 
@@ -213,6 +213,13 @@ var token = JSON.parse(user).token;
 import { account,campusList,cityList,sdjList ,departList,put_account,create_account,delete_account,department} from '../../api/api';
 export default {
     data() {
+      var nan = (rule,value,callback) =>{
+        if(value === ''){
+          callback('请选择')
+        }else if(typeof value == 'number'){
+           callback();
+        }
+      }
       var validatePass = (rule, value, callback) => {
         if (value.length <6) {
           callback(new Error('请输入至少6位'));
@@ -271,12 +278,16 @@ export default {
                      { required: true, message: '请输入邮箱地址', trigger: 'blur' },
                      { type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur,change' }
                     ],
-          pwd: [
-            { required: true,validator: validatePass, trigger: 'blur' }
-          ],
-          checkPass: [
-            { required: true,validator: validatePass2, trigger: 'blur' }
-          ]
+          // name:[
+          // {required:true,trigger: 'blur'}],
+          // sex:[
+          // {required:true,trigger: 'blur'}],
+          // tel:[
+          // {required:true,trigger: 'blur'}],
+          did:[
+          {required:true,validator: nan,trigger: 'blur'}],
+          job_id:[
+          {required:true,validator: nan,trigger: 'blur'}]
         },
         schools: [], //选好城市之后的校区
         list: [],
@@ -366,8 +377,10 @@ export default {
                   type: 'warning'
         }).then(() => {
          let para = { aid:data[index].aid}
-          delete_account(para,token)
+          delete_account(para,token).then(()=>{
+
           this.fetchData();
+          })
            // this.deleteRow(index,data);
           this.$message({
             type: 'success',
@@ -438,6 +451,8 @@ export default {
       addAccount(formName){   //点确定后添加账号
         this.$refs[formName].validate((valid) => {
         let f = this.aform;
+        // f.school = f.school.join(',');
+        f.school_id = f.school.join(',');
         let c = f.school;
         let i = this.in;
 
@@ -445,13 +460,17 @@ export default {
             if(i !== ''){
                           // this.accountData.splice(i,1,f);
                           let para = f;
-                          put_account(para,token);
+                          put_account(para,token).then(()=>{
+
                           this.fetchData();
+                          });
               }else{
                     this.accountData.push(f);
                     let para = f;
-                    create_account(para,token);
+                    create_account(para,token).then(()=>{
+
                     this.fetchData();
+                    });
                   }
 
         this.in = '';
@@ -531,6 +550,9 @@ export default {
           this.schools = a.map(item => {
         return { value: item.id, label: item.title };
       });
+          this.list = a.map(item => {
+        return { value: item.id, label: item.title };
+      });
         }).then(()=>{
           department(token).then(res=>{//获取部门
           this.options1 = res.data.map(item=>{
@@ -542,6 +564,7 @@ export default {
             // this.options = res.data.school;
             // this.schools = res.data.school;
             // this.options1 = res.data.department;
+            // console.log(res)
             this.options2 = res.data.job
         })
         }).then(()=>{
@@ -551,11 +574,23 @@ export default {
         })
         
         
+    },
+    computed:{
+      alter:function(){
+        if(this.in === ''){
+          return '创建账号'
+        }
+        return '修改账号'
+      }
     }
   }
  
 </script>
 <style >
+.h1  .el-button--primary{
+    background-color: #32a4d3;
+    border-color: #32a4d3;
+}
     .red{
         color: red
     }
@@ -581,6 +616,13 @@ export default {
 .redwarn .el-button--primary{
     background-color: #e95c5c;
     border-color: #e95c5c;
+}
+.el-dialog .el-dialog__header{
+    background-color: #1fb5ad;
+    padding: 20px 20px 20px;
+}
+.el-dialog .el-dialog__title{
+    color:white;
 }
 .block{
   text-align: center;

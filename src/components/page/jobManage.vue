@@ -7,7 +7,7 @@
                 <el-breadcrumb-item>职位管理</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
-        <div  style="width: 100%;position:relative;height:50px">
+        <div  class='addjob' style="width: 100%;position:relative;height:50px">
        <el-button type="primary" size="mid" style='position:absolute;right:0;top:10%' @click="createCh">添加职位</el-button>
          </div>
         <div>
@@ -351,7 +351,7 @@ import { departList,create_departList,put_departList,delete_departList,levelList
 </script>
 
 <style >
-.el-button--primary{
+.addjob .el-button--primary{
     background-color: #32a4d3;
     border-color: #32a4d3;
 }
