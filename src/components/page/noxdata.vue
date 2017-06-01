@@ -12,7 +12,7 @@
             
  <div  class= 'accou' >            
 <h2>
-               无效资源{{number}}人)
+               无效资源({{number}}人)
                 </h2>
 
 
@@ -61,9 +61,7 @@
                   </el-option>
                 </el-select>
                       </div>
-                     
-                      
-                      
+                 
                    </div>
                    
                    
@@ -77,46 +75,46 @@
     >
 
 
-     <el-table-column
+    <el-table-column
       prop="names"
       label="姓名"
-      width="100">
+      width="80">
     </el-table-column>
     
      <el-table-column
       prop="sex"
       label="性别"
-      width="70">
+      width="65">
     </el-table-column>
     
      <el-table-column
       prop="group_id"
       label="年龄"
-      width="70">
+      width="65">
     </el-table-column>//此为替代测试数据    
     
     <el-table-column
       prop="cc_name" 
       label="家长"
-      width="100">
+      width="80">
     </el-table-column> //此为替代测试数据
     
     <el-table-column
       prop="mobile"
       label="手机"
-      width="160">
+      width="150">
     </el-table-column>
     
     <el-table-column
       prop="address"
       label="校区"
-      width="100">
+      width="110">
     </el-table-column>
     
     <el-table-column
       prop="sour_name"
       label="渠道来源"
-      width="100">
+      width="130">
     </el-table-column>
     
         <el-table-column
@@ -142,7 +140,7 @@
 
 
 <div class="block">
-  <span class="demonstration">大于 7 页时的效果</span>
+  <span class="demonstration"></span>
   <el-pagination
     layout="prev, pager, next"
     :total="1000">

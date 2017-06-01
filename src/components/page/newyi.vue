@@ -14,9 +14,9 @@
                我的资源({{number}}人)
                 </h2>
 
-                       <div  class='oneSelect' >
+                       <div  class='oneSelect2' >
                         
-                      <el-select v-model="value1" clearable placeholder="资源典型" @change="updateList">
+                      <el-select v-model="datadx" clearable placeholder="资源类型" @change="updateList">
                   <el-option
                     <!--v-for="item in options1"
                     :key="item.value"
@@ -26,7 +26,7 @@
                 </el-select>
                       </div>
                       
-                                      <div  class='twoSelect'  >
+                                      <div  class='twoSelect2'  >
                        <el-select v-model="value" clearable placeholder="选择校区" filterable @change="updateList">
                   <el-option
                     v-for="item in options"
@@ -38,7 +38,7 @@
                       </div>
                       
                       
-                      <div  class='threeSelect'  >
+                      <div  class='threeSelect2'  >
                         
                       <el-select v-model="value2" clearable placeholder="渠道来源" @change="updateList">
                   <el-option
@@ -93,7 +93,7 @@
             </div>
 
 <div class="block">
-  <span class="demonstration">大于 7 页时的效果</span>
+  <span class="demonstration"></span>
   <el-pagination
     layout="prev, pager, next"
     :total="1000">
@@ -116,43 +116,43 @@
      <el-table-column
       prop="names"
       label="姓名"
-      width="100">
+      width="80">
     </el-table-column>
     
      <el-table-column
       prop="sex"
       label="性别"
-      width="70">
+      width="65">
     </el-table-column>
     
      <el-table-column
       prop="group_id"
       label="年龄"
-      width="70">
+      width="65">
     </el-table-column>//此为替代测试数据    
     
     <el-table-column
       prop="cc_name" 
       label="家长"
-      width="100">
+      width="80">
     </el-table-column> //此为替代测试数据
     
     <el-table-column
       prop="mobile"
       label="手机"
-      width="160">
+      width="150">
     </el-table-column>
     
     <el-table-column
       prop="address"
       label="校区"
-      width="100">
+      width="110">
     </el-table-column>
     
     <el-table-column
       prop="sour_name"
       label="渠道来源"
-      width="100">
+      width="130">
     </el-table-column>
     
         <el-table-column
@@ -177,11 +177,15 @@
   </el-table>              
                      
                      <div class="block">
-  <span class="demonstration">大于 7 页时的效果</span>
+  <span class="demonstration"></span>
   <el-pagination
     layout="prev, pager, next"
-    :total="1000">
-  </el-pagination>
+    :total="1000"
+   
+     :current-page="currentPage"
+     :page-size="pagesize"
+     @current-change="handleCurrentChange">
+   </el-pagination>
 </div>    
                       
                    </div>
@@ -192,9 +196,25 @@
 </template>
 
 <script>
+	import { account,campusList,cityList,sdjList ,departList,put_account,create_account,delete_account,department} from '../../api/api';
+	
    export default {
     data() {
       return {
+      	currentPage: 1, //页数
+        pagesize: 15, //默认每页
+        total:0,      //总页数
+        in:'',      //修改时代表修改的index
+        no:false,  //取消点击关闭
+        accountData: [],
+        number:'',
+        options: '', //表单上方的校区select
+        options1: '',//表单上方的部门select
+        options2: '',//表单上方的职位select
+        value: '',   //对应校区select的值
+        value1: '', //对应部门select的值
+        value2: '', //对应职位select的值
+      
         tableData: [{
                 "id":1675,
                 "sour_id":55,
@@ -440,19 +460,19 @@ h2 {
   height:50px;
   
 }
-.oneSelect{
+.oneSelect2{
   margin-left:250px;
   position:absolute;
   top:0;
   width:100px
 }
-.twoSelect{
+.twoSelect2{
   margin-left:360px;
   position:absolute;
   top:0;
   width:100px
 }
-.threeSelect{
+.threeSelect2{
   margin-left:470px;
   position:absolute;
   top:0;
@@ -489,4 +509,25 @@ h2 {
 	height: 500px;
 	border-style: none;
 }
+.el-table .cell, .el-table th>div {
+    padding-left: 0px;
+    padding-right: 0px;
+    box-sizing: border-box;
+    text-overflow: ellipsis;
+}
+.el-table .cell {
+    white-space: normal;
+    word-break: break-all;
+    line-height: 24px;
+    text-align: center;
+}
+.el-pagination {
+    white-space: nowrap;
+    padding: 20px;
+    vertical-align: middle;
+    color: rgb(72, 106, 106);
+    	text-align: center;
+}
+
+
 </style>

@@ -31,43 +31,43 @@
      <el-table-column
       prop="names"
       label="姓名"
-      width="100">
+      width="80">
     </el-table-column>
     
      <el-table-column
       prop="sex"
       label="性别"
-      width="70">
+      width="65">
     </el-table-column>
     
      <el-table-column
       prop="group_id"
       label="年龄"
-      width="70">
+      width="65">
     </el-table-column>//此为替代测试数据    
     
     <el-table-column
       prop="cc_name" 
       label="家长"
-      width="100">
+      width="80">
     </el-table-column> //此为替代测试数据
     
     <el-table-column
       prop="mobile"
       label="手机"
-      width="160">
+      width="150">
     </el-table-column>
     
     <el-table-column
       prop="address"
       label="校区"
-      width="100">
+      width="110">
     </el-table-column>
     
     <el-table-column
       prop="sour_name"
       label="渠道来源"
-      width="100">
+      width="130">
     </el-table-column>
     
         <el-table-column
@@ -96,7 +96,7 @@
 
 
 <div class="block">
-  <span class="demonstration">大于 7 页时的效果</span>
+  <span class="demonstration"></span>
   <el-pagination
     layout="prev, pager, next"
     :total="1000">
@@ -342,7 +342,7 @@ h2 {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    background-color: #fff;
+    background-color: #FFFFFF;
     background-image: none;
     border-radius: 4px;
     border: 1px solid rgb(191, 217, 216);
@@ -414,16 +414,6 @@ h2 {
 }
 .el-table td, .el-table th {
     padding: 5px 18px;
-}
-
-th {
-    font-weight: bold;
-    text-align: -internal-center;
-}
-
-td, th {
-    display: table-cell;
-    vertical-align: inherit;
 }
 
 
