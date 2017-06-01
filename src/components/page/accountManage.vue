@@ -586,11 +586,15 @@ export default {
   }
  
 </script>
+<<<<<<< HEAD
 <style >
 .h1  .el-button--primary{
     background-color: #32a4d3;
     border-color: #32a4d3;
 }
+=======
+<style>
+>>>>>>> 7bc4da85de0a75c097e2fdf381a0ce8d80a96caa
     .red{
         color: red
     }
