@@ -83,9 +83,7 @@
   </div>
 </template>
 <script>
-var user = localStorage.getItem('user');
-var token = JSON.parse(user).token;
-let  module_id = 1000;
+var token
 import { rangeList,create_menuList,put_menuList,delete_menuList,get_level,detail_level} from '../../api/api';
   export default {
     data() {
@@ -301,6 +299,10 @@ create_menuList(para,token).then(()=>{
         })
        }
     },
+    beforeCreate(){
+           let user = localStorage.getItem('user');
+            token =  JSON.parse(user).token;
+        },
     created(){
       rangeList(token).then(res=>{
 

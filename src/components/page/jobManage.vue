@@ -83,8 +83,7 @@
 </template>
 
 <script>
-var user = localStorage.getItem('user');
-var token = JSON.parse(user).token;
+var token
 import { departList,create_departList,put_departList,delete_departList,levelList,department,character,detail_departList } from '../../api/api';
   export default {
     methods: {
@@ -317,6 +316,10 @@ import { departList,create_departList,put_departList,delete_departList,levelList
         no:false,  //取消点击关闭
       }
     },
+    beforeCreate(){
+           let user = localStorage.getItem('user');
+            token =  JSON.parse(user).token;
+        },
     created(){
       let para = {}
         departList(para,token).then((res) => {

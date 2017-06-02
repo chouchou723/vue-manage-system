@@ -73,8 +73,7 @@
 </template>
 
 <script>
-var user = localStorage.getItem('user');
-var token = JSON.parse(user).token;
+var token
 import { mapGetters } from 'vuex';
 import { mapActions } from 'vuex';
  import { counterList } from '../../api/api';
@@ -83,7 +82,8 @@ import { mapActions } from 'vuex';
         data(){
             return {
                 menus :[],
-                counter:''
+                counter:'',
+                token:''
             }
         },
         computed:{
@@ -130,12 +130,17 @@ import { mapActions } from 'vuex';
                 };
                 menuList(token).then((res) => {
                 this.menus = res.data;
-        });
+                });
             }
         },
+        beforeCreate(){
+           let user = localStorage.getItem('user');
+            token =  JSON.parse(user).token;
+        },
         created(){
-            this.getcounter();
+             this.getcounter();
             this.getMenu();
+            
         }
     }
 </script>

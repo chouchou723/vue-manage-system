@@ -69,8 +69,8 @@
   <div style="height:30px"><el-tag type='success' v-for='t in item.tag' class='tagTag'>{{t}}</el-tag></div>
   </el-col>
   <el-col :span="4">
-    <div style="font-size:15px;color:grey;margin-top:10px;text-align:right">{{item.time}}</div>
-    <div class='editSpan' @click='editReturn(item.index,item)'></div>
+    <div style="font-size:15px;color:grey;margin-top:10px;text-align:right">{{item.time.substring(5)}}</div>
+    <div class='editSpan' @click='editReturn(item.index,item)' v-if="new Date().getTime()-new Date(item.time).getTime()<7200000"></div>
   </el-col>
 </el-row>
          <!-- <div style='position:relative'>
@@ -124,8 +124,7 @@
   </div>
 </template>
 <script>
-var user = localStorage.getItem('user');
-var token = JSON.parse(user).token;
+var token
 import { cityList} from '../../api/api';
 import { mapGetters } from 'vuex';
 
@@ -145,10 +144,10 @@ import { mapGetters } from 'vuex';
   time:'2017-05-25-12:00',
   teacher:'林俊杰'
 },
-        items:[{name:'苏里',tag:['暑期班','定期班'],content:'已发短信,周五再次沟通，比较有意向',time:'3-17 8:30',index:0},
-        {name:'李东',tag:['定期班'],content:'已发短信,周五再次沟通，比较有意向,多次询问已经,不知道还有没有问题',time:'3-17 8:30',index:1},
-        {name:'章程',tag:['暑期班'],content:'已发短信,周一再次沟通，可能有意向',time:'3-17 8:30',index:2},
-        {name:'苏里',tag:['暑期班','定期班'],content:'已发短信,周五再次沟通，比较有意向',time:'3-17 8:30',index:3}],
+        items:[{name:'苏里',tag:['暑期班','定期班'],content:'已发短信,周五再次沟通，比较有意向',time:'2017-6-2 9:30',index:0},
+        {name:'李东',tag:['定期班'],content:'已发短信,周五再次沟通，比较有意向,多次询问已经,不知道还有没有问题',time:'2017-3-17 8:30',index:1},
+        {name:'章程',tag:['暑期班'],content:'已发短信,周一再次沟通，可能有意向',time:'2017-3-17 8:30',index:2},
+        {name:'苏里',tag:['暑期班','定期班'],content:'已发短信,周五再次沟通，比较有意向',time:'2017-3-17 8:30',index:3}],
         dialogFormVisible:false,
         no:false,
         number:10,
@@ -219,7 +218,7 @@ import { mapGetters } from 'vuex';
           }
           }
         })
-        console.log(arr)
+        // console.log(arr)
         this.returnform.checkList = arr
       }
     },
@@ -238,6 +237,10 @@ import { mapGetters } from 'vuex';
       // ...
             ]),
     },
+    beforeCreate(){
+           let user = localStorage.getItem('user');
+            token =  JSON.parse(user).token;
+        },
     created(){
       console.log(this.getUserId)//通过该id调服务
       // cityList(token).then((res)=>{

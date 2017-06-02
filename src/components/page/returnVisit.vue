@@ -153,8 +153,7 @@
 </template>
 
 <script>
-var user = localStorage.getItem('user');
-var token = JSON.parse(user).token;
+var token
 import { account,campusList,cityList,sdjList ,departList,put_account,create_account,delete_account} from '../../api/api';
 
 import { mapActions } from 'vuex';
@@ -306,7 +305,10 @@ import { mapActions } from 'vuex';
         this.inputValue = '';
       }
  },
-    
+    beforeCreate(){
+           let user = localStorage.getItem('user');
+            token =  JSON.parse(user).token;
+        },
     created(){
         this.fetchData();
     },

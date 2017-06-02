@@ -312,6 +312,7 @@
 </template>
 
 <script>
+var token
     import IEcharts from 'vue-echarts-v3';
     export default {
         components: {
@@ -497,7 +498,11 @@
       handleCommand5(command) {
         this.title5 = command;
       }
-},
+  },
+    beforeCreate(){
+           let user = localStorage.getItem('user');
+            token =  JSON.parse(user).token;
+        },
     created(){
         this.line.series =  [{   //以后改成动态获取
                         name: "新纪录",

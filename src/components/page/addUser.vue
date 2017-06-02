@@ -144,8 +144,7 @@
   </div>
 </template>
 <script>
-var user = localStorage.getItem('user');
-var token = JSON.parse(user).token;
+var token
 import { cityList} from '../../api/api';
   export default {
     data() {
@@ -220,6 +219,10 @@ import { cityList} from '../../api/api';
           }
       }
     },
+    beforeCreate(){
+           let user = localStorage.getItem('user');
+            token =  JSON.parse(user).token;
+        },
     created(){
       cityList(token).then((res)=>{
           // console.log(res)

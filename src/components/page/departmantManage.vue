@@ -31,8 +31,7 @@
 </template>
 
 <script>
-var user = localStorage.getItem('user');
-var token = JSON.parse(user).token;
+var token
 import { department ,create_department,put_department,delete_department} from '../../api/api';
   export default {
     methods: {
@@ -152,6 +151,10 @@ import { department ,create_department,put_department,delete_department} from '.
         tableData: []
       }
     },
+    beforeCreate(){
+           let user = localStorage.getItem('user');
+            token =  JSON.parse(user).token;
+        },
     created(){
         department(token).then((res) => {
           this.tableData = res.data
