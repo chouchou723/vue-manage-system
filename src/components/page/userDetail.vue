@@ -2,7 +2,7 @@
 <div class="table">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-menu"></i> 客户管理</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-menu"></i> 资源管理</el-breadcrumb-item>
                 <el-breadcrumb-item :to="{ path: '/home' }">学员回访</el-breadcrumb-item>
                  <el-breadcrumb-item >用户资料</el-breadcrumb-item>
             </el-breadcrumb>

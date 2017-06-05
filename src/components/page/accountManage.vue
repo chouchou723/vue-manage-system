@@ -155,11 +155,11 @@
       </template>
     </el-table-column>
     <el-table-column
-      prop="name"
+      prop="uname"
       label="登录名">
     </el-table-column>
     <el-table-column
-      prop="uname"
+      prop="name"
       label="姓名">
     </el-table-column>
     <el-table-column
@@ -503,8 +503,7 @@ export default {
                     school_id:this.value,
                     did:this.value1,
                     job_id:this.value2,
-                    tel:this.input2,
-                    name:this.input2}
+                    input:this.input2}
         account(para,token).then((res) => {
           this.number = res.total;
           let a = res.data;

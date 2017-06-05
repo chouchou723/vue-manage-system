@@ -9,7 +9,7 @@ body{
 }
 a{text-decoration: none}
 .content{
-    background: none repeat scroll 0 0 #f3f3f3;
+    background: none repeat scroll 0 0 white;
     position: absolute;
     left: 185px;
     right: 0;
