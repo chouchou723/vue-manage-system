@@ -173,8 +173,9 @@
                                 getUserinfo(token).then(u=>{
                                      let {data} = u;
                                      data.token = token;
+                                     // console.log(data)
                                 localStorage.setItem('user',JSON.stringify(data));
-                                self.$router.push('/home');
+                               self.$router.push('/home');
                                 })
                         }).catch((error)=>{
                             if (error.response) {

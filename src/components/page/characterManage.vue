@@ -49,8 +49,7 @@
 </template>
 
 <script>
-var user = localStorage.getItem('user');
-var token = JSON.parse(user).token;
+var token
 import { character,create_character,put_character,delete_character,rangeList,detail_character } from '../../api/api';
   export default {
     methods: {
@@ -165,6 +164,10 @@ import { character,create_character,put_character,delete_character,rangeList,det
         }
       }
     },
+    beforeCreate(){
+           let user = localStorage.getItem('user');
+            token =  JSON.parse(user).token;
+        },
     created(){
         character(token).then((res) => {
           this.charData = res.data;

@@ -18,6 +18,7 @@
 </template>
 
 <script>
+var token
  import {mapActions} from 'vuex';
  import { taskList } from '../../api/api';
 export default {
@@ -43,6 +44,10 @@ export default {
       'decrement'
     ])
   },
+  beforeCreate(){
+           let user = localStorage.getItem('user');
+            token =  JSON.parse(user).token;
+        },
  created(){
             this.getData();
         }

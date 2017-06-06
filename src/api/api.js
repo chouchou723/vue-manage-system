@@ -79,8 +79,8 @@ export const sdjList =(token)=>{
 											return axios.get(`${base}/api/v1/admin/filter/data`).then(res => res.data);  };
 
 //获取城市
-export const cityList =  (token) => {	axios.defaults.headers.common['Authorization'] = token.Authorization;
-										 return axios.get(`${base}/api/v1/city`).then(res => res.data);  };
+export const cityList =  (token,params) => {	axios.defaults.headers.common['Authorization'] = token.Authorization;
+										 return axios.get(`${base}/api/v1/city`,{params:params}).then(res => res.data);  };
 										
 //根据城市获取校区
 export const campusList = (params,token) => { 	axios.defaults.headers.common['Authorization'] = token.Authorization;
@@ -154,4 +154,24 @@ export const get_level = (params,token) => { axios.defaults.headers.common['Auth
 
 //获取级别详情
 export const detail_level = (params,token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
-										return axios.get(`${base}/api/v1/module/1`,{params:params}).then(res => res.data);  };																			
+										return axios.get(`${base}/api/v1/module/1`,{params:params}).then(res => res.data);  };	
+
+//TMK
+//添加学员
+export const create_student = (params,token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.post(`${base}/api/v1/tmk/customer`,params).then(res => res.data);  };	
+
+//获取回访列表
+export const returnVisitList = (token,params) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.get(`${base}/api/v1/visit`,{params:params}).then(res => res.data);  };										
+//获取来源渠道
+export const sourceList = (token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.get(`${base}/api/v1/public/getSource`).then(res => res.data);  };
+
+//获取标签
+export const tagList = (token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.get(`${base}/api/v1/public/getTag`).then(res => res.data);  };		
+
+//查询重复学员
+export const repeatStudentList = (token,params) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.get(`${base}/api/v1/tmk/getuesrs`,{params:params}).then(res => res.data);  };									

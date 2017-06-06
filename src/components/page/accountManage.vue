@@ -43,6 +43,14 @@
                   </el-option>
                 </el-select>
                       </div>
+                      <div style="position:absolute;top:0;right:100px;width:200px">
+                        <el-input
+                            placeholder="请输入手机号或姓名"
+                            icon="search"
+                            v-model="input2"
+                            :on-icon-click="handleIconClick">
+</el-input>
+                      </div>
        <el-button type="primary" size="mid" class='buttonAdd' @click="createCh('aform')">添加账号</el-button>
               </div>
         
@@ -66,9 +74,6 @@
           </el-form-item>
           <el-form-item label="密码" prop="pwd"  :label-width="formLabelWidth">
               <el-input type="password" v-model="aform.pwd" auto-complete="off" :style='{width:inputLabelWidth}'></el-input>
-            </el-form-item>
-            <el-form-item label="确认密码" prop="checkPass"  :label-width="formLabelWidth">
-              <el-input type="password" v-model="aform.checkPass" auto-complete="off" :style='{width:inputLabelWidth}'></el-input>
             </el-form-item>
             <el-form-item label="所属校区" :label-width="formLabelWidth"  prop="region" style='float:left;margin-right:10px'>
                     <el-select v-model="aform.region" filterable :style='{width:inputLabelWidth}' @change='campusGet'>
@@ -143,11 +148,18 @@
     border
     >
     <el-table-column
-      prop="name"
-      label="登录名">
+      prop="avatar"
+      label="头像">
+      <template scope="scope" >
+        <span><img :src="scope.row.avatar" alt="" width="47" style="border-radius:50%;margin-bottom:-7px"></span>
+      </template>
     </el-table-column>
     <el-table-column
       prop="uname"
+      label="登录名">
+    </el-table-column>
+    <el-table-column
+      prop="name"
       label="姓名">
     </el-table-column>
     <el-table-column
@@ -208,8 +220,7 @@
 </template>
 
 <script>
-var user = localStorage.getItem('user');
-var token = JSON.parse(user).token;
+var token 
 import { account,campusList,cityList,sdjList ,departList,put_account,create_account,delete_account,department} from '../../api/api';
 export default {
     data() {
@@ -251,6 +262,7 @@ export default {
         no:false,  //取消点击关闭
         accountData: [],
         number:'',
+        input2:'',
         options: '', //表单上方的校区select
         options1: '',//表单上方的部门select
         options2: '',//表单上方的职位select
@@ -298,6 +310,10 @@ export default {
       }
     },
     methods: {
+      handleIconClick(){
+        // console.log('1')
+         this.fetchData();
+      },
       updateList(){  //表格上方3个select change之后刷新表格
         this.fetchData();
       },
@@ -486,7 +502,8 @@ export default {
         let para = { page:this.currentPage,
                     school_id:this.value,
                     did:this.value1,
-                    job_id:this.value2,}
+                    job_id:this.value2,
+                    input:this.input2}
         account(para,token).then((res) => {
           this.number = res.total;
           let a = res.data;
@@ -536,7 +553,11 @@ export default {
             this.currentPage = val;
             this.fetchData();
       },   
- },
+    },
+    beforeCreate(){
+           let user = localStorage.getItem('user');
+            token =  JSON.parse(user).token;
+        },
     created(){//创建组件时
         this.fetchData();
         
@@ -587,15 +608,11 @@ export default {
   }
  
 </script>
-<<<<<<< HEAD
 <style >
 .h1  .el-button--primary{
     background-color: #32a4d3;
     border-color: #32a4d3;
 }
-=======
-<style>
->>>>>>> 7bc4da85de0a75c097e2fdf381a0ce8d80a96caa
     .red{
         color: red
     }

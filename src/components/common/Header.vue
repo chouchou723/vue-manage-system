@@ -16,7 +16,7 @@
         </div>    
 
             	<div class="hoverrt" style="float:left;margin-left:5px;width: 55px;height: 70px;">
-            <a  href="http://localhost:8080/#/addUser"><img id='addUser' src="../../../static/img/add.png" height="30" width="28" ></a>
+            <img id='addUser' src="../../../static/img/add.png" height="30" width="28" @click="gotoAdd" >
             </div>
         <div class="user-info">
             <el-dropdown  @command="handleCommand">
@@ -82,6 +82,9 @@ import { mapGetters } from 'vuex';
             },
             handleIconClick(ev) {//点击搜索标志的fn
                 console.log(ev);
+            },
+            gotoAdd(){
+                this.$router.push('/addUser')
             }
         },
         computed:{
@@ -205,6 +208,7 @@ import { mapGetters } from 'vuex';
   	}
     #addUser:hover{
     	background-color: #2b3a40;
+        cursor: pointer;
     }
 
 

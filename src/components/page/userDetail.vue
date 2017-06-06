@@ -2,7 +2,7 @@
 <div class="table">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-menu"></i> 客户管理</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-menu"></i> 资源管理</el-breadcrumb-item>
                 <el-breadcrumb-item :to="{ path: '/home' }">学员回访</el-breadcrumb-item>
                  <el-breadcrumb-item >用户资料</el-breadcrumb-item>
             </el-breadcrumb>
@@ -13,10 +13,10 @@
               <span style="font-weight:600;font-size:22px">用户资料</span>
               <div  style='position:absolute;top:10px;right:50px'>
               <!-- <div class='addU' @click='addU'></div> -->
-             <!-- <el-button type="primary" size="mid" class='activateR' ><img src="../../../static/img/activate.png" alt="" width='20' style="margin-top:-7px;margin-left:-55px">
-             <span style="position:absolute;top:15px;right:8px;font-size:12px">激活资源</span></el-button> -->
-             <el-button type="primary" size="mid" class='recognizeR' @click='recognizeResource' ><img src="../../../static/img/recognize.png" alt="" width='20' style="margin-top:-7px;margin-left:-55px" >
-             <span style="position:absolute;top:15px;right:8px;font-size:12px">认证资源</span></el-button>
+             <el-button type="primary" size="mid" class='activateR' @click='activateResource'><img src="../../../static/img/activate.png" alt="" width='20' style="margin-top:-7px;margin-left:-55px">
+             <span style="position:absolute;top:15px;right:8px;font-size:12px">激活资源</span></el-button>
+            <!--  <el-button type="primary" size="mid" class='recognizeR' @click='recognizeResource' ><img src="../../../static/img/recognize.png" alt="" width='20' style="margin-top:-7px;margin-left:-55px" >
+             <span style="position:absolute;top:15px;right:8px;font-size:12px">认证资源</span></el-button> -->
               </div>
            </div>
           <el-form   id='aform'label-width="102px" label-position='left' style='border-top:1px solid #e8e8e8 ;padding-left:10px' >
@@ -230,8 +230,8 @@
   <div style="font-size:14px;color:grey">{{item.content}}</div>
   </el-col>
   <el-col :span="4">
-    <div style="font-size:15px;color:grey;margin-top:10px;text-align:right">{{item.time}}</div>
-    <div class='editSpan' @click='editReturn(item.index,item)'></div>
+    <div style="font-size:15px;color:grey;margin-top:10px;text-align:right">{{item.time.substring(5)}}</div>
+    <div class='editSpan' @click='editReturn(item.index,item)' v-if="new Date().getTime()-new Date(item.time).getTime()<7200000"></div>
   </el-col>
 </el-row>
          <div class="block" >
@@ -300,8 +300,7 @@
   </div>
 </template>
 <script>
-var user = localStorage.getItem('user');
-var token = JSON.parse(user).token;
+var token
 import { cityList} from '../../api/api';
 import { mapGetters } from 'vuex';
 
@@ -321,10 +320,10 @@ import { mapGetters } from 'vuex';
   time:'2017-05-25-12:00',
   teacher:'林俊杰'
 },
-        items:[{name:'苏里',tag:['暑期班','定期班'],content:'已发短信,周五再次沟通，比较有意向',time:'3-17 8:30',index:0},
-        {name:'李东',tag:['定期班'],content:'已发短信,周五再次沟通，比较有意向,多次询问已经,不知道还有没有问题',time:'3-17 8:30',index:1},
-        {name:'章程',tag:['暑期班'],content:'已发短信,周一再次沟通，可能有意向',time:'3-17 8:30',index:2},
-        {name:'苏里',tag:['暑期班','定期班'],content:'已发短信,周五再次沟通，比较有意向',time:'3-17 8:30',index:3}],
+        items:[{name:'苏里',tag:['暑期班','定期班'],content:'已发短信,周五再次沟通，比较有意向',time:'2017-6-2 9:09',index:0},
+        {name:'李东',tag:['定期班'],content:'已发短信,周五再次沟通，比较有意向,多次询问已经,不知道还有没有问题',time:'2017-3-17 8:30',index:1},
+        {name:'章程',tag:['暑期班'],content:'已发短信,周一再次沟通，可能有意向',time:'2017-3-17 8:30',index:2},
+        {name:'苏里',tag:['暑期班','定期班'],content:'已发短信,周五再次沟通，比较有意向',time:'2017-3-17 8:30',index:3}],
 
         items1:
         [{name:'art4 大师班（6-7岁）',date:'2017-3-17 8:30',recordTime:'2017-3-17 8:30',teacher:"李东",setting:'未到访'},
@@ -393,6 +392,15 @@ import { mapGetters } from 'vuex';
       }
     },
     methods: {
+      activateResource(){
+        this.$confirm('是否确认激活该资源?', '激活资源', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+         customClass:'green',
+        }).then(() => {
+          console.log('调服务')
+        })
+       },
      recognizeResource(){
       this.dialogFormVisible2 = true;
      },
@@ -461,6 +469,10 @@ import { mapGetters } from 'vuex';
       // ...
             ]),
     },
+    beforeCreate(){
+           let user = localStorage.getItem('user');
+            token =  JSON.parse(user).token;
+        },
     created(){
       // console.log(this.getUserId)//通过该id调服务
       cityList(token).then((res)=>{
@@ -575,5 +587,12 @@ background-color: #f29c9c;
 .schoolDialog .el-dialog__body{
   text-align: center;
   /*color:#ec6161;*/
+}
+.green .el-message-box__header{
+    background-color: #1fb5ad;
+    padding: 20px 20px 20px;
+}
+.green .el-message-box__title{
+    color:white;
 }
 </style>

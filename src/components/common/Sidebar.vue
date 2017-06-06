@@ -34,12 +34,12 @@
                 <el-menu-item index="mixcharts">混合图表</el-menu-item>
             </el-submenu>-->
             
-                        <el-submenu index="6">
+                       <!--  <el-submenu index="6">
                 <template slot="title"><i class="el-icon-my-chengyuanguanli"></i>资源管理</template>
                 <a href="http://localhost:8080/#/newyi"><el-menu-item index="">我的资源</el-menu-item></a>
                 <a href="http://localhost:8080/#/nodata"><el-menu-item index="">无需求资源</el-menu-item></a>
                 <a href="http://localhost:8080/#/noxdata"><el-menu-item index="">无效资源</el-menu-item></a>
-            </el-submenu> 
+            </el-submenu>  -->
             
             
             <div v-for="menu in menus">
@@ -75,8 +75,7 @@
 </template>
 
 <script>
-var user = localStorage.getItem('user');
-var token = JSON.parse(user).token;
+var token
 import { mapGetters } from 'vuex';
 import { mapActions } from 'vuex';
  import { counterList } from '../../api/api';
@@ -85,7 +84,8 @@ import { mapActions } from 'vuex';
         data(){
             return {
                 menus :[],
-                counter:''
+                counter:'',
+                token:''
             }
         },
         computed:{
@@ -132,12 +132,17 @@ import { mapActions } from 'vuex';
                 };
                 menuList(token).then((res) => {
                 this.menus = res.data;
-        });
+                });
             }
         },
+        beforeCreate(){
+           let user = localStorage.getItem('user');
+            token =  JSON.parse(user).token;
+        },
         created(){
-            this.getcounter();
+             this.getcounter();
             this.getMenu();
+            
         }
     }
 </script>
