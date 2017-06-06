@@ -4,7 +4,7 @@
 <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-menu"></i> 资源管理</el-breadcrumb-item>
-                <el-breadcrumb-item>无需求资源</el-breadcrumb-item>
+                <el-breadcrumb-item>无需求资源</el-breadcrumb-item><el-breadcrumb-item>({{names}})</el-breadcrumb-item>
             </el-breadcrumb>
             
             
@@ -64,11 +64,7 @@
       width="110">
     </el-table-column>
     
-    <el-table-column
-      prop="sour_name"
-      label="渠道来源"
-      width="130">
-    </el-table-column>
+
     
         <el-table-column
       prop="date"
@@ -80,15 +76,10 @@
       prop=""
       label="最近访问"
       sortable
-      width="150">
-    </el-table-column>
-    
-        <el-table-column
-      prop=""
-      label="资源状态"
       :formatter="formatter">
     </el-table-column>
     
+
   </el-table>
 
 
@@ -319,7 +310,6 @@
      methods: {
       formatter(row, column) {
         return row.address;
-
       }
     }
   }

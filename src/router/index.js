@@ -15,7 +15,7 @@ export default new Router({
             component: resolve => require(['../components/common/Home.vue'], resolve),
             children:[
                 {
-                    path: '/',
+                    path: '/index',
                     component: resolve => require(['../components/page/Index.vue'], resolve)   //首页
                 },
                 {
