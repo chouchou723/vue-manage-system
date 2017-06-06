@@ -1,9 +1,9 @@
 <template>
     <div class="sidebar" >
         <el-menu :default-active="onRoutes" id="sidebar" class="el-menu-vertical-demo" unique-opened router >
-            <!--<el-menu-item index="index">
+            <el-menu-item index="index">
                 <i class="el-icon-my-shouye"></i>首页
-            </el-menu-item>-->
+            </el-menu-item>
             <!--<el-menu-item index="calendar" @click='clearCounter'>
               <i  class="el-icon-my-wodericheng"></i>任务提醒
               
@@ -34,12 +34,12 @@
                 <el-menu-item index="mixcharts">混合图表</el-menu-item>
             </el-submenu>-->
             
-                       <!--  <el-submenu index="6">
+                        <el-submenu index="6">
                 <template slot="title"><i class="el-icon-my-chengyuanguanli"></i>资源管理</template>
                 <a href="http://localhost:8080/#/newyi"><el-menu-item index="">我的资源</el-menu-item></a>
                 <a href="http://localhost:8080/#/nodata"><el-menu-item index="">无需求资源</el-menu-item></a>
                 <a href="http://localhost:8080/#/noxdata"><el-menu-item index="">无效资源</el-menu-item></a>
-            </el-submenu>  -->
+            </el-submenu> 
             
             
             <div v-for="menu in menus">
