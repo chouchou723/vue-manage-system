@@ -172,6 +172,20 @@ export const sourceList = (token) => { axios.defaults.headers.common['Authorizat
 export const tagList = (token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
 										return axios.get(`${base}/api/v1/public/getTag`).then(res => res.data);  };		
 
+//添加标签
+export const create_tag = (params,token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.post(`${base}/api/v1/tag`,params).then(res => res.data);  };	
+//删除标签
+export const delete_tag = (params,token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.delete(`${base}/api/v1/tag`,{params:params}).then(res => res.data);  };										
+
+//添加回访记录
+export const create_returnList = (params,token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.post(`${base}/api/v1/visit`,params).then(res => res.data);  };	
+
+//添加沟通记录
+export const create_community = (params,token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.post(`${base}/api/v1/tmk/customer/call`,params).then(res => res.data);  };											
 //查询重复学员
 export const repeatStudentList = (token,params) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
 										return axios.get(`${base}/api/v1/tmk/getuesrs`,{params:params}).then(res => res.data);  };									

@@ -13,7 +13,16 @@
         学员回访({{number}}人)
         </h2>
         <div  class='studentReturnThree' >
-          
+          <el-select v-model="value2" clearable placeholder="选择TMK" @change="updateList">
+    <el-option
+      v-for="item in options1"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value">
+    </el-option>
+  </el-select>
+</div>
+ <div  class='studentReturnThreeS' >
         <el-select v-model="value1" clearable placeholder="选择校区" @change="updateList">
     <el-option
       v-for="item in options"
@@ -35,13 +44,14 @@
         <el-date-picker
       v-model="value3"
       type="daterange"
-      placeholder="选择日期范围">
+      placeholder="选择日期范围"
+      format="">
     </el-date-picker>
         </div>
 
      <div  class='fourSelect' >
         <el-input
-        placeholder="请输入手机号或姓名"
+        placeholder="输入手机号或姓名"
         icon="search"
         v-model="input2"
         :on-icon-click="handleIconClick">
@@ -53,7 +63,6 @@
         </div>
         <div id="table">
           <el-table
-
       @header-click="getTag"
     :data="returnData"
      :default-sort = "{prop: 'last_time', order: 'descending'}"
@@ -85,16 +94,12 @@
     class-name = 'tagClass'
       prop="tags"
       label="回访标签"
-      width="100"
-      :filter-multiple = false
-      :filters="filterT"
-      :filter-method="filterTag"
-      filter-placement="bottom-end">
+      width="130">
       <template scope="scope">
         <el-tag
           :type="scope.row.tags == '未回访' ? 'danger' : 'success'"
           close-transition 
-          v-for='t in scope.row.tags'>{{t}}</el-tag>
+          v-for='t in scope.row.tags' @click.native='aaa(t)'>{{t}}</el-tag>
       </template>
     </el-table-column>
 
@@ -145,7 +150,7 @@
   @blur="handleInputConfirm"
 >
 </el-input>
-<el-button v-else class="button-new-tag" size="small" @click="showInput" sytle='margin-top:7px'>+ New Tag</el-button>
+<el-button v-else class="button-new-tag" size="small" @click="showInput" sytle='margin-top:7px'>创建标签</el-button>
 </el-dialog> 
 </div>
 
@@ -154,7 +159,7 @@
 
 <script>
 var token
-import { campusList,cityList,sdjList ,departList,returnVisitList,tagList} from '../../api/api';
+import { campusList,returnVisitList,tagList,create_tag,delete_tag} from '../../api/api';
 
 import { mapActions } from 'vuex';
 
@@ -171,24 +176,34 @@ import { mapActions } from 'vuex';
         currentPage: 1, //页数
         pagesize: 15, //默认每页
         total:0,
-        in:'',
         no:false,
         returnData: [],
-//      {name:'wei',school:'徐汇校区',last_return_time:'2017-5-15 07:11',times:'3',tag:['未回访']}],
         number:'',
         options: [], //表单上方的select
         options1: [],//表单上方的select
-        options2: [],//表单上方的select
         value1: '',   //对应select的值
-        value2: '', //对应select的值
+        value2: '',   //对应select的值
+        status: '', //对应select的值
         value3: '', //对应select的值
+        value4:'',
         tagform:{
           name:''
         }
       }
     },
     methods: {
-
+        aaa(tag){
+          if(this.value4 ===''){
+            this.value4 = tag;
+            //调服务fetch
+          }else if(this.value4 ==tag){
+              this.value4 = ''
+              //调服务fetch
+          }else{
+            this.value4 = tag;
+            //调服务fetch
+          }
+        },
       ...mapActions([
       'sendUser'
     ]),
@@ -214,8 +229,11 @@ import { mapActions } from 'vuex';
       fetchData (){
         let para = { page:this.currentPage,
                     school_id:this.value1,
-                    status:this.value2,
-                    time:this.value3,}
+                    status:this.status,
+                    start_time:this.value3[0],
+                    end_time:this.value3[1],
+                    tmk_id:this.value2
+                  }
         
         returnVisitList(token,para).then((res) => {//替换服务
           this.number = res.data.total;
@@ -268,6 +286,16 @@ import { mapActions } from 'vuex';
         }
       })
       console.log(index)
+      let para = {id:index}
+      delete_tag(para,token).then(res=>{
+        tagList(token).then(res=>{
+          this.dynamicTags =   res.data.map(item=>{
+            return item.label
+          })
+          this.backupTages = res.data
+          })
+      })
+      // console.log(index)
         // this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
       },
 
@@ -281,7 +309,16 @@ import { mapActions } from 'vuex';
       handleInputConfirm() {
         let inputValue = this.inputValue;
         if (inputValue) {
-          this.dynamicTags.push(inputValue);
+          let para = {title:inputValue}
+          create_tag(para,token).then(res=>{
+            tagList(token).then(res=>{
+          this.dynamicTags =   res.data.map(item=>{
+            return item.label
+          })
+          this.backupTages = res.data
+          })
+          })
+          // this.dynamicTags.push(inputValue);
           //调服务 上送tag
         }
         this.inputVisible = false;
@@ -366,7 +403,7 @@ import { mapActions } from 'vuex';
  right:0;
   position:absolute;
   top:0;
-  width:180px
+  width:160px
 }
 .studentReturn{
   float: left;
@@ -374,7 +411,12 @@ import { mapActions } from 'vuex';
 }
 .studentReturnThree{
   float:left;
-  width:140px;
+  width:105px;
+  margin-right:10px;
+}
+.studentReturnThreeS{
+  float:left;
+  width:174px;
   margin-right:10px;
 }
 .el-tag--success{
@@ -390,7 +432,7 @@ import { mapActions } from 'vuex';
 }
 .settingTag{
   position: absolute;
-  top: 113px;
+  top: 112px;
   right: 19px;
   color:#1fb5ad;
   z-index: 2000;
@@ -398,9 +440,9 @@ import { mapActions } from 'vuex';
   background-color: #eef6f6;
   cursor: pointer;
 }
-#table .el-table th:nth-last-child(2){
+/*#table .el-table th:nth-last-child(2){
   text-align: left
-}
+}*/
 .el-dialog .el-dialog__header{
     background-color: #1fb5ad;
     padding: 20px 20px 20px;

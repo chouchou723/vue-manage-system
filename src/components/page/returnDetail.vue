@@ -8,8 +8,8 @@
             </el-breadcrumb>
         </div>
         <div style="float:left;width:30%">
-        <div  class='addUserTitle' >
-        <i class=el-icon-my-tongxunlu style="font-size:31px"></i>
+        <div  class='UserTitle' >
+       
         <span style="font-weight:600;font-size:22px">用户资料</span>
          </div>
 
@@ -25,17 +25,15 @@
     <span>{{student.age}}</span>
   </el-form-item>
   <el-form-item label="家长:" prop='parent'>
-    <el-col :span="7">
-    <span>{{student.parent}}</span>
-    </el-col>
+    
+    <span style='width:100px;float:left'>{{student.parent}}</span>
+    
     <el-col :span="11">
     <span>{{student.parent_phone}}</span>
     </el-col>
   </el-form-item>
   <el-form-item label="">
-    <el-col :span="7">
-    <span>{{student.parent1}}</span>
-    </el-col>
+    <span style='width:100px;float:left'>{{student.parent1}}</span>
     <el-col :span="11">
     <span>{{student.parent1_phone}}</span>
     </el-col>
@@ -56,8 +54,8 @@
     </div>
 
     <div style="float:left;width:40%">
-        <div  class='addUserTitle' >
-        <i class=el-icon-my-tongxunlu style="font-size:31px"></i>
+        <div  class='addreturnTitle' >
+       <!--  <i class=el-icon-my-tongxunlu style="font-size:31px"></i> -->
         <span style="font-weight:600;font-size:22px">回访记录({{this.getUserId}})</span>
         <div  style='position:absolute;top:10px;right:10px'><div class='addR' @click='addReturn'></div></div>
          </div>
@@ -97,27 +95,27 @@
           </div>
     </div>
 
-    <el-dialog title="添加回访记录" :visible.sync="dialogFormVisible"  :close-on-click-modal="no" show-close style='z-index:100' class='tagDialog'>
+    <el-dialog :title="returnRecordTitle" :visible.sync="dialogFormVisible"  :close-on-click-modal="no" show-close style='z-index:100' class='tagDialog'>
 <el-form :model="returnform" id='detailForm'>
   <el-form-item label="" >
       <el-input
           type="textarea"
           :autosize="{ minRows: 2, maxRows: 4}"
           placeholder="请输入内容"
-          v-model="returnform.record">
+          v-model="returnform.contents">
         </el-input>
     </el-form-item>
   <el-form-item label="回访标签：">
   <br>
-      <el-checkbox-group v-model="returnform.checkList">
-    <el-checkbox v-for="box in boxes" :label="box.value" :value='box.value'><el-tag type='success'>{{box.label}}</el-tag></el-checkbox>
+      <el-checkbox-group v-model="returnform.tags">
+    <el-checkbox v-for="box in boxes" :label="box.key" :value='box.key'><el-tag type='success'>{{box.label}}</el-tag></el-checkbox>
   </el-checkbox-group>
     </el-form-item>
 
     </el-form>
  
   <div slot="footer" class="dialog-footer">
-    <el-button type="primary">确 定</el-button>
+    <el-button type="primary" @click="returnFormSubmit('returnform')">确 定</el-button>
     <el-button @click="dialogFormVisible = false">取 消</el-button>
   </div>
 </el-dialog> 
@@ -125,7 +123,7 @@
 </template>
 <script>
 var token
-import { cityList} from '../../api/api';
+import { tagList,create_returnList} from '../../api/api';
 import { mapGetters } from 'vuex';
 
   export default {
@@ -144,7 +142,7 @@ import { mapGetters } from 'vuex';
   time:'2017-05-25-12:00',
   teacher:'林俊杰'
 },
-        items:[{name:'苏里',tag:['暑期班','定期班'],content:'已发短信,周五再次沟通，比较有意向',time:'2017-6-2 9:30',index:0},
+        items:[{name:'苏里',tag:['暑期班','定期班'],content:'已发短信,周五再次沟通，比较有意向',time:'2017-6-6 12:30',index:0},
         {name:'李东',tag:['定期班'],content:'已发短信,周五再次沟通，比较有意向,多次询问已经,不知道还有没有问题',time:'2017-3-17 8:30',index:1},
         {name:'章程',tag:['暑期班'],content:'已发短信,周一再次沟通，可能有意向',time:'2017-3-17 8:30',index:2},
         {name:'苏里',tag:['暑期班','定期班'],content:'已发短信,周五再次沟通，比较有意向',time:'2017-3-17 8:30',index:3}],
@@ -152,13 +150,10 @@ import { mapGetters } from 'vuex';
         no:false,
         number:10,
         warning:'*系统中没有该成员',//以后改成调服务显示
-        boxes:[{label:'暑期班',value:0},{label:'定期班',value:1},
-        {label:'暑期班2',value:2},{label:'定期班2',value:3},
-        {label:'暑期班3',value:4},{label:'定期班3',value:5},
-        {label:'暑期班4',value:6},{label:'定期班4',value:7}],
+        boxes:[],
         returnform:{
-          record:'',
-          checkList:[]
+          contents:'',
+          tags:[]
         },
         form: {
           name: '',
@@ -179,27 +174,25 @@ import { mapGetters } from 'vuex';
         currentPage: 1, //页数
         pagesize: 4, //默认每页
         total:40,      //总页数
+        in:''
 
       }
     },
     methods: {
-     
-
-      onSubmit(formName) {
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            alert('submit!');
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
-
-      },
+     returnFormSubmit(formName){
+      this.returnform.uid = this.getUserId
+      create_returnList(this.returnform,token).then(()=>{
+        this.dialogFormVisible=false
+      })
+     },
       addReturn(){
         console.log(this.getUserId)
-        this.returnform.record = '';
-        this.returnform.checkList = [];
+        tagList(token).then(res=>{
+            this.boxes = res.data
+          })
+        this.in = '';
+        this.returnform.contents = '';
+        this.returnform.tags = [];
         this.dialogFormVisible=true
       },
       handleCurrentChange: function(val) {  //变更页数
@@ -207,33 +200,38 @@ import { mapGetters } from 'vuex';
             this.fetchData();
       },
       editReturn(index,item){
-        this.returnform.record = item.content
-        this.dialogFormVisible=true
-        let arr = [];
-        this.boxes.map(v=>{
+        tagList(token).then(res=>{
+            this.boxes = res.data;
+            this.boxes.map(v=>{
           for(let i =0;i<item.tag.length;i++){
-
-          if(v.label == item.tag[i] ){
-            arr.push(v.value)
-          }
+            if(v.label == item.tag[i] ){
+              this.returnform.tags.push(v.key)
+            }
           }
         })
-        // console.log(arr)
-        this.returnform.checkList = arr
+          }).then(()=>{
+            this.in = 1;
+            this.returnform.contents = item.content;
+            this.dialogFormVisible=true
+        
+          })
+        
+        
       }
     },
     computed:{
-      options(){
-        if(this.form.sex == ''){
-          return
-        }else if(this.form.sex ==1){
-            return [{label:'父子',value:'0'},{label:'母子',value:'1'},{label:'祖孙',value:'2'}]
-          }else{
-            return [{label:'父女',value:'0'},{label:'母女',value:'1'},{label:'祖孙',value:'2'}]
-          }
+      returnRecordTitle(){
+          if(this.in === ''){
+          return '添加回访记录'
+        }else{
+
+        return '修改回访记录'
+        }
+      
       },
        ...mapGetters([
                 'getUserId'
+      
       // ...
             ]),
     },
@@ -251,9 +249,17 @@ import { mapGetters } from 'vuex';
   }
 </script>
 <style scoped>
-.addUserTitle{
+.UserTitle{
   padding:10px;
   position: relative;
+  background:url(../../../static/img/contact.png) left center/25px  no-repeat ;
+  padding-left:27px
+}
+.addreturnTitle{
+  padding:10px;
+  position: relative;
+  background:url(../../../static/img/custService.png) left center/40px  no-repeat ;
+  padding-left:40px
 
 }
 .el-form-item{

@@ -22,7 +22,9 @@
      
     <el-button  v-if='active==1' type="primary" style='width:128px;margin-left:-64px;position:absolute;left:0;bottom:-80px' @click='changeWechat'>更换绑定</el-button>
   
-   <img class="pre-img" src="../../../static/img/we_03.png" alt="" width="256px" height="256px" style="float:left;margin-left:186px;margin-top:50px" v-if='active==2'>
+   <img class="pre-img" src="../../../static/img/we_04.png" alt="" width="256px" height="270px" style="float:left;margin-left:186px;margin-top:50px" v-if='active==2'>
+   <el-input v-model="code" auto-complete="off" placeholder='请输入验证码' style='width:200px;position:absolute;left:0;margin-left:216px;margin-top:330px' v-if='active==2'></el-input>
+     <el-button type="primary" style="position:absolute;left:0;margin-left:278px;margin-top:380px" @click='newStep' v-if='active==2'>确 认</el-button>
    <img class="pre-img" src="../../../static/img/gongxi_03.png" alt="" style="float:left;margin-left:496px;margin-top:150px" v-if='active==3'>
    </div>
    
@@ -40,7 +42,9 @@
    <div style="position:relative;height:310px">
    
   
-   <img class="pre-img" src="../../../static/img/we_03.png" alt="" width="256px" height="256px" style="float:left;margin-left:-128px;margin-top:50px" v-if='active==1'>
+   <img class="pre-img" src="../../../static/img/we_03.png" alt="" width="256px" height="270px" style="float:left;margin-left:-128px;margin-top:50px" v-if='active==1'>
+    <el-input v-model="code" auto-complete="off" placeholder='请输入验证码' style='width:200px;float:left;margin-left:50px;margin-top:150px' v-if='active==1'></el-input>
+     <el-button type="primary" style="float:left;margin-left:10px;margin-top:150px" @click='newStep' v-if='active==1'>确 认</el-button>
    <img class="pre-img" src="../../../static/img/gongxi_03.png" alt="" style="float:left;margin-left:496px;margin-top:150px" v-if='active==2'>
    </div>
    
@@ -69,6 +73,9 @@ var wechat = JSON.parse(user).wechat;
       };
     },
     methods: {
+      newStep(){
+        this.active = 2;
+      },
       changeWechat(){
         this.active = 2;
       },

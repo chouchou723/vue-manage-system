@@ -8,7 +8,7 @@
             </el-breadcrumb>
         </div>
         <div style="float:left;width:28%">
-          <div  class='addUserTitle' >
+          <div  class='UserDetailTitle' >
              <!--  <i class=el-icon-my-tongxunlu style="font-size:31px"></i> -->
               <span style="font-weight:600;font-size:22px">用户资料</span>
               <div  style='position:absolute;top:10px;right:50px'>
@@ -30,17 +30,17 @@
               <span>{{student.age}}</span>
             </el-form-item>
             <el-form-item label="家长:" prop='parent'>
-              <el-col :span="7" >
-              <span>{{student.parent}}</span>
-              </el-col>
+             
+              <span style='width:100px;float:left'>{{student.parent}}</span>
+              
               <el-col :span="11">
               <span>{{student.parent_phone}}</span>
               </el-col>
             </el-form-item>
             <el-form-item label="">
-              <el-col :span="7">
-              <span>{{student.parent1}}</span>
-              </el-col>
+              
+              <span style='width:100px;float:left'>{{student.parent1}}</span>
+             
               <el-col :span="11">
               <span>{{student.parent1_phone}}</span>
               </el-col>
@@ -218,16 +218,16 @@
 
 
     <div style="float:left;width:36%">
-        <div  class='addUserTitle' >
+        <div  class='communityTitle' >
        <!--  <i class=el-icon-my-tongxunlu style="font-size:31px"></i> -->
-        <span style="font-weight:600;font-size:22px;margin-left:10px">沟通记录({{this.getUserId}})</span>
-        <div  style='position:absolute;top:10px;right:10px'><div class='addR' @click='addReturn'></div></div>
+        <span style="font-weight:600;font-size:22px">沟通记录({{this.getUserId}})</span>
+        <div  style='position:absolute;top:10px;right:10px'><div class='addR' @click='addComm'></div></div>
          </div>
          <el-row v-for='item in items'class='listReturn' style='position:relative'>
-  <el-col :span="4" style='text-align:right'><img src="../../../static/img/img.jpg" width='50' alt="" style='border-radius:50%;margin-top:10px;margin-right:8%'></el-col>
+  <el-col :span="4" style='text-align:right'><img :src="item.avtar" width='50' alt="" style='border-radius:50%;margin-top:10px;margin-right:8%'></el-col>
   <el-col :span="16">
   <div style='margin-top:10px'>{{item.name}}</div>
-  <div style="font-size:14px;color:grey">{{item.content}}</div>
+  <div style="font-size:14px;color:grey;margin-bottom:17px">{{item.content}}</div>
   </el-col>
   <el-col :span="4">
     <div style="font-size:15px;color:grey;margin-top:10px;text-align:right">{{item.time.substring(5)}}</div>
@@ -247,19 +247,19 @@
           </div>
     </div>
 
-    <el-dialog title="添加沟通记录" :visible.sync="dialogFormVisible"  :close-on-click-modal="no" size='tiny' show-close style='z-index:100' class='tagDialog'>
+    <el-dialog :title="communityTitle" :visible.sync="dialogFormVisible"  :close-on-click-modal="no" size='tiny' show-close style='z-index:100' class='tagDialog'>
 <el-form :model="commuForm" id='detailForm'>
   <el-form-item label="" >
       <el-input
           type="textarea"
           :autosize="{ minRows: 3, maxRows: 4}"
           placeholder="请输入内容"
-          v-model="commuForm.record">
+          v-model="commuForm.remark">
         </el-input>
     </el-form-item>
   <el-form-item label="下次跟进时间:">
    <el-date-picker
-      v-model="commuForm.time"
+      v-model="commuForm.remind_time"
       type="datetime"
       placeholder="选择日期时间">
     </el-date-picker>
@@ -268,7 +268,7 @@
     </el-form>
  
   <div slot="footer" class="dialog-footer">
-    <el-button type="primary">确 定</el-button>
+    <el-button type="primary" @click="commuFormSubmit('commuForm')">确 定</el-button>
     <el-button @click="dialogFormVisible = false">取 消</el-button>
   </div>
 </el-dialog> 
@@ -301,7 +301,7 @@
 </template>
 <script>
 var token
-import { cityList} from '../../api/api';
+import { cityList,create_community} from '../../api/api';
 import { mapGetters } from 'vuex';
 
   export default {
@@ -320,7 +320,7 @@ import { mapGetters } from 'vuex';
   time:'2017-05-25-12:00',
   teacher:'林俊杰'
 },
-        items:[{name:'苏里',tag:['暑期班','定期班'],content:'已发短信,周五再次沟通，比较有意向',time:'2017-6-2 9:09',index:0},
+        items:[{avtar:'../../../static/img/img.jpg',name:'苏里',tag:['暑期班','定期班'],content:'已发短信,周五再次沟通，比较有意向',time:'2017-6-6 15:09',index:0},
         {name:'李东',tag:['定期班'],content:'已发短信,周五再次沟通，比较有意向,多次询问已经,不知道还有没有问题',time:'2017-3-17 8:30',index:1},
         {name:'章程',tag:['暑期班'],content:'已发短信,周一再次沟通，可能有意向',time:'2017-3-17 8:30',index:2},
         {name:'苏里',tag:['暑期班','定期班'],content:'已发短信,周五再次沟通，比较有意向',time:'2017-3-17 8:30',index:3}],
@@ -340,8 +340,8 @@ import { mapGetters } from 'vuex';
         {label:'暑期班3',value:4},{label:'定期班3',value:5},
         {label:'暑期班4',value:6},{label:'定期班4',value:7}],
         commuForm:{
-          record:'',
-          time:''
+          remark:'',
+          remind_time:''
         },
         actSchool:{
           actToSchool:''
@@ -388,6 +388,7 @@ import { mapGetters } from 'vuex';
         },    
         cities:[],
         nostudent:false,
+        in:''
 
       }
     },
@@ -405,22 +406,23 @@ import { mapGetters } from 'vuex';
       this.dialogFormVisible2 = true;
      },
 
-      onSubmit(formName) {
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            alert('submit!');
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
-
-      },
-      addReturn(){
+      commuFormSubmit(formName){//提交 添加沟通记录
+      this.commuForm.uid = this.getUserId
+      create_community(this.commuForm,token).then(()=>{
+        this.dialogFormVisible=false
+      })
+     },
+      addComm(){//点击添加沟通记录
         console.log(this.getUserId)
-        this.commuForm.record = '';
-        this.commuForm.checkList = [];
+        this.commuForm.remind_time = '';
+        this.commuForm.remark = '';
         this.dialogFormVisible=true
+      },
+      editReturn(index,item){//点击修改沟通记录
+        this.commuForm.remark = item.content
+        this.commuForm.remind_time = item.time;
+        this.dialogFormVisible=true
+        
       },
       addU(){
         // console.log(this.getUserId)
@@ -432,21 +434,7 @@ import { mapGetters } from 'vuex';
             this.currentPage = val;
             this.fetchData();
       },
-      editReturn(index,item){
-        this.commuForm.record = item.content
-        this.dialogFormVisible=true
-        let arr = [];
-        this.boxes.map(v=>{
-          for(let i =0;i<item.tag.length;i++){
-
-          if(v.label == item.tag[i] ){
-            arr.push(v.value)
-          }
-          }
-        })
-        console.log(arr)
-        this.commuForm.checkList = arr
-      },
+      
       searchStudent(){
         if(this.form.referee){
           this.nostudent = true; //调服务查询
@@ -455,14 +443,14 @@ import { mapGetters } from 'vuex';
 
     },
     computed:{
-      options(){
-        if(this.form.sex == ''){
-          return
-        }else if(this.form.sex ==1){
-            return [{label:'父子',value:'0'},{label:'母子',value:'1'},{label:'祖孙',value:'2'}]
-          }else{
-            return [{label:'父女',value:'0'},{label:'母女',value:'1'},{label:'祖孙',value:'2'}]
-          }
+      communityTitle(){
+          if(this.in === ''){
+          return '添加沟通记录'
+        }else{
+
+        return '修改沟通记录'
+        }
+      
       },
        ...mapGetters([
                 'getUserId'
@@ -483,6 +471,18 @@ import { mapGetters } from 'vuex';
   }
 </script>
 <style >
+.UserDetailTitle{
+  padding:10px;
+  position: relative;
+  background:url(../../../static/img/contact.png) left center/25px  no-repeat ;
+  padding-left:27px
+}
+.communityTitle{
+padding:10px;
+  position: relative;
+  background:url(../../../static/img/comuni.png) left center/30px  no-repeat ;
+  padding-left:30px
+}
 .addUserTitle{
   padding:10px;
   position: relative;
