@@ -47,7 +47,7 @@
   <el-form-item label="录入时间:" prop='time' >
     <span>{{student.time}}</span>
   </el-form-item>
-  <el-form-item label="课程顾问(CC):" prop='teacher' >
+  <el-form-item label="课程顾问(CC):" prop='teacher'> 
     <span>{{student.teacher}}</span>
   </el-form-item>
 </el-form>
@@ -60,15 +60,15 @@
         <div  style='position:absolute;top:10px;right:10px'><div class='addR' @click='addReturn'></div></div>
          </div>
          <el-row v-for='item in items'class='listReturn' style='position:relative'>
-  <el-col :span="4" style='text-align:right'><img src="../../../static/img/img.jpg" width='50' alt="" style='border-radius:50%;margin-top:10px;margin-left:15px;margin-right:8%'></el-col>
-  <el-col :span="16">
-  <div style='margin-top:10px'>{{item.name}}</div>
-  <div style="font-size:14px;color:grey">{{item.content}}</div>
-  <div style="height:30px"><el-tag type='success' v-for='t in item.tag' class='tagTag'>{{t}}</el-tag></div>
+  <el-col :span="4" style='text-align:right'><img :src="item.tmk_avatar" width='50' alt="" style='border-radius:50%;margin-top:10px;margin-left:15px;margin-right:8%'></el-col>
+  <el-col :span="15">
+  <div style='margin-top:10px'>{{item.tmk_name}}</div>
+  <div style="font-size:14px;color:grey">{{item.contents}}</div>
+  <div style="height:30px"><el-tag type='success' v-for='t in item.tags' class='tagTag'>{{t}}</el-tag></div>
   </el-col>
-  <el-col :span="4">
-    <div style="font-size:15px;color:grey;margin-top:10px;text-align:right">{{item.time.substring(5)}}</div>
-    <div class='editSpan' @click='editReturn(item.index,item)' v-if="new Date().getTime()-new Date(item.time).getTime()<7200000"></div>
+  <el-col :span="5">
+    <div style="font-size:15px;color:grey;margin-top:10px;text-align:right">{{item.created_at.substring(5,16)}}</div>
+    <div class='editSpan' @click='editReturn(item.id,item)' v-if="new Date().getTime()-new Date(item.created_at).getTime()<7200000 && item.tmk_name == '{{username}}'"></div>
   </el-col>
 </el-row>
          <!-- <div style='position:relative'>
@@ -123,29 +123,26 @@
 </template>
 <script>
 var token
-import { tagList,create_returnList} from '../../api/api';
+import { tagList,create_returnList,returnVisitDetail} from '../../api/api';
 import { mapGetters } from 'vuex';
 
   export default {
     data() {
       return {
         student:{
-  name:'张无忌',
-  sex:'男',
-  age:'16',
-  parent:'余春娇(妈妈)',
-  parent_phone:'13596879024',
-  parent1:'张志明(父亲)',
-  parent1_phone:'13596879024',
-  channel:'大众点评',
-  school:'徐汇校区',
-  time:'2017-05-25-12:00',
-  teacher:'林俊杰'
-},
-        items:[{name:'苏里',tag:['暑期班','定期班'],content:'已发短信,周五再次沟通，比较有意向',time:'2017-6-6 12:30',index:0},
-        {name:'李东',tag:['定期班'],content:'已发短信,周五再次沟通，比较有意向,多次询问已经,不知道还有没有问题',time:'2017-3-17 8:30',index:1},
-        {name:'章程',tag:['暑期班'],content:'已发短信,周一再次沟通，可能有意向',time:'2017-3-17 8:30',index:2},
-        {name:'苏里',tag:['暑期班','定期班'],content:'已发短信,周五再次沟通，比较有意向',time:'2017-3-17 8:30',index:3}],
+                  name:'',
+                  sex:'',
+                  age:'',
+                  parent:'',
+                  parent_phone:'',
+                  parent1:'',
+                  parent1_phone:'',
+                  channel:'',
+                  school:'',
+                  time:'',
+                  teacher:''
+                },
+        items:[],
         dialogFormVisible:false,
         no:false,
         number:10,
@@ -174,7 +171,8 @@ import { mapGetters } from 'vuex';
         currentPage: 1, //页数
         pagesize: 4, //默认每页
         total:40,      //总页数
-        in:''
+        in:'',
+        username:''
 
       }
     },
@@ -203,15 +201,16 @@ import { mapGetters } from 'vuex';
         tagList(token).then(res=>{
             this.boxes = res.data;
             this.boxes.map(v=>{
-          for(let i =0;i<item.tag.length;i++){
-            if(v.label == item.tag[i] ){
+          for(let i =0;i<item.tags.length;i++){
+            if(v.label == item.tags[i] ){
+              console.log(item.tags[i])
               this.returnform.tags.push(v.key)
             }
           }
         })
           }).then(()=>{
             this.in = 1;
-            this.returnform.contents = item.content;
+            this.returnform.contents = item.contents;
             this.dialogFormVisible=true
         
           })
@@ -238,9 +237,31 @@ import { mapGetters } from 'vuex';
     beforeCreate(){
            let user = localStorage.getItem('user');
             token =  JSON.parse(user).token;
+           this.userName = JSON.parse(user).uname;
         },
     created(){
-      console.log(this.getUserId)//通过该id调服务
+      
+      let para = {uid:this.getUserId}
+      returnVisitDetail(token,para).then(res=>{
+        
+        let{nickname,age,sex,source_name,school_name,regtime,cc_name} = res.data.info;
+        // let{uname,mobile}= res.data.familys[0];
+       this.student = {
+          name: nickname,
+          age: age,
+          sex:sex,
+          school:school_name,
+          channel:source_name,
+          time:regtime,
+          parent:res.data.famliys[0].uname+ '('+ res.data.famliys[0].relation+')',
+          parent_phone:res.data.famliys[0].mobile,
+          parent1:res.data.famliys[1]?res.data.famliys[1].uname+ '('+ res.data.famliys[1].relation+')' : '',
+          parent1_phone:res.data.famliys[1]? res.data.famliys[1].mobile : '',
+          teacher: cc_name
+
+        }
+        this.items = res.data.visits
+})
       // cityList(token).then((res)=>{
       //     // console.log(res)
       //     this.cities = res.data

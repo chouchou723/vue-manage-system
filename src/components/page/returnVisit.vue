@@ -63,7 +63,6 @@
         </div>
         <div id="table">
           <el-table
-      @header-click="getTag"
     :data="returnData"
      :default-sort = "{prop: 'last_time', order: 'descending'}"
     border
@@ -208,22 +207,13 @@ import { mapActions } from 'vuex';
       ...mapActions([
       'sendUser'
     ]),
-      getTag(column, event){
-        if(column.label ==='回访标签'){
-          tagList(token).then(res=>{
-            this.filterT = res.data.map(item=>{
-              return {text:item.label,value:item.label}
-            })
-          })
-        }
-        
-      },
       switchDetail(row){
         // console.log(row)
-        this.sendUser(row.id)
+        this.sendUser(row.uid)
        this.$router.push('/returnDetail');
       },
        updateList(){
+        this.currentPage = 1;
           this.fetchData();
       
       },

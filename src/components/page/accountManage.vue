@@ -313,9 +313,11 @@ export default {
     methods: {
       handleIconClick(){
         // console.log('1')
+        this.currentPage = 1;
          this.fetchData();
       },
       updateList(){  //表格上方3个select change之后刷新表格
+        this.currentPage = 1;
         this.fetchData();
       },
       

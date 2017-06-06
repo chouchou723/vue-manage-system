@@ -3,8 +3,8 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-menu"></i> 资源管理</el-breadcrumb-item>
-                <el-breadcrumb-item :to="{ path: '/home' }">学员回访</el-breadcrumb-item>
-                 <el-breadcrumb-item >用户资料</el-breadcrumb-item>
+                <el-breadcrumb-item :to="{ path: '/home' }">{{secondTitle}}</el-breadcrumb-item>
+                 <el-breadcrumb-item >{{student.name}}</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div style="float:left;width:28%">
@@ -13,10 +13,11 @@
               <span style="font-weight:600;font-size:22px">用户资料</span>
               <div  style='position:absolute;top:10px;right:50px'>
               <!-- <div class='addU' @click='addU'></div> -->
-             <el-button type="primary" size="mid" class='activateR' @click='activateResource'><img src="../../../static/img/activate.png" alt="" width='20' style="margin-top:-7px;margin-left:-55px">
+              <el-button v-if='this.sourceId==2' type="primary" size="mid" class='recognizeR' @click='recognizeResource' ><img src="../../../static/img/recognize.png" alt="" width='20' style="margin-top:-7px;margin-left:-55px" >
+             <span style="position:absolute;top:15px;right:8px;font-size:12px">认证资源</span></el-button>
+             <el-button v-if='this.sourceId==3' type="primary" size="mid" class='activateR' @click='activateResource'><img src="../../../static/img/activate.png" alt="" width='20' style="margin-top:-7px;margin-left:-55px">
              <span style="position:absolute;top:15px;right:8px;font-size:12px">激活资源</span></el-button>
-            <!--  <el-button type="primary" size="mid" class='recognizeR' @click='recognizeResource' ><img src="../../../static/img/recognize.png" alt="" width='20' style="margin-top:-7px;margin-left:-55px" >
-             <span style="position:absolute;top:15px;right:8px;font-size:12px">认证资源</span></el-button> -->
+             
               </div>
            </div>
           <el-form   id='aform'label-width="102px" label-position='left' style='border-top:1px solid #e8e8e8 ;padding-left:10px' >
@@ -301,12 +302,13 @@
 </template>
 <script>
 var token
-import { cityList,create_community} from '../../api/api';
+import { cityList,create_community,activateResource,recognizeResource} from '../../api/api';
 import { mapGetters } from 'vuex';
 
   export default {
     data() {
       return {
+        sourceId:3,
         student:{
   name:'张无忌',
   sex:'男',
@@ -399,7 +401,12 @@ import { mapGetters } from 'vuex';
           cancelButtonText: '取消',
          customClass:'green',
         }).then(() => {
-          console.log('调服务')
+          let para = {option:'2',
+                      customer_id:uid
+        }
+          activateResource(para,token).then(res=>{
+            
+          })
         })
        },
      recognizeResource(){
@@ -443,6 +450,15 @@ import { mapGetters } from 'vuex';
 
     },
     computed:{
+      secondTitle(){
+        if(this.sourceId===1){
+          return '我的资源'
+        }else if(this.sourceId ===2){
+          return '无需求资源'
+        }else if(this.sourceId ===3){
+          return '无效资源'
+        }
+      },
       communityTitle(){
           if(this.in === ''){
           return '添加沟通记录'

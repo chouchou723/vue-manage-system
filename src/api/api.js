@@ -163,7 +163,12 @@ export const create_student = (params,token) => { axios.defaults.headers.common[
 
 //获取回访列表
 export const returnVisitList = (token,params) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
-										return axios.get(`${base}/api/v1/visit`,{params:params}).then(res => res.data);  };										
+										return axios.get(`${base}/api/v1/visit`,{params:params}).then(res => res.data);  };	
+
+//获取回访详细
+export const returnVisitDetail = (token,params) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.get(`${base}/api/v1/tmk/visit/detail`,{params:params}).then(res => res.data);  };	
+
 //获取来源渠道
 export const sourceList = (token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
 										return axios.get(`${base}/api/v1/public/getSource`).then(res => res.data);  };
@@ -188,4 +193,12 @@ export const create_community = (params,token) => { axios.defaults.headers.commo
 										return axios.post(`${base}/api/v1/tmk/customer/call`,params).then(res => res.data);  };											
 //查询重复学员
 export const repeatStudentList = (token,params) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
-										return axios.get(`${base}/api/v1/tmk/getuesrs`,{params:params}).then(res => res.data);  };									
+										return axios.get(`${base}/api/v1/tmk/getuesrs`,{params:params}).then(res => res.data);  };		
+
+//激活资源
+export const activateResource = (params,token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.put(`${base}/api/v1/tmk/customer/auth`,params).then(res => res.data);  };	
+
+//认证资源
+export const recognizeResource = (params,token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.put(`${base}/api/v1/tmk/customer/auth`,params).then(res => res.data);  };																									
