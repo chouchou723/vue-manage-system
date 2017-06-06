@@ -1,9 +1,9 @@
 <template>
     <div class="sidebar" >
         <el-menu :default-active="onRoutes" id="sidebar" class="el-menu-vertical-demo" unique-opened router >
-            <el-menu-item index="index">
+            <!--<el-menu-item index="index">
                 <i class="el-icon-my-shouye"></i>首页
-            </el-menu-item>
+            </el-menu-item>-->
             <!--<el-menu-item index="calendar" @click='clearCounter'>
               <i  class="el-icon-my-wodericheng"></i>任务提醒
               
