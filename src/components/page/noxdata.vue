@@ -3,7 +3,7 @@
 <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-menu"></i> 资源管理</el-breadcrumb-item>
-                <el-breadcrumb-item>无效资源</el-breadcrumb-item>
+                <el-breadcrumb-item>无效资源</el-breadcrumb-item><el-breadcrumb-item>({{names}})</el-breadcrumb-item>
             </el-breadcrumb>
             
             
@@ -40,8 +40,8 @@
                 </el-select>
                 </div>
                 
-     <div  class='fourSelect'  >
-                       <el-select v-model="value3" clearable placeholder="注册时间" filterable @change="updateList">
+     <div  class='fourSelectq'  >
+                       <el-select v-model="value3" clearable placeholder="录入时间" filterable @change="updateList">
                   <el-option
                     <!--v-for="item in options3"
                     :key="item.value"
@@ -71,6 +71,7 @@
     :data="tableData"
     border
     style="width: 100%"
+    @cell-click="aaa"
     :default-sort = "{prop: 'date', order: 'descending'}"
     >
 
@@ -117,25 +118,17 @@
       width="130">
     </el-table-column>
     
-        <el-table-column
-      prop="date"
-      label="注册日期"
-      sortable
-      width="150">
-    </el-table-column>
-    <el-table-column
-      prop=""
-      label="最近访问"
-      sortable
-      width="150">
-    </el-table-column>
+
+
     
-        <el-table-column
-      prop=""
-      label="资源状态"
+
+     <el-table-column
+      prop="date"
+      label="录入日期"
+      sortable
       :formatter="formatter">
     </el-table-column>
-    
+
   </el-table>            
 
 
@@ -427,7 +420,7 @@ h2 {
   width:100px
 }
 
-.fourSelect{
+.fourSelectq{
   margin-left:580px;
   position:absolute;
   top:0;

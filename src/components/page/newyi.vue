@@ -2,7 +2,7 @@
 <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-menu"></i> 资源管理</el-breadcrumb-item>
-                <el-breadcrumb-item>我的资源</el-breadcrumb-item>
+                <el-breadcrumb-item>我的资源</el-breadcrumb-item><el-breadcrumb-item>({{names}})</el-breadcrumb-item>
             </el-breadcrumb>
             
             
@@ -18,10 +18,10 @@
                         
                       <el-select v-model="datadx" clearable placeholder="资源类型" @change="updateList">
                   <el-option
-                    <!--v-for="item in options1"
+                    v-for="item in options1"
                     :key="item.value"
                     :label="item.label"
-                    :value="item.value">-->
+                    :value="item.value">
                   </el-option>
                 </el-select>
                       </div>
@@ -50,7 +50,7 @@
                 </el-select>
                 </div>
                 
-     <div  class='fourSelect'  >
+     <div  class='fourSelectp'  >
                        <el-select v-model="value3" clearable placeholder="注册时间" filterable @change="updateList">
                   <el-option
                     v-for="item in options3"
@@ -215,71 +215,8 @@
         value1: '', //对应部门select的值
         value2: '', //对应职位select的值
       
-        tableData: [{
-                "id":1675,
-                "sour_id":55,
-                "names":"佳玉",
-                "address":"北新泾",
-                "sex":1,
-                "mobile":"13524000233",
-                "group_id":1,
-                "tmk_name":null,
-                "cc_name":"杨快",
-                "school_name":"北新泾体验馆",
-                "sour_name":"大众点评（少儿绘画）"
-            },
-            {
-                "id":1658,
-                "sour_id":55,
-                "names":"孩子",
-                "address":"北新泾",
-                "sex":1,
-                "mobile":"13761833542",
-                "group_id":5,
-                "tmk_name":"朱海萍",
-                "cc_name":"杨快",
-                "school_name":"北新泾体验馆",
-                "sour_name":"大众点评（少儿绘画）"
-            },
-            {
-                "id":1653,
-                "sour_id":4,
-                "names":"吕佳润",
-                "address":"长宁",
-                "sex":2,
-                "mobile":"15821198361",
-                "group_id":7,
-                "tmk_name":null,
-                "cc_name":"严媚",
-                "school_name":"北新泾体验馆",
-                "sour_name":"Ref(转介绍)"
-            },
-            {
-                "id":1646,
-                "sour_id":55,
-                "names":"孩子",
-                "address":"北新泾",
-                "sex":1,
-                "mobile":"13918267703",
-                "group_id":6,
-                "tmk_name":"朱海萍",
-                "cc_name":"严媚",
-                "school_name":"北新泾体验馆",
-                "sour_name":"大众点评（少儿绘画）"
-            },
-            {
-                "id":1622,
-                "sour_id":55,
-                "names":"毛嘉睿",
-                "address":"北新泾",
-                "sex":1,
-                "mobile":"18018698373",
-                "group_id":5,
-                "tmk_name":null,
-                "cc_name":"严媚",
-                "school_name":"北新泾体验馆",
-                "sour_name":"大众点评（少儿绘画）"
-            },
+        tableData: [
+                
             {
                 "id":1610,
                 "sour_id":55,
@@ -292,19 +229,6 @@
                 "cc_name":"杨快",
                 "school_name":"北新泾体验馆",
                 "sour_name":"大众点评（少儿绘画）"
-            },
-            {
-                "id":1604,
-                "sour_id":4,
-                "names":"张劭阳",
-                "address":"北新泾",
-                "sex":1,
-                "mobile":"13764331239",
-                "group_id":7,
-                "tmk_name":null,
-                "cc_name":"杨快",
-                "school_name":"北新泾体验馆",
-                "sour_name":"Ref(转介绍)"
             },
             {
                 "id":1599,
@@ -358,32 +282,8 @@
                 "school_name":"北新泾体验馆",
                 "sour_name":"大众点评38团购"
             },
-            {
-                "id":1536,
-                "sour_id":78,
-                "names":"孩子",
-                "address":"北新泾",
-                "sex":1,
-                "mobile":"13681974808",
-                "group_id":6,
-                "tmk_name":"孙慧钧",
-                "cc_name":"杨快",
-                "school_name":"北新泾体验馆",
-                "sour_name":" 支付宝口碑"
-            },
-            {
-                "id":1515,
-                "sour_id":55,
-                "names":"孩子",
-                "address":"北新泾",
-                "sex":1,
-                "mobile":"13564679912",
-                "group_id":6,
-                "tmk_name":"朱海萍",
-                "cc_name":"杨快",
-                "school_name":"北新泾体验馆",
-                "sour_name":"大众点评（少儿绘画）"
-            },
+            
+            
             {
                 "id":1514,
                 "sour_id":26,
@@ -479,7 +379,7 @@ h2 {
   width:100px
 }
 
-.fourSelect{
+.fourSelectp{
   margin-left:580px;
   position:absolute;
   top:0;
