@@ -118,9 +118,9 @@ import { mapGetters } from 'vuex';
 		background:#6daba8 ;
 	
 	}
-	/*.hoverrt:hover{
-		background-color: #2b3a40;
-	}*/
+	.hoverrt:hover{
+		background-color: #1fb5ad;
+	}
 	/*.hoverbg:hover
 	{background-color: #2b3a40;}*/
     .header {
@@ -206,8 +206,8 @@ import { mapGetters } from 'vuex';
   		margin-top: 22px;
   	}
     #addUser:hover{
-    	/*background-color: #2b3a40;*/
-        border:1px solid #6daba8;
+    	/*background-color: #6daba8;*/
+        /*border:1px solid #6daba8;*/
         cursor: pointer;
     }
 

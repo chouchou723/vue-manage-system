@@ -201,4 +201,8 @@ export const activateResource = (params,token) => { axios.defaults.headers.commo
 
 //认证资源
 export const recognizeResource = (params,token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
-										return axios.put(`${base}/api/v1/tmk/customer/auth`,params).then(res => res.data);  };																									
+										return axios.put(`${base}/api/v1/tmk/customer/auth`,params).then(res => res.data);  };
+
+//获取全部TMK
+export const getTMK = (token,params) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.get(`${base}/api/v1/public/getTmkLisit`,{params:params}).then(res => res.data);  };																																				

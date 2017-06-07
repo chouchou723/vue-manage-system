@@ -179,11 +179,16 @@ import { mapGetters } from 'vuex';
     methods: {
      returnFormSubmit(formName){
       this.returnform.uid = this.getUserId
+      //可能要送 用户名
       create_returnList(this.returnform,token).then(()=>{
+        let para = {uid:this.getUserId}
+      returnVisitDetail(token,para).then(res=>{
+        this.items = res.data.visits
+      })
         this.dialogFormVisible=false
       })
      },
-      addReturn(){
+      addReturn(){//点击添加回访记录
         console.log(this.getUserId)
         tagList(token).then(res=>{
             this.boxes = res.data
@@ -245,7 +250,6 @@ import { mapGetters } from 'vuex';
       returnVisitDetail(token,para).then(res=>{
         
         let{nickname,age,sex,source_name,school_name,regtime,cc_name} = res.data.info;
-        // let{uname,mobile}= res.data.familys[0];
        this.student = {
           name: nickname,
           age: age,

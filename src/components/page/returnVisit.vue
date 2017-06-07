@@ -16,9 +16,9 @@
           <el-select v-model="value2" clearable placeholder="选择TMK" @change="updateList">
     <el-option
       v-for="item in options1"
-      :key="item.value"
+      :key="item.key"
       :label="item.label"
-      :value="item.value">
+      :value="item.key">
     </el-option>
   </el-select>
 </div>
@@ -54,7 +54,7 @@
         placeholder="输入手机号或姓名"
         icon="search"
         v-model="input2"
-        :on-icon-click="handleIconClick">
+        :on-icon-click="updateList">
       </el-input>
       </div>
     </div>
@@ -159,7 +159,7 @@
 
 <script>
 var token
-import { campusList,returnVisitList,tagList,create_tag,delete_tag} from '../../api/api';
+import { campusList,returnVisitList,tagList,create_tag,delete_tag,getTMK} from '../../api/api';
 
 import { mapActions } from 'vuex';
 
@@ -185,7 +185,7 @@ import { mapActions } from 'vuex';
         value2: '',   //对应select的值
         status: '', //对应select的值
         value3: '', //对应select的值
-        value4:'',
+        value4:'',//点击tag
         tagform:{
           name:''
         }
@@ -195,14 +195,12 @@ import { mapActions } from 'vuex';
         aaa(tag){
           if(this.value4 ===''){
             this.value4 = tag;
-            //调服务fetch
           }else if(this.value4 ==tag){
               this.value4 = ''
-              //调服务fetch
           }else{
             this.value4 = tag;
-            //调服务fetch
           }
+          this.fetchData();
         },
       ...mapActions([
       'sendUser'
@@ -213,17 +211,19 @@ import { mapActions } from 'vuex';
        this.$router.push('/returnDetail');
       },
        updateList(){
-        this.currentPage = 1;
+          this.currentPage = 1;
           this.fetchData();
       
       },
       fetchData (){
         let para = { page:this.currentPage,
+                    tmk_uid:this.value2,
                     school_id:this.value1,
                     status:this.status,
                     start_time:this.value3[0],
                     end_time:this.value3[1],
-                    tmk_id:this.value2
+                    input:this.input2,
+                    tag:this.value4
                   }
         
         returnVisitList(token,para).then((res) => {//替换服务
@@ -254,10 +254,7 @@ import { mapActions } from 'vuex';
         // console.log(a)
         // console.log(value.indexOf(a))
         // return value.indexOf(a) === -1;
-      }, 
-      handleIconClick(ev) {
-      console.log(ev);//搜索姓名等
-    },
+      },
     settingTag(){
       //调服务获取tag[]
         tagList(token).then(res=>{
@@ -330,6 +327,9 @@ import { mapActions } from 'vuex';
           this.options = a.map(item => {
         return { value: item.id, label: item.title };
       });
+        })
+        getTMK(token).then((res)=>{
+          this.options1 = res.data
         })
     },
     mounted() {

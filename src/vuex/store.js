@@ -15,7 +15,9 @@ Vue.use(Vuex)
 const state = {
     count: 0,
     src: avatar,
-    user_id:''
+    user_id:'',
+    u_id:'',
+    u_status:''
 }
 
 // 定义所需的 mutations
@@ -34,6 +36,10 @@ const mutations = {
     },
     SENDUSER(state,userid){
         state.user_id = userid
+    },
+    SENDRESOURCEID(state,uid){
+        state.u_id = uid.u_id;
+        state.u_status = uid.u_status
     }
 }
 

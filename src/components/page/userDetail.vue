@@ -15,6 +15,7 @@
               <!-- <div class='addU' @click='addU'></div> -->
               <el-button v-if='this.sourceId==2' type="primary" size="mid" class='recognizeR' @click='recognizeResource' ><img src="../../../static/img/recognize.png" alt="" width='20' style="margin-top:-7px;margin-left:-55px" >
              <span style="position:absolute;top:15px;right:8px;font-size:12px">认证资源</span></el-button>
+
              <el-button v-if='this.sourceId==3' type="primary" size="mid" class='activateR' @click='activateResource'><img src="../../../static/img/activate.png" alt="" width='20' style="margin-top:-7px;margin-left:-55px">
              <span style="position:absolute;top:15px;right:8px;font-size:12px">激活资源</span></el-button>
              
@@ -97,12 +98,10 @@
     
     <el-input v-model="form.parent" placeholder='请输入家长姓名'  style="width:142px;margin-right:30px;float:left"></el-input>
     <el-select v-model="form.con" placeholder="请选择关系" prop='con' style="width:142px;margin-right:30px;float:left" >
-    <el-option
-      v-for="item in options"
-      :key="item.value"
-      :label="item.label"
-      :value="item.value">
-    </el-option>
+    <el-option label="妈妈" value="2"></el-option>
+      <el-option label="爸爸" value="3"></el-option>
+      <el-option label="爷爷" value="4"></el-option>
+      <el-option label="奶奶" value="5"></el-option>
     </el-select>
     <el-input v-model="form.phone"  placeholder='请输入手机号' prop='phone' style="width:142px;float:left"></el-input>
    
@@ -110,12 +109,10 @@
   <el-form-item label="">
     <el-input v-model="form.parent1" placeholder='请输入家长姓名' prop='parent1' style="width:142px;margin-right:30px;float:left"></el-input>
     <el-select v-model="form.con1" placeholder="请选择关系" prop='con1' style="width:142px;margin-right:30px;float:left" >
-      <el-option
-      v-for="item in options"
-      :key="item.value"
-      :label="item.label"
-      :value="item.value">
-    </el-option>
+      <el-option label="妈妈" value="2"></el-option>
+      <el-option label="爸爸" value="3"></el-option>
+      <el-option label="爷爷" value="4"></el-option>
+      <el-option label="奶奶" value="5"></el-option>
     </el-select>
     <el-input v-model="form.phone1" placeholder='请输入手机号' prop='phone1'  style="width:142px;float:left"></el-input>
     <el-col :span="2">
@@ -192,7 +189,7 @@
  
   <div slot="footer" class="dialog-footer" style='text-align:center'>
     <el-button @click="dialogFormVisible2 = false">认证为无效</el-button>
-    <el-button type="primary" @click="dialogFormVisible3 = true;dialogFormVisible2 = false;">重新激活</el-button>
+    <el-button type="primary" @click="restartResource">重新激活</el-button>
     <br><br><br>
     <span style="color:#ec6161;">*请在了解资源实际情况后做出判断</span>
   </div>
@@ -201,10 +198,24 @@
  <el-dialog title="修改资源所属校区" :visible.sync="dialogFormVisible3"  :close-on-click-modal="no"  top='33%'size='tiny' show-close style='z-index:100' class='schoolDialog'>
 <el-form :model="actSchool" id='actSchool1'>
   <el-form-item label="激活资源到:" prop='actToSchool'>
-    <el-select v-model="actSchool.actToSchool" placeholder="请选择校区" style="width:142px" >
+    <!-- <el-select v-model="actSchool.actToSchool" placeholder="请选择校区" style="width:142px" >
       <el-option label="徐锦江" value="1"></el-option>
       <el-option label="刘青云" value="0"></el-option>
-    </el-select>
+    </el-select> -->
+    <el-select
+              v-model="actSchool.actToSchool"
+              filterable
+              remote
+              placeholder="请输入关键词"
+              :remote-method="remoteMethod"
+              :loading="loading">
+              <el-option
+                v-for="item in schools"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
   </el-form-item>
 
     </el-form>
@@ -302,13 +313,16 @@
 </template>
 <script>
 var token
-import { cityList,create_community,activateResource,recognizeResource} from '../../api/api';
+import { cityList,create_community,activateResource,recognizeResource,campusList} from '../../api/api';
 import { mapGetters } from 'vuex';
 
   export default {
     data() {
       return {
-        sourceId:3,
+        loading: false,
+        schools:[],
+        list:[],
+        sourceId:2,
         student:{
   name:'张无忌',
   sex:'男',
@@ -395,6 +409,24 @@ import { mapGetters } from 'vuex';
       }
     },
     methods: {
+      remoteMethod(query) {   //远程搜索，录入时进行过滤
+        if (query !== '') {
+          this.loading = true;
+          setTimeout(() => {
+            this.loading = false;
+            this.schools = this.list.filter(item => {
+              return item.label.toLowerCase()
+                .indexOf(query.toLowerCase()) > -1;
+            });
+          }, 200);
+        } else {
+          this.schools = [];
+        }
+      },
+      restartResource(){
+        this.dialogFormVisible3 = true;
+        this.dialogFormVisible2 = false;
+      },
       activateResource(){
         this.$confirm('是否确认激活该资源?', '激活资源', {
           confirmButtonText: '确定',
@@ -402,7 +434,7 @@ import { mapGetters } from 'vuex';
          customClass:'green',
         }).then(() => {
           let para = {option:'2',
-                      customer_id:uid
+                      customer_id:uid//uid从vuex拿
         }
           activateResource(para,token).then(res=>{
             
@@ -482,6 +514,18 @@ import { mapGetters } from 'vuex';
       cityList(token).then((res)=>{
           // console.log(res)
           this.cities = res.data
+        })
+      let cam = {
+          simple:'1'
+        };
+      campusList(cam,token).then((res)=>{//获取校区
+          let a = res.data;
+          this.schools = a.map(item => {
+        return { value: item.id, label: item.title };
+      });
+          this.list = a.map(item => {
+        return { value: item.id, label: item.title };
+      });
         })
     }
   }

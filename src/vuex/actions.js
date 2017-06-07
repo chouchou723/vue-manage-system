@@ -16,3 +16,7 @@ export const updateSrc = ({commit},src) =>{
 export const sendUser = ({commit},userid) =>{
 	commit('SENDUSER',userid)
 }
+
+export const sendResourceId = ({commit},uid) =>{
+	commit('SENDRESOURCEID',uid)
+}
