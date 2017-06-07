@@ -171,7 +171,11 @@ export const returnVisitList = (token,params) => { axios.defaults.headers.common
 
 //获取回访详细
 export const returnVisitDetail = (token,params) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
-										return axios.get(`${base}/api/v1/tmk/visit/detail`,{params:params}).then(res => res.data);  };	
+										return axios.get(`${base}/api/v1/visit/detail`,{params:params}).then(res => res.data);  };	
+
+//获取回访记录
+export const getVisitList = (token,params) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.get(`${base}/api/v1/visit/getVisit`,{params:params}).then(res => res.data);  };	
 
 //获取来源渠道
 export const sourceList = (token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;

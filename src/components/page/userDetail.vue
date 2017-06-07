@@ -348,7 +348,7 @@
               layout="prev, pager, next"
               :total="total1"
               :current-page="currentPage1"
-               :page-size="pagesize"
+               :page-size="pagesize1"
                @current-change="handleCurrentChange1">
             </el-pagination>
           </div>
@@ -413,6 +413,7 @@ import { mapGetters } from 'vuex';
         currentPage: 1, //页数
         currentPage1: 1, //页数
         pagesize: 4, //默认每页
+        pagesize1: 2, //默认每页
         total:0,
         total1:0,
         regions:[],
@@ -635,6 +636,7 @@ import { mapGetters } from 'vuex';
          this.number = res.data.total;
          this.items = res.data.data;
          let c = res.data.last_page *this.pagesize;
+         this.total = parseInt(c);
       })
         this.currentPage = 1;
         this.dialogFormVisible=false
@@ -717,7 +719,7 @@ import { mapGetters } from 'vuex';
       getUserInviteList(token,p).then(res=>{
          this.number1 = res.data.total;
          this.items1 = res.data.data;
-         let c = res.data.last_page *this.pagesize;
+         let c = res.data.last_page *this.pagesize1;
           this.total1 = parseInt(c);
       })
       },
@@ -800,7 +802,7 @@ import { mapGetters } from 'vuex';
       getUserInviteList(token,p).then(res=>{//获取邀约记录
         this.number1 = res.data.total;
          this.items1 = res.data.data;
-         let c = res.data.last_page *this.pagesize;
+         let c = res.data.last_page *this.pagesize1;
           this.total1 = parseInt(c);
       })
       cityList(token).then((res)=>{//获取城市 表格中用

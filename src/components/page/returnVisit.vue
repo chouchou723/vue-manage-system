@@ -54,6 +54,7 @@
         placeholder="输入手机号或姓名"
         icon="search"
         v-model="input2"
+         @keyup.enter.native="updateList"
         :on-icon-click="updateList">
       </el-input>
       </div>
@@ -73,7 +74,7 @@
 
       >
       <template scope="scope">
-        <span  @click="switchDetail(scope.row)">{{scope.row.nickname}}</span>
+        <span  @click="switchDetail(scope.row)" class='nicknameSpan'>{{scope.row.nickname}}</span>
       </template>
     </el-table-column>
     <el-table-column
@@ -98,12 +99,12 @@
         <el-tag
           :type="scope.row.tags == '未回访' ? 'danger' : 'success'"
           close-transition 
-          v-for='t in scope.row.tags' @click.native='aaa(t)'>{{t}}</el-tag>
+          v-for='(t,key) in scope.row.tags' @click.native='aaa(t,key)'>{{t}}</el-tag>
       </template>
     </el-table-column>
 
   </el-table>
-  <div class='settingTag'>
+  <div class='settingTag'  v-if="code =='tmk_m'">
     <span @click='settingTag'>[设置]</span>
   </div>
   <div class="block">
@@ -193,13 +194,15 @@ import { mapActions } from 'vuex';
       }
     },
     methods: {
-        aaa(tag){
+        aaa(tag,key){
+          //调接口配对
+          // console.log(key)
           if(this.value4 ===''){
-            this.value4 = tag;
+            this.value4 = key;
           }else if(this.value4 ==tag){
               this.value4 = ''
           }else{
-            this.value4 = tag;
+            this.value4 = key;
           }
           this.fetchData();
         },
@@ -224,7 +227,7 @@ import { mapActions } from 'vuex';
                     start_time:this.value3[0],
                     end_time:this.value3[1],
                     input:this.input2,
-                    tag:this.value4
+                    tag_id:this.value4
                   }
         
         returnVisitList(token,para).then((res) => {//替换服务
@@ -241,21 +244,7 @@ import { mapActions } from 'vuex';
                     this.currentPage = val;
 
                     this.fetchData();
-                },   
-      filterTag(value, row) {
-        // let a = row.tag.join(',')
-        // console.log(value.indexOf(row.tag.join('')))
-          // console.log(value)
-          console.log(value)
-        let a = row.tags.some(item=>{
-          console.log(item)
-          return item == value
-        })
-        return a 
-        // console.log(a)
-        // console.log(value.indexOf(a))
-        // return value.indexOf(a) === -1;
-      },
+                },
     settingTag(){
       //调服务获取tag[]
         tagList(token).then(res=>{
@@ -274,7 +263,6 @@ import { mapActions } from 'vuex';
           index = item.key
         }
       })
-      console.log(index)
       let para = {id:index}
       delete_tag(para,token).then(res=>{
         tagList(token).then(res=>{
@@ -374,6 +362,9 @@ import { mapActions } from 'vuex';
   position:relative;
   height:50px
 }
+.nicknameSpan:hover{
+  cursor: pointer;
+}
 /*.oneSelect{
   margin-left:220px;
   position:absolute;
@@ -418,6 +409,9 @@ import { mapActions } from 'vuex';
 	color:#FFFFFF;
 	border-radius: 25px;
 		
+}
+.el-tag--success:hover{
+  cursor: pointer;
 }
 .el-tag--danger{
   border-radius: 25px;

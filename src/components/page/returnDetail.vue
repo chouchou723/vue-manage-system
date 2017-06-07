@@ -60,34 +60,26 @@
         <div  style='position:absolute;top:10px;right:10px'><div class='addR' @click='addReturn'></div></div>
          </div>
          <div style="min-height:290px">
-           <el-row v-for='item in items'class='listReturn' style='position:relative'>
-  <el-col :span="4" style='text-align:right'><img :src="item.tmk_avatar" width='50' alt="" style='border-radius:50%;margin-top:10px;margin-left:15px;margin-right:8%'></el-col>
-  <el-col :span="20">
-  <div style="height:30px">
-    <div style='margin-top:10px'>{{item.tmk_name}}</div>
-      <div style="font-size:15px;color:grey;margin-top:10px;text-align:right">{{item.created_at.substring(5,16)}}</div>
-  </div>
-  <div>
-   <div style="font-size:14px;color:grey">{{item.contents}}</div>
-  </div>
-  <div><div class='editSpan' @click='editReturn(item.id,item)' v-if="new Date().getTime()-new Date(item.created_at).getTime()<7200000 && item.tmk_name == userName"></div></div>
-  </el-col>
+           <el-row v-for='item in items' class='listReturn' style='position:relative'>
+                <el-col :span="4" style='text-align:right'>
+                <img :src="item.tmk.avatar" width='50' alt="" style='border-radius:50%;margin-top:10px;margin-left:15px;margin-right:8%'></el-col>
+                <el-col :span="20">
+                <div style="height:35px">
+                  <div style='margin-top:10px;float:left'>{{item.tmk.uname}}</div>
+                    <div style="font-size:15px;color:grey;margin-top:10px;margin-bottom:5px;float:right">{{item.created_at.substring(5,16)}}</div>
+                </div>
+                <div style="margin-bottom:5px">
+                 <div style="font-size:14px;color:grey">{{item.contents}}</div>
+                </div>
+                <div>
+                <div style="float:left">
+                  <el-tag type='success' v-for='t in item.tags' class='tagTag'>{{t}}</el-tag>
+                </div>
+                <div class='editSpan' @click='editReturn(item.id,item)' v-if="new Date().getTime()-new Date(item.created_at).getTime()<7200000 && item.tmk_name == userName"></div></div>
+                </el-col>
 
-</el-row>
+        </el-row>
          </div>
-         
-         <!-- <div style='position:relative'>
-          <div v-for='item in items'class='listReturn' style='position:relative'>
-          <span style='position:absolute;top:-5px;left:5px'> <img src="../../../static/img/img.jpg" width='40' alt="" style='border-radius:50%;margin-top:10px'></span>
-          
-           <span style='font-size:14px;position:absolute;top:10px;left:50px'>{{item.name}}</span>
-           <span style='font-size:10px;color:grey;position:absolute;top:30px;left:50px'>{{item.content}}</span>
-           <span style='font-size:10px;color:grey;position:absolute;top:10px;right:10px'>3-17 8:30</span>
-           <div  style='position:absolute;top:40px;right:10px'><div class='editSpan' @click='editReturn(item.index,item)'></div></div>
-           <el-tag type='success' v-for='t in item.tag' class='tagTag'>{{t}}</el-tag>
-          </div>
-           
-         </div> -->
          <div class="block">
   
             <el-pagination
@@ -128,7 +120,7 @@
 </template>
 <script>
 var token,user
-import { tagList,create_returnList,returnVisitDetail} from '../../api/api';
+import { tagList,create_returnList,returnVisitDetail,getVisitList} from '../../api/api';
 import { mapGetters } from 'vuex';
 
   export default {
@@ -185,16 +177,23 @@ import { mapGetters } from 'vuex';
      returnFormSubmit(formName){
       this.returnform.uid = this.getUserId
       //可能要送 用户名
-      create_returnList(this.returnform,token).then(()=>{
-        let para = {uid:this.getUserId}
-      returnVisitDetail(token,para).then(res=>{
-        this.items = res.data.visits
+      create_community(this.commuForm,token).then(()=>{
+        let p = {
+                page:'1',
+                uid:this.getUserId
+      }
+          getVisitList(token,p).then(res=>{
+         this.number = res.data.total;
+         this.items = res.data.data;
+         let c = res.data.last_page *this.pagesize;
+         this.total = parseInt(c);
       })
+        this.currentPage = 1;
         this.dialogFormVisible=false
       })
      },
       addReturn(){//点击添加回访记录
-        console.log(this.getUserId)
+        // console.log(this.getUserId)
         tagList(token).then(res=>{
             this.boxes = res.data
           })
@@ -205,7 +204,18 @@ import { mapGetters } from 'vuex';
       },
       handleCurrentChange: function(val) {  //变更页数
             this.currentPage = val;
-            this.fetchData();
+            let p = {
+                page:this.currentPage,
+                uid:this.getUserId
+      }
+      getVisitList(token,p).then(res=>{
+         this.number = res.data.total;
+         this.items = res.data.data;
+         // console.log(this.items)
+         let c = res.data.last_page *this.pagesize;
+          this.total = parseInt(c);
+      })
+            
       },
       editReturn(index,item){
         tagList(token).then(res=>{
@@ -213,7 +223,7 @@ import { mapGetters } from 'vuex';
             this.boxes.map(v=>{
           for(let i =0;i<item.tags.length;i++){
             if(v.label == item.tags[i] ){
-              console.log(item.tags[i])
+              // console.log(item.tags[i])
               this.returnform.tags.push(v.key)
             }
           }
@@ -269,8 +279,18 @@ import { mapGetters } from 'vuex';
           teacher: cc_name
 
         }
-        this.items = res.data.visits
+        // this.items = res.data.visits
 })
+       let p = {
+                page:this.currentPage,
+                uid:this.getUserId
+      }
+      getVisitList(token,p).then(res=>{
+         this.number = res.data.total;
+         this.items = res.data.data;
+         let c = res.data.last_page *this.pagesize;
+          this.total = parseInt(c);
+      })
       // cityList(token).then((res)=>{
       //     // console.log(res)
       //     this.cities = res.data
@@ -321,6 +341,7 @@ border-bottom:1px solid #e8e8e8;
   margin-left:48px
 }
 .editSpan{
+  float:right;
   height: 30px;
   background: url(../../../static/img/edit.png) right/30px 30px no-repeat;
   cursor: pointer;
