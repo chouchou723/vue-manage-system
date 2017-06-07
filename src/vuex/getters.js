@@ -15,6 +15,10 @@ export const getUId = state => {
     return state.u_id
 }
 
-export const getStauts = state => {
+export const getStatus = state => {
     return state.u_status
+}
+
+export const getResource = state => {
+    return state.u_resource
 }

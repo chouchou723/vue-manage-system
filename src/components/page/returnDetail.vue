@@ -3,7 +3,7 @@
 <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-menu"></i> 客户管理</el-breadcrumb-item>
-                <el-breadcrumb-item :to="{ path: '/home' }">学员回访</el-breadcrumb-item>
+                <el-breadcrumb-item :to="{ path: '/returnVisit' }">学员回访</el-breadcrumb-item>
                  <el-breadcrumb-item >用户资料</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
@@ -53,24 +53,29 @@
 </el-form>
     </div>
 
-    <div style="float:left;width:40%">
+    <div style="float:left;width:34%">
         <div  class='addreturnTitle' >
        <!--  <i class=el-icon-my-tongxunlu style="font-size:31px"></i> -->
-        <span style="font-weight:600;font-size:22px">回访记录({{this.getUserId}})</span>
+        <span style="font-weight:600;font-size:22px">回访记录({{number}})</span>
         <div  style='position:absolute;top:10px;right:10px'><div class='addR' @click='addReturn'></div></div>
          </div>
-         <el-row v-for='item in items'class='listReturn' style='position:relative'>
+         <div style="min-height:290px">
+           <el-row v-for='item in items'class='listReturn' style='position:relative'>
   <el-col :span="4" style='text-align:right'><img :src="item.tmk_avatar" width='50' alt="" style='border-radius:50%;margin-top:10px;margin-left:15px;margin-right:8%'></el-col>
-  <el-col :span="15">
-  <div style='margin-top:10px'>{{item.tmk_name}}</div>
-  <div style="font-size:14px;color:grey">{{item.contents}}</div>
-  <div style="height:30px"><el-tag type='success' v-for='t in item.tags' class='tagTag'>{{t}}</el-tag></div>
+  <el-col :span="20">
+  <div style="height:30px">
+    <div style='margin-top:10px'>{{item.tmk_name}}</div>
+      <div style="font-size:15px;color:grey;margin-top:10px;text-align:right">{{item.created_at.substring(5,16)}}</div>
+  </div>
+  <div>
+   <div style="font-size:14px;color:grey">{{item.contents}}</div>
+  </div>
+  <div><div class='editSpan' @click='editReturn(item.id,item)' v-if="new Date().getTime()-new Date(item.created_at).getTime()<7200000 && item.tmk_name == userName"></div></div>
   </el-col>
-  <el-col :span="5">
-    <div style="font-size:15px;color:grey;margin-top:10px;text-align:right">{{item.created_at.substring(5,16)}}</div>
-    <div class='editSpan' @click='editReturn(item.id,item)' v-if="new Date().getTime()-new Date(item.created_at).getTime()<7200000 && item.tmk_name == '{{username}}'"></div>
-  </el-col>
+
 </el-row>
+         </div>
+         
          <!-- <div style='position:relative'>
           <div v-for='item in items'class='listReturn' style='position:relative'>
           <span style='position:absolute;top:-5px;left:5px'> <img src="../../../static/img/img.jpg" width='40' alt="" style='border-radius:50%;margin-top:10px'></span>
@@ -122,7 +127,7 @@
   </div>
 </template>
 <script>
-var token
+var token,user
 import { tagList,create_returnList,returnVisitDetail} from '../../api/api';
 import { mapGetters } from 'vuex';
 
@@ -145,7 +150,7 @@ import { mapGetters } from 'vuex';
         items:[],
         dialogFormVisible:false,
         no:false,
-        number:10,
+        number:0,
         warning:'*系统中没有该成员',//以后改成调服务显示
         boxes:[],
         returnform:{
@@ -170,9 +175,9 @@ import { mapGetters } from 'vuex';
         },
         currentPage: 1, //页数
         pagesize: 4, //默认每页
-        total:40,      //总页数
+        total:0,      //总页数
         in:'',
-        username:''
+        userName:''
 
       }
     },
@@ -240,12 +245,12 @@ import { mapGetters } from 'vuex';
             ]),
     },
     beforeCreate(){
-           let user = localStorage.getItem('user');
+            user = localStorage.getItem('user');
             token =  JSON.parse(user).token;
-           this.userName = JSON.parse(user).uname;
+          
         },
     created(){
-      
+       this.userName = JSON.parse(user).uname;
       let para = {uid:this.getUserId}
       returnVisitDetail(token,para).then(res=>{
         

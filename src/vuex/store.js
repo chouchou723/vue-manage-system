@@ -17,7 +17,8 @@ const state = {
     src: avatar,
     user_id:'',
     u_id:'',
-    u_status:''
+    u_status:'',
+    u_resource:''
 }
 
 // 定义所需的 mutations
@@ -39,7 +40,8 @@ const mutations = {
     },
     SENDRESOURCEID(state,uid){
         state.u_id = uid.u_id;
-        state.u_status = uid.u_status
+        state.u_status = uid.u_status;
+        state.u_resource = uid.u_resource
     }
 }
 

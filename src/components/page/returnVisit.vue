@@ -13,7 +13,7 @@
         学员回访({{number}}人)
         </h2>
         <div  class='studentReturnThree' >
-          <el-select v-model="value2" clearable placeholder="选择TMK" @change="updateList">
+          <el-select v-model="value2" clearable placeholder="选择TMK" @change="updateList"  v-if="code =='tmk_m'">
     <el-option
       v-for="item in options1"
       :key="item.key"
@@ -158,7 +158,7 @@
 </template>
 
 <script>
-var token
+var token,user
 import { campusList,returnVisitList,tagList,create_tag,delete_tag,getTMK} from '../../api/api';
 
 import { mapActions } from 'vuex';
@@ -186,6 +186,7 @@ import { mapActions } from 'vuex';
         status: '', //对应select的值
         value3: '', //对应select的值
         value4:'',//点击tag
+        code:'',
         tagform:{
           name:''
         }
@@ -314,10 +315,11 @@ import { mapActions } from 'vuex';
       }
  },
     beforeCreate(){
-           let user = localStorage.getItem('user');
+           user = localStorage.getItem('user');
             token =  JSON.parse(user).token;
         },
     created(){
+      this.code = JSON.parse(user).job?JSON.parse(user).job.code : '';
         this.fetchData();
         let cam = {
           simple:'1'

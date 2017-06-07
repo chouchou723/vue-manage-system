@@ -161,6 +161,10 @@ export const detail_level = (params,token) => { axios.defaults.headers.common['A
 export const create_student = (params,token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
 										return axios.post(`${base}/api/v1/tmk/customer`,params).then(res => res.data);  };	
 
+//修改学员
+export const put_student = (params,token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.put(`${base}/api/v1/tmk/customer`,params).then(res => res.data);  };	
+
 //获取回访列表
 export const returnVisitList = (token,params) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
 										return axios.get(`${base}/api/v1/visit`,{params:params}).then(res => res.data);  };	
@@ -190,7 +194,8 @@ export const create_returnList = (params,token) => { axios.defaults.headers.comm
 
 //添加沟通记录
 export const create_community = (params,token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
-										return axios.post(`${base}/api/v1/tmk/customer/call`,params).then(res => res.data);  };											
+										return axios.post(`${base}/api/v1/tmkCall`,params).then(res => res.data);  };	
+
 //查询重复学员
 export const repeatStudentList = (token,params) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
 										return axios.get(`${base}/api/v1/tmk/getuesrs`,{params:params}).then(res => res.data);  };		
@@ -199,10 +204,28 @@ export const repeatStudentList = (token,params) => { axios.defaults.headers.comm
 export const activateResource = (params,token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
 										return axios.put(`${base}/api/v1/tmk/customer/auth`,params).then(res => res.data);  };	
 
-//认证资源
-export const recognizeResource = (params,token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
-										return axios.put(`${base}/api/v1/tmk/customer/auth`,params).then(res => res.data);  };
 
 //获取全部TMK
 export const getTMK = (token,params) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
-										return axios.get(`${base}/api/v1/public/getTmkLisit`,{params:params}).then(res => res.data);  };																																				
+										return axios.get(`${base}/api/v1/public/getTmkLisit`,{params:params}).then(res => res.data);  };	
+
+//获取资源用户详细列表
+export const getUserList = (token,params) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.get(`${base}/api/v1/tmk/customer/detail`,{params:params}).then(res => res.data);  };
+
+//获取资源用户沟通记录列表
+export const getUserCommList = (token,params) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.get(`${base}/api/v1/tmkCall`,{params:params}).then(res => res.data);  };
+
+//获取资源用户邀约记录列表
+export const getUserInviteList = (token,params) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.get(`${base}/api/v1/invitation`,{params:params}).then(res => res.data);  };	
+// //code字段说明
+//     tmk_m  :  tmk主管
+//     tmk : tmk
+//     teach_m : 老师主管
+//     teach : 老师
+//     cc : cc
+//     cc_m : cc主管	
+//gwl@ad22min.com tmk主管
+//                tmk																																																																
