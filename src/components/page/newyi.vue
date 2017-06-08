@@ -103,10 +103,8 @@
 
                       </div>
                       
-         <template scope="scope">
-        <span  @click="switchDetail(scope.row)">{{scope.row.names}}</span>
-      </template>                   
 
+<div id="table">
   <el-table
     :data="tableData"
     border
@@ -135,13 +133,13 @@
       prop="age"
       label="年龄"
       width="65">
-    </el-table-column>//此为替代测试数据    
+    </el-table-column>  
     
     <el-table-column
       prop="familys" 
       label="家长"
       width="80">
-    </el-table-column> //此为替代测试数据
+    </el-table-column> 
     
     <el-table-column
       prop="mobile"
@@ -175,7 +173,7 @@
     </el-table-column>
     
         <el-table-column
-      prop=""
+      prop="states"
       label="资源状态"
       :formatter="formatter">
     </el-table-column>
@@ -194,10 +192,11 @@
    </el-pagination>
 </div>    
                       
-                   </div>
+ 
+</div>
 </div>
 
-
+</div>
 
 </template>
 
@@ -228,23 +227,33 @@
         number:'',
         options: [], //表单上方的select
         options1: [],//表单上方的select
-        options2: [],//表单上方的select
+        options2: [],//渠道来源
+        options5:[],//资源状态
         value1: '',   //对应select的值
         value2: '', //对应select的值
         value3: '', //对应select的值
-        schools: [], //选好城市之后的校区
+
         list: [],
         loading: false,
         cities:[], //form中的城市
       }
     },
      methods: {
+     	 switchDetail(row){
+        // console.log(row)
+        this.sendUser(row.id)
+       this.$router.push('/returnDetail');
+      },
+       updateList(){
+          this.fetchData();
+      
+      },
 
       fetchData (){
-        let para = { 
+        let para = { group_id:this.datadx,
                     school_id:this.value1,
-                    status:this.value2,
-                    
+                    sour_name:this.value2,
+                    status:this.value5,
         			page:this.currentPage}
         
         returnNewyi(para,token).then((res) => {//替换服务
@@ -289,7 +298,6 @@
       
       },
 
-   
     }
   }
 
