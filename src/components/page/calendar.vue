@@ -7,7 +7,7 @@
         </div>
   <vue-event-calendar :events="demoEvents"  @click.native="increment">
       <template scope="props" class="event-item1" >
-        <div v-for="(event, index) in props.events" class="event-item">
+        <div v-for="(event, index) in props.events" class="event-item" @click.native="alert('1')">
           <!-- In here do whatever you want, make you owner event template -->
             
           {{event}}
@@ -24,7 +24,24 @@ var token
 export default {
   data () {
     return {
-      demoEvents:[]
+      demoEvents:[
+{
+    'date': '2017/06/08',
+    'title1': '9:30 学员访问',
+    'desc': '学员访问'
+},
+{
+    'date': '2017/06/07',
+    'title1': '9:30 学员访问',
+    'desc': '学员访问'
+}
+,
+{
+    'date': '2017/05/01',
+    'title1': '9:30 学员访问',
+    'desc': '学员访问'
+}
+]
     }
   },
   methods:{

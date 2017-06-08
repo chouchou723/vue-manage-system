@@ -12,7 +12,7 @@
              <!--  <i class=el-icon-my-tongxunlu style="font-size:31px"></i> -->
               <span style="font-weight:600;font-size:22px">用户资料</span>
               <div  style='position:absolute;top:10px;right:50px'>
-              <div class='addU' @click='addU' v-if='this.getStauts == 1'></div>
+              <div class='addU' @click='addU' v-if='this.getStatus == 1'></div>
               <el-button v-if='this.sourceId==2' type="primary" size="mid" class='recognizeR' @click='recognizeResource' ><img src="../../../static/img/recognize.png" alt="" width='20' style="margin-top:-7px;margin-left:-55px" >
              <span style="position:absolute;top:15px;right:8px;font-size:12px">认证资源</span></el-button>
 
@@ -327,7 +327,7 @@
 </el-dialog> 
 
 
-<div style="float:left;width:36%">
+<div style="float:left;width:36%" v-if="this.getStatus">
         <div  class='addUserTitle' >
        <!--  <i class=el-icon-my-tongxunlu style="font-size:31px"></i> -->
         <span style="font-weight:600;font-size:22px;margin-left:20px">邀约记录({{number1}})</span>

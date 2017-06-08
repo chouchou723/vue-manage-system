@@ -34,7 +34,7 @@
 </el-col>
 <el-col :span="12" :offset="6">
             <el-form label-width="100px" class="demo-ruleForm" v-if='!changewechat'>
-  <el-steps :space="600" :active="1">
+  <el-steps :space="600" :active="active">
   <el-step title="扫描二维码 关注公众号" ></el-step>
   <el-step title="微信绑定成功" ></el-step>
   </el-steps>
@@ -44,7 +44,7 @@
   
    <img class="pre-img" src="../../../static/img/we_03.png" alt="" width="256px" height="270px" style="float:left;margin-left:-128px;margin-top:50px" v-if='active==1'>
     <el-input v-model="code" auto-complete="off" placeholder='请输入验证码' style='width:200px;float:left;margin-left:50px;margin-top:150px' v-if='active==1'></el-input>
-     <el-button type="primary" style="float:left;margin-left:10px;margin-top:150px" @click='newStep' v-if='active==1'>确 认</el-button>
+     <el-button type="primary" style="float:left;margin-left:10px;margin-top:150px" @click='newStep1' v-if='active==1'>确 认</el-button>
    <img class="pre-img" src="../../../static/img/gongxi_03.png" alt="" style="float:left;margin-left:496px;margin-top:150px" v-if='active==2'>
    </div>
    
@@ -62,19 +62,45 @@
 </template>
 
 <script>
-var user = localStorage.getItem('user');
-var wechat = JSON.parse(user).wechat;
+var user,token,wechat;
+import { qCode} from '../../api/api';
   export default {
     data() {
 
       return {
         active:1,
-        wechatsrc:'../../../static/img/we_03.png'
+        wechatsrc:'../../../static/img/we_03.png',
+        code:''
       };
     },
     methods: {
       newStep(){
+        let para = {code:this.code}
+        qCode(para,token).then(res=>{
+          if(res.code == 0){
+
+        this.active = 3;
+          }else{
+            this.$message({
+                                    type: 'error',
+                                    message: res.message
+                                  }); 
+          }
+        })
+      },
+      newStep1(){
+       let para = {code:this.code}
+        qCode(para,token).then(res=>{
+          if(res.code == 0){
+            
         this.active = 2;
+          }else{
+            this.$message({
+                                    type: 'error',
+                                    message: res.message
+                                  }); 
+          }
+        })
       },
       changeWechat(){
         this.active = 2;
@@ -105,18 +131,23 @@ var wechat = JSON.parse(user).wechat;
       }
     },
     computed:{
-        changewechat:function(){
+        changewechat(){
           return wechat
         },
         settingsrc(){
-                let user = localStorage.getItem('user');
+                // let user = localStorage.getItem('user');
                 return JSON.parse(user).avatar;
             },
         wechatName(){
-                let user = localStorage.getItem('user');
+                // let user = localStorage.getItem('user');
                 return JSON.parse(user).wx_openid;
             }
-    }
+    },
+    beforeCreate(){
+            user = localStorage.getItem('user');
+            token =  JSON.parse(user).token;
+            wechat = JSON.parse(user).wechat;
+        }
   }
 </script>
 

@@ -9,8 +9,18 @@ export const getUserinfo = (token) => {
 										axios.defaults.headers.common['Authorization'] = token.Authorization;
 										return axios.get(`${base}/api/v1/userinfo`).then(res => res.data); };
 
+//微信绑定验证码
+export const qCode = (params,token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.post(`${base}/api/v1/admin/binding`, params).then(res => res.data); };
+//二维码获得地址
+export const getqcodeAdd = (params) => {
+										
+										return axios.get(`${base}/auth/scanCodeLoginUrl`,{params:params}).then(res => res.data); };
 
-
+//二维码登陆
+export const qcodeLogin = (url,params) => {
+										
+										return axios.get(url,{params:params}).then(res => res.data); };										
 // export const getUserList = params => { return axios.get(`${base}/user/list`, { params: params }); };
 
 // export const getUserListPage = params => { return axios.get(`${base}/user/listpage`, { params: params }); };
