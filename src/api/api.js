@@ -9,8 +9,18 @@ export const getUserinfo = (token) => {
 										axios.defaults.headers.common['Authorization'] = token.Authorization;
 										return axios.get(`${base}/api/v1/userinfo`).then(res => res.data); };
 
+//微信绑定验证码
+export const qCode = (params,token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.post(`${base}/api/v1/admin/binding`, params).then(res => res.data); };
+//二维码获得地址
+export const getqcodeAdd = (params) => {
+										
+										return axios.get(`${base}/auth/scanCodeLoginUrl`,{params:params}).then(res => res.data); };
 
-
+//二维码登陆
+export const qcodeLogin = (url,params) => {
+										
+										return axios.get(url,{params:params}).then(res => res.data); };										
 // export const getUserList = params => { return axios.get(`${base}/user/list`, { params: params }); };
 
 // export const getUserListPage = params => { return axios.get(`${base}/user/listpage`, { params: params }); };
@@ -167,9 +177,6 @@ export const put_student = (params,token) => { axios.defaults.headers.common['Au
 
 //获取回访列表
 export const returnVisitList = (token,params) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
-<<<<<<< HEAD
-										return axios.get(`${base}/api/v1/visit`,{params:params}).then(res => res.data);  };
-=======
 										return axios.get(`${base}/api/v1/visit`,{params:params}).then(res => res.data);  };	
 
 //获取回访详细
@@ -179,7 +186,6 @@ export const returnVisitDetail = (token,params) => { axios.defaults.headers.comm
 //获取回访记录
 export const getVisitList = (token,params) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
 										return axios.get(`${base}/api/v1/visit/getVisit`,{params:params}).then(res => res.data);  };	
->>>>>>> a93aa82b3ccc697119e50f1e17fb1b2ebada015f
 
 //获取来源渠道
 export const sourceList = (token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
@@ -206,7 +212,6 @@ export const create_community = (params,token) => { axios.defaults.headers.commo
 
 //查询重复学员
 export const repeatStudentList = (token,params) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
-<<<<<<< HEAD
 										return axios.get(`${base}/api/v1/tmk/getuesrs`,{params:params}).then(res => res.data);  };
 
 
@@ -215,13 +220,7 @@ export const returnNewyi = (params,token) =>{axios.defaults.headers.common['Auth
 										return axios.post(`${base}/api/v1/tmk/customer)`,{params:params}).then(res=>res.data);
 };
 
-
-/*
-export const returnLeixing = (params,token) =>{axios.defaults.headers.common['Authorization'] = token.Authorization;
-										return axios.get(`${base}/api/v1/tmk/customer)`,{params:params}).then(res=>res.data);
-};*/
-=======
-										return axios.get(`${base}/api/v1/tmk/getuesrs`,{params:params}).then(res => res.data);  };		
+	
 
 //激活资源
 export const activateResource = (params,token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
@@ -251,5 +250,4 @@ export const getUserInviteList = (token,params) => { axios.defaults.headers.comm
 //     cc : cc
 //     cc_m : cc主管	
 //gwl@ad22min.com tmk主管
-//                tmk																																																																
->>>>>>> a93aa82b3ccc697119e50f1e17fb1b2ebada015f
+//                tmk								

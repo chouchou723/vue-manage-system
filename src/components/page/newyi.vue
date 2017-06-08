@@ -224,7 +224,6 @@
         in:'',
         no:false,
         tableData: [],
-<<<<<<< HEAD
         number:'',
         options: [], //表单上方的select
         options1: [],//表单上方的select
@@ -242,7 +241,7 @@
      methods: {
      	 		formatter(row, column) {
         return row.address;
-      }
+      },
    
      	 switchDetail(row){
         // console.log(row)

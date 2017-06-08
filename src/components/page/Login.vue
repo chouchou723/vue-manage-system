@@ -28,7 +28,7 @@
                 <p style="font-size:14px;line-height:30px;text-align:center"><a id='forget'href="https://www.baidu.com">忘记密码？</a></p>
                 <div class="wechatlogin">
                     
-                <img src="../../../static/img/login_02.png" height="14" width="380" alt="">
+                <img style='margin-left:10px' src="../../../static/img/login_02.png"  alt="">
                 </div>
                 <div class="wechat" @click='switchWechat'>
                     
@@ -37,10 +37,11 @@
             </el-form>
             <div class="mail"  v-bind:class='{display:ruleForm.isDisplay}'>
                 
-            <img src="../../../static/img/mail.png"  alt="">
+            <img :src="loginAdd"  width='265' alt="">
+            <span style="font-size:13px;position:absolute;left:54px;bottom:7px">请使用手机微信扫一扫登录</span>
             <div class="maillogin">
                     
-                <img src="../../../static/img/login_03.png" height="14" width="380" alt="">
+                <img style='margin-left:2px' src="../../../static/img/login_03.png"  alt="">
                 </div>
                 <div class="maillog" @click='switchMail'>
                     
@@ -52,7 +53,8 @@
 </template>
 
 <script>
-        import { requestLogin ,getUserinfo} from '../../api/api';
+        import { requestLogin ,getUserinfo,qcodeLogin,getqcodeAdd} from '../../api/api';
+        var i = 1
         var color="";
         var str="0123456789abcdef";
         var length = str.length +1;
@@ -87,6 +89,8 @@
               }, 1);
             }
             return {
+                loginAdd:'',
+                add:'',
                 logining: false,
                 codeNumber1:Math.floor(Math.random()*9)+1,
                 codeNumber2:Math.floor(Math.random()*9)+1,
@@ -197,10 +201,60 @@
                 });
             },
             switchWechat(){
+                this.loginAdd='http://crmv2.dfth.com/auth/createRqCodeImg';
                 this.ruleForm.hidden = true;
                 this.ruleForm.isDisplay = false;
-                
-            } ,
+                 let para = {token:0}
+                 if(  this.ruleForm.isDisplay == false){
+                    // console.log('1')
+                    getqcodeAdd(para).then(res=>{
+                    this.add = res.url;
+                    // console.log(add)
+                    // console.log(this.add)
+                }).then(()=>{
+                    if(i<300){
+                    this.inter = setInterval(this.codeLogin,2000)
+                        
+                    }else{
+                        getqcodeAdd(para).then(res=>{
+                    this.add = res.url;
+                }).then(()=>{
+                    clearInterval(this.inter);
+                    this.inter = setInterval(this.codeLogin,2000)
+                })
+                    }
+                })
+                 }
+              },
+            codeLogin(){
+                let add =this.add;
+                if(i>300){
+
+                }
+                if(add ==''){
+                        console.log('login url is null'); return false;
+                    }else{
+                        let para = {test:0}
+                        qcodeLogin(add,para).then(res=>{
+                            // console.log(add)
+                            if(res.status=='success'){
+                            let{access_token,status,token_type} = res;
+                                var token = {
+                                      'Authorization': token_type +' ' + access_token
+                                  }
+                                getUserinfo(token).then(u=>{
+                                     let {data} = u;
+                                     data.token = token;
+                                     // console.log(data)
+                                localStorage.setItem('user',JSON.stringify(data));
+                               self.$router.push('/home');
+                                })
+                        }else if(res.status == 0){
+                            i++
+                        }
+                    })
+                    }
+              },
             switchMail(){
                 this.ruleForm.hidden = false;
                 this.ruleForm.isDisplay = true;
@@ -216,7 +270,10 @@
         },
         mounted(){
             this.change()
-        }
+        },
+        beforeDestroy () {
+      clearInterval(this.inter)
+    },
     }
 </script>
 
@@ -273,8 +330,8 @@
     .maillogin{
         position: absolute;
         left: 50%;
-        margin-left: -190px;
-        top:102%;
+        margin-left: -186px;
+        top:110%;
     }
     .wechat{
         position: absolute;
@@ -297,8 +354,8 @@
     .maillog{
          position: absolute;
         left: 50%;
-        margin-left: -25px;
-        top:110%;
+        margin-left: -30px;
+        top:118%;
     }
     form{
         margin-top:80px;

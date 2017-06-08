@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import VueCoreImageUpload  from 'vue-core-image-upload';
+// import VueCoreImageUpload  from 'vue-core-image-upload';
 import { mapActions } from 'vuex';
 import { mapGetters } from 'vuex';
     export default {

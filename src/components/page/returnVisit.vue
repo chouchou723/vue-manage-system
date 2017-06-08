@@ -179,10 +179,6 @@ import { mapActions } from 'vuex';
         total:0,
         no:false,
         returnData: [],
-<<<<<<< HEAD
-//      {name:'wei',school:'徐汇校区 ',last_return_time:'2017-5-15 07:11',times:'3',tag:['未回访']}],
-=======
->>>>>>> a93aa82b3ccc697119e50f1e17fb1b2ebada015f
         number:'',
         options: [], //表单上方的select
         options1: [],//表单上方的select

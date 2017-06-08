@@ -62,7 +62,7 @@
          <div style="min-height:290px">
            <el-row v-for='item in items' class='listReturn' style='position:relative'>
                 <el-col :span="4" style='text-align:right'>
-                <img :src="item.tmk.avatar" width='50' alt="" style='border-radius:50%;margin-top:10px;margin-left:15px;margin-right:8%'></el-col>
+                <img :src="item.tmk.avatar" width='50' alt="" style='border-radius:50%;margin-top:10px;margin-right:12%'></el-col>
                 <el-col :span="20">
                 <div style="height:35px">
                   <div style='margin-top:10px;float:left'>{{item.tmk.uname}}</div>
@@ -75,7 +75,7 @@
                 <div style="float:left">
                   <el-tag type='success' v-for='t in item.tags' class='tagTag'>{{t}}</el-tag>
                 </div>
-                <div class='editSpan' @click='editReturn(item.id,item)' v-if="new Date().getTime()-new Date(item.created_at).getTime()<7200000 && item.tmk_name == userName"></div></div>
+                <div class='editSpan' @click='editReturn(item.id,item)' v-if="new Date().getTime()-new Date(item.create_at).getTime()<7200000 && item.tmk.uname == userName"></div></div>
                 </el-col>
 
         </el-row>
@@ -177,7 +177,7 @@ import { mapGetters } from 'vuex';
      returnFormSubmit(formName){
       this.returnform.uid = this.getUserId
       //可能要送 用户名
-      create_community(this.commuForm,token).then(()=>{
+      create_returnList(this.returnform,token).then(()=>{
         let p = {
                 page:'1',
                 uid:this.getUserId
@@ -194,6 +194,7 @@ import { mapGetters } from 'vuex';
      },
       addReturn(){//点击添加回访记录
         // console.log(this.getUserId)
+        this.returnform.id = ''
         tagList(token).then(res=>{
             this.boxes = res.data
           })
@@ -202,6 +203,30 @@ import { mapGetters } from 'vuex';
         this.returnform.tags = [];
         this.dialogFormVisible=true
       },
+      
+      editReturn(index,item){
+        // console.log(item)
+        this.returnform.tags = [];
+         this.returnform.id = item.id;
+         if(item.tags != ''){
+          tagList(token).then(res=>{
+            this.boxes = res.data;
+            this.boxes.map(v=>{
+          for(let key in item.tags){
+            if(v.key == key ){
+              this.returnform.tags.push(v.key)
+            }
+          }
+        })
+          }).then(()=>{
+            this.dialogFormVisible=true
+          })
+         }
+
+            this.in = 1;
+            this.returnform.contents = item.contents;
+            
+        },
       handleCurrentChange: function(val) {  //变更页数
             this.currentPage = val;
             let p = {
@@ -217,26 +242,6 @@ import { mapGetters } from 'vuex';
       })
             
       },
-      editReturn(index,item){
-        tagList(token).then(res=>{
-            this.boxes = res.data;
-            this.boxes.map(v=>{
-          for(let i =0;i<item.tags.length;i++){
-            if(v.label == item.tags[i] ){
-              // console.log(item.tags[i])
-              this.returnform.tags.push(v.key)
-            }
-          }
-        })
-          }).then(()=>{
-            this.in = 1;
-            this.returnform.contents = item.contents;
-            this.dialogFormVisible=true
-        
-          })
-        
-        
-      }
     },
     computed:{
       returnRecordTitle(){
@@ -341,6 +346,7 @@ border-bottom:1px solid #e8e8e8;
   margin-left:48px
 }
 .editSpan{
+  width:30px;
   float:right;
   height: 30px;
   background: url(../../../static/img/edit.png) right/30px 30px no-repeat;
