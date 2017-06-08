@@ -13,7 +13,16 @@
         学员回访({{number}}人)
         </h2>
         <div  class='studentReturnThree' >
-          
+          <el-select v-model="value2" clearable placeholder="选择TMK" @change="updateList"  v-if="code =='tmk_m'">
+    <el-option
+      v-for="item in options1"
+      :key="item.key"
+      :label="item.label"
+      :value="item.key">
+    </el-option>
+  </el-select>
+</div>
+ <div  class='studentReturnThreeS' >
         <el-select v-model="value1" clearable placeholder="选择校区" @change="updateList">
     <el-option
       v-for="item in options"
@@ -35,16 +44,18 @@
         <el-date-picker
       v-model="value3"
       type="daterange"
-      placeholder="选择日期范围">
+      placeholder="选择日期范围"
+      format="">
     </el-date-picker>
         </div>
 
      <div  class='fourSelect' >
         <el-input
-        placeholder="请输入手机号或姓名"
+        placeholder="输入手机号或姓名"
         icon="search"
         v-model="input2"
-        :on-icon-click="handleIconClick">
+         @keyup.enter.native="updateList"
+        :on-icon-click="updateList">
       </el-input>
       </div>
     </div>
@@ -53,8 +64,6 @@
         </div>
         <div id="table">
           <el-table
-
-      @header-click="getTag"
     :data="returnData"
      :default-sort = "{prop: 'last_time', order: 'descending'}"
     border
@@ -65,7 +74,7 @@
 
       >
       <template scope="scope">
-        <span  @click="switchDetail(scope.row)">{{scope.row.nickname}}</span>
+        <span  @click="switchDetail(scope.row)" class='nicknameSpan'>{{scope.row.nickname}}</span>
       </template>
     </el-table-column>
     <el-table-column
@@ -85,21 +94,17 @@
     class-name = 'tagClass'
       prop="tags"
       label="回访标签"
-      width="100"
-      :filter-multiple = false
-      :filters="filterT"
-      :filter-method="filterTag"
-      filter-placement="bottom-end">
+      width="130">
       <template scope="scope">
         <el-tag
           :type="scope.row.tags == '未回访' ? 'danger' : 'success'"
           close-transition 
-          v-for='t in scope.row.tags'>{{t}}</el-tag>
+          v-for='(t,key) in scope.row.tags' @click.native='aaa(t,key)'>{{t}}</el-tag>
       </template>
     </el-table-column>
 
   </el-table>
-  <div class='settingTag'>
+  <div class='settingTag'  v-if="code =='tmk_m'">
     <span @click='settingTag'>[设置]</span>
   </div>
   <div class="block">
@@ -146,7 +151,7 @@
   @blur="handleInputConfirm"
 >
 </el-input>
-<el-button v-else class="button-new-tag" size="small" @click="showInput" sytle='margin-top:7px'>+ New Tag</el-button>
+<el-button v-else class="button-new-tag" size="small" @click="showInput" sytle='margin-top:7px'>创建标签</el-button>
 </el-dialog> 
 </div>
 
@@ -154,8 +159,8 @@
 </template>
 
 <script>
-var token
-import { campusList,cityList,sdjList ,departList,returnVisitList,tagList} from '../../api/api';
+var token,user
+import { campusList,returnVisitList,tagList,create_tag,delete_tag,getTMK} from '../../api/api';
 
 import { mapActions } from 'vuex';
 
@@ -172,51 +177,62 @@ import { mapActions } from 'vuex';
         currentPage: 1, //页数
         pagesize: 15, //默认每页
         total:0,
-        in:'',
         no:false,
         returnData: [],
+<<<<<<< HEAD
 //      {name:'wei',school:'徐汇校区 ',last_return_time:'2017-5-15 07:11',times:'3',tag:['未回访']}],
+=======
+>>>>>>> a93aa82b3ccc697119e50f1e17fb1b2ebada015f
         number:'',
         options: [], //表单上方的select
         options1: [],//表单上方的select
-        options2: [],//表单上方的select
         value1: '',   //对应select的值
-        value2: '', //对应select的值
+        value2: '',   //对应select的值
+        status: '', //对应select的值
         value3: '', //对应select的值
+        value4:'',//点击tag
+        code:'',
         tagform:{
           name:''
         }
       }
     },
     methods: {
-
+        aaa(tag,key){
+          //调接口配对
+          // console.log(key)
+          if(this.value4 ===''){
+            this.value4 = key;
+          }else if(this.value4 ==tag){
+              this.value4 = ''
+          }else{
+            this.value4 = key;
+          }
+          this.fetchData();
+        },
       ...mapActions([
       'sendUser'
     ]),
-      getTag(column, event){
-        if(column.label ==='回访标签'){
-          tagList(token).then(res=>{
-            this.filterT = res.data.map(item=>{
-              return {text:item.label,value:item.label}
-            })
-          })
-        }
-        
-      },
       switchDetail(row){
         // console.log(row)
-        this.sendUser(row.id)
+        this.sendUser(row.uid)
        this.$router.push('/returnDetail');
       },
        updateList(){
+          this.currentPage = 1;
           this.fetchData();
       
       },
       fetchData (){
         let para = { page:this.currentPage,
+                    tmk_uid:this.value2,
                     school_id:this.value1,
-                    status:this.value2,
-                    time:this.value3,}
+                    status:this.status,
+                    start_time:this.value3[0],
+                    end_time:this.value3[1],
+                    input:this.input2,
+                    tag_id:this.value4
+                  }
         
         returnVisitList(token,para).then((res) => {//替换服务
           this.number = res.data.total;
@@ -232,24 +248,7 @@ import { mapActions } from 'vuex';
                     this.currentPage = val;
 
                     this.fetchData();
-                },   
-      filterTag(value, row) {
-        // let a = row.tag.join(',')
-        // console.log(value.indexOf(row.tag.join('')))
-          // console.log(value)
-          console.log(value)
-        let a = row.tags.some(item=>{
-          console.log(item)
-          return item == value
-        })
-        return a 
-        // console.log(a)
-        // console.log(value.indexOf(a))
-        // return value.indexOf(a) === -1;
-      }, 
-      handleIconClick(ev) {
-      console.log(ev);//搜索姓名等
-    },
+                },
     settingTag(){
       //调服务获取tag[]
         tagList(token).then(res=>{
@@ -268,7 +267,16 @@ import { mapActions } from 'vuex';
           index = item.key
         }
       })
-      console.log(index)
+      let para = {id:index}
+      delete_tag(para,token).then(res=>{
+        tagList(token).then(res=>{
+          this.dynamicTags =   res.data.map(item=>{
+            return item.label
+          })
+          this.backupTages = res.data
+          })
+      })
+      // console.log(index)
         // this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
       },
 
@@ -282,7 +290,16 @@ import { mapActions } from 'vuex';
       handleInputConfirm() {
         let inputValue = this.inputValue;
         if (inputValue) {
-          this.dynamicTags.push(inputValue);
+          let para = {title:inputValue}
+          create_tag(para,token).then(res=>{
+            tagList(token).then(res=>{
+          this.dynamicTags =   res.data.map(item=>{
+            return item.label
+          })
+          this.backupTages = res.data
+          })
+          })
+          // this.dynamicTags.push(inputValue);
           //调服务 上送tag
         }
         this.inputVisible = false;
@@ -290,10 +307,11 @@ import { mapActions } from 'vuex';
       }
  },
     beforeCreate(){
-           let user = localStorage.getItem('user');
+           user = localStorage.getItem('user');
             token =  JSON.parse(user).token;
         },
     created(){
+      this.code = JSON.parse(user).job?JSON.parse(user).job.code : '';
         this.fetchData();
         let cam = {
           simple:'1'
@@ -303,6 +321,9 @@ import { mapActions } from 'vuex';
           this.options = a.map(item => {
         return { value: item.id, label: item.title };
       });
+        })
+        getTMK(token).then((res)=>{
+          this.options1 = res.data
         })
     },
     mounted() {
@@ -345,6 +366,9 @@ import { mapActions } from 'vuex';
   position:relative;
   height:50px
 }
+.nicknameSpan:hover{
+  cursor: pointer;
+}
 /*.oneSelect{
   margin-left:220px;
   position:absolute;
@@ -367,7 +391,7 @@ import { mapActions } from 'vuex';
  right:0;
   position:absolute;
   top:0;
-  width:180px
+  width:160px
 }
 .studentReturn{
   float: left;
@@ -375,7 +399,12 @@ import { mapActions } from 'vuex';
 }
 .studentReturnThree{
   float:left;
-  width:140px;
+  width:105px;
+  margin-right:10px;
+}
+.studentReturnThreeS{
+  float:left;
+  width:174px;
   margin-right:10px;
 }
 .el-tag--success{
@@ -385,13 +414,16 @@ import { mapActions } from 'vuex';
 	border-radius: 25px;
 		
 }
+.el-tag--success:hover{
+  cursor: pointer;
+}
 .el-tag--danger{
   border-radius: 25px;
     
 }
 .settingTag{
   position: absolute;
-  top: 113px;
+  top: 112px;
   right: 19px;
   color:#1fb5ad;
   z-index: 2000;
@@ -399,9 +431,9 @@ import { mapActions } from 'vuex';
   background-color: #eef6f6;
   cursor: pointer;
 }
-#table .el-table th:nth-last-child(2){
+/*#table .el-table th:nth-last-child(2){
   text-align: left
-}
+}*/
 .el-dialog .el-dialog__header{
     background-color: #1fb5ad;
     padding: 20px 20px 20px;

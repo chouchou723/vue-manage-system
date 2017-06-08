@@ -97,7 +97,7 @@ import { mapGetters } from 'vuex';
           ]),
             handleAvatarSuccess(res, file) {
         this.imageUrl = URL.createObjectURL(file.raw);
-        this.updateSrc(this.imageUrl);
+        // this.updateSrc(this.imageUrl);
         // let d = JSON.stringify(c);     
             // localStorage.setItem('user',d);
         //waiting for the res to reset the localstorage

@@ -21,7 +21,7 @@
   <el-form-item label="性别" prop='sex' >
     <el-select v-model="form.sex" placeholder="请选择性别" style="width:142px">
       <el-option label="男" value="1"></el-option>
-      <el-option label="女" value="0"></el-option>
+      <el-option label="女" value="2"></el-option>
     </el-select>
   </el-form-item>
 
@@ -57,10 +57,10 @@
    </el-form-item>
     <el-form-item prop="con" style="width:142px;margin-right:30px;float:left">
     <el-select v-model="form.con" placeholder="请选择关系"   >
-    <el-option label="妈妈" value="2"></el-option>
-      <el-option label="爸爸" value="3"></el-option>
-      <el-option label="爷爷" value="4"></el-option>
-      <el-option label="奶奶" value="5"></el-option>
+    <el-option label="妈妈" value="妈妈"></el-option>
+      <el-option label="爸爸" value="爸爸"></el-option>
+      <el-option label="爷爷" value="爷爷"></el-option>
+      <el-option label="奶奶" value="奶奶"></el-option>
      <!--  <el-option :label="connect" value="1"></el-option>
       <el-option :label="connect1" value="0"></el-option> -->
     </el-select>
@@ -75,10 +75,10 @@
    </el-form-item>
     <el-form-item prop="con1" style="width:142px;margin-right:30px;float:left">
     <el-select v-model="form.con1" placeholder="请选择关系"   >
-    <el-option label="妈妈" value="2"></el-option>
-      <el-option label="爸爸" value="3"></el-option>
-      <el-option label="爷爷" value="4"></el-option>
-      <el-option label="奶奶" value="5"></el-option>
+    <el-option label="妈妈" value="妈妈"></el-option>
+      <el-option label="爸爸" value="爸爸"></el-option>
+      <el-option label="爷爷" value="爷爷"></el-option>
+      <el-option label="奶奶" value="奶奶"></el-option>
      <!--  <el-option :label="connect" value="1"></el-option>
       <el-option :label="connect1" value="0"></el-option> -->
     </el-select>

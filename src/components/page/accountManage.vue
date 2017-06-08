@@ -48,13 +48,14 @@
                             placeholder="请输入手机号或姓名"
                             icon="search"
                             v-model="input2"
-                            :on-icon-click="handleIconClick">
+                            :on-icon-click="handleIconClick"
+                             @keyup.enter.native="handleIconClick">
 </el-input>
                       </div>
        <el-button type="primary" size="mid" class='buttonAdd' @click="createCh('aform')">添加账号</el-button>
               </div>
         
-<el-dialog :title="alter" :visible.sync="dialogFormVisible"  :close-on-click-modal="no"   >
+<el-dialog :title="alter" :visible.sync="dialogFormVisible"  :close-on-click-modal="no"   custom-class='accountManageDialog' top='9%'>
       
       <el-form :model="aform" :rules="rules2" ref="aform">
         <el-form-item label="登录账号" :label-width="formLabelWidth" prop="uname">
@@ -312,9 +313,11 @@ export default {
     methods: {
       handleIconClick(){
         // console.log('1')
+        this.currentPage = 1;
          this.fetchData();
       },
       updateList(){  //表格上方3个select change之后刷新表格
+        this.currentPage = 1;
         this.fetchData();
       },
       
@@ -677,5 +680,12 @@ export default {
   position:absolute;
   right:0;
   top:0
+}
+.accountManageDialog .el-dialog__body{
+  padding:20px 20px 0 20px;
+}
+.accountManageDialog .el-dialog__footer{
+  padding: 0 20px 15px;
+
 }
 </style>

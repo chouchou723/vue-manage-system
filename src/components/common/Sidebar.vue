@@ -1,9 +1,10 @@
 <template>
     <div class="sidebar" >
+<<<<<<< HEAD
         <el-menu :default-active="onRoutes" id="sidebar" class="el-menu-vertical-demo" unique-opened router >
-         <el-menu-item index="index">
+      <!--   <el-menu-item index="index">
                 <i class="el-icon-my-shouye"></i>首页
-            </el-menu-item>
+            </el-menu-item>-->
             <!--<el-menu-item index="calendar" @click='clearCounter'>
               <i  class="el-icon-my-wodericheng"></i>任务提醒
               
@@ -34,13 +35,16 @@
                 <el-menu-item index="mixcharts">混合图表</el-menu-item>
             </el-submenu>
             -->
-                      <el-submenu index="6">
+<!--                      <el-submenu index="6">
                 <template slot="title"><i class="el-icon-my-chengyuanguanli"></i>资源管理</template>
                 <a href="http://localhost:8080/#/newyi"><el-menu-item index="">我的资源</el-menu-item></a>
                 <a href="http://localhost:8080/#/nodata"><el-menu-item index="">无需求资源</el-menu-item></a>
                 <a href="http://localhost:8080/#/noxdata"><el-menu-item index="">无效资源</el-menu-item></a>
             </el-submenu>
-           
+           -->
+=======
+        <el-menu id="sidebar" class="el-menu-vertical-demo" :default-openeds='defaultOpeneds' router >
+>>>>>>> a93aa82b3ccc697119e50f1e17fb1b2ebada015f
             
             <div v-for="menu in menus">
                     <div v-if="menu._child" >
@@ -76,16 +80,14 @@
 
 <script>
 var token
-import { mapGetters } from 'vuex';
-import { mapActions } from 'vuex';
- import { counterList } from '../../api/api';
-  import { menuList } from '../../api/api';
+import { mapGetters,mapActions } from 'vuex';
+ import { counterList ,menuList} from '../../api/api';
     export default {
         data(){
             return {
                 menus :[],
                 counter:'',
-                token:''
+                defaultOpeneds:[]
             }
         },
         computed:{
@@ -126,13 +128,17 @@ import { mapActions } from 'vuex';
       // ...
             ]),
             getMenu(){//动态菜单获取
-                let self = this;
                 let para = {
                 counter:this.counter
                 };
                 menuList(token).then((res) => {
+                    res.data.map(item=>{
+                       this.defaultOpeneds.push(item.location);
+                    })
                 this.menus = res.data;
                 });
+
+                
             }
         },
         beforeCreate(){

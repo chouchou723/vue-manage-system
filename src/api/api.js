@@ -161,9 +161,25 @@ export const detail_level = (params,token) => { axios.defaults.headers.common['A
 export const create_student = (params,token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
 										return axios.post(`${base}/api/v1/tmk/customer`,params).then(res => res.data);  };	
 
+//修改学员
+export const put_student = (params,token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.put(`${base}/api/v1/tmk/customer`,params).then(res => res.data);  };	
+
 //获取回访列表
 export const returnVisitList = (token,params) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+<<<<<<< HEAD
 										return axios.get(`${base}/api/v1/visit`,{params:params}).then(res => res.data);  };
+=======
+										return axios.get(`${base}/api/v1/visit`,{params:params}).then(res => res.data);  };	
+
+//获取回访详细
+export const returnVisitDetail = (token,params) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.get(`${base}/api/v1/visit/detail`,{params:params}).then(res => res.data);  };	
+
+//获取回访记录
+export const getVisitList = (token,params) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.get(`${base}/api/v1/visit/getVisit`,{params:params}).then(res => res.data);  };	
+>>>>>>> a93aa82b3ccc697119e50f1e17fb1b2ebada015f
 
 //获取来源渠道
 export const sourceList = (token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
@@ -173,8 +189,24 @@ export const sourceList = (token) => { axios.defaults.headers.common['Authorizat
 export const tagList = (token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
 										return axios.get(`${base}/api/v1/public/getTag`).then(res => res.data);  };		
 
+//添加标签
+export const create_tag = (params,token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.post(`${base}/api/v1/tag`,params).then(res => res.data);  };	
+//删除标签
+export const delete_tag = (params,token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.delete(`${base}/api/v1/tag`,{params:params}).then(res => res.data);  };										
+
+//添加回访记录
+export const create_returnList = (params,token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.post(`${base}/api/v1/visit`,params).then(res => res.data);  };	
+
+//添加沟通记录
+export const create_community = (params,token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.post(`${base}/api/v1/tmkCall`,params).then(res => res.data);  };	
+
 //查询重复学员
 export const repeatStudentList = (token,params) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+<<<<<<< HEAD
 										return axios.get(`${base}/api/v1/tmk/getuesrs`,{params:params}).then(res => res.data);  };
 
 
@@ -188,3 +220,36 @@ export const returnNewyi = (params,token) =>{axios.defaults.headers.common['Auth
 export const returnLeixing = (params,token) =>{axios.defaults.headers.common['Authorization'] = token.Authorization;
 										return axios.get(`${base}/api/v1/tmk/customer)`,{params:params}).then(res=>res.data);
 };*/
+=======
+										return axios.get(`${base}/api/v1/tmk/getuesrs`,{params:params}).then(res => res.data);  };		
+
+//激活资源
+export const activateResource = (params,token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.put(`${base}/api/v1/tmk/customer/auth`,params).then(res => res.data);  };	
+
+
+//获取全部TMK
+export const getTMK = (token,params) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.get(`${base}/api/v1/public/getTmkLisit`,{params:params}).then(res => res.data);  };	
+
+//获取资源用户详细列表
+export const getUserList = (token,params) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.get(`${base}/api/v1/tmk/customer/detail`,{params:params}).then(res => res.data);  };
+
+//获取资源用户沟通记录列表
+export const getUserCommList = (token,params) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.get(`${base}/api/v1/tmkCall`,{params:params}).then(res => res.data);  };
+
+//获取资源用户邀约记录列表
+export const getUserInviteList = (token,params) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.get(`${base}/api/v1/invitation`,{params:params}).then(res => res.data);  };	
+// //code字段说明
+//     tmk_m  :  tmk主管
+//     tmk : tmk
+//     teach_m : 老师主管
+//     teach : 老师
+//     cc : cc
+//     cc_m : cc主管	
+//gwl@ad22min.com tmk主管
+//                tmk																																																																
+>>>>>>> a93aa82b3ccc697119e50f1e17fb1b2ebada015f

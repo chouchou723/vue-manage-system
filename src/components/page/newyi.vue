@@ -173,7 +173,7 @@
     </el-table-column>
     
         <el-table-column
-      prop="states"
+      prop=""
       label="资源状态"
       :formatter="formatter">
     </el-table-column>
@@ -224,6 +224,7 @@
         in:'',
         no:false,
         tableData: [],
+<<<<<<< HEAD
         number:'',
         options: [], //表单上方的select
         options1: [],//表单上方的select
@@ -239,6 +240,10 @@
       }
     },
      methods: {
+     	 		formatter(row, column) {
+        return row.address;
+      }
+   
      	 switchDetail(row){
         // console.log(row)
         this.sendUser(row.id)
@@ -297,7 +302,10 @@
           this.fetchData();
       
       },
-
+ 		formatter(row, column) {
+        return row.address;
+      }
+   
     }
   }
 

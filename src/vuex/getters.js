@@ -10,3 +10,15 @@ export const getSrc = state => {
 export const getUserId = state => {
     return state.user_id
 }
+
+export const getUId = state => {
+    return state.u_id
+}
+
+export const getStatus = state => {
+    return state.u_status
+}
+
+export const getResource = state => {
+    return state.u_resource
+}

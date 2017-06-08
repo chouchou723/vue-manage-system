@@ -111,18 +111,18 @@ import { mapGetters } from 'vuex';
     }
 </script>
 <style scoped>
-	.hoverbg{
+	/*.hoverbg{
 		background: #95a0aa;
-	}
+	}*/
 	.hoverrt{
 		background:#6daba8 ;
 	
 	}
 	.hoverrt:hover{
-		background-color: #2b3a40;
+		background-color: #1fb5ad;
 	}
-	.hoverbg:hover
-	{background-color: #2b3a40;}
+	/*.hoverbg:hover
+	{background-color: #2b3a40;}*/
     .header {
         position: relative;
         box-sizing: border-box;
@@ -170,7 +170,7 @@ import { mapGetters } from 'vuex';
         position: relative;
         display: inline-block;
         padding-left: 50px;
-        color:#000000 ;
+        color: white;
         cursor: pointer;
         vertical-align: middle;
     }
@@ -182,7 +182,6 @@ import { mapGetters } from 'vuex';
         width:40px;
         height:40px;
         border: none;
-        border: 1px solid #000000;
         border-radius: 20px;
     }
 
@@ -207,7 +206,8 @@ import { mapGetters } from 'vuex';
   		margin-top: 22px;
   	}
     #addUser:hover{
-    	background-color: #2b3a40;
+    	/*background-color: #6daba8;*/
+        /*border:1px solid #6daba8;*/
         cursor: pointer;
     }
 
