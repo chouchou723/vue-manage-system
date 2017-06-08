@@ -2,7 +2,7 @@
 <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-menu"></i> 资源管理</el-breadcrumb-item>
-                <el-breadcrumb-item>我的资源</el-breadcrumb-item><el-breadcrumb-item>({{names}})</el-breadcrumb-item>
+                <el-breadcrumb-item>我的资源</el-breadcrumb-item><el-breadcrumb-item>({{number}})</el-breadcrumb-item>
             </el-breadcrumb>
             
             
@@ -10,7 +10,7 @@
             
             
  <div  class= 'accou' >            
-<h2>
+<h2 class="mydataReturn">
                我的资源({{number}}人)
                 </h2>
 
@@ -27,7 +27,7 @@
                       </div>
                       
                                       <div  class='twoSelect2'  >
-                       <el-select v-model="value" clearable placeholder="选择校区" filterable @change="updateList">
+                       <el-select v-model="value1" clearable placeholder="选择校区" filterable @change="updateList">
                   <el-option
                     v-for="item in options"
                     :key="item.value"
@@ -63,10 +63,10 @@
                        <div  class='fiveSelect' >
                         
                       <el-select v-model="value4" clearable placeholder="最近联系时间" @change="updateList">
-                  <el-option
+                  <el-option[{key:,name:,},{key:,name,}]
                     v-for="item in options4"
-                    :key="item.value"
-                    :label="item.label"
+                    :key="item.key"
+                    :label="item.name"
                     :value="item.value">
                   </el-option>
                 </el-select>
@@ -103,13 +103,15 @@
 
                       </div>
                       
-                      
+         <template scope="scope">
+        <span  @click="switchDetail(scope.row)">{{scope.row.names}}</span>
+      </template>                   
 
   <el-table
     :data="tableData"
     border
     style="width: 100%"
-    :default-sort = "{prop: 'date', order: 'descending'}"
+    :default-sort = "{prop: 'last_time', order: 'descending'}"
     >
 
 
@@ -117,6 +119,10 @@
       prop="names"
       label="姓名"
       width="80">
+      <template scope="scope">
+        <span  @click="switchDetail(scope.row)">{{scope.row.names}}</span>
+      </template>
+      
     </el-table-column>
     
      <el-table-column
@@ -126,13 +132,13 @@
     </el-table-column>
     
      <el-table-column
-      prop="group_id"
+      prop="age"
       label="年龄"
       width="65">
     </el-table-column>//此为替代测试数据    
     
     <el-table-column
-      prop="cc_name" 
+      prop="familys" 
       label="家长"
       width="80">
     </el-table-column> //此为替代测试数据
@@ -144,19 +150,19 @@
     </el-table-column>
     
     <el-table-column
-      prop="address"
+      prop="school_id"
       label="校区"
       width="110">
     </el-table-column>
     
     <el-table-column
-      prop="sour_name"
+      prop="sour_id"
       label="渠道来源"
       width="130">
     </el-table-column>
     
         <el-table-column
-      prop="date"
+      prop=""
       label="注册日期"
       sortable
       width="150">
@@ -196,127 +202,94 @@
 </template>
 
 <script>
-	import { account,campusList,cityList,sdjList ,departList,put_account,create_account,delete_account,department} from '../../api/api';
+	var token
+	import {ccount,campusList,cityList,sdjList ,departList,put_account,create_account,delete_account,department,returnLeixing,sourceList,returnNewyi,} from '../../api/api';
 	
+		
    export default {
     data() {
+    	
       return {
-      	currentPage: 1, //页数
+      	
+        filterT:[],
+        dynamicTags: [],//动态替换
+        backupTages:[],
+        inputVisible: false,
+        inputValue: '',
+        dialogFormVisible:false,
+        input2: '',
+        currentPage: 1, //页数
         pagesize: 15, //默认每页
-        total:0,      //总页数
-        in:'',      //修改时代表修改的index
-        no:false,  //取消点击关闭
-        accountData: [],
+        
+        total:0,
+        in:'',
+        no:false,
+        tableData: [],
         number:'',
-        options: '', //表单上方的校区select
-        options1: '',//表单上方的部门select
-        options2: '',//表单上方的职位select
-        value: '',   //对应校区select的值
-        value1: '', //对应部门select的值
-        value2: '', //对应职位select的值
-      
-        tableData: [
-                
-            {
-                "id":1610,
-                "sour_id":55,
-                "names":"孩子",
-                "address":"北新泾",
-                "sex":1,
-                "mobile":"13918191332",
-                "group_id":7,
-                "tmk_name":"朱海萍",
-                "cc_name":"杨快",
-                "school_name":"北新泾体验馆",
-                "sour_name":"大众点评（少儿绘画）"
-            },
-            {
-                "id":1599,
-                "sour_id":9,
-                "names":"谢思辰",
-                "address":"北新泾",
-                "sex":1,
-                "mobile":"13701885321",
-                "group_id":5,
-                "tmk_name":"朱海萍",
-                "cc_name":"杨快",
-                "school_name":"北新泾体验馆",
-                "sour_name":"市场活动"
-            },
-            {
-                "id":1568,
-                "sour_id":78,
-                "names":"孩子",
-                "address":"北新泾",
-                "sex":1,
-                "mobile":"15901907302",
-                "group_id":6,
-                "tmk_name":"朱海萍",
-                "cc_name":"严媚",
-                "school_name":"北新泾体验馆",
-                "sour_name":" 支付宝口碑"
-            },
-            {
-                "id":1566,
-                "sour_id":54,
-                "names":"朱泽龙",
-                "address":"北新泾",
-                "sex":1,
-                "mobile":"15221810821",
-                "group_id":5,
-                "tmk_name":"朱海萍",
-                "cc_name":"严媚",
-                "school_name":"北新泾体验馆",
-                "sour_name":"大众点评38团购"
-            },
-            {
-                "id":1555,
-                "sour_id":54,
-                "names":"孩子",
-                "address":"北新泾",
-                "sex":1,
-                "mobile":"13621730833",
-                "group_id":7,
-                "tmk_name":null,
-                "cc_name":"杨快",
-                "school_name":"北新泾体验馆",
-                "sour_name":"大众点评38团购"
-            },
-            
-            
-            {
-                "id":1514,
-                "sour_id":26,
-                "names":"孩子",
-                "address":"长宁龙柏",
-                "sex":1,
-                "mobile":"13020258017",
-                "group_id":1,
-                "tmk_name":"孙慧钧",
-                "cc_name":"严媚",
-                "school_name":"北新泾体验馆",
-                "sour_name":"教育人生网"
-            },
-            {
-                "id":1490,
-                "sour_id":57,
-                "names":"曹昕玥",
-                "address":"长宁",
-                "sex":2,
-                "mobile":"13816673796",
-                "group_id":7,
-                "tmk_name":null,
-                "cc_name":"严媚",
-                "school_name":"北新泾体验馆",
-                "sour_name":"妈妈帮"
-            }]
+        options: [], //表单上方的select
+        options1: [],//表单上方的select
+        options2: [],//表单上方的select
+        value1: '',   //对应select的值
+        value2: '', //对应select的值
+        value3: '', //对应select的值
+        schools: [], //选好城市之后的校区
+        list: [],
+        loading: false,
+        cities:[], //form中的城市
       }
     },
      methods: {
-      formatter(row, column) {
-        return row.address;
 
-      }
+      fetchData (){
+        let para = { 
+                    school_id:this.value1,
+                    status:this.value2,
+                    
+        			page:this.currentPage}
+        
+        returnNewyi(para,token).then((res) => {//替换服务
+          this.number = res.data.total;
+          let a = res.data.data;
+          let c = res.data.last_page *this.pagesize;
+          
+          // console.log(a)
+          this.tableData = a;
+          this.total = parseInt(c);
+        })
+      },
+ created(){
+
+        this.fetchData();
+        let cam = {
+          simple:'1'
+        };
+        campusList(cam,token).then((res)=>{//获取校区
+          let a = res.data;
+          console.log(res); 
+          this.options = a.map(item => {
+        return { value: item.id, label: item.title };
+      });
+        })
+    },
+     handleCurrentChange: function(val) {
+                    this.currentPage = val;
+
+                    this.fetchData();
+                },   
+  /*    formatter(row, column) {
+        return row.address;
+      },*/
+ 	  switchDetail(row){
+        // console.log(row)
+        this.sendUser(row.id)
+       this.$router.push('/returnDetail');
+      },
+      updateList(){
+          this.fetchData();
+      
+      },
+
+   
     }
   }
 

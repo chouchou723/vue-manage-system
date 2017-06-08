@@ -14,10 +14,8 @@
  <div  class= 'accou' >            
 <h2>
                无需求资源({{number}}人)
-                </h2>
-
-
-                      
+              </h2>               
+ <el-button type="primary" class="fenpei">主要按钮</el-button>  
                    </div>
 
   <el-table
@@ -27,11 +25,16 @@
     :default-sort = "{prop: 'date', order: 'descending'}"
     >
 
-
+ <el-table-column
+      type="selection"
+      width="55">
+    </el-table-column>
+    
      <el-table-column
       prop="names"
       label="姓名"
       width="80">
+      <template scope="scope">{{ scope.row.date }}</template>
     </el-table-column>
     
      <el-table-column
@@ -317,6 +320,9 @@
 </script>   
 
 <style scroped>
+	.fenpei{
+float: right;
+	}
 h2 {
     display: block;
     font-size: 1.5em;

@@ -163,7 +163,8 @@ export const create_student = (params,token) => { axios.defaults.headers.common[
 
 //获取回访列表
 export const returnVisitList = (token,params) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
-										return axios.get(`${base}/api/v1/visit`,{params:params}).then(res => res.data);  };										
+										return axios.get(`${base}/api/v1/visit`,{params:params}).then(res => res.data);  };
+
 //获取来源渠道
 export const sourceList = (token) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
 										return axios.get(`${base}/api/v1/public/getSource`).then(res => res.data);  };
@@ -174,4 +175,16 @@ export const tagList = (token) => { axios.defaults.headers.common['Authorization
 
 //查询重复学员
 export const repeatStudentList = (token,params) => { axios.defaults.headers.common['Authorization'] = token.Authorization;
-										return axios.get(`${base}/api/v1/tmk/getuesrs`,{params:params}).then(res => res.data);  };									
+										return axios.get(`${base}/api/v1/tmk/getuesrs`,{params:params}).then(res => res.data);  };
+
+
+//获取TMK资源管理的资源
+export const returnNewyi = (params,token) =>{axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.post(`${base}/api/v1/tmk/customer)`,{params:params}).then(res=>res.data);
+};
+
+
+/*
+export const returnLeixing = (params,token) =>{axios.defaults.headers.common['Authorization'] = token.Authorization;
+										return axios.get(`${base}/api/v1/tmk/customer)`,{params:params}).then(res=>res.data);
+};*/

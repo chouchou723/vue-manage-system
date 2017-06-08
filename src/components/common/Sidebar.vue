@@ -1,7 +1,7 @@
 <template>
     <div class="sidebar" >
         <el-menu :default-active="onRoutes" id="sidebar" class="el-menu-vertical-demo" unique-opened router >
-            <!--<el-menu-item index="index">
+<!--            <el-menu-item index="index">
                 <i class="el-icon-my-shouye"></i>首页
             </el-menu-item>-->
             <!--<el-menu-item index="calendar" @click='clearCounter'>
@@ -11,36 +11,36 @@
               <span style="position:absolute;right:15%;bottom:-7%;line-height:normal;color:white;width:16px">
               {{acounter}}
               </span> 
-              </div>-->
-                <!-- <el-menu-item index="calendar">calendar</el-menu-item> -->
-            <!-- </el-menu-item>
-            <el-submenu index="3">
+              </div>
+                <el-menu-item index="calendar">calendar</el-menu-item>
+             </el-menu-item>-->
+          <!--<el-submenu index="3">
                 <template slot="title"><i class="el-icon-my-chengyuanguanli"></i>{{duty=='TMK'?'资源' :'客户'}}管理</template>
                 <el-menu-item index="basetable">基础表格</el-menu-item>
                 <el-menu-item index="vuetable" :class="{hidden:duty=='CC'}">Vue表格组件</el-menu-item>
-            </el-submenu>-->
-            
+            </el-submenu> 
+            -->
             <!--<el-submenu index="4">
                 <template slot="title"><i class="el-icon-my-xuexiyuandi"></i>学员回访</template>
                 <el-menu-item index="baseform">基本表单</el-menu-item>
                 <el-menu-item index="vueeditor">编辑器</el-menu-item>
                 <el-menu-item index="markdown">markdown</el-menu-item>
                 <el-menu-item index="upload">文件上传</el-menu-item>
-            </el-submenu>-->
+            </el-submenu>
             
-            <!--<el-submenu index="5">
+            <<el-submenu index="5">
                 <template slot="title"><i class="el-icon-my-tongjifenxi"></i>报表统计</template>
                 <el-menu-item index="basecharts">基础图表</el-menu-item>
                 <el-menu-item index="mixcharts">混合图表</el-menu-item>
-            </el-submenu>-->
-            
-                        <!--<el-submenu index="6">
+            </el-submenu>
+            -->
+<!--                        <el-submenu index="6">
                 <template slot="title"><i class="el-icon-my-chengyuanguanli"></i>资源管理</template>
                 <a href="http://localhost:8080/#/newyi"><el-menu-item index="">我的资源</el-menu-item></a>
                 <a href="http://localhost:8080/#/nodata"><el-menu-item index="">无需求资源</el-menu-item></a>
                 <a href="http://localhost:8080/#/noxdata"><el-menu-item index="">无效资源</el-menu-item></a>
-            </el-submenu> 
-            -->
+            </el-submenu> -->
+           
             
             <div v-for="menu in menus">
                     <div v-if="menu._child" >
