@@ -66,6 +66,21 @@ import { mapGetters,mapActions } from 'vuex';
             ])
         },
         methods:{
+            close(){
+                clearInterval('setopen')
+            },
+            setopen(){
+                setInterval(this.open2, 2000)
+            },
+             open2() {//任务提醒以后做
+            
+        this.$notify({
+          title: '提示',
+          message: '这是一条不会自动关闭的消息',
+          duration: 0,
+          onClose: close
+        });
+      },
             getcounter(){//调服务获取当天任务数
                  let self = this;
                 let para = {
@@ -104,8 +119,8 @@ import { mapGetters,mapActions } from 'vuex';
         created(){
              this.getcounter();
             this.getMenu();
-            
-        }
+            // this.setopen();
+         }
     }
 </script>
 
