@@ -11,11 +11,11 @@ export default new Router({
             redirect: '/login'
         },
         {
-            path: '/home',
+            path: '/Index',
             component: resolve => require(['../components/common/Home.vue'], resolve),
             children:[
                 {
-                    path: '/index',
+                    path: '/',
                     component: resolve => require(['../components/page/Index.vue'], resolve)   //首页
                 },
                 {
@@ -63,16 +63,16 @@ export default new Router({
                     component: resolve => require(['../components/page/returnDetail.vue'], resolve)     // 学员回访详情
                 },
                   {
-                    path:'/newyi',
-                    component: resolve => require(['../components/page/newyi.vue'],resolve) ,  //我的资源
+                    path:'/myResource',
+                    component: resolve => require(['../components/page/myResource.vue'],resolve) ,  //我的资源
                 },
                                   {
-                    path:'/nodata',
-                    component: resolve => require(['../components/page/nodata.vue'],resolve) ,  //无需求资源
+                    path:'/noDemandResource',
+                    component: resolve => require(['../components/page/noDemandResource.vue'],resolve) ,  //无需求资源
                 },
                                   {
-                    path:'/noxdata',
-                    component: resolve => require(['../components/page/noxdata.vue'],resolve) ,  //无效资源
+                    path:'/invalidResource',
+                    component: resolve => require(['../components/page/invalidResource.vue'],resolve) ,  //无效资源
                 },{
                     path: '/userDetail',
                     component: resolve => require(['../components/page/userDetail.vue'], resolve) ,    // 学员详情

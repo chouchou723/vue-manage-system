@@ -1,6 +1,6 @@
 <template>
     <div class="sidebar" >
-        <el-menu id="sidebar" class="el-menu-vertical-demo" :default-openeds='defaultOpeneds' router >
+        <el-menu :default-active="onRoutes" id="sidebar" class="el-menu-vertical-demo" :default-openeds='defaultOpeneds' router >
             
             <div v-for="menu in menus">
                     <div v-if="menu._child" >
@@ -48,7 +48,7 @@ import { mapGetters,mapActions } from 'vuex';
         },
         computed:{
             onRoutes(){
-                return this.$route.path.replace('/','');
+                return this.$route.path.replace('','');
             },
             acounter:{//任务提醒数字共享
                 set: function(value) {

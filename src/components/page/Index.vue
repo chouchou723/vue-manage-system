@@ -1,265 +1,330 @@
 <template>
     <div>
         <div class="crumbs">
-            <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-my-shouye"><b>&nbsp;首页</b></i> </el-breadcrumb-item>
+            <el-breadcrumb separator=" ">
+                <el-breadcrumb-item><i class="el-icon-my-shouye"></i>首页 </el-breadcrumb-item>
+                <el-breadcrumb-item> </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
-        
-  	  <div class="box_1">
-        
-        <div class="left_a">
-        	<b>日数据对比统计</b>
+        <div style="width: 50%;float:left">
+            <div class="h1" style="position:relative;height:50px;">
+                <div>
+                    <h3 style='margin-bottom:20px;padding-top:5px'>
+            
+       日数据对比统计
+        </h3>
+                </div>
+                <div style='margin-left:10px;width:100px;position:absolute;top:4px;right:10px' v-if="code =='tmk_m'">
+                    <el-select v-model="value1" size='small' clearable placeholder="全部TMK" @change="updateList">
+                        <el-option v-for="item in tmks" :key="item.value" :label="item.label" :value="item.value">
+                        </el-option>
+                    </el-select>
+                </div>
+            </div>
+            <div style="height:150px;background-color:snow;display:flex; align-items:center">
+                <el-col :span="8">
+                    <div class="dayCompare">
+                        <div style="color:#6fc7ca;font-size:14px">较昨天+1</div>
+                        <div style="color:#6fc7ca;font-size:32px">80</div>
+                        <div style="color:#6fc7ca;font-size:18px">新资源</div>
+                    </div>
+                </el-col>
+                <el-col :span="8">
+                    <div class="dayCompare">
+                        <div style="color:#ed8d7a;font-size:14px">较昨天+1</div>
+                        <div style="color:#ed8d7a;font-size:32px">80</div>
+                        <div style="color:#ed8d7a;font-size:18px">邀约量</div>
+                    </div>
+                </el-col>
+                <el-col :span="8">
+                    <div class="dayCompare">
+                        <div style="color:#71b4db;font-size:14px">较昨天+1</div>
+                        <div style="color:#71b4db;font-size:32px">80</div>
+                        <div style="color:#71b4db;font-size:18px">到访量</div>
+                    </div>
+                </el-col>
+            </div>
+            <div style="height:150px;background-color:snow;margin-top:20px;display:flex; align-items:center">
+                <el-col :span="8">
+                    <div class="dayCompare">
+                        <div style="color:#7089ba;font-size:14px">较昨天+1</div>
+                        <div style="color:#7089ba;font-size:32px">80</div>
+                        <div style="color:#7089ba;font-size:18px">签单量</div>
+                    </div>
+                </el-col>
+                <el-col :span="8">
+                    <div class="dayCompare">
+                        <div style="color:#7aba70;font-size:14px">较昨天+1%</div>
+                        <div style="color:#7aba70;font-size:32px">80%</div>
+                        <div style="color:#7aba70;font-size:18px">到访率</div>
+                    </div>
+                </el-col>
+                <el-col :span="8">
+                    <div class="dayCompare">
+                        <div style="color:#cbbc5a;font-size:14px">较昨天+1%</div>
+                        <div style="color:#cbbc5a;font-size:32px">80%</div>
+                        <div style="color:#cbbc5a;font-size:18px">签单率</div>
+                    </div>
+                </el-col>
+            </div>
         </div>
-        
-        <div class="right_a">
-        	<b>客户发展趋势</b>
+        <div class="echarts" style="position:relative;margin-top:10px;width: 50%;float:left">
+            <div style='margin-left:10px;width:100px;position:absolute;top:0;right:10px;z-index:3' v-if="code =='tmk_m'">
+                <el-select v-model="value2" size='small' clearable placeholder="全部TMK" @change="updateList1">
+                    <el-option v-for="item in tmks" :key="item.value" :label="item.label" :value="item.value">
+                    </el-option>
+                </el-select>
+            </div>
+            <IEcharts :option="line" style='height:400px;width:100%'></IEcharts>
         </div>
-        
-        <div class="left_b">
-       <ul>
-        	<li>
-        		<dl>
-        			<dt>较上周({{xzy}})</dt>
-        			<dd>80</dd>
-        			<dd>新资源</dd>
-        		</dl>
-        	</li>
-        	<li>
-        		<dl>
-        			<dt>较上周({{yyl}})</dt>
-        			<dd>80</dd>
-        			<dd>邀约量</dd>
-        		</dl>
-        	</li>
-        	<li>
-        		<dl>
-        			<dt>较上周({{dfl}})</dt>
-        			<dd>80</dd>
-        			<dd>到访量</dd>
-        		</dl>
-        	</li>
-        	<li>
-        		<dl>
-        			<dt>较上周({{qdl}})</dt>
-        			<dd>80</dd>
-        			<dd>签单量</dd>
-        		</dl>
-        	</li>
-        	<li>
-        		<dl>
-        			<dt>较上周({{dflv}})</dt>
-        			<dd>80</dd>
-        			<dd>到访率</dd>
-        		</dl>
-        	</li>
-        	<li>
-        		<dl>
-        			<dt>较上周({{qdl}})</dt>
-        			<dd>80</dd>
-        			<dd>签单率</dd>
-        		</dl>
-        	</li>
-
-
-       </ul> 	
-        </div>	
-        
-        <div class="right_b">
+        <div style="width: 49%;float:left;margin-right:10px">
+            <div class="h1" style="position:relative;height:50px;border-bottom:1px solid #cccccc">
+                <div>
+                    <h3 style='float:left;padding-bottom:20px;padding-top:5px;'>
+            
+       系统通知
+        </h3>
+                </div>
+                <div class='notifyA' style='float:right;margin-top:12px;font-size: 14px;'>
+                    <el-breadcrumb separator=" ">
+                        <el-breadcrumb-item :to="{ path: '/calendar'}">更多>></el-breadcrumb-item>
+                        <el-breadcrumb-item> </el-breadcrumb-item>
+                    </el-breadcrumb>
+                </div>
+            </div>
+            <div v-for="content in notifyData" style="padding:10px;border-bottom:1px solid #e8e8e8;font-size:14px">
+                <div style="height:30px">
+                    <div style="float:left;font-weight:600" :class="{green:content.date.substring(0,11).replace(/0/g,'') == new Date().toLocaleString().substring(0,9).replace(/0/g,'')}">{{content.title}}</div>
+                    <div style="float:right;color:#bebebe">{{content.date.substring(0,11).replace(/0/g,'') == new Date().toLocaleString().substring(0,9).replace(/0/g,'')?content.date.substring(10): content.date.substring(0,11).replace(/0/g,'').replace(/\-/g,'') - new Date().toLocaleString().substring(0,9).replace(/0/g,'').replace(/\-/g,'') == -1? '昨天'+content.date.substring(10) :content.date.substring(6)}}</div>
+                </div>
+                <div style="color:#666666">
+                    {{ content.content}}
+                </div>
+            </div>
         </div>
-        
+        <div style="width: 49%;float:right">
+            <div class="h1" style="position:relative;height:50px;border-bottom:1px solid #cccccc">
+                <div>
+                    <h3 style='float:left;padding-bottom:20px;padding-top:5px;'>
+            
+       任务提醒
+        </h3>
+                </div>
+                <div class='notifyA' style='float:right;margin-top:12px;font-size: 14px;'>
+                    <el-breadcrumb separator=" ">
+                        <el-breadcrumb-item :to="{ path: '/calendar'}">更多>></el-breadcrumb-item>
+                        <el-breadcrumb-item> </el-breadcrumb-item>
+                    </el-breadcrumb>
+                </div>
+            </div>
+            <div v-for="content in taskData" style="padding:10px;border-bottom:1px solid #e8e8e8;font-size:14px">
+                <div style="height:30px">
+                    <div style="float:left;font-weight:600" class="green"><i class="el-icon-my-tongzhigonggao"></i>{{content.title}}</div>
+                    <div style="float:right;color:#bebebe">{{content.date.substring(0,11).replace(/0/g,'') == new Date().toLocaleString().substring(0,9).replace(/0/g,'')?content.date.substring(10): content.date.substring(0,11).replace(/0/g,'').replace(/\-/g,'') - new Date().toLocaleString().substring(0,9).replace(/0/g,'').replace(/\-/g,'') == -1? '昨天'+content.date.substring(10) :content.date.substring(6)}}</div>
+                </div>
+                <div style="color:#666666">
+                    {{ content.content}}
+                </div>
+            </div>
+        </div>
     </div>
-    
-    
-    <div class="box_2">
-    	<div class="left_c">
-    		<div class="left_os">
-    			<b>系统通知</b>
-    			<a href=""><span>更多</span></a>
-    		</div>
-    		
-    		<div class="left_tz">
-    			<dl>
-    				<dt>徐家汇校区通知（{{}}）</dt>
-    				<dd>报告系统将成为什么……模块买买买</dd>
-
-    			</dl>
-    			<dl>
-    				<dt>徐家汇校区通知（{{}}）</dt>
-    				<dd>报告系统将成为什么……模块买买买</dd>
-   
-    			</dl>
-    			<dl>
-    				<dt>徐家汇校区通知（{{}}）</dt>
-    				<dd>报告系统将成为什么……模块买买买</dd>
-
-    			</dl>
-    			<dl>
-    				<dt>徐家汇校区通知（{{}}）</dt>
-    				<dd>报告系统将成为什么……模块买买买</dd>
-    	
-    			</dl>
-    			<dl>
-    				<dt>徐家汇校区通知（{{}}）</dt>
-    				<dd>报告系统将成为什么……模块买买买</dd>
-   
-    			</dl>
-    			
-    		</div>
-    	</div>
-    </div>
-    
-        
-        
-        <!--<div class="ms-doc">
-            <h3>HOme</h3>
-            <article>
-                <h1>manage-system</h1>
-                <br>
-            </article>
-        </div>-->
-	 </div>
-	 
-	 
 </template>
-
 <script>
-    export default {
-        data: function(){
-            return {}
+var token, user
+import IEcharts from 'vue-echarts-v3';
+import {
+    getTMK
+} from '../../api/api';
+export default {
+    components: {
+        IEcharts
+    },
+    data: () => ({
+        notifyData: [{
+            title: '徐家汇校区通知',
+            content: '夫君子之行，静以修身，俭以养德，非淡泊无以明志，非宁静无以致远',
+            date: '2017-06-09 14:30'
+        }, {
+            title: '徐家汇校区通知',
+            content: '欲思其利,必虑其害,欲思其成,必虑其败',
+            date: '2017-06-08 14:30'
+        }, {
+            title: '徐家汇校区通知',
+            content: '下周一开始要努力工作',
+            date: '2017-06-06 14:30'
+        }, {
+            title: '徐家汇校区通知',
+            content: '风萧萧兮易水寒',
+            date: '2017-06-04 14:30'
+        }, {
+            title: '徐家汇校区通知',
+            content: '千里之行始于足下',
+            date: '2017-06-03 14:30'
+        }],
+        taskData: [{
+            title: '9:30提醒',
+            content: '夫君子之行，静以修身，俭以养德，非淡泊无以明志，非宁静无以致远',
+            date: '2017-06-09 14:30'
+        }, {
+            title: '9:30提醒',
+            content: '欲思其利,必虑其害,欲思其成,必虑其败',
+            date: '2017-06-09 14:30'
+        }, {
+            title: '9:30提醒',
+            content: '下周一开始要努力工作',
+            date: '2017-06-09 14:30'
+        }, {
+            title: '9:30提醒',
+            content: '风萧萧兮易水寒',
+            date: '2017-06-09 14:30'
+        }, {
+            title: '9:30提醒',
+            content: '千里之行始于足下',
+            date: '2017-06-08 14:30'
+        }],
+
+
+        tmks: [],
+        value1: "",
+        value2: "",
+        line: {
+            color: ["#F7BA2A", "#16b8be", "#ed42b3"],
+            title: {
+                text: '客户发展趋势图'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            xAxis: {
+                axisTick: {
+                    alignWithLabel: true
+                },
+                data: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"]
+
+            },
+            yAxis: {
+                splitLine: {
+                    show: false
+                }
+            },
+            legend: {
+                orient: 'horizontal',
+                bottom: 10,
+                data: ["已邀约", "已到访", "已签单"]
+            },
+            series: []
         }
+    }),
+
+    methods: {
+        updateList() {
+            let para = {
+                    tmk_id: this.value1
+                }
+                //调服务
+        },
+        updateList1() {
+            let para = {
+                    tmk_id: this.value2
+                }
+                //调服务
+        },
+    },
+    beforeCreate() {
+        user = localStorage.getItem('user');
+        token = JSON.parse(user).token;
+    },
+    created() {
+        this.code = JSON.parse(user).job ? JSON.parse(user).job.code : ''; //获取职位code
+        this.line.series = [{ //以后改成动态获取
+                name: "已邀约",
+                type: "line",
+                data: [20, 25, 15, 20, 19, 15, 18]
+            }, {
+                name: "已到访",
+                type: "line",
+                data: [5, 7, 9, 10, 11, 12, 13]
+            }, {
+                name: "已签单",
+                type: "line",
+                data: [3, 2, 3, 3, 4, 5, 1]
+            }]
+            // if (this.code == 'tmk_m') {
+        getTMK(token).then((res) => {
+                this.tmks = res.data
+            })
+            // }
+
     }
-    
-    
+}
 </script>
+<style>
+.green {
+    color: #1fb5ad;
+}
 
-<style scoped>
-	.box_2{
-		width: 560px;
-		height:365px;
-		background-color: #FFFFFF;
-		display: block;
-		float: left;
-		margin-top: 20px;
-	}
-	
-	.left_b dl {
-		text-align: center;
-		padding-top: 40px;
-	}
-	.left_b li {
-		display: block;
-		width: 183px;
-		margin-right: 5px;
-		margin-bottom: 5px;
-		height: 155px;
-		float: left;
-		background-color: #FFFFFF;
-	
-	}
-	.left_b ul li:nth-child(3n){
-		margin-right: 0;
-	}
-	
-	li .last {
-		margin-right: 0;
-		
-	}
-	.box_1{
-		
-		width: 1130px;
-		display: block;
-		
-	}
-	.left_a{
-		width: 550px;
-		height: 50px;
-		background-color:#FFFFFF ;
-		float: left;
-		margin-right: 10px;
-		margin-bottom: 10px;
-		line-height: 50px;
-		padding-left: 10px;
-	}
-	.right_a{
-		width: 550px;
-		height: 50px;
-		background-color: #FFFFFF;
-		float: left;
-		margin-bottom: 10px;
-		line-height: 50px;
-		padding-left: 10px;
-	}
-	
+.notifyA a:link {
+    color: #6fc7ca
+}
 
-	.left_b{
-		height: 315px;
-		width: 560px;
-		background-color: #f3f3f3;
-		float: left;
-		margin-right: 10px;
-		
-	}
-	.right_b{
-		height: 315px;
-		width:560px;
-		background-color: #FFFFFF;
-		float: left;
-	}
-	.crumbs{
-		width: 100%;
-		height: 44px;
-		background-color: #FFFFFF;
-		display: block;		
-	}
-	.el-icon-my-shouye{
-		padding-top: 13px;
-		color: #1fb5ad;
-		font-size: 16px;
-		padding-left:15px ;
-	}
-    /*ms-doc{
-        width:100%;
-        max-width: 980px;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-    }
-    .ms-doc h3{
-        padding: 9px 10px 10px;
-        margin: 0;
-        font-size: 14px;
-        line-height: 17px;
-        background-color: #f5f5f5;
-        border: 1px solid #d8d8d8;
-        border-bottom: 0;
-        border-radius: 3px 3px 0 0;
-    }
-    .ms-doc article{
-        padding: 45px;
-        word-wrap: break-word;
-        background-color: #fff;
-        border: 1px solid #ddd;
-        border-bottom-right-radius: 3px;
-        border-bottom-left-radius: 3px;
-    }
-    .ms-doc article h1{
-        font-size:32px;
-        padding-bottom: 10px;
-        margin-bottom: 15px;
-        border-bottom: 1px solid #ddd;
-    }
-    .ms-doc article h2 {
-        margin: 24px 0 16px;
-        font-weight: 600;
-        line-height: 1.25;
-        padding-bottom: 7px;
-        font-size: 24px;
-        border-bottom: 1px solid #eee;
-    }
-    .ms-doc article p{
-        margin-bottom: 15px;
-        line-height: 1.5;
-    }
-    .ms-doc article .el-checkbox{
-        margin-bottom: 5px;
-    }*/
+.notifyA a:visited {
+    color: #6fc7ca
+}
+
+.notifyA a:hover {
+    text-decoration: underline;
+}
+
+.notifyA a:acitve {
+    text-decoration: underline;
+}
+
+.dayCompare {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 150px;
+    flex-direction: column;
+    box-shadow: 2px 2px 9px #888888;
+    padding:0 20px 12px 15px;
+    border-radius: 8px;
+    flex:auto;
+}
+
+.echarts {
+    float: left;
+    width: 100%;
+    height: 400px;
+    z-index: 1;
+}
+
+#table .el-table td,
+#table .el-table th {
+    padding: 5px 5px;
+    text-align: center
+}
+
+#table .el-table th>div,
+#table .el-table .cell {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.block {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.drop .el-dropdown {
+    font-size: 1.17em;
+    color: black;
+}
+
+.datec .el-date-editor--daterange.el-input {
+    width: 187px
+}
+
+.echarts .drop .el-dropdown {
+    color: rgb(31, 181, 173);
+}
 </style>

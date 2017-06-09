@@ -8,36 +8,6 @@
         </div>
         <div class="form-box" style="width:auto">
             <el-form ref="form" :model="form" label-width="80px" style="width:100%">
-            <!-- <ul style="list-style:none;margin:100px auto;width:700px;" >
-              <li >
-                  
-            <img class="pre-img" :src="settingsrc" alt="" width="200px" height="200px" style="float:left;border:2px solid grey;border-radius:50%;margin-right:150px">
-            
-              </li>  
-           <li>
-               
-            <img class="pre-img" :src="src" alt="" width="200px" height="200px" style="float:left;border:2px solid grey;border-radius:50%">
-           </li>
-                
-            </ul>
-            <div class="clear"></div>
-            <ul style="list-style:none;margin:100px auto;width:700px;" >
-            <li>
-             <el-button type="info" style='float:left;width:200px;margin-right:150px' @click="changeAvatar">点击更换头像</el-button>
-           </li>
-
-              <li >            <vue-core-image-upload :class="['pure-button','pure-button-primary','js-btn-crop']"
-                               :crop="false"
-                               text="确认上传"
-                               url="https://jsonplaceholder.typicode.com/posts/"
-                               extensions="png,gif,jpeg,jpg"
-                               @:imageuploaded="imageuploaded"
-                               @:errorhandle="handleError" style="width:200px;height:36px;" ></vue-core-image-upload>
-              </li>  
-           
-                
-            </ul> -->
-
             <el-upload
   class="avatar-uploader"
   action="https://jsonplaceholder.typicode.com/posts/"
@@ -81,9 +51,6 @@ import { mapGetters } from 'vuex';
       // ...
             ]),
             
-        },
-        components: {
-                'vue-core-image-upload': VueCoreImageUpload
         },
         created(){
           
