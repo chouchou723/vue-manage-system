@@ -1,13 +1,14 @@
 <template>
-    <div class="table">
+    <div class="tableCharacter">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-menu"></i> 组织架构</el-breadcrumb-item>
-                <el-breadcrumb-item>角色管理</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-my-shezhi"></i> 组织架构</el-breadcrumb-item>
+                <el-breadcrumb-item class='ss'>角色管理</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
-        <div class='crea' style="width: 100%;position:relative">
-            <el-button type="primary" size="mid" style='position:absolute;right:0;top:10%' @click="createCh">创建角色</el-button>
+        <div class='crea' style="width: 100%;position:relative;background-color:white;margin-bottom:5px;padding:15px 0 15px 0;border-radius:5px">
+         <h3 class='charatcterH2'>角色管理</h3>
+            <el-button type="primary" size="mid" style='position:absolute;right:10px;top:16%' @click="createCh">创建角色</el-button>
         </div>
         <div>
             <el-dialog :title="alter" :visible.sync="dialogFormVisible" :close-on-click-modal="no" show-close style='z-index:100' class='charDialog'>
@@ -24,8 +25,8 @@
                 </div>
             </el-dialog>
         </div>
-        <el-table :data="charData" border style="width: 100%;margin-top:70px">
-            <el-table-column prop="name" label="角色管理">
+        <el-table :data="charData" border style="width: 100%">
+            <el-table-column prop="name" label="">
             </el-table-column>
             <el-table-column width='140px' label="操作">
                 <template scope="scope">
@@ -120,8 +121,6 @@ export default {
                         this.charData = res.data;
                     })
                 });
-                // this.charData.push({ name: b,
-                //   module_id: a});//number要替换
                 this.dialogFormVisible = false;
                 this.$refs.tree.setCheckedKeys([]);
                 this.form.name = '';
@@ -130,14 +129,12 @@ export default {
                         role_id: this.form.roleid,
                         name: b,
                         module_id: a
-                    } //number要替换
+                    } 
                 put_character(para, token).then(() => {
                     character(token).then((res) => {
                         this.charData = res.data;
                     })
-                });;
-                // this.charData[c].name = b ;
-                // this.charData[c].module_id = a ;//number要替换
+                });
                 this.dialogFormVisible = false;
                 this.in = '';
                 this.$refs.tree.setCheckedKeys([]);
@@ -174,9 +171,7 @@ export default {
             this.charData = res.data;
         })
         rangeList(token).then(res => {
-
-            this.data2 = res.data
-                // console.log(this.data2)
+                 this.data2 = res.data
         })
     },
     computed: {
@@ -223,11 +218,6 @@ export default {
     float: left;
 }
 
-.dialog-footer .el-button--primary {
-    background-color: #1fb5ad;
-    border-color: #1fb5ad;
-}
-
 .el-dialog .el-dialog__header {
     background-color: #1fb5ad;
     padding: 20px 20px 20px;
@@ -235,5 +225,9 @@ export default {
 
 .el-dialog .el-dialog__title {
     color: white;
+}
+
+.charatcterH2{
+    padding-left: 10px
 }
 </style>

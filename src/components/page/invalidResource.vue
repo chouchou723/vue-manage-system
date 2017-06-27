@@ -1,11 +1,12 @@
 <template>
-    <div class="crumbs">
+
+    <div class="crumbsInval">
         <el-breadcrumb separator="/">
-            <el-breadcrumb-item><i class="el-icon-menu"></i> 资源管理</el-breadcrumb-item>
-            <el-breadcrumb-item>无效资源</el-breadcrumb-item>
+            <el-breadcrumb-item><i class="el-icon-my-moban"></i> 资源管理</el-breadcrumb-item>
+            <el-breadcrumb-item class='ss'>无效资源</el-breadcrumb-item>
         </el-breadcrumb>
-        <div class='noEff'>
-            <h2 class="studentReturn">
+        <div class='noInvalid'>
+            <h2 class="studentinvalid">
             
         无效资源({{number}}人)
         </h2>
@@ -16,10 +17,16 @@
                 </el-select>
             </div>
             <div class='studentReturnThreeNoEff'>
-                <el-select v-model="value2" clearable placeholder="渠道来源" @change="updateList">
-                    <el-option v-for="item in options2" :key="item.id" :label="item.names" :value="item.id">
-                    </el-option>
-                </el-select>
+            <el-cascader
+    :options="options2"
+    :props="propsource"
+    v-model="value2"
+    :show-all-levels="false"
+     @change="updateList"
+     clearable
+     change-on-select
+    placeholder="请选择渠道">
+  </el-cascader>
             </div>
             <div class='studentReturnThreeNoEffTime'>
                 <el-date-picker v-model="value3" type="daterange" placeholder="注册时间" @change="updateList">
@@ -32,24 +39,24 @@
         </div>
         <div id="table3">
             <el-table :data="noEffData" border style="width: 100%" :default-sort="{prop: 'created', order: 'descending'}">
-                <el-table-column prop="names" label="姓名">
+                <el-table-column prop="names" label="姓名" width='80'>
                     <template scope="scope">
                         <span @click="switchDetail(scope.row)" class='nicknameSpan'>{{scope.row.names}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="sex" label="性别">
+                <el-table-column prop="sex" label="性别" width='80'>
                 </el-table-column>
-                <el-table-column prop="age" label="年龄">
+                <el-table-column prop="age" label="年龄" width='80'>
                 </el-table-column>
-                <el-table-column prop="patriarch" label="家长">
+                <el-table-column prop="patriarch" label="家长" width='80'>
                 </el-table-column>
-                <el-table-column prop="mobile" label="手机" :formatter="formatter">
+                <el-table-column prop="mobile" label="手机" :formatter="formatter" width='100'>
                 </el-table-column>
-                <el-table-column prop="school" label="校区">
+                <el-table-column prop="school" label="校区" >
                 </el-table-column>
-                <el-table-column prop="sour_name" label="渠道来源">
+                <el-table-column prop="sour_name" label="渠道来源" >
                 </el-table-column>
-                <el-table-column prop="created" label="注册时间" sortable>
+                <el-table-column prop="created" label="注册时间" sortable  >
                 </el-table-column>
             </el-table>
         </div>
@@ -59,7 +66,7 @@
             </el-pagination>
         </div>
     </div>
-    </div>
+    
 </template>
 <script>
 var user, token
@@ -80,11 +87,16 @@ export default {
                 options: [],
                 options2: [],
                 value: '',
-                value2: '',
+                value2: [],
                 value3: '',
                 value4: '',
                 currentPage: 1, //页数
                 pagesize: 15, //默认每页
+                propsource:{
+          value: 'id',
+          label:'names',
+          children: '_child'
+        },
             }
         },
         methods: {
@@ -110,8 +122,8 @@ export default {
                     u_resource: 3
                 }
 
-                this.sendResourceId(uid)
-                this.$router.push('/userDetail');
+                // this.sendResourceId(uid)
+                this.$router.push('/userDetail'+'/'+row.id+'/invalid/'+3);
             },
             updateList() {
                 this.currentPage = 1;
@@ -124,10 +136,10 @@ export default {
                     school_id: this.value,
                     sour_id: this.value2,
                     page: this.currentPage,
-                    input_start_date: this.value3 ? typeof(this.value3[0]) != 'object' ? new Date(this.value3[0]).toLocaleString().substring(0, 9) : '' : '',
-                    input_end_date: this.value3 ? typeof(this.value3[1]) != 'object' ? new Date(this.value3[1]).toLocaleString().substring(0, 9) : '' : '',
-                    last_start_date: this.value4 ? typeof(this.value4[0]) != 'object' ? new Date(this.value4[0]).toLocaleString().substring(0, 9) : '' : '',
-                    last_end_date: this.value4 ? typeof(this.value4[1]) != 'object' ? new Date(this.value4[1]).toLocaleString().substring(0, 9) : '' : '',
+                    input_start_date: this.value3[0] != null? new Date(this.value3[0]).toLocaleDateString(): '',
+                    input_end_date: this.value3[1] != null?new Date(this.value3[1]).toLocaleDateString(): '',
+                    last_start_date:this.value4[0] != null? new Date(this.value4[0]).toLocaleDateString(): '',
+                    last_end_date: this.value4[1] != null? new Date(this.value4[1]).toLocaleDateString(): ''
                 }
 
                 getMyResoure(para, token).then((res) => { //替换服务
@@ -185,15 +197,19 @@ export default {
 .nicknameSpan:hover {
     cursor: pointer;
 }
-
-.block {
+.nicknameSpan{
+    font-weight: 600;
+}
+.crumbsInval .block {
     text-align: center;
     margin-top: 10px;
 }
 
-.studentReturn {
+.studentinvalid {
     float: left;
     margin-right: 5px;
+    padding-left: 10px;
+
 }
 
 .studentReturnThreeNoEffTime {
@@ -208,10 +224,15 @@ export default {
     margin-right: 10px;
 }
 
-.noEff {
+.noInvalid {
     width: 100%;
     position: relative;
-    height: 50px;
+    height: 46px;
     margin-top: 15px;
+     margin-top:30px;
+  padding-top:10px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+  background-color: white;
 }
 </style>

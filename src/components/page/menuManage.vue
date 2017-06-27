@@ -2,16 +2,16 @@
 <div class="table">
 <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-menu"></i> 组织架构</el-breadcrumb-item>
-                 <el-breadcrumb-item >菜单管理</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-my-shezhi"></i> 组织架构</el-breadcrumb-item>
+                 <el-breadcrumb-item class='ss'>菜单管理</el-breadcrumb-item>
             </el-breadcrumb>
   </div>
         <div  class='addMenuTitle' >
-        <h2>菜单管理</h2>
-         <el-button type="primary" size="mid" class='buttonAdd' @click="addMenu('aform')">添加菜单</el-button>
+        <h3 class='menuH2'>菜单管理</h3>
+         <el-button type="primary" size="mid" class='menubuttonAdd' @click="addMenu('aform')">添加菜单</el-button>
          </div>
   <div>
-  <el-dialog class='dialog' title="添加菜单" :visible.sync="dialogFormVisible"  :close-on-click-modal="no"  >
+  <el-dialog class='dialog' title="添加菜单" :visible.sync="dialogFormVisible"  :close-on-click-modal="no"  @close = 'resetLevel'>
   <el-form ref="dynamicValidateForm" :model="dynamicValidateForm"   label-width="100px">
   <el-form-item label="菜单名称" prop='menu_name' >
     <el-input v-model="dynamicValidateForm.menu_name" placeholder='请输入菜单名单'  style="width:180px" ></el-input>
@@ -50,8 +50,8 @@
       <!-- <el-option label="" value="el-icon-my-shouye"><i class="el-icon-my-shouye"></i></el-option> -->
     </el-select>
   </el-form-item>
-  <el-form-item label="选择序号" prop='id' >
-   <el-input v-model="dynamicValidateForm.id" placeholder='请输入序号'  style="width:180px" ></el-input>
+  <el-form-item label="选择序号" prop='sort_code' >
+   <el-input v-model="dynamicValidateForm.sort_code" placeholder='请输入序号'  style="width:180px" ></el-input>
     </el-select>
   </el-form-item>
   <el-form-item label="菜单地址" prop='location' >
@@ -65,7 +65,7 @@
   </el-form-item>
   <el-form-item style='margin-top:60px'>
     <el-button type="primary" @click="onSubmit('form')">确定</el-button>
-    <el-button>取消</el-button>
+    <el-button @click='dialogFormVisible = false'>取消</el-button>
   </el-form-item>
 </el-form>
 
@@ -88,10 +88,6 @@ import { rangeList,create_menuList,put_menuList,delete_menuList,get_level,detail
   export default {
     data() {
       return {
-        // cssClass:[{value:'el-icon-my-shouye',label:"1"},
-        //           {value:'el-icon-my-huoquxiaoxi', label:"2"},
-        //            {value:'el-icon-my-shezhi', label:"2"}],
-        // cssClass:[],
         no:false,
         in:'',
         dialogFormVisible:false,
@@ -103,7 +99,7 @@ import { rangeList,create_menuList,put_menuList,delete_menuList,get_level,detail
           module_id:'',
           menu_name:'',
           icon:'',
-          id:'',
+          sort_code:'',
           location:'',
           status:'',
           level:'',
@@ -120,6 +116,9 @@ import { rangeList,create_menuList,put_menuList,delete_menuList,get_level,detail
       }
     },
     methods: {
+      resetLevel(){
+        this.dynamicValidateForm.level = '';
+      },
       getSecond(){ //获取二级菜单
         get_level({pid:this.dynamicValidateForm.kid},token).then(res=>{
             this.upMenus1 = res.data;
@@ -127,11 +126,14 @@ import { rangeList,create_menuList,put_menuList,delete_menuList,get_level,detail
       },
       changeDisplay(){//显示隐藏直属上级
         if(this.dynamicValidateForm.level == 0){
-
-         this.icTop = false;
+          this.icTop = false;
          this.icTop1 = false;
          this.dynamicValidateForm.kid = '';
          this.dynamicValidateForm.pid = '';
+         detail_level({module_id:this.dynamicValidateForm.module_id},token).then(res=>{
+         
+               this.dynamicValidateForm.sort_code = res.data.sort_code;
+            })
          this.icDisplay = true
         }else if(this.dynamicValidateForm.level == 1){
            this.icDisplay = false
@@ -139,22 +141,25 @@ import { rangeList,create_menuList,put_menuList,delete_menuList,get_level,detail
            this.dynamicValidateForm.pid = '';
            this.dynamicValidateForm.icon = '';
            detail_level({module_id:this.dynamicValidateForm.module_id},token).then(res=>{
-              this.dynamicValidateForm.kid = res.data.pid-0;
+              this.dynamicValidateForm.kid = res.data.pid;
+               this.dynamicValidateForm.sort_code = res.data.sort_code;
             })
            this.icTop = true;
-        }else{
-           this.icDisplay = false
+        }else if(this.dynamicValidateForm.level == 2){
+           this.icDisplay = false;
            this.dynamicValidateForm.kid = '';
            this.dynamicValidateForm.icon = '';
            detail_level({module_id:this.dynamicValidateForm.module_id},token).then(res=>{
-              this.dynamicValidateForm.kid = res.data.one_level-0;
-              this.dynamicValidateForm.pid = res.data.pid-0;
+              this.dynamicValidateForm.kid = res.data.one_level;
+              this.dynamicValidateForm.pid = res.data.pid;
+              this.dynamicValidateForm.sort_code = res.data.sort_code;
             })
            this.icTop = true;
            this.icTop1 = true;
         }
       },
       cc(a,b,c){//点击节点时赋值
+        
         if(b.level == 1){
           this.dynamicValidateForm.level = '0';
 
@@ -187,8 +192,7 @@ import { rangeList,create_menuList,put_menuList,delete_menuList,get_level,detail
           let para = {module_id:data.module_id}
         delete_menuList(para,token).then(()=>{
           rangeList(token).then(res=>{
-
-          this.data2 = res.data
+              this.data2 = res.data
         })
         })
           this.$message({
@@ -212,6 +216,7 @@ import { rangeList,create_menuList,put_menuList,delete_menuList,get_level,detail
         this.dynamicValidateForm.location = data.location;
         this.dynamicValidateForm.icon = data.icon;
        this.dynamicValidateForm.status = data.status;
+       this.dynamicValidateForm.sort_code = data.sort_code;
        this.in = '1';
       },
       addMenu(formName){  //点击创建按钮
@@ -237,28 +242,23 @@ import { rangeList,create_menuList,put_menuList,delete_menuList,get_level,detail
         if(this.in !=0){
 put_menuList(para,token).then(()=>{
           rangeList(token).then(res=>{
-            console.log(res)
           this.data2 = res.data
-          // console.log(this.data2)
         })
         }).then(()=>{
            this.dialogFormVisible = false;
+           this.$router.go();
         })
         }else{
 create_menuList(para,token).then(()=>{
           rangeList(token).then(res=>{
-
-          this.data2 = res.data
-          // console.log(this.data2)
+        this.data2 = res.data
         })
         }).then(()=>{
            this.dialogFormVisible = false;
+           this.$router.go();
         })
         }
-        
-        
-
-      },
+},
       renderContent(h, { node, data, store }) {
         return (
           <span>
@@ -305,19 +305,11 @@ create_menuList(para,token).then(()=>{
         },
     created(){
       rangeList(token).then(res=>{
-
-          this.data2 = res.data
-          // console.log(this.data2)
+this.data2 = res.data
         })
       get_level({pid:0},token).then(res=>{
             this.upMenus = res.data;
            })
-    },
-    mounted(){
-        
-        
-        // console.log(a)
-      
     }
   }
 </script>
@@ -325,19 +317,27 @@ create_menuList(para,token).then(()=>{
 .addUserTitle{
   padding:10px 10px 30px 10px;
 }
-.buttonAdd{
+.menubuttonAdd{
   position:absolute;
-  right:0;
-  top:0
+  right:10px;
+  top:16%;
 }
 .addMenuTitle{
   width: 100%;
   position:relative;
-  height:50px
+  height:40px;
+  background-color: white;
+  margin-top:30px;
+  padding-top:10px;
+  margin-bottom: 5px;
+  border-radius: 5px;
 }
 .addMenuTitle .el-button--primary{
     background-color: #32a4d3;
     border-color: #32a4d3;
+}
+.menuH2{
+   padding-left: 10px
 }
 .dialog .el-dialog--small{
   width:50%
@@ -358,5 +358,13 @@ create_menuList(para,token).then(()=>{
 }
 .menuIcon li{
   display: list-item;
+}
+.el-dialog .el-dialog__header {
+    background-color: #1fb5ad;
+    padding: 20px 20px 20px;
+}
+
+.el-dialog .el-dialog__title {
+    color: white;
 }
 </style>

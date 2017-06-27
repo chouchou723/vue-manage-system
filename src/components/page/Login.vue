@@ -2,7 +2,7 @@
     <div class="login-wrap">
         <!-- <div class="ms-title">Panda System</div> -->
         <div class="ms-login">
-            <img class='ms-title' src="../../../static/img/logo.png" height="159" width="332" alt="">
+            <img class='ms-title' src="../../../static/img/logo_03.png"  alt="">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="demo-ruleForm" v-bind:class='{hidden:ruleForm.hidden}'>
                 <el-form-item prop="username">
                     <el-input type='email' v-model="ruleForm.username" placeholder="请输入邮箱"></el-input>
@@ -23,9 +23,9 @@
                     </el-col>
                 </el-form-item>
                 <div class="login-btn">
-                    <el-button type="success" @click="submitForm('ruleForm')">登录</el-button>
+                    <el-button type="success" @click="submitForm('ruleForm')" v-loading.fullscreen.lock="fullscreenLoading">登录</el-button>
                 </div>
-                <p style="font-size:14px;line-height:30px;text-align:center"><a id='forget' href="https://www.baidu.com">忘记密码？</a></p>
+                <p style="font-size:14px;line-height:30px;text-align:center"><a id='forget' href="javascript:;" @click='goToForget'>忘记密码？</a></p>
                 <div class="wechatlogin">
                     <img style='margin-left:10px' src="../../../static/img/login_02.png" alt="">
                 </div>
@@ -93,6 +93,7 @@ export default {
             }, 1);
         }
         return {
+            fullscreenLoading: false,
             uuid: '',
             loginAdd: '',
             add: '',
@@ -171,6 +172,9 @@ export default {
     },
 
     methods: {
+        goToForget(){
+            this.$router.push('/forgetPassword')
+        },
         submitForm(formName) {
             const self = this;
             self.$refs[formName].validate((valid) => {
@@ -183,8 +187,13 @@ export default {
                         client_id: '1',
                         client_secret: 'EjKXjo27hXenF8a2MgqHvpYv7IhtJ678GfOgnHc5'
                     };
-
+                    this.fullscreenLoading = true;
+        // setTimeout(() => {
+        //   this.fullscreenLoading = false;
+        // }, 3000);
                     requestLogin(loginParams).then(data => {
+                        if(data.message =='登录成功'){
+
                         this.logining = false;
                         let {
                             access_token,
@@ -201,13 +210,29 @@ export default {
                             data.token = token;
                             // console.log(data)
                             localStorage.setItem('user', JSON.stringify(data));
-                            self.$router.push('/Index');
+                            if(data.job && data.job.code == 'hr'){
+                                 self.$router.push('/api/v1/admin');
+                            }else if(!data.wechat){
+
+                            self.$router.push('/wechat');
+                            }else{
+                                self.$router.push('/Index');
+                            }
+                            // this.fullscreenLoading = false;
                         })
+                        }else{
+                            this.fullscreenLoading = false;
+                            this.$message.error(data.message);
+                            this.ruleForm.code = '';
+                        this.ruleForm.password = '';
+                        this.change();
+                        }
                     }).catch((error) => {
+                        this.fullscreenLoading = false;
                         if (error.response) {
                             this.$message({
                                 type: 'error',
-                                message: error.response.data.error
+                                message: error.response.data.message
                             });
                             // console.log(error.response);
                         }
@@ -250,7 +275,11 @@ export default {
                         } = u;
                         data.token = token;
                         localStorage.setItem('user', JSON.stringify(data));
-                        this.$router.push('/Index');
+                         if(data.job && data.job.code == 'hr'){
+                                 self.$router.push('/api/v1/admin');
+                            }else{
+                                self.$router.push('/Index');
+                            }
                     })
                 } else if (res.status == 0) {
                     i++

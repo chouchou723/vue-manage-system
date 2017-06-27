@@ -2,14 +2,14 @@
     <div class="table">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-moban"></i> 资源管理</el-breadcrumb-item>
-                <el-breadcrumb-item :to="{ path: '/myResource' }">我的资源</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-moban"></i> 客户管理</el-breadcrumb-item>
+                <el-breadcrumb-item :to="{ path: '/myResource' }">我的客户</el-breadcrumb-item>
                 <el-breadcrumb-item class='ss'>添加客户</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class='addUserTitle'>
             <div style='background:url(../../../static/img/addUser.png) left center/29px 29px no-repeat ;padding-left:30px;'>
-                <span style="font-size=24px;font-weight:600">添加用户资料</span></div>
+                <span style="font-size=24px;font-weight:600">添加客户资料</span></div>
         </div>
         <div>
             <el-form ref="form" :model="form" :rules='rule' label-width="80px" style='background-color:white;padding:20px 0 10px 10px'>
@@ -99,12 +99,14 @@
                         <el-input v-model="form.address" placeholder='请输入具体地址'></el-input>
                     </el-form-item>
                 </el-form-item>
+                 <div  id='sourceDiv' style="height:58px" class='readd' >
                 <el-form-item label="就近校区" prop='school_id'>
-                    <el-select v-model="form.school_id" placeholder="请选择校区" style="width:142px">
+                    <el-select v-model="form.school_id" placeholder="请选择校区" style="width:142px" readonly>
                         <el-option v-for="item in schools" :key="item.id" :label="item.title" :value="item.id">
                         </el-option>
                     </el-select>
                 </el-form-item>
+                </div>
                 <el-form-item label="来源渠道" prop='sour_id'>
                     <el-form-item prop='sour_id' style="width:142px;margin-right:30px;float:left">
                         <el-cascader
@@ -330,12 +332,6 @@ export default {
                     // console.log(res)
                     this.regions = res.data
                 })
-                let para1 = {
-                    city_id: this.form.city_id
-                }
-                campusList(para1, token).then(res => {
-                    this.schools = res.data.data
-                })
             },
             onSubmit(formName) {
                 this.$refs[formName].validate((valid) => {
@@ -386,6 +382,12 @@ export default {
             sourceList(token).then(res => {
                 this.source = res.data
             })
+            let para1 = {
+                    simple: 1
+                }
+                campusList(para1, token).then(res => {
+                    this.schools = res.data
+                })
         }
 }
 </script>
@@ -394,5 +396,8 @@ export default {
     padding: 15px 10px 15px 15px;
     background-color: white;
     border-bottom: 1px solid #f3f3f3;
+}
+.readd{
+    pointer-events: none
 }
 </style>

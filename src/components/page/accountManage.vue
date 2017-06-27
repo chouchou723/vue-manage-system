@@ -2,15 +2,15 @@
     <div>
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-menu"></i> 组织架构</el-breadcrumb-item>
-                <el-breadcrumb-item>账号管理</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-my-shezhi"></i> 组织架构</el-breadcrumb-item>
+                <el-breadcrumb-item class='ss'>账号管理</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class='accou'>
             <div class="h1">
-                <h2>
+                <h3 class='accountH2'>
                账号管理({{number}}人)
-                </h2>
+                </h3>
                 <div class='oneSelect'>
                     <el-select v-model="value" clearable placeholder="选择校区" filterable @change="updateList">
                         <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
@@ -29,13 +29,13 @@
                         </el-option>
                     </el-select>
                 </div>
-                <div style="position:absolute;top:0;right:100px;width:200px">
+                <div style="position:absolute;top:10px;right:100px;width:200px">
                     <el-input placeholder="请输入手机号或姓名" icon="search" v-model="input2" :on-icon-click="handleIconClick" @keyup.enter.native="handleIconClick">
                     </el-input>
                 </div>
                 <el-button type="primary" size="mid" class='buttonAdd' @click="createCh('aform')">添加账号</el-button>
             </div>
-            <el-dialog :title="alter" :visible.sync="dialogFormVisible" :close-on-click-modal="no" custom-class='accountManageDialog' top='9%'>
+            <el-dialog :title="alter" :visible.sync="dialogFormVisible" :close-on-click-modal="no" custom-class='accountManageDialog' top='9%'  @close='resetD'>
                 <el-form :model="aform" :rules="rules2" ref="aform">
                     <el-form-item label="登录账号" :label-width="formLabelWidth" prop="name">
                         <el-input v-model="aform.name" placeholder='请输入邮箱地址' :style='{width:inputLabelWidth}'></el-input>
@@ -43,27 +43,30 @@
                     <el-form-item label="姓名" :label-width="formLabelWidth" prop="uname">
                         <el-input v-model="aform.uname" auto-complete="off" placeholder='请输入用户姓名' :style='{width:inputLabelWidth}'></el-input>
                     </el-form-item>
-                    <el-form-item label="性别" :label-width="formLabelWidth" prop="sexual">
+                    <el-form-item label="性别" :label-width="formLabelWidth" prop="sex">
                         <el-select v-model="aform.sex" :style='{width:inputLabelWidth}'>
                             <el-option label="男" value="1"></el-option>
                             <el-option label="女" value="2"></el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="手机号码" :label-width="formLabelWidth" prop="phone">
+                    <el-form-item label="手机号码" :label-width="formLabelWidth" prop="tel">
                         <el-input v-model="aform.tel" auto-complete="off" placeholder='请输入手机号码' :style='{width:inputLabelWidth}'></el-input>
                     </el-form-item>
-                    <el-form-item label="密码" prop="pwd" :label-width="formLabelWidth">
+                    <!-- <el-form-item label="密码" prop="pwd" :label-width="formLabelWidth">
                         <el-input type="password" v-model="aform.pwd" auto-complete="off" :style='{width:inputLabelWidth}'></el-input>
-                    </el-form-item>
-                    <el-form-item label="所属校区" :label-width="formLabelWidth" prop="region" style='float:left;margin-right:10px'>
-                        <el-select v-model="aform.region" filterable :style='{width:inputLabelWidth}' @change='campusGet'>
+                    </el-form-item> -->
+                    <el-form-item label="所属校区" :label-width="formLabelWidth" prop="region" style='display:inline-block'>
+                        <el-select v-model="aform.region" filterable :style='{width:inputLabelWidth}' @change='campusGet' clearable>
+                         <el-option v-for="item in cities" :key="item.id" :label="item.city_name" :value="item.id">
+                            </el-option>
+                           <!--  
                             <el-option-group v-for="group in cities" :key="group.city_name" :label="group.city_name">
                                 <el-option v-for="item in group._child" :key="item.id" :label="item.city_name" :value="item.id">
                                 </el-option>
-                            </el-option-group>
+                            </el-option-group> -->
                         </el-select>
                     </el-form-item>
-                    <el-form-item :label-width="formLabelWidth" prop="school" style='height:36px;margin-left: 200px'>
+                    <el-form-item :label-width="formLabelWidth" prop="school" style='display:inline-block;margin-left: -100px'>
                         <el-select v-model="aform.school" multiple filterable remote placeholder="请输入关键词" :remote-method="remoteMethod" :loading="loading">
                             <el-option v-for="item in schools" :key="item.value" :label="item.label" :value="item.value">
                             </el-option>
@@ -95,37 +98,40 @@
             </el-dialog>
         </div>
         <div id="table">
-            <el-table :data="accountData" border>
-                <el-table-column prop="avatar" label="头像">
+            <el-table :data="accountData" border style='width:100%'>
+                <el-table-column prop="avatar" label="头像" width='70'>
                     <template scope="scope">
-                        <span><img :src="scope.row.avatar" alt="" width="47" style="border-radius:50%;margin-bottom:-7px"></span>
+                        <span><img :src="scope.row.avatar" alt="" width="47" height='47' style="border-radius:50%;margin-bottom:-7px"></span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="name" label="登录名">
+                    <template scope="scope">
+                        <span style='font-weight:600'>{{scope.row.name}}</span>
+                    </template>
                 </el-table-column>
-                <el-table-column prop="uname" label="姓名">
+                <el-table-column prop="uname" label="姓名" width='80'>
                 </el-table-column>
-                <el-table-column prop="tel" label="手机">
+                <el-table-column prop="tel" label="手机" width='120'>
                 </el-table-column>
                 <el-table-column prop="school" label="校区" :formatter='formatter'>
                 </el-table-column>
-                <el-table-column prop="job_name" label="职位">
+                <el-table-column prop="job_name" label="职位" width='100'>
                 </el-table-column>
-                <el-table-column prop="department_name" label="部门">
+                <el-table-column prop="department_name" label="部门" width='80'>
                 </el-table-column>
                 <el-table-column prop="last_login_time" label="最近登录时间">
                 </el-table-column>
-                <el-table-column prop="loginTime" label="登录次数">
+                <el-table-column prop="loginTime" label="登录次数" width='80'>
                 </el-table-column>
-                <el-table-column prop="status" label="使用状态" column-key='status'>
+                <el-table-column prop="status" label="使用状态" width='80' column-key='status'>
                     <template scope="scope">
                         <span class='redBlack'>{{scope.row.status}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column label="操作">
+                <el-table-column label="操作" width='80'>
                     <template scope="scope">
                         <el-button type="text" size="small" @click="editCh(scope.$index, accountData)">修改</el-button>
-                        <el-button type="text" size="small" @click="open2(scope.$index, accountData)">删除</el-button>
+                      <!--   <el-button type="text" size="small" @click="open2(scope.$index, accountData)">删除</el-button> -->
                     </template>
                 </el-table-column>
             </el-table>
@@ -155,6 +161,23 @@ export default {
                 if (value === '') {
                     callback('请选择')
                 } else if (typeof value == 'number') {
+                    callback();
+                }
+            }
+            var validatePass = (rule, value, callback) => {
+                if (value == '') {
+                    callback(new Error('请输入密码'));
+                } else{
+                    callback()
+                }
+            };
+            var isPhone1 = (rule, value, callback) => {
+                var myreg =  /^(((1[0-9]{1}))+\d{9})$/; 
+                if (value == '') {
+                    callback()
+                } else if (!myreg.test(value)) {
+                    callback('请输入有效手机号');
+                }else{
                     callback();
                 }
             }
@@ -201,7 +224,7 @@ export default {
                     name: '',
                     sex: '',
                     tel: '',
-                    pwd: '',
+                    // pwd: '',
                     region: '',
                     school: [],
                     did: '',
@@ -221,11 +244,13 @@ export default {
                         message: '请输入正确的邮箱地址',
                         trigger: 'blur,change'
                     }],
-                    // name:[
-                    // {required:true,trigger: 'blur'}],
-                    // sex:[
-                    // {required:true,trigger: 'blur'}],
-                    // tel:[
+                    uname:[
+                    {required:true,message: '请输入姓名',trigger: 'blur'}],
+                    sex:[
+                    {required:true,message: '请选择性别',trigger: 'blur'}],
+                    tel:[
+                    { required:true,validator: isPhone1,trigger: 'blur'}],
+                    // pwd:[
                     // {required:true,trigger: 'blur'}],
                     did: [{
                         required: true,
@@ -277,6 +302,8 @@ export default {
                 })
             },
             createCh(formName) { //点击创建按钮
+                // let that = this;
+                 // this.$refs[formName].resetFields();
                 this.in = '';
                 this.dialogFormVisible = true;
                 this.aform = {
@@ -293,9 +320,15 @@ export default {
                     job_id: '',
                     fla: ''
                 };
+                // setTimeout( that.$refs[formName].resetFields(), 2000)
+
+            },
+            resetD(){
+                this.$refs['aform'].resetFields();
 
             },
             editCh(index, data) { //点击就修改
+                this.in = index;
                 if (data[index].did) {
                     let para = {
                         did: data[index].did
@@ -409,17 +442,43 @@ export default {
                     if (valid) {
                         if (i !== '') {
                             let para = f;
-                            put_account(para, token).then(() => {
+                            put_account(para, token).then(res => {
+                                if(res.code ==0){
+                                 this.$message({
+                                    message: '修改成功',
+                                    type: 'success'
+                                });   
                                 this.fetchData();
+                                }else{
+                                    this.$message({
+                                type: 'error',
+                                message: res.data
+                            });
+                                }
+                            }).then(()=>{
+                                 this.dialogFormVisible = false;
                             });
                         }else {
                             let para = f;
-                            create_account(para, token).then(() => {
+                            create_account(para, token).then(res => {
+                               if(res.code ==0){
+                                 this.$message({
+                                    message: '创建成功',
+                                    type: 'success'
+                                });   
                                 this.fetchData();
+                                }else{
+                                    this.$message({
+                                type: 'error',
+                                message: res.data
+                            });
+                                }
+                            }).then(()=>{
+                                 this.dialogFormVisible = false;
                             });
                         }
                         this.in = '';
-                        this.dialogFormVisible = false;
+                       
                     }else {
                         console.log('error submit!!');
                         return false;
@@ -559,34 +618,44 @@ export default {
 .accou {
     width: 100%;
     position: relative;
-    height: 50px
+    height: 50px;
+    background-color: white;
+  margin-top:30px;
+  padding-top:10px;
+  margin-bottom: 5px;
+  border-radius: 5px;
 }
-
+.accountH2{
+    display: inline-block;
+    /*margin-top: 20px;*/
+    margin-bottom: 15px;
+    padding-left: 10px
+}
 .oneSelect {
-    margin-left: 200px;
-    position: absolute;
-    top: 0;
+    display: inline-block;
+     margin-bottom: 10px;
+    margin-left: 10px;
     width: 140px
 }
 
 .twoSelect {
-    margin-left: 350px;
-    position: absolute;
-    top: 0;
+   display: inline-block;
+     margin-bottom: 10px;
+    margin-left: 10px;
     width: 140px
 }
 
 .threeSelect {
-    margin-left: 500px;
-    position: absolute;
-    top: 0;
+    display: inline-block;
+     margin-bottom: 10px;
+    margin-left: 10px;
     width: 140px
 }
 
 .buttonAdd {
     position: absolute;
-    right: 0;
-    top: 0
+    right: 10px;
+    top: 10px;
 }
 
 .accountManageDialog .el-dialog__body {

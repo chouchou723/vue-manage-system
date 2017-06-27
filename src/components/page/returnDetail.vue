@@ -1,17 +1,17 @@
 <template>
-    <div class="table">
+    <div class="tableReturn">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-menu"></i> 客户管理</el-breadcrumb-item>
-                <el-breadcrumb-item :to="{ path: '/returnVisit' }">学员回访</el-breadcrumb-item>
+                <el-breadcrumb-item :to="{ path: '/returnVisit' }"><i class="el-icon-my-tongxunlu"></i>学员回访</el-breadcrumb-item>
                 <el-breadcrumb-item>用户资料</el-breadcrumb-item>
+                <el-breadcrumb-item class='ss'>{{student.name}}</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
-        <div style="float:left;width:30%">
+        <div style="float:left;width:33%;background-color:white;height:476px;border-radius:5px;margin-right:30px">
             <div class='UserTitle'>
                 <span style="font-weight:600;font-size:22px">用户资料</span>
             </div>
-            <el-form ref="form" :model="form" label-width="102px" label-position='left' style='border-top:1px solid #e8e8e8 ;padding-left:10px'>
+            <el-form ref="form" :model="form" label-width="102px" label-position='left' style='border-top:1px solid #e8e8e8 ;padding-left:10px' id='returnform'>
                 <el-form-item label="姓名:" prop='name'>
                     <span>{{student.name}}</span>
                 </el-form-item>
@@ -22,7 +22,7 @@
                     <span>{{student.age}}</span>
                 </el-form-item>
                 <el-form-item label="家长:" prop='parent'>
-                    <span style='width:100px;float:left'>{{student.parent}}</span>
+                    <span style='width:120px;float:left'>{{student.parent}}</span>
                     <el-col :span="11">
                         <span>{{student.parent_phone}}</span>
                     </el-col>
@@ -47,7 +47,7 @@
                 </el-form-item>
             </el-form>
         </div>
-        <div style="float:left;width:34%">
+        <div style="float:left;width:34%;background-color:white;border-radius:5px;margin-right:30px;height:476px;position:relative">
             <div class='addreturnTitle'>
                 <!--  <i class=el-icon-my-tongxunlu style="font-size:31px"></i> -->
                 <span style="font-weight:600;font-size:22px">回访记录({{number}})</span>
@@ -55,10 +55,10 @@
                     <div class='addR' @click='addReturn'></div>
                 </div>
             </div>
-            <div style="min-height:290px">
+            <div style="min-height:290px;width:90%;margin:0 auto">
                 <el-row v-for='item in items' class='listReturn' style='position:relative'>
                     <el-col :span="4" style='text-align:right'>
-                        <img :src="item.tmk.avatar" width='50' alt="" style='border-radius:50%;margin-top:10px;margin-right:12%'></el-col>
+                        <img :src="item.tmk.avatar" width='50' height='50' alt="" style='border-radius:50%;margin-top:10px;margin-right:12%'></el-col>
                     <el-col :span="20">
                         <div style="height:35px">
                             <div style='margin-top:10px;float:left'>{{item.tmk.uname}}</div>
@@ -68,7 +68,7 @@
                             <div style="font-size:14px;color:grey">{{item.contents}}</div>
                         </div>
                         <div>
-                            <div style="float:left">
+                            <div style="float:left;margin-bottom:8px">
                                 <el-tag type='success' v-for='t in item.tags' class='tagTag'>{{t}}</el-tag>
                             </div>
                             <div class='editSpan' @click='editReturn(item.id,item)' v-if="new Date().getTime()-new Date(item.created_at).getTime()<7200000 && item.tmk.uname == userName"></div>
@@ -81,13 +81,13 @@
                 </el-pagination>
             </div>
         </div>
-        <el-dialog :title="returnRecordTitle" :visible.sync="dialogFormVisible" :close-on-click-modal="no" show-close style='z-index:100' class='tagDialog'>
-            <el-form :model="returnform" id='detailForm'>
-                <el-form-item label="">
+        <el-dialog :title="returnRecordTitle" :visible.sync="dialogFormVisible" :close-on-click-modal="no" show-close style='z-index:100' class='tagDialog'  @close="resetD('form')">
+            <el-form :model="returnform" id='detailForm' :rules='rulereturnform' ref="returnform">
+                <el-form-item label="" prop='contents'>
                     <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="returnform.contents">
                     </el-input>
                 </el-form-item>
-                <el-form-item label="回访标签：">
+                <el-form-item label="回访标签：" style='margin-top:10px'>
                     <br>
                     <el-checkbox-group v-model="returnform.tags">
                         <el-checkbox v-for="box in boxes" :label="box.key" :value='box.key'>
@@ -109,11 +109,12 @@ import {
     tagList,
     create_returnList,
     returnVisitDetail,
+    put_returnList,
     getVisitList
 } from '../../api/api';
-import {
-    mapGetters
-} from 'vuex';
+// import {
+//     mapGetters
+// } from 'vuex';
 
 export default {
     data() {
@@ -141,6 +142,13 @@ export default {
                     contents: '',
                     tags: []
                 },
+                rulereturnform:{
+                    contents:[{
+                        required: true,
+                        message: '请输入内容',
+                        trigger: 'blur'
+                    }],
+                },
                 form: {
                     name: '',
                     sex: '',
@@ -166,13 +174,21 @@ export default {
             }
         },
         methods: {
+            resetD(formName){
+                this.$refs[formName].resetFields();
+
+            },
             returnFormSubmit(formName) {
-                this.returnform.uid = this.getUserId
+                this.$refs[formName].validate((valid) => { //替换提交服务
+                    if (valid) {
+                       this.returnform.uid = this.$route.params.post
                     //可能要送 用户名
-                create_returnList(this.returnform, token).then(() => {
+                    if(this.in){
+                        put_returnList(this.returnform, token).then(() => {
+                            this.$message.success('修改成功')
                     let p = {
                         page: '1',
-                        uid: this.getUserId
+                        uid: this.$route.params.post
                     }
                     getVisitList(token, p).then(res => {
                         this.number = res.data.total;
@@ -182,7 +198,38 @@ export default {
                     })
                     this.currentPage = 1;
                     this.dialogFormVisible = false
+                }).catch(()=>{
+                    this.$message.error('该用户未授权');
+                     this.dialogFormVisible = false
                 })
+                    }else{
+                        create_returnList(this.returnform, token).then(() => {
+                             this.$message.success('添加成功')
+                    let p = {
+                        page: '1',
+                        uid: this.$route.params.post
+                    }
+                    getVisitList(token, p).then(res => {
+                        this.number = res.data.total;
+                        this.items = res.data.data;
+                        let c = res.data.last_page * this.pagesize;
+                        this.total = parseInt(c);
+                    })
+                    this.currentPage = 1;
+                    this.dialogFormVisible = false
+                }).catch(()=>{
+                    this.$message.error('该用户未授权');
+                     this.dialogFormVisible = false
+                })
+                    }
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+
+                
+                
             },
             addReturn() { //点击添加回访记录
                 // console.log(this.getUserId)
@@ -223,7 +270,7 @@ export default {
                 this.currentPage = val;
                 let p = {
                     page: this.currentPage,
-                    uid: this.getUserId
+                    uid: this.$route.params.post
                 }
                 getVisitList(token, p).then(res => {
                     this.number = res.data.total;
@@ -245,11 +292,11 @@ export default {
                 }
 
             },
-            ...mapGetters([
-                'getUserId'
+            // ...mapGetters([
+            //     'getUserId'
 
-                // ...
-            ]),
+            //     // ...
+            // ]),
         },
         beforeCreate() {
             user = localStorage.getItem('user');
@@ -257,9 +304,24 @@ export default {
 
         },
         created() {
+            // this.student =  {
+            //         name: '',
+            //         sex: '',
+            //         age: '',
+            //         parent: '',
+            //         parent_phone: '',
+            //         parent1: '',
+            //         parent1_phone: '',
+            //         channel: '',
+            //         school: '',
+            //         time: '',
+            //         teacher: ''
+            //     };
+            //     this.items = [];
+            // console.log(this.$route.params.post)
             this.userName = JSON.parse(user).uname;
             let para = {
-                uid: this.getUserId
+                uid: this.$route.params.post
             }
             returnVisitDetail(token, para).then(res => {
 
@@ -279,8 +341,8 @@ export default {
                         school: school_name,
                         channel: source_name,
                         time: regtime,
-                        parent: res.data.famliys[0].uname + '(' + res.data.famliys[0].relation + ')',
-                        parent_phone: res.data.famliys[0].mobile,
+                        parent: res.data.famliys[0]?res.data.famliys[0].uname + '(' + res.data.famliys[0].relation + ')' :'',
+                        parent_phone: res.data.famliys[0]?res.data.famliys[0].mobile : '',
                         parent1: res.data.famliys[1] ? res.data.famliys[1].uname + '(' + res.data.famliys[1].relation + ')' : '',
                         parent1_phone: res.data.famliys[1] ? res.data.famliys[1].mobile : '',
                         teacher: cc_name
@@ -290,7 +352,7 @@ export default {
             })
             let p = {
                 page: this.currentPage,
-                uid: this.getUserId
+                uid: this.$route.params.post
             }
             getVisitList(token, p).then(res => {
                     this.number = res.data.total;
@@ -305,55 +367,65 @@ export default {
         }
 }
 </script>
-<style scoped>
-.UserTitle {
+<style >
+.tableReturn .UserTitle {
     padding: 10px;
     position: relative;
     background: url(../../../static/img/contact.png) left center/25px no-repeat;
-    padding-left: 27px
+    padding-left: 27px;
+    margin-left: 12px
 }
 
-.addreturnTitle {
+.tableReturn .addreturnTitle {
     padding: 10px;
     position: relative;
     background: url(../../../static/img/custService.png) left center/40px no-repeat;
-    padding-left: 40px
+    padding-left: 40px;
+    margin-left: 12px
 }
 
-.el-form-item {
-    margin-bottom: 0
+#returnform .el-form-item {
+    margin-bottom: 18px
 }
 
-.listReturn {
+#returnform .el-form-item__label {
+    padding: 8px 12px 5px 0;
+}
+
+#returnform .el-form-item__content {
+    line-height: 30px
+}
+
+.tableReturn .listReturn {
     /*min-height: 100px;*/
     /*height: auto;*/
     border-top: 1px solid #e8e8e8;
     /*border-bottom:1px solid grey;*/
 }
 
-.listReturn:last-child {
+.tableReturn .listReturn:last-child {
     border-bottom: 1px solid #e8e8e8;
     /*border-bottom:1px solid grey;*/
 }
 
-.el-tag--success {
+.tableReturn .el-tag--success {
     background-color: #1fb5ad;
     border-color: #bcf1d4;
     color: #FFFFFF;
     border-radius: 25px;
 }
 
-.tagTag {
+.tableReturn .tagTag {
     /*margin-top:48px;*/
     /*position: absolute;*/
     /*bottom:0;*/
 }
 
-.listReturn:nth-child(6) {
+.tableReturn .listReturn:nth-child(6) {
     margin-left: 48px
 }
 
-.editSpan {
+.tableReturn .editSpan {
     width: 30px;
     float: right;
     height: 30px;
@@ -362,11 +434,11 @@ export default {
     margin-top: 15px;
 }
 
-.editSpan:hover {
+.tableReturn .editSpan:hover {
     background-image: url(../../../static/img/edit_h.png);
 }
 
-.addR {
+.tableReturn .addR {
     width: 30px;
     height: 30px;
     background-image: url(../../../static/img/addR.png);
@@ -374,13 +446,15 @@ export default {
     cursor: pointer;
 }
 
-.addR:hover {
+.tableReturn .addR:hover {
     background-image: url(../../../static/img/addR_h.png);
 }
 
-.block {
+.tableReturn .block {
     text-align: center;
-    margin-top: 10px;
+   position: absolute;
+    bottom: 10px;
+    width: 100%;
 }
 
 #detailForm .el-form-item .el-form-item__content .el-checkbox {

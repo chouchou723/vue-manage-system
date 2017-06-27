@@ -22,3 +22,6 @@ export const getStatus = state => {
 export const getResource = state => {
     return state.u_resource
 }
+export const getSearchKey = state => {
+    return state.searchKey
+}

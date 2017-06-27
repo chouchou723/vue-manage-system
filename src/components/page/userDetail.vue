@@ -1,21 +1,21 @@
 <template>
-    <div class="table">
+    <div class="tableUserD">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-menu"></i> 资源管理</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-my-moban"></i> 资源管理</el-breadcrumb-item>
                 <el-breadcrumb-item :to="{ path: resourcePath}">{{secondTitle}}</el-breadcrumb-item>
-                <el-breadcrumb-item>{{student.name}}</el-breadcrumb-item>
+                <el-breadcrumb-item class='ss'>{{student.name}}</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
-        <div style="float:left;width:30%">
+        <div style="float:left;width:30%;background-color:white;height:476px;border-radius:5px;margin-right:12px">
             <div class='UserDetailTitle'>
                 <!--  <i class=el-icon-my-tongxunlu style="font-size:31px"></i> -->
                 <span style="font-weight:600;font-size:22px">用户资料</span>
                 <div style='position:absolute;top:10px;right:50px'>
-                    <div class='addU' @click='addU' v-if="this.getStatus == '待认领'"></div>
-                    <el-button v-if='this.getResource==2' type="primary" size="mid" class='recognizeR' @click='recognizeResource'><img src="../../../static/img/recognize.png" alt="" width='20' style="margin-top:-7px;margin-left:-55px">
+                    <div class='addU' @click='addU' v-if="this.$route.params.status == '待认领'"></div>
+                    <el-button v-if='this.$route.params.resource==2' type="primary" size="mid" class='recognizeR' @click='recognizeResource'><img src="../../../static/img/recognize.png" alt="" width='20' style="margin-top:-7px;margin-left:-55px">
                         <span style="position:absolute;top:15px;right:8px;font-size:12px">认证资源</span></el-button>
-                    <el-button v-if='this.getResource==3' type="primary" size="mid" class='activateR' @click='activateResource'><img src="../../../static/img/activate.png" alt="" width='20' style="margin-top:-7px;margin-left:-55px">
+                    <el-button v-if='this.$route.params.resource==3' type="primary" size="mid" class='activateR' @click='activateResource'><img src="../../../static/img/activate.png" alt="" width='20' style="margin-top:-7px;margin-left:-55px">
                         <span style="position:absolute;top:15px;right:8px;font-size:12px">激活资源</span></el-button>
                 </div>
             </div>
@@ -30,7 +30,7 @@
                     <span>{{student.age}}</span>
                 </el-form-item>
                 <el-form-item label="家长:" prop='parent'>
-                    <span style='width:100px;float:left'>{{student.parent}}</span>
+                    <span style='width:120px;float:left'>{{student.parent}}</span>
                     <el-col :span="11">
                         <span>{{student.parent_phone}}</span>
                     </el-col>
@@ -50,14 +50,13 @@
                 <el-form-item label="录入时间:" prop='time'>
                     <span>{{student.time}}</span>
                 </el-form-item>
-                <el-form-item label="课程顾问(CC):" prop='teacher' v-if=''>
-                    <!-- 判断是不是未认领 -->
+                <el-form-item label="课程顾问(CC):" prop='teacher' v-if="!this.$route.params.status == '待认领'">
                     <span>{{student.teacher}}</span>
                 </el-form-item>
             </el-form>
         </div>
-        <el-dialog :title="editOrAct" :visible.sync="dialogFormVisibleAdd" :close-on-click-modal="no" top='9.7%' id='userDetailDialog'>
-            <el-form ref="form" :model="form" :rules='rule' label-width="80px">
+        <el-dialog :title="editOrAct" :visible.sync="dialogFormVisibleAdd" :close-on-click-modal="no" top='9.7%' id='userDetailDialog' @close="resetD('form')">
+            <el-form :model="form" :rules='rule' ref="form" label-width="80px">
                 <el-form-item label="学生姓名" prop='names'>
                     <el-input v-model="form.names" placeholder='请输入学生姓名' style="width:142px"></el-input>
                 </el-form-item>
@@ -150,13 +149,14 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="来源渠道" prop='sour_id'>
+                <el-form-item label="来源渠道" prop='sour_id' >
+                <div  id='sourceDiv' style="height:40px" :class='{readd:isread}' >
+                    
                     <el-form-item prop='sour_id' style="width:142px;margin-right:30px;float:left">
-                        <el-select v-model="form.sour_id" placeholder="请选择渠道">
-                            <el-option v-for="item in source" :key="item.id" :label="item.names" :value="item.id">
-                            </el-option>
-                        </el-select>
+                        <el-cascader :options="source" :props="propsource" v-model="form.sour_id" :show-all-levels="false" placeholder="请选择渠道" ref="source" editable="false" >
+                        </el-cascader>
                     </el-form-item>
+                </div>
                     <el-form-item prop='referee' style='float:left;width:142px;margin-right:10px'>
                         <el-autocomplete v-if='this.form.sour_id == 4' v-model="form.referee" :fetch-suggestions="querySearchAsync" placeholder="请输入内容" @select="handleSelect">
                         </el-autocomplete>
@@ -171,7 +171,7 @@
                     </el-form-item>
                     <span v-if='nostudent' style="width:200px;color:red;float:left"> {{warning}}</span>
                 </el-form-item>
-                <el-form-item label="更换TMK" prop='tmk_id' v-if="code =='tmk_m'">
+                <el-form-item label="更换TMK" prop='tmk_id' v-if="this.$route.params.resource !== '3' && code =='tmk_m'">
                     <el-select v-model="form.tmk_id" placeholder="请选择TMK" style="width:142px">
                         <el-option v-for="item in tmks" :key="item.key" :label="item.label" :value="item.key">
                         </el-option>
@@ -179,7 +179,7 @@
                 </el-form-item>
                 <el-form-item style='margin-top:20px'>
                     <el-button type="primary" @click="onSubmit('form')">确定</el-button>
-                    <el-button>取消</el-button>
+                    <el-button @click="dialogFormVisibleAdd = false">取消</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -193,45 +193,45 @@
                 <span style="color:#ec6161;">*请在了解资源实际情况后做出判断</span>
             </div>
         </el-dialog>
-        <el-dialog title="修改资源所属校区" :visible.sync="dialogFormVisible3" :close-on-click-modal="no" top='33%' size='tiny' show-close style='z-index:100' class='schoolDialog'>
-            <el-form :model="actSchool" id='actSchool1'>
+        <el-dialog title="修改资源所属校区" :visible.sync="dialogFormVisible3" :close-on-click-modal="no" top='33%' size='tiny' show-close style='z-index:100' class='schoolDialog' @close="resetD('actSchool')">
+            <el-form :model="actSchool" id='actSchool1' :rules='ruleActSchool' ref="actSchool">
                 <el-form-item label="激活资源到:" prop='actToSchool'>
                     <!-- <el-select v-model="actSchool.actToSchool" placeholder="请选择校区" style="width:142px" >
       <el-option label="徐锦江" value="1"></el-option>
       <el-option label="刘青云" value="0"></el-option>
     </el-select> -->
-                    <el-select v-model="actSchool.actToSchool" filterable remote placeholder="请输入校区关键词" :remote-method="remoteMethod" :loading="loading">
+                    <el-select v-model="actSchool.actToSchool" filterable remote placeholder="请输入校区关键词" :remote-method="remoteMethod" :loading="loading" prop="keySchool">
                         <el-option v-for="item in schools" :key="item.value" :label="item.label" :value="item.value">
                         </el-option>
                     </el-select>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer" style='text-align:center;margin-top:-24px'>
-                <el-button type="primary" @click="editResourceAct">确 定</el-button>
+                <el-button type="primary" @click="editResourceAct('actSchool')">确 定</el-button>
                 <el-button @click="dialogFormVisible3 = false">取 消</el-button>
                 <br>
                 <span style="color:#ec6161;">*请在了解资源实际情况后做出判断</span>
             </div>
         </el-dialog>
-        <div style="float:left;width:34%;">
+        <div style="float:left;width:34%;background-color:white;border-radius:5px;margin-right:12px;height:476px;position:relative">
             <div class='communityTitle'>
                 <!--  <i class=el-icon-my-tongxunlu style="font-size:31px"></i> -->
                 <span style="font-weight:600;font-size:22px">沟通记录({{number}})</span>
-                <div style='position:absolute;top:10px;right:10px'>
+                <div style='position:absolute;top:10px;right:15px'>
                     <div class='addR' @click='addComm'></div>
                 </div>
             </div>
-            <div style="min-height:300px">
-                <el-row v-for='item in items' class='listReturn' style='position:relative;min-height:75px'>
+            <div style="min-height:300px;width:90%;margin:0 auto">
+                <el-row v-for='item in items' class='listUser' style='position:relative;min-height:75px'>
                     <el-col :span="4" style='text-align:right'>
-                        <img :src="item.tmk.avatar" width='50' alt="" style='border-radius:50%;margin-top:10px;margin-right:12%'></el-col>
+                        <img :src="item.tmk.avatar" width='50' height='50' alt="" style='border-radius:50%;margin-top:15px;margin-right:12%'></el-col>
                     <el-col :span="20">
                         <div style="height:30px">
-                            <div style='margin-top:10px;float:left'>{{item.tmk.uname}}</div>
-                            <div style="font-size:13px;color:grey;margin-top:10px;text-align:right;float:right">{{item.create_at.substring(5,16)}}</div>
+                            <div style='margin-top:15px;float:left'>{{item.tmk.uname}}</div>
+                            <div style="font-size:13px;color:grey;margin-top:15px;text-align:right;float:right">{{item.create_at.substring(5,16)}}</div>
                         </div>
                         <div>
-                            <div style="font-size:14px;color:grey;margin-top:5px;">{{item.remark}}</div>
+                            <div style="font-size:14px;color:grey;margin-top:15px;">{{item.remark}}</div>
                         </div>
                         <div>
                             <div class='editSpan' @click='editReturn(item.index,item)' v-if="new Date().getTime()-new Date(item.create_at).getTime()<7200000 && item.tmk.uname == userName"></div>
@@ -244,13 +244,13 @@
                 </el-pagination>
             </div>
         </div>
-        <el-dialog :title="communityTitle" :visible.sync="dialogFormVisible" :close-on-click-modal="no" size='tiny' show-close style='z-index:100' class='tagDialog'>
-            <el-form :model="commuForm" id='detailForm'>
-                <el-form-item label="">
+        <el-dialog :title="communityTitle" :visible.sync="dialogFormVisible" :close-on-click-modal="no" size='tiny' show-close style='z-index:100' class='tagDialog' @close="resetD('commuForm')" >
+            <el-form :model="commuForm" id='detailForm' :rules='rulecommuForm' ref="commuForm">
+                <el-form-item label="" prop="remark">
                     <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 4}" placeholder="请输入内容" v-model="commuForm.remark">
                     </el-input>
                 </el-form-item>
-                <el-form-item label="下次跟进时间:">
+                <el-form-item label="下次跟进时间:" prop="remind_time">
                     <el-date-picker v-model="commuForm.remind_time" type="datetime" placeholder="选择日期时间">
                     </el-date-picker>
                 </el-form-item>
@@ -260,13 +260,13 @@
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
             </div>
         </el-dialog>
-        <div style="float:left;width:36%" v-if="this.getStatus != '待认领'">
-            <div class='addUserTitle'>
+        <div style="float:left;width:33.5%;background-color:white;border-radius:5px;height:476px;position:relative" v-if="this.$route.params.status != '待认领'">
+            <div class='inviteTitle'>
                 <!--  <i class=el-icon-my-tongxunlu style="font-size:31px"></i> -->
-                <span style="font-weight:600;font-size:22px;margin-left:20px">邀约记录({{number1}})</span>
+                <span style="font-weight:600;font-size:22px;">邀约记录({{number1}})</span>
             </div>
             <div style="min-height:298px">
-                <el-row v-for='item in items1' class='listReturn' style='position:relative;margin-left:30px;'>
+                <el-row v-for='item in items1' class='listUser' style='position:relative;margin-left:30px;'>
                     <div style="font-weight:600;magin-right:5px">邀约日期: {{item.alert_time.substring(0,16)}}</div>
                     <div class='inviteRecord'>邀约课程: <span style="color:grey">{{item.course_name.title}}</span> </div>
                     <div class='inviteRecord'>上课老师: <span style="color:grey">{{item.teach_name}}</span></div>
@@ -298,7 +298,8 @@ import {
     put_student
 } from '../../api/api';
 import {
-    mapGetters
+    mapGetters,
+    mapActions
 } from 'vuex';
 
 export default {
@@ -310,7 +311,35 @@ export default {
                     callback();
                 }
             }
+            var isArr = (rule, value, callback) => {
+                if (value == '') {
+                    callback('请选择')
+                } else if (Array.isArray(value)) {
+                    callback();
+                }
+            }
+            var isPhone = (rule, value, callback) => {
+                var myreg =  /^(((1[0-9]{1}))+\d{9})$/; 
+                if (value == '') {
+                    callback('不能为空且必须唯一')
+                } else if (!myreg.test(value)) {
+                    callback('请输入有效手机号');
+                } else {
+                    callback();
+                }
+            }
+            var isPhone1 = (rule, value, callback) => {
+                var myreg = /^(((1[0-9]{1}))+\d{9})$/; 
+                if (value == '') {
+                    callback()
+                } else if (!myreg.test(value)) {
+                    callback('请输入有效手机号');
+                } else {
+                    callback();
+                }
+            }
             return {
+                isread:false,
                 nostudent: false,
                 warning: '*系统中没有该成员',
                 userName: '',
@@ -329,6 +358,11 @@ export default {
                     school: '',
                     time: '',
                     teacher: ''
+                },
+                propsource: {
+                    value: 'id',
+                    label: 'names',
+                    children: '_child'
                 },
                 items: [],
                 items1: [],
@@ -374,7 +408,7 @@ export default {
                     area_id: '',
                     address: '',
                     school_id: '',
-                    sour_id: '',
+                    sour_id: [],
                     referee: '',
                     familys_name: '',
                     referral_uid: '',
@@ -386,6 +420,27 @@ export default {
                 in : '',
                 isActivate: '',
                 code: '',
+                rulecommuForm: {
+                    remark: [{
+                        required: true,
+                        message: '请输入内容',
+                        trigger: 'blur'
+                    }],
+                    // remind_time:[{
+                    //     type: 'date',
+                    //     required: true,
+                    //     message: '请选择时间',
+                    //     trigger: 'blur'
+                    // }]
+                },
+                ruleActSchool: {
+                    actToSchool: [{
+                        required: true,
+                        message: '请选择校区',
+                        validator: nan,
+                        trigger: 'blur'
+                    }]
+                },
                 rule: {
                     names: [{
                         required: true,
@@ -395,52 +450,64 @@ export default {
                     sex: [{
                         required: true,
                         trigger: 'blur'
-                    }, ],
+                    }],
                     age: [{
                         required: true,
                         trigger: 'blur'
-                    }, ],
+                    }],
                     parent: [{
                         required: true,
                         trigger: 'blur'
-                    }, ],
+                    }],
                     con: [{
                         required: true,
                         trigger: 'blur'
-                    }, ],
+                    }],
                     phone: [{
                         required: true,
+                        validator: isPhone,
                         trigger: 'blur'
-                    }, ],
+                    }],
+                    phone1: [{
+                        validator: isPhone1,
+                        trigger: 'blur'
+                    }],
                     city_id: [{
                         required: true,
                         validator: nan,
                         trigger: 'blur'
-                    }, ],
+                    }],
                     area_id: [{
                         required: true,
                         validator: nan,
                         trigger: 'blur'
-                    }, ],
+                    }],
                     address: [{
                         required: true,
                         trigger: 'blur'
-                    }, ],
+                    }],
                     school_id: [{
                         required: true,
                         validator: nan,
                         trigger: 'blur'
-                    }, ],
+                    }],
                     sour_id: [{
                         required: true,
-                        validator: nan,
-                        trigger: 'blur'
-                    }, ]
+                        validator: isArr,
+                        trigger: 'change'
+                    }]
                 }
 
             }
         },
         methods: {
+            ...mapActions([
+                'sendResourceId'
+            ]),
+            resetD(formName) {
+                this.$refs[formName].resetFields();
+
+            },
             onSubmit(formName) { //修改用户资料提交
                 this.$refs[formName].validate((valid) => { //替换提交服务
                     if (valid) {
@@ -449,21 +516,59 @@ export default {
                         } else {
                             this.form.familys = this.form.parent + '|' + this.form.con + '|' + this.form.phone
                         }
-                        this.form.customer_id = this.getUId;
+                        this.form.customer_id = this.$route.params.uid;
                         this.form.isActivate = this.isActivate;
-                        let para = this.form;
+                        let para = JSON.parse(JSON.stringify(this.form));
+
+                        para.sour_id = para.sour_id.join(',');
                         put_student(para, token).then(res => {
-                            // console.log('succ')
                             if (res.code == 0) {
+                                this.form.sour_id = [];
                                 this.$message({
                                     message: '修改成功',
                                     type: 'success'
                                 });
                                 this.dialogFormVisibleAdd = false;
+                                if(this.isActivate ==1){
+                                     this.$router.push({path:'/userDetail'+'/'+this.$route.params.uid+'/'+'待认领'+'/'+1});
+                                }
                                 this.isActivate = '';
                             } else {
                                 this.$message.error(res.data);
+                                this.form.phone = '';
+                                this.$refs.parentPhone.$refs.input.focus();
+                                this.$refs.parentPhone.$refs.input.blur();
+                                // this.form.sour_id = this.form.sour_id.split(',')
                             }
+                        }).then(() => {
+                            let para = {
+                                customer_id: this.$route.params.uid
+                            }
+                            getUserList(token, para).then(res => { //获取用户资料
+                                let {
+                                    names,
+                                    age,
+                                    sex,
+                                    source_name,
+                                    school_name,
+                                    created,
+                                    cc_name
+                                } = res.data.info;
+                                this.student = {
+                                    name: names,
+                                    age: age,
+                                    sex: sex,
+                                    school: school_name,
+                                    channel: source_name,
+                                    time: created,
+                                    parent: res.data.famliy[0].uname + '(' + res.data.famliy[0].relation + ')',
+                                    parent_phone: res.data.famliy[0].mobile,
+                                    parent1: res.data.famliy[1] ? res.data.famliy[1].uname + '(' + res.data.famliy[1].relation + ')' : '',
+                                    parent1_phone: res.data.famliy[1] ? res.data.famliy[1].mobile : '',
+                                    teacher: cc_name
+
+                                }
+                            })
                         })
                     } else {
                         console.log('error submit!!');
@@ -546,26 +651,56 @@ export default {
                 this.dialogFormVisible3 = true;
                 this.dialogFormVisible2 = false;
             },
-            editResourceAct() { //确认激活
-                let para = {
-                    option: '2',
-                    customer_id: this.getUId,
-                    school_id: this.actSchool.actToSchool
+            editResourceAct(formName) { //确认重新激活
+                this.$refs[formName].validate((valid) => { //替换提交服务
+                    if (valid) {
+                        let para = {
+                            option: '2',
+                            customer_id: this.$route.params.uid,
+                            school_id: this.actSchool.actToSchool
+                        }
+                        activateResource(para, token).then(res => {
+                            if (res.code == 0) {
+                                this.$message.success(res.message);
+                                // let uid = {
+                                //     u_resource: 1
+                                // }
+                                // this.$router.push('/myResource')
+                                // this.sendResourceId(uid)
+                                 this.$router.push({path:'/userDetail'+'/'+this.$route.params.uid+'/'+'待认领'+'/'+1});
+                                 // this.$route.params.resource = 1;
+                                this.dialogFormVisible3 = false;
 
-                }
-                activateResource(para, token).then(res => {
+                            } else {
+                                this.$message.error(res.message)
+                            }
+                        })
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
 
-                })
-                this.dialogFormVisible2 = false;
             },
             recoToNo() { //确认无效
                 let para = {
                     option: '1',
-                    customer_id: this.getUId
+                    customer_id: this.$route.params.uid
 
                 }
                 activateResource(para, token).then(res => {
 
+                    if (res.code == 0) {
+                        let uid = {
+                            u_resource: 3
+                        }
+                        // this.sendResourceId(uid);
+                        this.$router.push({path:'/userDetail'+'/'+this.$route.params.uid+'/'+'invalid'+'/'+3});
+                         this.$message.success('确认无效成功')
+
+                    } else {
+                        this.$message.error(res.message)
+                    }
                 })
                 this.dialogFormVisible2 = false;
             },
@@ -575,35 +710,77 @@ export default {
                 this.in = '';
                 this.commuForm.remind_time = '';
                 this.commuForm.remark = '';
-                this.commuForm.customer_id = this.getUId;
+                this.commuForm.customer_id = this.$route.params.uid;
                 this.commuForm.call_id = '';
                 this.dialogFormVisible = true
             },
             commuFormSubmit(formName) { //提交 添加沟通记录
-                this.commuForm.remind_time = new Date(this.commuForm.remind_time).toLocaleString();
-                create_community(this.commuForm, token).then(() => {
-                    let p = {
-                        page: '1',
-                        customer_id: this.getUId
+                this.$refs[formName].validate((valid) => { //替换提交服务
+                    if (valid) {
+                        this.commuForm.remind_time = new Date(this.commuForm.remind_time).toLocaleString();
+                        if (this.in == '') {
+                            create_community(this.commuForm, token).then(() => {
+                                this.$message.success('添加成功')
+                                let p = {
+                                    page: '1',
+                                    customer_id: this.$route.params.uid
+                                }
+                                getUserCommList(token, p).then(res => {
+                                    this.number = res.data.total;
+                                    this.items = res.data.data;
+                                    let c = res.data.last_page * this.pagesize;
+                                    this.total = parseInt(c);
+                                })
+                                this.currentPage = 1;
+                                this.dialogFormVisible = false
+                            }).catch(error => {
+                                // if (error.response) {
+                                this.$message({
+                                    type: 'error',
+                                    message: '该用户未授权'
+                                });
+                                // console.log(error.response);
+                                // }
+                            })
+                        } else {
+                            put_community(this.commuForm, token).then(() => {
+                                this.$message.success('修改成功')
+                                let p = {
+                                    page: '1',
+                                    customer_id: this.$route.params.uid
+                                }
+                                getUserCommList(token, p).then(res => {
+                                    this.number = res.data.total;
+                                    this.items = res.data.data;
+                                    let c = res.data.last_page * this.pagesize;
+                                    this.total = parseInt(c);
+                                })
+                                this.currentPage = 1;
+                                this.dialogFormVisible = false
+                            }).catch(error => {
+                                console.log(error)
+                                    // if (error) {
+                                this.$message({
+                                    type: 'error',
+                                    message: '该用户未授权'
+                                });
+                                // console.log(error.response);
+                                // }
+                            })
+                        }
+                    } else {
+                        console.log('error submit!!');
+                        return false;
                     }
-                    getUserCommList(token, p).then(res => {
-                        this.number = res.data.total;
-                        this.items = res.data.data;
-                        let c = res.data.last_page * this.pagesize;
-                        this.total = parseInt(c);
-                    })
-                    this.currentPage = 1;
-                    this.dialogFormVisible = false
-                })
-
-
+                });
             },
 
             editReturn(index, item) { //点击修改沟通记录
+                console.log(item)
                 this.in = '1';
                 this.commuForm.remark = item.remark
-                this.commuForm.remind_time = item.remind_time;
-                this.commuForm.customer_id = this.getUId //this.getUserId;
+                this.commuForm.remind_time = item.remind_time == 0 ? '' : item.remind_time;
+                this.commuForm.customer_id = this.$route.params.uid //this.getUserId;
                 this.commuForm.call_id = item.id;
                 this.dialogFormVisible = true
 
@@ -615,7 +792,6 @@ export default {
                 let para1 = {
                     city_id: this.form.city_id,
                     simple: '1'
-
                 }
                 cityList(token, para).then((res) => {
                     // console.log(res)
@@ -624,17 +800,16 @@ export default {
                 campusList(para1, token).then(res => {
                     this.schoolsNear = res.data
                 })
-
-
             },
             addU() { //点击修改用户资料
                 this.nostudent = false;
                 this.isActivate = '';
                 let para = {
-                    customer_id: this.getUId
+                    customer_id: this.$route.params.uid
                 }
                 getUserList(token, para).then(res => { //获取用户资料
                     let data = res.data;
+                    let arr = [];
                     this.form = {
                         names: data.info.names,
                         sex: data.info.sex === '男' ? '1' : '2',
@@ -650,32 +825,40 @@ export default {
                         area_id: data.info.area_id - 0,
                         address: data.info.address,
                         school_id: data.info.school_id - 0,
-                        sour_id: data.info.sour_id - 0,
+                        sour_id: data.info.sour_tree,
                         referee: data.info.referral ? data.info.referral.nickname : '', //推荐人名字
                         familys_name: '', //推荐人家长姓名
                         referral_uid: data.info.referral_uid, //推荐人id
                         familys: '',
-                        tmk_id: '',
+                        tmk_id: data.info.tmk_uid,
                         isActivate: '',
                     }
                 }).then(() => {
                     this.getRegion();
-
-                })
+                    if (this.code == 'tmk_m') {
 
                 getTMK(token).then((res) => {
                     this.tmks = res.data
                 })
+                    }
                 sourceList(token).then(res => {
                     this.source = res.data
                 })
-                this.dialogFormVisibleAdd = true
+
+                })
+
+                this.dialogFormVisibleAdd = true;
+                if(this.code !='tmk_m' ){
+
+                this.isread = true;
+                }
+                // document.getElementById('sourceDiv').setAttribute('pointer-events', 'none'); 
             },
             handleCurrentChange: function(val) { //变更页数
                 this.currentPage = val;
                 let p = {
                     page: this.currentPage,
-                    customer_id: this.getUId
+                    customer_id: this.$route.params.uid
                 }
                 getUserCommList(token, p).then(res => {
                     this.number = res.data.total;
@@ -688,7 +871,7 @@ export default {
                 this.currentPage1 = val;
                 let p = {
                     page: this.currentPage1,
-                    customer_id: this.getUId
+                    customer_id: this.$route.params.uid
                 }
                 getUserInviteList(token, p).then(res => {
                     this.number1 = res.data.total;
@@ -696,11 +879,6 @@ export default {
                     let c = res.data.last_page * this.pagesize1;
                     this.total1 = parseInt(c);
                 })
-            },
-            searchStudent() {
-                if (this.form.referee) {
-                    this.nostudent = true; //调服务查询
-                }
             },
 
         },
@@ -713,20 +891,20 @@ export default {
                 }
             },
             secondTitle() {
-                if (this.getResource === 1) {
+                if (this.$route.params.resource === '1') {
                     return '我的资源'
-                } else if (this.getResource === 2) {
+                } else if (this.$route.params.resource === '2') {
                     return '无需求资源'
-                } else if (this.getResource === 3) {
+                } else if (this.$route.params.resource === '3') {
                     return '无效资源'
                 }
             },
             resourcePath() {
-                if (this.getResource === 1) {
+                if (this.$route.params.resource === '1') {
                     return '/myResource'
-                } else if (this.getResource === 2) {
+                } else if (this.$route.params.resource === '2') {
                     return '/noDemandResource'
-                } else if (this.getResource === 3) {
+                } else if (this.$route.params.resource === '3') {
                     return 'invalidResource'
                 }
             },
@@ -755,7 +933,7 @@ export default {
             this.userName = JSON.parse(user).uname;
             this.code = JSON.parse(user).job ? JSON.parse(user).job.code : '';
             let para = {
-                customer_id: this.getUId
+                customer_id: this.$route.params.uid
             }
             getUserList(token, para).then(res => { //获取用户资料
                 let {
@@ -786,7 +964,7 @@ export default {
             })
             let p = {
                 page: this.currentPage,
-                customer_id: this.getUId
+                customer_id: this.$route.params.uid
             }
             getUserCommList(token, p).then(res => { //获取沟通记录
                 this.number = res.data.total;
@@ -822,31 +1000,50 @@ export default {
                     };
                 });
             })
-        }
+
+        },
+        // watch:{
+        //     '$route' (to,form){
+        //         console.log(to)
+        //          console.log(from)
+        //     }
+        // }
 }
 </script>
 <style>
+.readd{
+    pointer-events: none
+}
 .UserDetailTitle {
-    padding: 10px;
     position: relative;
     background: url(../../../static/img/contact.png) left center/25px no-repeat;
-    padding-left: 27px
+    padding: 10px 10px 10px 27px;
+    margin-left: 12px
 }
 
 .communityTitle {
-    padding: 10px;
+    margin-left: 12px;
     position: relative;
     background: url(../../../static/img/comuni.png) left center/30px no-repeat;
-    padding-left: 30px
+    padding: 10px 10px 10px 30px;
+    border-bottom: 1px solid #e8e8e8;
 }
 
-.addUserTitle {
+.tableUserD .addUserTitle {
     padding: 10px;
     position: relative;
+}
+
+.tableUserD .inviteTitle {
+    margin-left: 5px;
+    position: relative;
+    background: url(../../../static/img/invite.png) left center/30px no-repeat;
+    padding: 10px 10px 10px 30px;
+    border-bottom: 1px solid #e8e8e8;
 }
 
 #aform .el-form-item {
-    margin-bottom: 0
+    margin-bottom: 18px
 }
 
 #aform .el-form-item__label {
@@ -857,19 +1054,19 @@ export default {
     line-height: 30px
 }
 
-.listReturn {
+.tableUserD .listUser {
     /*min-height: 100px;*/
     /*height: auto;*/
-    border-top: 1px solid #e8e8e8;
-    /*border-bottom:1px solid grey;*/
-}
-
-.listReturn:last-child {
     border-bottom: 1px solid #e8e8e8;
     /*border-bottom:1px solid grey;*/
 }
 
-.el-tag--success {
+.tableUserD .listUser:last-child {
+    border-bottom: 1px solid #e8e8e8;
+    /*border-bottom:1px solid grey;*/
+}
+
+.tableUserD .el-tag--success {
     background-color: #1fb5ad;
     border-color: #bcf1d4;
     color: #FFFFFF;
@@ -892,22 +1089,22 @@ export default {
     width: 80px
 }
 
-.listReturn:nth-child(6) {
+.tableUserD .listUser:nth-child(6) {
     margin-left: 48px
 }
 
-.editSpan {
+.tableUserD .editSpan {
     height: 30px;
     background: url(../../../static/img/edit.png) right/30px 30px no-repeat;
     cursor: pointer;
     margin-top: 15px;
 }
 
-.editSpan:hover {
+.tableUserD .editSpan:hover {
     background-image: url(../../../static/img/edit_h.png);
 }
 
-.addU {
+.tableUserD .addU {
     width: 30px;
     height: 30px;
     background-image: url(../../../static/img/editU.png);
@@ -915,11 +1112,11 @@ export default {
     cursor: pointer;
 }
 
-.addU:hover {
+.tableUserD .addU:hover {
     background-image: url(../../../static/img/editU_h.png);
 }
 
-.addR {
+.tableUserD .addR {
     width: 30px;
     height: 30px;
     background-image: url(../../../static/img/addR.png);
@@ -927,13 +1124,15 @@ export default {
     cursor: pointer;
 }
 
-.addR:hover {
+.tableUserD .addR:hover {
     background-image: url(../../../static/img/addR_h.png);
 }
 
-.block {
+.tableUserD .block {
     text-align: center;
-    margin-top: 10px;
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
 }
 
 #detailForm .el-form-item .el-form-item__content .el-checkbox {
@@ -948,12 +1147,12 @@ export default {
     width: 56%;
 }
 
-.el-dialog .el-dialog__header {
+.tableUserD .el-dialog .el-dialog__header {
     background-color: #1fb5ad;
     padding: 20px 20px 20px;
 }
 
-.el-dialog .el-dialog__title {
+.tableUserD .el-dialog .el-dialog__title {
     color: white;
 }
 

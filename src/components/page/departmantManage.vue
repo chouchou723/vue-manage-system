@@ -1,16 +1,20 @@
 <template>
-    <div class="table">
+    <div class="tableDepartment">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-menu"></i> 组织架构</el-breadcrumb-item>
-                <el-breadcrumb-item>部门管理</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-my-shezhi"></i> 组织架构</el-breadcrumb-item>
+                <el-breadcrumb-item class='ss'>部门管理</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
-        <div style="width: 100%;position:relative">
-            <el-button type="primary" size="mid" style='position:absolute;right:0;top:10%' @click="open3">创建部门</el-button>
+        <div style="width: 100%;position:relative;background-color:white;margin-bottom:5px;padding:15px 0 15px 0;border-radius:5px">
+          <h3 class='departH2'>部门管理</h3>
+            <el-button type="primary" size="mid" style='position:absolute;right:10px;top:16%' @click="open3">创建部门</el-button>
         </div>
-        <el-table :data="tableData" border style="width: 100%;margin-top:70px">
-            <el-table-column prop="full_name" label="部门管理">
+        <el-table :data="tableData" border style="width: 100%;">
+            <el-table-column prop="full_name" label="部门名称">
+            <template scope="scope">
+                        <span >{{scope.row.full_name}}&nbsp&nbsp&nbsp({{scope.row.user_count}}人)</span>
+                    </template>
             </el-table-column>
             <el-table-column width='140px' label="操作">
                 <template scope="scope">
@@ -72,22 +76,11 @@ export default {
         },
 
         createde(branch) {
-            this.tableData.push(branch);
-            let l = this.tableData.length;
             create_department(branch, token).then(res => {
-                res.data.user_count = 0;
-                this.tableData[l - 1] = res.data
+                department(token).then((res) => {
+            this.tableData = res.data
 
-                //     this.tableData = res.data.map(item => {
-                // return {  did: item.did, 
-                //           full_name: item.full_name ,
-                //           user_count: item.user_count,
-                //           status: item.status,
-                //           created_at: this.created_at,
-                //           updated_at: this.updated_at,
-                //           job_count:this.job_count 
-                //         };
-                //     })
+        })
             });
         },
         open3() { //创建部门
@@ -97,23 +90,22 @@ export default {
                 cancelButtonText: '取消',
                 // inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
                 // inputErrorMessage: '邮箱格式不正确'
-            }).then(({
-                value
-            }) => {
+            }).then((value) => {
                 this.$message({
                     type: 'success',
-                    message: '部门名称是: ' + value
+                    message: '部门名称是:  '+ value.value
                 });
                 let branch = {
-                    full_name: value
+                    full_name: value.value
                 };
                 this.createde(branch);
-            }).catch(() => {
-                // this.$message({
-                //   type: 'info',
-                //   message: '取消输入'
-                // });       
-            });
+            })
+            // .catch(() => {
+            //     this.$message({
+            //       type: 'info',
+            //       message: '操作取消'
+            //     });       
+            // });
         },
         open4(index, data) { //修改部门
             this.$confirm('若该部门有成员,修改后原部门所有成员将自动更新到新部门！', '修改提示', {
@@ -128,15 +120,18 @@ export default {
                     cancelButtonText: '取消',
                     // inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
                     // inputErrorMessage: '邮箱格式不正确'
-                }).then(({
-                    value
-                }) => {
+                }).then((value) => {
                     this.$message({
                         type: 'success',
-                        message: '部门名称是: ' + value
+                        message: '部门名称是: ' + value.value
                     });
-                    data[index].full_name = value;
-                    put_department(data[index], token);
+                    data[index].full_name = value.value;
+                    put_department(data[index], token).then(()=>{
+                         department(token).then((res) => {
+            this.tableData = res.data
+
+        })
+                    });
                 })
             }).catch(() => {
                 this.$message({
@@ -165,8 +160,8 @@ export default {
 
 }
 </script>
-<style scroped>
-.el-button--primary {
+<style >
+.tableDepartment .el-button--primary {
     background-color: #32a4d3;
     border-color: #32a4d3;
 }
@@ -192,5 +187,8 @@ export default {
 
 .green .el-message-box__title {
     color: white;
+}
+.departH2{
+    padding-left: 10px
 }
 </style>

@@ -1,15 +1,18 @@
 <template>
     <div class="crumbs">
         <el-breadcrumb separator="/">
-            <el-breadcrumb-item><i class="el-icon-menu"></i> 资源管理</el-breadcrumb-item>
-            <el-breadcrumb-item>我的资源</el-breadcrumb-item>
+            <el-breadcrumb-item><i class="el-icon-my-moban"></i> 资源管理</el-breadcrumb-item>
+            <el-breadcrumb-item class='ss'>我的资源</el-breadcrumb-item>
         </el-breadcrumb>
-        <div class='accou'>
+        <div class='accouMyresourece'>
+            
             <h2 class="mydataReturn">
                我的资源({{number}}人)
       </h2>
+        <div style="display:flex;flex-wrap:wrap">
+            
             <div class='studentReturnThreeNew' v-if="code =='tmk_m'">
-                <el-select v-model="valueT" clearable placeholder="选择TMK" @change="updateList">
+                <el-select v-model="valueT" clearable placeholder="选择TMK" @change="updateList" >
                     <el-option v-for="item in optionsTMK" :key="item.key" :label="item.label" :value="item.key">
                     </el-option>
                 </el-select>
@@ -21,27 +24,33 @@
                 </el-select>
             </div>
             <div class='studentReturnThreeNew'>
-                <el-select v-model="value1" clearable placeholder="选择校区" filterable @change="updateList">
+                <el-select v-model="value1" clearable placeholder="选择校区" filterable @change="updateList" >
                     <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                 </el-select>
             </div>
             <div class='studentReturnThreeNew'>
-                <el-select v-model="value2" clearable placeholder="渠道来源" @change="updateList">
-                    <el-option v-for="item in options2" :key="item.id" :label="item.names" :value="item.id">
-                    </el-option>
-                </el-select>
+            <el-cascader
+    :options="options2"
+    :props="propsource"
+    v-model="value2"
+    :show-all-levels="false"
+     @change="updateList"
+     clearable
+     change-on-select
+    placeholder="请选择渠道" >
+  </el-cascader>
             </div>
             <div class='studentReturnThreeN'>
-                <el-date-picker v-model="value3" type="daterange" placeholder="录入时间" @change="updateList">
+                <el-date-picker v-model="value3" type="daterange" placeholder="录入时间" @change="updateList" >
                 </el-date-picker>
             </div>
             <div class='studentReturnThreeN'>
-                <el-date-picker v-model="value4" type="daterange" placeholder="最近联系时间" @change="updateList">
+                <el-date-picker v-model="value4" type="daterange" placeholder="最近联系时间" @change="updateList" >
                 </el-date-picker>
             </div>
             <div class='studentReturnThreeNew'>
-                <el-select v-model="value5" clearable placeholder="资源状态" @change="updateList">
+                <el-select v-model="value5" clearable placeholder="资源状态" @change="updateList" >
                     <el-option label="待认领" value="0"></el-option>
                     <el-option label="已认领" value="1"></el-option>
                     <el-option label="已邀约" value="2"></el-option>
@@ -49,35 +58,51 @@
                     <el-option label="未到访" value="4"></el-option>
                 </el-select>
             </div>
-            <div class='search1'>
-                <el-input placeholder="输入手机号或姓名" icon="search" v-model="input2" @keyup.enter.native="updateList" :on-icon-click="updateList">
-                </el-input>
+            <div style="width:200px;display:inline-block;margin-left: 10px;margin-bottom: 10px;margin-right:110px">
+                <el-input placeholder="输入手机号或姓名" icon="search" v-model="input2" @keyup.enter.native="updateList" :on-icon-click="updateList" style='margin-right:10px' > </el-input>
             </div>
+            <div style="position:absolute;right:10px;bottom:10px">
+            <el-button type="primary" size="mid" class='myresourceButton' @click="goToAdd">添加资源</el-button>
+                
+            </div>
+        </div>
+      
+        <!--     
+            <div class='search1'>
+                
+               
+            </div> -->
+          
+            <!-- <div style="align-self:flex-end;margin-top:20px">
+                
+            </div> -->
         </div>
         <div id="table1">
             <el-table :data="tableData" border style="width: 100%" :default-sort="{prop: 'last_time', order: 'descending'}">
-                <el-table-column prop="names" label="姓名">
+                <el-table-column prop="names" label="姓名" width='80'>
                     <template scope="scope">
                         <span @click="switchDetail(scope.row)" class='nicknameSpan'>{{scope.row.names}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="sex" label="性别">
+                <el-table-column prop="sex" label="性别" width='80'>
                 </el-table-column>
-                <el-table-column prop="age" label="年龄">
+                <el-table-column prop="age" label="年龄" width='80'>
                 </el-table-column>
-                <el-table-column prop="patriarch" label="家长">
+                <el-table-column prop="patriarch" label="家长" width='80'>
                 </el-table-column>
-                <el-table-column prop="mobile" label="手机" :formatter="formatter">
+                <el-table-column prop="mobile" label="手机" :formatter="formatter" width='100'>
                 </el-table-column>
-                <el-table-column prop="school" label="校区">
+                <el-table-column prop="school" label="校区" width='180'>
                 </el-table-column>
                 <el-table-column prop="sour_name" label="渠道来源">
                 </el-table-column>
-                <el-table-column prop="created" label="注册日期" sortable>
+                <el-table-column prop="created" label="录入时间" sortable >
                 </el-table-column>
-                <el-table-column prop="last_time" label="最近访问" sortable>
+                <el-table-column prop="tmk_name" label="TMK" width='80' >
                 </el-table-column>
-                <el-table-column prop="status" label="资源状态" column-key='status'>
+                <el-table-column prop="last_time" label="最近联系时间" sortable>
+                </el-table-column>
+                <el-table-column prop="status" label="资源状态" column-key='status' width='80'>
                     <template scope="scope">
                         <span :style="scope.row.status=='待认领'?'color:#1fb5ad': scope.row.status=='已认领'? 'color:#dba31c' : scope.row.status=='已邀约'? 'color:#33c616' : scope.row.status=='已到访'? 'color:#4057e0':'color:#333333' ">{{scope.row.status}}</span>
                     </template>
@@ -118,15 +143,26 @@ export default {
                 options2: [], //渠道来源
                 input2: '', //姓名或手机号码
                 value1: '', //对应select的值
-                value2: '', //对应select的值
+                value2: [], //对应select的值
                 value3: '', //对应select的值
                 value4: '',
                 value5: '',
                 valueR: '',
-                valueT: ''
+                valueT: '',
+                 propsource:{
+          value: 'id',
+          label:'names',
+          children: '_child'
+        },
             }
         },
         methods: {
+            goToAdd(){
+                this.$router.push('/addUser');
+            },
+            cac(){
+                
+            },
             ...mapActions([
                 'sendResourceId'
             ]),
@@ -145,8 +181,10 @@ export default {
                     u_resource: 1
                 }
 
-                this.sendResourceId(uid)
-                this.$router.push('/userDetail');
+ // this.$router.history.current.meta.keepAlive = false
+                // this.sendResourceId(uid).then(()=>{
+                this.$router.push('/userDetail'+'/'+row.id+'/'+row.status+'/'+1);
+                // })
             },
             updateList() {
                 this.currentPage = 1;
@@ -159,13 +197,13 @@ export default {
                     tmk_id: this.valueT, //TMK
                     group_id: this.valueR, //资源类型
                     school_id: this.value1, //校区
-                    sour_id: this.value2, //渠道
+                    sour_id: this.value2[this.value2.length-1], //渠道
                     status: this.value5, //资源状态
                     page: this.currentPage, //页签
-                    input_start_date: this.value3? typeof (this.value3[0]) !='object'?new Date(this.value3[0]).toLocaleString().substring(0, 9):'' : '',
-                    input_end_date: this.value3? typeof (this.value3[1]) !='object'?new Date(this.value3[1]).toLocaleString().substring(0, 9):'' : '',
-                    last_start_date: this.value4? typeof (this.value4[0]) !='object'?new Date(this.value4[0]).toLocaleString().substring(0, 9):'' : '',
-                    last_end_date: this.value4? typeof (this.value4[1]) !='object'?new Date(this.value4[1]).toLocaleString().substring(0, 9):'' : '',
+                    input_start_date: this.value3[0] != null? new Date(this.value3[0]).toLocaleDateString(): '',
+                    input_end_date: this.value3[0] != null?new Date(this.value3[1]).toLocaleDateString(): '',
+                    last_start_date:this.value4[0] != null? new Date(this.value4[0]).toLocaleDateString(): '',
+                    last_end_date: this.value4[1] != null? new Date(this.value4[1]).toLocaleDateString(): '',
                     input: this.input2,
                 }
 
@@ -214,15 +252,35 @@ export default {
             if (this.code == 'tmk_m') {
                 getTMK(token).then((res) => {
                     this.optionsTMK = res.data
+                    this.optionsTMK.unshift({key:'0',label:'全部TMK'})
                 })
             }
 
         },
+  //       watch: {
+  //   '$route' (to, from) {
+  //     // 对路由变化作出响应...
+  //     console.log(to)
+  //     console.log(from)
+  //     // if(to.params.p_id == 'fresh'){
+  //     //           this.input2= ''; 
+  //     //           this.value1= ''; 
+  //     //           this.value2= ''; 
+  //     //           this.value3= ''; 
+  //     //           this.value4= '';
+  //     //           this.value5= '';
+  //     //           this.valueR= '';
+  //     //           this.valueT= '';
+  //     //           this.currentPage = 1;
+  //     //           this.fetchData();
+  //     // }
+  //   }
+  // }
 }
 </script>
 <style>
-.el-date-editor--daterange.el-input{
-  width:219px;
+.accouMyresourece .el-date-editor--daterange.el-input{
+  width:184px;
 }
 #table1 .el-table td,
 #table1 .el-table th {
@@ -240,37 +298,52 @@ export default {
     cursor: pointer;
 }
 
-.accou {
+.accouMyresourece {
     width: 100%;
     position: relative;
-    height: 50px;
+    height: auto;
+    display: flex;
+    flex-wrap: wrap;
+  justify-content: space-between;
+    background-color: white;
+  margin-top:30px;
+  padding-top:10px;
+  margin-bottom: 5px;
+  border-radius: 5px;
 }
 
 .mydataReturn {
-    float: left;
-    margin-top: 20px;
+   /*display: block;*/
+    /*margin-top: 20px;*/
     margin-bottom: 15px;
+    padding-left: 10px;
+    width:200px;/*
+    margin-right:70%;*/
 }
 
 .studentReturnThreeNew {
-    float: left;
-    width: 122px;
-    margin-right: 10px;
-    margin-top: 20px;
+   display: inline-block;
+    width: 100px;
+    /*margin-right: 10px;*/
+    margin-bottom: 10px;
+    margin-left: 10px
 }
-
+/*.studentReturnThreeNew:first-child{
+    padding-left: 5px
+}*/
 .studentReturnThreeN {
-    float: left;
-    margin-right: 10px;
-    margin-top: 20px;
+   display: inline-block;
+    margin-left: 10px
 }
 
 .search1 {
-    float: right;
-    width: 158px;
-    margin:20px 10px 2px 0;
+     padding-left: 10px;
+    margin:0 10px 10px 0;
+    /*align-self:flex-end;*/
 }
-
+.search1 .el-input{
+    width:158px;
+}
 .kuangyi {
     padding: 1px;
     width: 100%;
@@ -282,4 +355,7 @@ export default {
     text-align: center;
     margin-top: 10px;
 }
+/*.myresourceButton{
+    float: right;
+}*/
 </style>

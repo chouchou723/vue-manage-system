@@ -2,22 +2,29 @@
     <div>
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item :to="{ path: '/' }"><i class="el-icon-date"></i> 首页</el-breadcrumb-item>
-                <el-breadcrumb-item>微信绑定</el-breadcrumb-item>
+                <el-breadcrumb-item  :to="{ path: '/Index'}"><i class="el-icon-date"></i> 首页</el-breadcrumb-item>
+                <el-breadcrumb-item class='ss'>微信绑定</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
-        <el-row>
+         <div class='wechatT'>
+      <h3 class='wechatH3'>{{wechatTitle}}
+      <span  v-if='!this.changewechat' style="margin-left:31%;color:#f16060">**请绑定微信，用于登录及接收工作事宜**</span>
+      </h3>
+  </div>
+  <div>
+      
+        <el-row style='background-color:white;padding:20px 0 150px'>
             <el-col :span="12" :offset="6">
                 <el-form label-width="100px" class="demo-ruleForm" v-if='changewechat'>
                     <el-steps :space="300" :active="active">
                         <el-step title="更换绑定"></el-step>
                         <el-step title="扫描二维码 关注公众号"></el-step>
-                        <el-step title="微信绑定成功"></el-step>
+                        <el-step title="微信绑定成功" style='width:100px'></el-step>
                     </el-steps>
                     <el-col style='text-align:center'>
                         <div style="position:relative;height:310px">
                             <img class="pre-img" :src="settingsrc" alt="" width="256px" height="256px" style="float:left;border:2px solid grey;border-radius:50%;margin-left:-128px;margin-top:50px" v-if='active==1'>
-                            <span v-if='active==1' style='width:256px;margin-left:-128px;position:absolute;left:0;bottom:-30px'>{{wechatName}}(微信账号)</span>
+                            <span v-if='active==1' style='width:256px;margin-left:-128px;position:absolute;left:0;bottom:-30px'></span>
                             <el-button v-if='active==1' type="primary" style='width:128px;margin-left:-64px;position:absolute;left:0;bottom:-80px' @click='changeWechat'>更换绑定</el-button>
                             <img class="pre-img" src="../../../static/img/we_04.png" alt="" width="256px" height="270px" style="float:left;margin-left:186px;margin-top:50px" v-if='active==2'>
                             <el-input v-model="code" auto-complete="off" placeholder='请输入验证码' style='width:200px;position:absolute;left:0;margin-left:216px;margin-top:330px' v-if='active==2'></el-input>
@@ -31,7 +38,7 @@
                 <el-form label-width="100px" class="demo-ruleForm" v-if='!changewechat'>
                     <el-steps :space="600" :active="active">
                         <el-step title="扫描二维码 关注公众号"></el-step>
-                        <el-step title="微信绑定成功"></el-step>
+                        <el-step title="微信绑定成功" style='width:100px'></el-step>
                     </el-steps>
                     <el-col style='text-align:center'>
                         <div style="position:relative;height:310px">
@@ -44,6 +51,7 @@
                 </el-form>
             </el-col>
         </el-row>
+  </div>
     </div>
 </template>
 <script>
@@ -69,7 +77,15 @@ export default {
                     if (res.code == 0) {
 
                         this.active = 3;
-                    } else {
+                    } 
+                    return res
+                }).then(res=>{
+                     if(res.code == 0){
+                                localStorage.removeItem('user');
+                                this.$router.go();
+                                this.$router.push('/login');
+                            // this.$router.push('/Index');
+                            }else {
                         this.$message({
                             type: 'error',
                             message: res.message
@@ -122,6 +138,13 @@ export default {
             }
         },
         computed: {
+            wechatTitle(){
+                if(wechat){
+                    return '更换微信绑定'
+                }else{
+                    return '微信绑定'
+                }
+            },
             changewechat() {
                 return wechat
             },
@@ -144,5 +167,19 @@ export default {
 <style scoped>
 #codeNumber {
     float: right!important
+}
+.wechatT{
+     width: 100%;
+    position: relative;
+    height: 35px;
+    background-color: white;
+  margin-top:30px;
+  padding-top:10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+.wechatH3{
+    margin-bottom:15px;
+    margin-left:10px;
 }
 </style>

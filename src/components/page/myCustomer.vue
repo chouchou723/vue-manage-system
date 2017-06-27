@@ -2,63 +2,104 @@
     <div>
         <div class="crumbs">
             <el-breadcrumb separator="/">
-               <!--  <el-breadcrumb-item><i class="el-icon-menu"></i> 客户管理</el-breadcrumb-item> -->
-                <el-breadcrumb-item><i class="el-icon-my-tongxunlu"></i>学员回访</el-breadcrumb-item>
+               <el-breadcrumb-item><i class="el-icon-my-moban"></i> 客户管理</el-breadcrumb-item>
+            <el-breadcrumb-item class='ss'>我的客户</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
-        <div class='accouVisit'>
-          
-              
-        <div>
-              <h2 class="studentReturn">
+         <div class='accouMyresourece'>
             
-        学员回访({{number}}人)
-        </h2>
-                <div class='studentReturnThree' v-if="code =='tmk_m'">
-                    <el-select v-model="value2" clearable placeholder="选择TMK" @change="updateList">
-                        <el-option v-for="item in options1" :key="item.key" :label="item.label" :value="item.key">
-                        </el-option>
-                    </el-select>
-                </div>
-                <div class='studentReturnThreeS'>
-                    <el-select v-model="value1" clearable filterable placeholder="选择校区" @change="updateList">
-                        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
-                        </el-option>
-                    </el-select>
-                </div>
-                <div class='studentReturnThree'>
-                    <el-select v-model="status" clearable placeholder="回访状态" @change="updateList">
-                        <el-option label="已回访" value="1"></el-option>
-                        <el-option label="未回访" value="0"></el-option>
-                    </el-select>
-                </div>
-                <div class='studentReturnThreeS'>
-                    <el-date-picker v-model="value3" type="daterange" placeholder="请选择签约时间" @change="updateList">
-                    </el-date-picker>
-                </div>
+            <h2 class="mydataReturn">
+               我的客户({{number}}人)
+      </h2>
+        <div style="display:flex;flex-wrap:wrap">
+            
+            <div class='studentReturnThreeNew' v-if="code =='cc_m'">
+                <el-select v-model="valueCC" clearable placeholder="选择CC" @change="updateList" >
+                    <el-option v-for="item in optionsCC" :key="item.key" :label="item.label" :value="item.key">
+                    </el-option>
+                </el-select>
+            </div>
+            <div class='studentReturnThreeNew'>
+            <el-cascader
+    :options="options2"
+    :props="propsource"
+    v-model="value2"
+    :show-all-levels="false"
+     @change="updateList"
+     clearable
+     change-on-select
+    placeholder="渠道来源" >
+  </el-cascader>
+            </div>
+             <div class='studentReturnThreeN'>
+                <el-date-picker v-model="value3" type="daterange" placeholder="录入时间" @change="updateList" >
+                </el-date-picker>
+            </div>
+             <div class='studentReturnThreeN'>
+                <el-date-picker v-model="value4" type="daterange" placeholder="最近联系时间" @change="updateList" >
+                </el-date-picker>
+            </div>
+            <div class='studentReturnThreeNew'>
+                <el-select v-model="value5" clearable placeholder="客户状态" @change="updateList" >
+                    <el-option label="待认领" value="0"></el-option>
+                    <el-option label="已认领" value="1"></el-option>
+                    <el-option label="已邀约" value="2"></el-option>
+                    <el-option label="已到访" value="3"></el-option>
+                    <el-option label="未到访" value="4"></el-option>
+                </el-select>
+            </div>
+            <div class='studentReturnThreeNew'>
+                <el-select v-model="valueTag" clearable placeholder="标签类型" @change="updateList">
+                    <el-option label="新资源" value="3"></el-option>
+                    <el-option label="回收资源" value="2"></el-option>
+                </el-select>
+            </div>
+            
+           
+           
+            
+            <div style="width:200px;display:inline-block;margin-left: 10px;margin-bottom: 10px;margin-right:110px">
+                <el-input placeholder="输入手机号或姓名" icon="search" v-model="input2" @keyup.enter.native="updateList" :on-icon-click="updateList" style='margin-right:10px' > </el-input>
+            </div>
+            <div style="position:absolute;right:10px;bottom:10px">
+            <el-button type="primary" size="mid" class='myresourceButton' @click="goToAdd">添加客户</el-button>
+                
+            </div>
         </div>
-                <div class='fourSelect'>
-                    <el-input placeholder="输入手机号或姓名" icon="search" v-model="input2" @keyup.enter.native="updateList" :on-icon-click="updateList">
-                    </el-input>
-                </div>
-            
+      
+        <!--     
+            <div class='search1'>
+                
+               
+            </div> -->
+          
+            <!-- <div style="align-self:flex-end;margin-top:20px">
+                
+            </div> -->
         </div>
         <div id="table" v-loading="loading2">
-            <el-table :data="returnData" :default-sort="{prop: 'last_time', order: 'descending'}" border>
+            <el-table :data="customerData" :default-sort="{prop: 'last_time', order: 'descending'}" border>
                 <el-table-column prop="nickname" label="学生" width="150">
                     <template scope="scope">
                         <span @click="switchDetail(scope.row)" class='nicknameSpan'>{{scope.row.nickname}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="school_name" label="校区">
+                <el-table-column prop="sex" label="性别" width='80'>
                 </el-table-column>
-                <el-table-column prop="regtime" sortable label="签约时间" width="180">
+                <el-table-column prop="age" label="年龄" width='80'>
                 </el-table-column>
-                <el-table-column prop="last_time" sortable label="最近回访时间" width="180">
+                <el-table-column prop="sour_name" label="渠道来源">
                 </el-table-column>
-                <el-table-column prop="visit_count" sortable :sort-method='sortM' label="回访次数"width="100">
+                <el-table-column prop="created" label="录入时间" sortable >
                 </el-table-column>
-                <el-table-column class-name='tagClass' prop="tags" label="回访标签" width="250">
+                <el-table-column prop="last_time" label="最近联系时间" sortable>
+                </el-table-column>
+                 <el-table-column prop="status" label="客户状态" column-key='status' width='80'>
+                    <template scope="scope">
+                        <span :style="scope.row.status=='待认领'?'color:#1fb5ad': scope.row.status=='已认领'? 'color:#dba31c' : scope.row.status=='已邀约'? 'color:#33c616' : scope.row.status=='已到访'? 'color:#4057e0':'color:#333333' ">{{scope.row.status}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column class-name='tagClass' prop="tags" label="沟通标签" width="250">
                     <template scope="scope">
                         <el-tag :type="scope.row.tags == '未回访' ? 'danger' : 'success'" close-transition v-for='(t,key) in scope.row.tags' @click.native='aaa(t,key)'>{{t}}</el-tag>
                     </template>
@@ -100,18 +141,18 @@ import {
     tagList,
     create_tag,
     delete_tag,
-    getTMK
+    getTMK,
+    sourceList
 } from '../../api/api';
 
-// import {
-//     mapActions
-// } from 'vuex';
+import {
+    mapActions
+} from 'vuex';
 
 export default {
     data() {
             return {
                 loading2:true,
-                filterT: [],
                 dynamicTags: [], //动态替换
                 backupTages: [],
                 inputVisible: false,
@@ -122,48 +163,51 @@ export default {
                 pagesize: 15, //默认每页
                 total: 0,
                 no: false,
-                returnData: [],
+                customerData: [],
                 number: 0,
-                options: [], //表单上方的select
-                options1: [], //表单上方的select
-                value1: '', //对应select的值
-                value2: '', //对应select的值
-                status: '', //对应select的值
+                optionsCC: [], //表单上方的select
+                options2: [], //表单上方的select
+                valueCC: '', //对应select的值
+                value2: [], //对应select的值
                 value3: '', //对应select的值
                 value4: '', //点击tag
+                 value5: '', //状态
+                  valueTag: '', //点击tag
                 code: '',
+                propsource:{
+          value: 'id',
+          label:'names',
+          children: '_child'
+        },
                 tagform: {
                     name: ''
                 }
             }
         },
         methods: {
-            sortM(a,b){
-                let i = parseInt(a.visit_count);
-                let h = parseInt(b.visit_count);
-               return i > h
-                
+            goToAdd(){
+                this.$router.push('/addCustomer');
             },
             aaa(tag, key) {
                 //调接口配对
-                if (this.value4 == key) {
-                    this.value4 = '';
+                if (this.valueTag == key) {
+                    this.valueTag = '';
                     this.currentPage = 1;
                      this.fetchData();
                 } else {
-                    this.value4 = key;
+                    this.valueTag = key;
                     this.currentPage = 1;
                      this.fetchData();
                 }
                
             },
-            // ...mapActions([
-            //     'sendUser'
-            // ]),
+            ...mapActions([
+                'sendUser'
+            ]),
             switchDetail(row) {
                 // console.log(row)
-                // this.sendUser(row.uid)
-                this.$router.push('/returnDetail'+'/'+row.uid); 
+                this.sendUser(row.uid)
+                this.$router.push('/returnDetail');
             },
             updateList() {
                 this.currentPage = 1;
@@ -173,13 +217,15 @@ export default {
             fetchData() {
                 let para = {
                     page: this.currentPage,
-                    tmk_uid: this.value2,
-                    school_id: this.value1,
-                    status: this.status,
+                    cc_uid: this.valueCC,
+                    sour_id: this.value2,
+                    status: this.value3,
                     start_time: this.value3[0] != null? new Date(this.value3[0]).toLocaleDateString(): '',
                     end_time: this.value3[1] != null?new Date(this.value3[1]).toLocaleDateString(): '',
+                    last_start_date:this.value4[0] != null? new Date(this.value4[0]).toLocaleDateString(): '',
+                    last_end_date: this.value4[1] != null? new Date(this.value4[1]).toLocaleDateString(): '',
                     input: this.input2,
-                    tag_id: this.value4
+                    tag_id: this.valueTag
                 }
 
                 returnVisitList(token, para).then((res) => { //替换服务
@@ -188,7 +234,7 @@ export default {
                     let c = res.data.last_page * this.pagesize;
 
                     // console.log(a)
-                    this.returnData = a;
+                    this.customerData = a;
                     this.total = parseInt(c);
                 }).then(()=>{
                     this.loading2 = false
@@ -290,6 +336,10 @@ export default {
                     };
                 });
             })
+            sourceList(token).then(res => {
+                this.options2 = res.data
+
+            })
             if (this.code == 'tmk_m') {
             getTMK(token).then((res) => {
                 this.options1 = res.data;
@@ -341,51 +391,57 @@ export default {
     margin-top: 10px;
 }
 
-.accouVisit {
-    width: 100%;
-    position: relative;
-    height: auto;
-    background-color: white;
-    display: flex;
-    flex-wrap: wrap;
-  justify-content: space-between;
-  margin-top:30px;
-  padding-top:10px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-}
-
 .nicknameSpan:hover {
     cursor: pointer;
 }
 .nicknameSpan{
     font-weight: 600;
 }
-
-.fourSelect {
-    padding-left: 10px;
-    margin:0 10px 10px 0;
-    width: 160px
+.accouMyresourece {
+    width: 100%;
+    position: relative;
+    height: auto;
+    display: flex;
+    flex-wrap: wrap;
+  justify-content: space-between;
+    background-color: white;
+  margin-top:30px;
+  padding-top:10px;
+  margin-bottom: 5px;
+  border-radius: 5px;
 }
 
-.studentReturn {
-   display: inline-block;
+.mydataReturn {
+   /*display: block;*/
     /*margin-top: 20px;*/
     margin-bottom: 15px;
     padding-left: 10px;
-    
+    width:350px;/*
+    margin-right:70%;*/
 }
 
-.studentReturnThree {
-    display: inline-block;
-    width: 105px;
-     margin-left: 10px;
+.studentReturnThreeNew {
+   display: inline-block;
+    width: 100px;
+    /*margin-right: 10px;*/
+    margin-bottom: 10px;
+    margin-left: 10px
+}
+/*.studentReturnThreeNew:first-child{
+    padding-left: 5px
+}*/
+.studentReturnThreeN {
+   display: inline-block;
+    margin-left: 10px
 }
 
-.studentReturnThreeS {
-    display: inline-block;
-    margin-left: 10px;
-    width: 174px;
+.search1 {
+     padding-left: 10px;
+    margin:0 10px 10px 0;
+    /*align-self:flex-end;*/
+}
+.search1 .el-input{
+    width:158px;
 }
 
 .el-tag--success {
@@ -414,7 +470,9 @@ export default {
     cursor: pointer;
 }
 
-
+.accouMyresourece .el-date-editor--daterange.el-input{
+  width:184px;
+}
 /*#table .el-table th:nth-last-child(2){
   text-align: left
 }*/

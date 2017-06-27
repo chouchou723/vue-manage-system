@@ -1,13 +1,13 @@
 <template>
-    <div class="crumbs">
+    <div class="publicPool">
         <el-breadcrumb separator="/">
-            <el-breadcrumb-item><i class="el-icon-my-moban"></i> 资源管理</el-breadcrumb-item>
-            <el-breadcrumb-item class='ss'>无需求资源</el-breadcrumb-item>
+            <el-breadcrumb-item><i class="el-icon-my-moban"></i> 客户管理</el-breadcrumb-item>
+            <el-breadcrumb-item class='ss'>客户认领</el-breadcrumb-item>
         </el-breadcrumb>
         <div class='noEff'>
             <h2 class="studentReturnnoEff">
             
-        无需求资源({{number}}人)
+        客户认领({{number}}人)
         </h2>
             <div class='studentReturnNoneed' v-if="code =='tmk_m'">
                 <el-select v-model="valueT" clearable placeholder="选择TMK" @change="updateList">
@@ -15,51 +15,42 @@
                     </el-option>
                 </el-select>
             </div>
-            <div style="float:right;margin-right:10px">
-                <el-button type="success" @click="openResource" :disabled="this.multipleSelection==''" v-if="code =='tmk_m'">资源分配</el-button>
-            </div>
         </div>
-        <el-dialog title="资源分配" :visible.sync="dialogFormVisible" :close-on-click-modal="no" top='33%' size='tiny' show-close >
-            <el-form :model="resourceSchool" id='actSchool1'>
-                <el-form-item label="分配给:" prop='valueTMK'>
-                    <el-select v-model="resourceSchool.valueTMK" clearable placeholder="选择TMK" >
-                        <el-option v-for="item in optionsTMK" :key="item.key" :label="item.label" :value="item.key">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer" style='text-align:center;margin-top:-24px'>
-                <el-button type="primary" @click="distributeResource">确 定</el-button>
-                <el-button @click="dialogFormVisible = false">取 消</el-button>
-            </div>
-        </el-dialog>
         <div id="table2">
-            <el-table :data="noEffData" border style="width: 100%" :default-sort="{prop: 'created', order: 'descending'}" @selection-change="handleSelectionChange">
+            <el-table :data="publicData" border style="width: 100%" :default-sort="{prop: 'created', order: 'descending'}" @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" v-if="code =='tmk_m'">
                 </el-table-column>
-                <el-table-column prop="names" label="姓名" width='80'>
+                <el-table-column prop="names" label="姓名" width='140'>
                     <template scope="scope">
                         <span @click="switchDetail(scope.row)" class='nicknameSpan'>{{scope.row.names}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="sex" label="性别" width='80'>
+                <el-table-column prop="sex" label="性别" width='140'>
                 </el-table-column>
-                <el-table-column prop="age" label="年龄"width='80'>
+                <el-table-column prop="age" label="年龄"width='140'>
                 </el-table-column>
-                <el-table-column prop="patriarch" label="家长"  width='80'>
+                <el-table-column prop="patriarch" label="家长"  width='140'>
                 </el-table-column>
-                <el-table-column prop="mobile" label="手机" :formatter="formatter" width='100'>
-                </el-table-column>
-                <el-table-column prop="school" label="校区" >
+                <el-table-column prop="mobile" label="手机" :formatter="formatter" width='200'>
                 </el-table-column>
                 <el-table-column prop="created" label="录入时间" sortable >
                 </el-table-column>
-                <el-table-column prop="tmk_name" label="TMK" width='80'> 
-                </el-table-column>
-                <el-table-column prop="created" label="最终处理时间" sortable >
+                <el-table-column label="操作" width='140'>
+                    <template scope="scope">
+                        <el-button type="text" size="small" @click="claim(scope.$index, publicData)" style='color:white;background:#1fb5ad;padding:5px 20px 5px'>认领</el-button>
+                      <!--   <el-button type="text" size="small" @click="open2(scope.$index, accountData)">删除</el-button> -->
+                    </template>
                 </el-table-column>
             </el-table>
         </div>
+          <el-dialog title="认领客户" :visible.sync="dialogFormVisible" :close-on-click-modal="no" top='33%' size='tiny' show-close style='z-index:100' class='publicDialog'>
+                <span style="font-size:16px">是否确认要认领该客户?</span>
+            <div slot="footer" class="dialog-footer" style='text-align:center'>
+                
+                <el-button type="primary" @click="claimYes" style='margin-right:20px'>是</el-button>
+                <el-button @click="dialogFormVisible = false">否</el-button>
+            </div>
+        </el-dialog>
         <div class="block">
             <span class="demonstration"></span>
             <el-pagination layout="prev, pager, next" :total="total" @current-change="handleCurrentChange">
@@ -80,17 +71,15 @@ import {
 export default {
     data() {
             return {
-                isDisabled: [],
-                multipleSelection: [],
-                no: false,
+                dialogFormVisible:false,
+                no:false,
                 code: '',
                 resourceSchool: {
                     valueTMK: ''
                 },
-                dialogFormVisible: false,
                 total: 0,
                 number: 0,
-                noEffData: [],
+                publicData: [],
                 optionsTMK: [],
                 valueT: '',
                 currentPage: 1, //页数
@@ -98,6 +87,12 @@ export default {
             }
         },
         methods: {
+            claim(index, data) {
+                this.dialogFormVisible=true;
+            },
+            claimYes(){
+
+            },
             formatter(row, column) {
               let reg = /(\d{4})\d{4}(\d{3})/;
               if(reg.test(row.mobile)){
@@ -105,33 +100,6 @@ export default {
               }else{
                 return row.mobile
               }
-            },
-            openResource() { //打开资源分配
-                this.resourceSchool.valueTMK = ''
-                getTMK(token).then((res) => {
-                    this.optionsTMK = res.data
-                    this.optionsTMK.unshift({
-                        key: '0',
-                        label: '无TMK'
-                    })
-                    this.optionsTMK.unshift({
-                        key: '-1',
-                        label: '自己'
-                    })
-                })
-
-                this.dialogFormVisible = true
-            },
-            handleSelectionChange(val) { //选中数据
-                this.multipleSelection = val
-                // this.isDisabled = val;
-                // if (val == '') {
-                //     this.isDisabled = []
-                // }
-                // let l = this.isDisabled.length
-                // for (let i = 0; i < l; i++) {
-                //     this.multipleSelection[i] = this.isDisabled[i]
-                // }
             },
             handleCurrentChange: function(val) { //换页
                 this.currentPage = val;
@@ -148,8 +116,8 @@ export default {
                     u_resource: 2
                 }
 
-                // this.sendResourceId(uid)
-                this.$router.push('/userDetail'+'/'+row.id+'/noDemand/'+2);
+                this.sendResourceId(uid)
+                this.$router.push('/userDetail');
             },
             updateList() {
                 this.currentPage = 1;
@@ -158,7 +126,7 @@ export default {
             },
             fetchData() {
                 let para = {
-                    group_id: 0,
+                    group_id: 1,
                     tmk_id: this.valueT, //TMK
                     page: this.currentPage
                 }
@@ -167,7 +135,7 @@ export default {
                     this.number = res.data.total;
                     let a = res.data.data;
                     let c = res.data.last_page * this.pagesize;
-                    this.noEffData = a;
+                    this.publicData = a;
                     this.total = parseInt(c);
                 })
             },
@@ -260,5 +228,18 @@ export default {
     width: 100%;
     height: 100%;
     border-style: none;
+}
+.publicDialog .el-dialog__body {
+    text-align: center;
+    /*color:#ec6161;*/
+}
+
+.publicPool .el-dialog .el-dialog__header {
+    background-color: #1fb5ad;
+    padding: 20px 20px 20px;
+}
+
+.publicPool .el-dialog .el-dialog__title {
+    color: white;
 }
 </style>

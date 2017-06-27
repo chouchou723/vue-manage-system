@@ -2,12 +2,13 @@
     <div class="table">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-menu"></i> 组织架构</el-breadcrumb-item>
-                <el-breadcrumb-item>职位管理</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-my-shezhi"></i> 组织架构</el-breadcrumb-item>
+                <el-breadcrumb-item class='ss'>职位管理</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
-        <div class='addjob' style="width: 100%;position:relative;height:50px">
-            <el-button type="primary" size="mid" style='position:absolute;right:0;top:10%' @click="createCh">添加职位</el-button>
+        <div class='addjob' style="width: 100%;position:relative;height:40px;background-color:white;margin-bottom:5px;padding-top:10px;border-radius:5px">
+        <h3 class='jobH2'>职位管理</h3>
+            <el-button type="primary" size="mid" style='position:absolute;right:10px;top:12%' @click="createCh">添加职位</el-button>
         </div>
         <div>
             <el-dialog :title="alter" :visible.sync="dialogFormVisible" :close-on-click-modal="no" show-close style='z-index:100'>
@@ -22,7 +23,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="直属上级" :label-width="formLabelWidth" prop="job_id">
-                        <el-select v-model="form.pid" style='width:200px'>
+                        <el-select v-model="form.pid" style='width:200px' clearable >
                             <el-option v-for="item in levels" :key="item.value" :label="item.label" :value="item.value">
                             </el-option>
                         </el-select>
@@ -41,7 +42,10 @@
             </el-dialog>
         </div>
         <el-table v-for="depart in departs" :data="depart._child" border style="width: 100%;" ref='table'>
-            <el-table-column prop="full_name" :label="depart.full_name" id='level'>
+            <el-table-column prop="full_name" :label="depart.full_name +'   (' + depart.count + '人)'" id='level'>
+            <template scope="scope">
+                        <span >{{scope.row.full_name}}&nbsp&nbsp&nbsp({{scope.row.count}}人)</span>
+                    </template>
             </el-table-column>
             <el-table-column width='140px' label="操作">
                 <template scope="scope">
@@ -61,7 +65,7 @@ import {
     delete_departList,
     levelList,
     department,
-    character,
+    getCharacter,
     detail_departList
 } from '../../api/api';
 export default {
@@ -146,7 +150,7 @@ export default {
                 customClass: 'redwarn',
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
-                type: 'warning'
+                type: 'danger'
             }).then(() => {
 
                 this.in = index;
@@ -249,41 +253,6 @@ export default {
                 }
             })
         },
-        // filterData(res){
-        //   if(res.data ==''){//判断是否有数据
-        //         return
-        //     }else{
-        //         this.departs = res.data;
-        //         res.data.map((item,index,arr)=>{
-        //           if(item._child ==''){//判断是否有经理级别
-        //             return 
-        //           }else{
-        //               let{_child} = item;
-        //             var dd =this.copyArr(_child);
-        //             _child.map((a,b,c)=>{
-        //               if(a._child ==''){//判断是否有主管级别
-        //                 return
-        //               }else{
-        //                 let {_child} = a
-        //                 console.log(_child)
-        //                 var l = _child.length;
-        //                 for(let i =0;i<l;i++){
-        //                 if(_child[i]._child){
-        //                       dd.push(_child[i]);
-        //                       dd.push.apply(dd,_child[i]._child)
-        //                     }else{
-        //                       dd.push(_child[i])
-        //                     }
-        //                 }
-        //               }
-
-        //             })
-        //           }
-
-        //         item.children = dd;
-        //         })
-        //     }
-        // }
     },
 
     data() {
@@ -325,7 +294,7 @@ export default {
                         label: item.full_name
                     };
                 })
-                character(token).then(res => {
+                getCharacter(token).then(res => {
                     this.ranges = res.data.map(item => {
                         return {
                             value: item.roleid,
@@ -369,6 +338,11 @@ export default {
     border-color: #e95c5c;
 }
 
+.redwarn .el-button--primary:hover {
+    background-color: #ff6d6d;
+    border-color: #ff6d6d;
+}
+
 .green .el-message-box__header {
     background-color: #1fb5ad;
     padding: 20px 20px 20px;
@@ -378,15 +352,18 @@ export default {
     color: white;
 }
 
-
+.jobH2{
+    margin-bottom: 15px;
+    padding-left: 10px
+}
 /*.el-tree-node__children .el-tree-node{
     float:left;
 }*/
 
-.dialog-footer .el-button--primary {
+/*.dialog-footer .el-button--primary {
     background-color: #1fb5ad;
     border-color: #1fb5ad;
-}
+}*/
 
 .el-dialog .el-dialog__header {
     background-color: #1fb5ad;
@@ -397,7 +374,7 @@ export default {
     color: white;
 }
 
-.mm {}
+/*.mm {}
 
 .cc {}
 
@@ -407,5 +384,5 @@ export default {
 
 .cc td:nth-child(odd) {
     padding-left: 100px
-}
+}*/
 </style>

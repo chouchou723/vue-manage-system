@@ -1,29 +1,21 @@
 <template>
-    <div>
-        <div class="crumbs">
-            <el-breadcrumb separator="/">
-                <el-breadcrumb-item  :to="{ path: '/Index'}"><i class="el-icon-my-shouye"></i> 首页</el-breadcrumb-item>
-                <el-breadcrumb-item class='ss'>修改密码</el-breadcrumb-item>
-            </el-breadcrumb>
-        </div>
-        <div class='editPass'>
-      <h3 class='editPassH3'>修改密码</h3>
-  </div>
-        <div class="form-box" style="margin:0 auto;width:100%;background-color:white;;padding:40px 0 30px 0">
-            <el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2"  class="demo-ruleForm" style='margin:0 auto;width:358px'>
-                <el-form-item  prop="address">
-                    <el-input readonly v-model='mail'></el-input>
+     <div class="login-wrap">
+        <div class="pass-box" style="margin:auto;width:380px;height:50%;position:absolute;top:0;left:0;right:0;bottom:0;background-color:white;border-radius:5px">
+        <div class="forgetBack" @click='goToLogin'><img src="../../../static/img/back1.png" width='30'alt=""></div>
+            <el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2"  class="demo-ruleForm" style='width:70%;height:270px;margin: auto;position:absolute;top:0;left:0;bottom:0;right:0'>
+                <el-form-item  prop="mail">
+                    <el-input  placeholder="请输入登录邮箱" v-model='ruleForm2.mail'></el-input>
                 </el-form-item>
                 <el-form-item  prop="code">
                     <el-col :span="15">
                         <el-input placeholder="请输入验证码" v-model="ruleForm2.code"></el-input>
                     </el-col>
                     <el-col :span="9">
-                        <el-button type="primary" id="codeNumber" @click="getCode" style="float:right;width:110px;text-align:center">获取验证码</el-button>
+                        <el-button type="primary" id="forgetCode" @click="getCode" style="float:right;text-align:center">获取验证码</el-button>
                     </el-col>
                 </el-form-item>
-                <el-form-item  prop="pasword">
-                    <el-input type="password" placeholder="请输入新密码" v-model="ruleForm2.pasword" auto-complete="off"></el-input>
+                <el-form-item  prop="password">
+                    <el-input type="password" placeholder="请输入新密码" v-model="ruleForm2.password" auto-complete="off"></el-input>
                 </el-form-item>
                 <el-form-item  prop="checkPass">
                     <el-input type="password"placeholder="请再次输入新密码"  v-model="ruleForm2.checkPass" auto-complete="off"></el-input>
@@ -37,9 +29,8 @@
     </div>
 </template>
 <script>
-var token, user
 import {
-    mailCode,editPass
+    findPassword,findToEditPwd
 } from '../../api/api';
 export default {
     data() {
@@ -70,7 +61,7 @@ export default {
             var validatePass2 = (rule, value, callback) => {
                 if (value === '') {
                     callback(new Error('请再次输入密码'));
-                } else if (value !== this.ruleForm2.pasword) {
+                } else if (value !== this.ruleForm2.password) {
                     callback(new Error('两次输入密码不一致!'));
                 } else {
                     callback();
@@ -96,15 +87,24 @@ export default {
             }
 
             return {
-                mail:'',
                 receiveCode: '',
                 ruleForm2: {
-                    pasword: '',
+                    mail:'',
+                    password: '',
                     checkPass: '',
                     code: ''
                 },
                 rules2: {
-                    pasword: [{
+                    mail: [{
+                    required: true,
+                    message: '请输入邮箱地址',
+                    trigger: 'blur'
+                }, {
+                    type: 'email',
+                    message: '请输入正确的邮箱地址',
+                    trigger: 'blur,change'
+                }],
+                    password: [{
                         validator: validatePass,
                         trigger: 'blur'
                     }],
@@ -120,10 +120,13 @@ export default {
             };
         },
         methods: {
+            goToLogin(){
+                this.$router.push('/');
+            },
             handleSubmit2(formName) {
                 this.$refs.ruleForm2.validate((valid) => {
                     if (valid) {
-                        editPass(token,this.ruleForm2).then(res=>{
+                        findToEditPwd(this.ruleForm2).then(res=>{
                             if(res.code ==0){
 
                             this.$message({
@@ -134,10 +137,8 @@ export default {
                                  return res
                         }).then(res=>{
                             if(res.code == 0){
-                                localStorage.removeItem('user');
-                                this.$router.go();
-                                this.$router.push('/login');
-                            // this.$router.push('/Index');
+
+                             this.$router.push('/login');
                             }else{
                                  this.$message.error(res.message);
                                  this.ruleForm2.code = '';
@@ -152,35 +153,36 @@ export default {
                 });
             },
             getCode() {
-                mailCode(token).then((res) => {
+                let para = {
+                    mail: this.ruleForm2.mail
+                }
+                findPassword(para).then((res) => {
                    if(res.code ==0){
-                    this.$message.success('验证码已发送')
+                        this.$message.success('验证码已发送')
+                   }else{
+                    this.$message.error(res.message)
                    }
                 });
             }
-        },
-        beforeCreate() {
-            user = localStorage.getItem('user');
-            token = JSON.parse(user).token;
-        },
-        created() {
-            this.mail = JSON.parse(user).name ? JSON.parse(user).name : ''; //获取mail
         }
 }
 </script>
 <style scoped>
-.editPass{
-     width: 100%;
+.login-wrap {
     position: relative;
-    height: 35px;
-    background-color: white;
-  margin-top:30px;
-  padding-top:10px;
-  margin-bottom: 10px;
-  border-radius: 5px;
+    width: 100%;
+    height: 100%;
 }
-.editPassH3{
-    margin-bottom:15px;
-    margin-left:10px;
+.forgetBack{
+    position:absolute;
+    top:10px;
+    left:10px;
+    color:grey
+}
+.forgetBack:hover{
+    cursor: pointer;
+}
+#forgetCode{
+    padding:10px;
 }
 </style>

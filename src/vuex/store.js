@@ -18,7 +18,8 @@ const state = {
     user_id:'',
     u_id:'',
     u_status:'',
-    u_resource:''
+    u_resource:'',
+    searchKey:''
 }
 
 // 定义所需的 mutations
@@ -42,6 +43,9 @@ const mutations = {
         state.u_id = uid.u_id;
         state.u_status = uid.u_status;
         state.u_resource = uid.u_resource
+    },
+    SEARCHKEY(state,key){
+        state.searchKey = key
     }
 }
 

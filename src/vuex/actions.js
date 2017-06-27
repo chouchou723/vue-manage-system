@@ -19,3 +19,6 @@ export const sendUser = ({commit},userid) =>{
 export const sendResourceId = ({commit},uid) =>{
 	commit('SENDRESOURCEID',uid)
 }
+export const searchKey = ({commit},key) =>{
+	commit('SEARCHKEY',key)
+}
