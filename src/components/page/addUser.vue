@@ -259,7 +259,7 @@ export default {
                         required: true,
                         validator: nan,
                         trigger: 'change'
-                    }, ],
+                    }],
                     address: [{
                         required: true,
                         trigger: 'blur'

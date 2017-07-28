@@ -276,9 +276,9 @@ export default {
                         data.token = token;
                         localStorage.setItem('user', JSON.stringify(data));
                          if(data.job && data.job.code == 'hr'){
-                                 self.$router.push('/api/v1/admin');
+                                 this.$router.push('/api/v1/admin');
                             }else{
-                                self.$router.push('/Index');
+                                this.$router.push('/Index');
                             }
                     })
                 } else if (res.status == 0) {

@@ -116,11 +116,11 @@ export default {
                 this.fetchData();
             },
             switchDetail(row) {
-                let uid = {
-                    u_id: row.id,
-                    u_status: '无效',
-                    u_resource: 3
-                }
+                // let uid = {
+                //     u_id: row.id,
+                //     u_status: '无效',
+                //     u_resource: 3
+                // }
 
                 // this.sendResourceId(uid)
                 this.$router.push('/userDetail'+'/'+row.id+'/invalid/'+3);

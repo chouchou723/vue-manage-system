@@ -47,7 +47,7 @@
                 </el-form-item>
             </el-form>
         </div>
-        <div style="float:left;width:34%;background-color:white;border-radius:5px;margin-right:30px;height:476px;position:relative">
+        <div style="float:left;width:34%;background-color:white;border-radius:5px;margin-right:30px;min-height:476px;height:auto;position:relative">
             <div class='addreturnTitle'>
                 <!--  <i class=el-icon-my-tongxunlu style="font-size:31px"></i> -->
                 <span style="font-weight:600;font-size:22px">回访记录({{number}})</span>
@@ -76,7 +76,7 @@
                     </el-col>
                 </el-row>
             </div>
-            <div class="block">
+            <div class="block" style="bottom:-32px">
                 <el-pagination layout="prev, pager, next" :total="total" :current-page="currentPage" :page-size="pagesize" @current-change="handleCurrentChange">
                 </el-pagination>
             </div>
@@ -304,21 +304,6 @@ export default {
 
         },
         created() {
-            // this.student =  {
-            //         name: '',
-            //         sex: '',
-            //         age: '',
-            //         parent: '',
-            //         parent_phone: '',
-            //         parent1: '',
-            //         parent1_phone: '',
-            //         channel: '',
-            //         school: '',
-            //         time: '',
-            //         teacher: ''
-            //     };
-            //     this.items = [];
-            // console.log(this.$route.params.post)
             this.userName = JSON.parse(user).uname;
             let para = {
                 uid: this.$route.params.post
@@ -431,7 +416,6 @@ export default {
     height: 30px;
     background: url(../../../static/img/edit.png) right/30px 30px no-repeat;
     cursor: pointer;
-    margin-top: 15px;
 }
 
 .tableReturn .editSpan:hover {

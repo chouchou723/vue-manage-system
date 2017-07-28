@@ -20,7 +20,8 @@
   :before-upload="beforeAvatarUpload"> -->
   
             <div style="width:256px;height:256px;border: 1px dashed #967171;border-radius: 50%;position: relative;margin:0 auto">
-                <img v-if="imageUrl" :src="imageUrl" class="avatar">
+             <img class="preview-img avatar"  v-for="(item, index) in img" :src="item.src"  @click="$preview.open(index,img)">
+                <!-- <img v-if="imageUrl" :src="imageUrl" class="avatar"> -->
             </div>
             <div style='text-align:center;margin-top:20px'>
                 <el-button size="large" type="primary" @click="toggleShow">上传头像</el-button>
@@ -52,13 +53,9 @@ export default {
             headers: {
                 Authorization: token.Authorization,
             },
-            form: {},
-            fileList: [],
-            settingsrc: '',
-            imageUrl: '',
-            header: {
-                Authorization: token.Authorization
-            }
+            img:[{src:'',
+                  w: 400,
+                  h: 400}]
         }
     },
     components: {
@@ -68,7 +65,7 @@ export default {
 
     },
     created() {
-        this.imageUrl = JSON.parse(user).avatar;
+        this.img[0].src = JSON.parse(user).avatar;
     },
     methods: {
         toggleShow() {
@@ -80,6 +77,7 @@ export default {
           //                             type: 'success'
           //                         })
             // this.imageUrl = jsonData.data
+            console.log(jsonData)
             let a = JSON.parse(user);
             a.avatar = jsonData.data;
             localStorage.setItem('user', JSON.stringify(a));

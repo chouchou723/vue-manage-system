@@ -60,7 +60,8 @@
                 </el-table-column>
                 <el-table-column class-name='tagClass' prop="tags" label="回访标签" width="250">
                     <template scope="scope">
-                        <el-tag :type="scope.row.tags == '未回访' ? 'danger' : 'success'" close-transition v-for='(t,key) in scope.row.tags' @click.native='aaa(t,key)'>{{t}}</el-tag>
+                        <el-tag :type="scope.row.tags == '未回访' ? 'danger' : 'success'" close-transition v-for='(t,key) in scope.row.tags' v-if='scope.row.tags.length != 0' @click.native='aaa(t,key)'>{{t}}</el-tag>
+                        <el-tag v-for='(t,key) in noreturnlist' v-if='scope.row.tags.length == 0' type='danger'>{{t}}</el-tag>
                     </template>
                 </el-table-column>
             </el-table>
@@ -73,16 +74,6 @@
             </div>
         </div>
         <el-dialog title="设置访问标签" :visible.sync="dialogFormVisible" :close-on-click-modal="no" show-close style='z-index:100' class='tagDialog'>
-            <!-- <el-form :model="tagform">
-  <el-form-item label="角色名称" :label-width="formLabelWidth">
-      <el-input v-model="tagform.name" auto-complete="off" placeholder='请输入角色名称' style='width:200px'></el-input>
-    </el-form-item>
-    </el-form>
- 
-  <div slot="footer" class="dialog-footer">
-    <el-button type="primary">确 定</el-button>
-    <el-button @click="dialogFormVisible = false">取 消</el-button>
-  </div> -->
             <el-tag :key="tag" v-for="tag in dynamicTags" :closable="true" type="success" :close-transition="false" @close="handleClose(tag)">
                 {{tag}}
             </el-tag>
@@ -103,15 +94,11 @@ import {
     getTMK
 } from '../../api/api';
 
-// import {
-//     mapActions
-// } from 'vuex';
-
 export default {
     data() {
             return {
+                noreturnlist:{0:'未回访'},
                 loading2:true,
-                filterT: [],
                 dynamicTags: [], //动态替换
                 backupTages: [],
                 inputVisible: false,
@@ -132,9 +119,6 @@ export default {
                 value3: '', //对应select的值
                 value4: '', //点击tag
                 code: '',
-                tagform: {
-                    name: ''
-                }
             }
         },
         methods: {
@@ -297,13 +281,13 @@ export default {
             })
         }
         },
-        mounted() {
+        // mounted() {
 
-        },
-        watch: {
-            // 如果路由有变化，会再次执行该方法
-            // '$route' : 'fetchData'
-        }
+        // },
+        // watch: {
+        //     // 如果路由有变化，会再次执行该方法
+        //     // '$route' : 'fetchData'
+        // }
 }
 </script>
 <style>

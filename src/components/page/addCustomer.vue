@@ -101,10 +101,11 @@
                 </el-form-item>
                  <div  id='sourceDiv' style="height:58px" class='readd' >
                 <el-form-item label="就近校区" prop='school_id'>
-                    <el-select v-model="form.school_id" placeholder="请选择校区" style="width:142px" readonly>
+                <span>{{school_name}}</span>
+                    <!-- <el-select v-model="form.school_id" placeholder="请选择校区" style="width:142px" readonly>
                         <el-option v-for="item in schools" :key="item.id" :label="item.title" :value="item.id">
                         </el-option>
-                    </el-select>
+                    </el-select> -->
                 </el-form-item>
                 </div>
                 <el-form-item label="来源渠道" prop='sour_id'>
@@ -146,7 +147,7 @@ import {
     cityList,
     campusList,
     sourceList,
-    create_student,
+    create_myCustomer,
     repeatStudentList
 } from '../../api/api';
 export default {
@@ -186,6 +187,7 @@ export default {
                 }
             }
             return {
+                school_name:'',
                 nostudent: false,
                 warning: '*系统中没有该成员', //以后改成调服务显示
                 form: {
@@ -202,7 +204,6 @@ export default {
                     city_id: '',
                     area_id: '',
                     address: '',
-                    school_id: '',
                     sour_id: [],
                     referee: '',
                     familys_name: '',
@@ -266,11 +267,6 @@ export default {
                         required: true,
                         trigger: 'blur'
                     }, ],
-                    school_id: [{
-                        required: true,
-                        validator: nan,
-                        trigger: 'change'
-                    }, ],
                     sour_id: [{
                         required: true,
                         validator: isArr,
@@ -322,7 +318,7 @@ export default {
                 this.form.referral_uid = item.referral_uid
             },
             back() {
-                this.$router.push('/myResource');
+                this.$router.push('/myCustomer');
             },
             getRegion() {
                 let para = {
@@ -343,7 +339,7 @@ export default {
                         }
                         let para = JSON.parse(JSON.stringify(this.form)) ;
                         para.sour_id =  para.sour_id.join(',');
-                        create_student(para, token).then(res => {
+                        create_myCustomer(para, token).then(res => {
                             // console.log('succ')
                             if (res.code == 0) {
                                 this.$message({
@@ -375,12 +371,14 @@ export default {
             token = JSON.parse(user).token;
         },
         created() {
+            let user = localStorage.getItem('user');
+             this.school_name = JSON.parse(user).school_name;
             cityList(token).then((res) => {
                 // console.log(res)
                 this.cities = res.data
             })
             sourceList(token).then(res => {
-                this.source = res.data
+                this.source = res.data.slice(1);
             })
             let para1 = {
                     simple: 1

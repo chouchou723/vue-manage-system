@@ -76,7 +76,7 @@
        日数据对比统计
         </h3>
                 </div>
-                <div style='margin-left:10px;width:100px;position:absolute;top:10px;right:10px' v-if="code =='tmk_m'">
+                <div style='margin-left:10px;width:100px;position:absolute;top:10px;right:10px' v-if="code =='cc_m'">
                     <el-select v-model="value1" size='small' clearable placeholder="选择TMK" @change="updateList">
                         <el-option v-for="item in tmks" :key="item.key" :label="item.label" :value="item.key">
                         </el-option>
@@ -86,70 +86,160 @@
             <div style="display:flex; align-items:center;justify-content: space-around;">
                 <el-col style='float:left;width:32%'>
                     <div class="dayCompare1">
-                        <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-radius:5px">新资源</div>
-                        <div style="display:flex;justify-content: space-around;width:100%;">
+                        <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-bottom:1px solid gainsboro">客户认领</div>
+                        <div style="display:flex;justify-content: space-around;width:100%;height:100%;background:white;align-items:center">
                             
-                        <div style="color:#6fc7ca;font-size:32px;width:49%;text-align:center;background:white;padding:7px 0;border-radius:5px"><img src="../../../static/img/z1.png" alt="" width="33" style="display:block;margin:0 auto">{{today_Customers}}</div>
-                        <div style="color:#6fc7ca;font-size:32px;width:49%;text-align:center;background:white;padding:7px 0;border-radius:5px"><img src="../../../static/img/t1.png" alt="" width="33" style="display:block;margin:0 auto">{{today_Customers}}</div>
+                        <div style="height:80%;color:#6fc7ca;font-size:32px;width:50%;text-align:center;background:white;display:flex;flex-direction:column;justify-content:center;border-right:1px solid gainsboro"><p>
+                         {{today_Customers}}   
+                        </p>
+                        <p style="font-size:20px;margin-top:10px">今天</p></div>
+                         <div style="width:50%;text-align:center;background:white;padding:7px 0;border-radius:5px;display:flex;flex-direction:column;justify-content:center;">
+                         <div style="margin-bottom:10px">
+                           <p style="font-size:20px">
+                         {{yesterday_customers}}   
+                        </p>
+                        <p style="font-size:16px">昨天</p>  
+                         </div>
+                          <div style='border-top:1px solid gainsboro;padding-top:10px;width:80%;margin:0 auto'>
+                           <p  style="font-size:14px;">
+                         +12
+                        </p>
+                        <p style="font-size:14px;">较前天</p>  
+                         </div>
+                         </div>
                         </div>
-                        <div style="color:#6fc7ca;font-size:15px;width:100%;background:white;text-align:center;padding:7px 0;border-radius:5px">昨天较前天 <span style="font-size:20px">{{yesterday_customers}}</span></div>
                     </div>
                 </el-col>
                 <el-col style='float:left;width:32%'>
                     <div class="dayCompare1">
-                    <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-radius:5px">邀约客户</div>
-                        <div style="display:flex;justify-content: space-around;width:100%;">
+                    <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-bottom:1px solid gainsboro">邀约量</div>
+                        <div style="display:flex;justify-content: space-around;width:100%;height:100%;background:white;align-items:center">
                             
-                        <div style="color:#ed8d7a;font-size:32px;width:49%;text-align:center;background:white;padding:7px 0;border-radius:5px"><img src="../../../static/img/z2.png" alt="" width="33" style="display:block;margin:0 auto">{{today_Invitation}}</div>
-                        <div style="color:#ed8d7a;font-size:32px;width:49%;text-align:center;background:white;padding:7px 0;border-radius:5px"><img src="../../../static/img/t2.png" alt="" width="33" style="display:block;margin:0 auto">{{today_Invitation}}</div>
+                        <div style="height:80%;color:#ed8d7a;font-size:32px;width:50%;text-align:center;background:white;display:flex;flex-direction:column;justify-content:center;border-right:1px solid gainsboro"><p>
+                         {{today_Invitation}}   
+                        </p>
+                        <p style="font-size:20px;margin-top:10px">今天</p></div>
+                         <div style="width:50%;text-align:center;background:white;padding:7px 0;border-radius:5px;display:flex;flex-direction:column;justify-content:center;">
+                         <div style="margin-bottom:10px">
+                           <p style="font-size:20px">
+                         {{yesterday_Invitation}}   
+                        </p>
+                        <p style="font-size:16px">昨天</p>  
+                         </div>
+                          <div style='border-top:1px solid gainsboro;padding-top:10px;width:80%;margin:0 auto'>
+                           <p  style="font-size:14px;">
+                         +12
+                        </p>
+                        <p style="font-size:14px;">较前天</p>  
+                         </div>
+                         </div>
                         </div>
-                        <div style="color:#ed8d7a;font-size:15px;width:100%;background:white;text-align:center;padding:7px 0;border-radius:5px">昨天较前天 <span style="font-size:20px">{{yesterday_Invitation}}</span></div>
                     </div>
                 </el-col>
                 <el-col style='float:left;width:32%'>
                     <div class="dayCompare1">
-                     <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-radius:5px">到访客户</div>
-                        <div style="display:flex;justify-content: space-around;width:100%;">
+                    <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-bottom:1px solid gainsboro">到访量</div>
+                        <div style="display:flex;justify-content: space-around;width:100%;height:100%;background:white;align-items:center">
                             
-                        <div style="color:#71b4db;font-size:32px;width:49%;text-align:center;background:white;padding:7px 0;border-radius:5px"><img src="../../../static/img/z3.png" alt="" width="33" style="display:block;margin:0 auto">{{today_visiting}}</div>
-                        <div style="color:#71b4db;font-size:32px;width:49%;text-align:center;background:white;padding:7px 0;border-radius:5px"><img src="../../../static/img/t3.png" alt="" width="33" style="display:block;margin:0 auto">{{today_visiting}}</div>
+                        <div style="height:80%;color:#71b4db;font-size:32px;width:50%;text-align:center;background:white;display:flex;flex-direction:column;justify-content:center;border-right:1px solid gainsboro"><p>
+                         {{today_visiting}}   
+                        </p>
+                        <p style="font-size:20px;margin-top:10px">今天</p></div>
+                         <div style="width:50%;text-align:center;background:white;padding:7px 0;border-radius:5px;display:flex;flex-direction:column;justify-content:center;">
+                         <div style="margin-bottom:10px">
+                           <p style="font-size:20px">
+                         {{yesterday_visiting}}   
+                        </p>
+                        <p style="font-size:16px">昨天</p>  
+                         </div>
+                          <div style='border-top:1px solid gainsboro;padding-top:10px;width:80%;margin:0 auto'>
+                           <p  style="font-size:14px;">
+                         +12
+                        </p>
+                        <p style="font-size:14px;">较前天</p>  
+                         </div>
+                         </div>
                         </div>
-                        <div style="color:#71b4db;font-size:15px;width:100%;background:white;text-align:center;padding:7px 0;border-radius:5px">昨天较前天 <span style="font-size:20px">{{yesterday_visiting}}</span></div>
                     </div>
                 </el-col>
             </div>
             <div style="height:150px;margin-top:20px;display:flex; align-items:center;justify-content: space-around;">
                 <el-col style='float:left;width:32%'>
                 <div class="dayCompare1">
-                     <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-radius:5px">签约客户</div>
-                        <div style="display:flex;justify-content: space-around;width:100%;">
+                <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-bottom:1px solid gainsboro">签约量</div>
+                        <div style="display:flex;justify-content: space-around;width:100%;height:100%;background:white;align-items:center">
                             
-                        <div style="color:#7089ba;font-size:32px;width:49%;text-align:center;background:white;padding:7px 0;border-radius:5px"><img src="../../../static/img/z4.png" alt="" width="33" style="display:block;margin:0 auto">{{today_member}}</div>
-                        <div style="color:#7089ba;font-size:32px;width:49%;text-align:center;background:white;padding:7px 0;border-radius:5px"><img src="../../../static/img/t4.png" alt="" width="33" style="display:block;margin:0 auto">{{today_member}}</div>
+                        <div style="height:80%;color:#7089ba;font-size:32px;width:50%;text-align:center;background:white;display:flex;flex-direction:column;justify-content:center;border-right:1px solid gainsboro"><p>
+                         {{today_member}}   
+                        </p>
+                        <p style="font-size:20px;margin-top:10px">今天</p></div>
+                         <div style="width:50%;text-align:center;background:white;padding:7px 0;border-radius:5px;display:flex;flex-direction:column;justify-content:center;">
+                         <div style="margin-bottom:10px">
+                           <p style="font-size:20px">
+                         {{yesterday_member}}   
+                        </p>
+                        <p style="font-size:16px">昨天</p>  
+                         </div>
+                          <div style='border-top:1px solid gainsboro;padding-top:10px;width:80%;margin:0 auto'>
+                           <p  style="font-size:14px;">
+                         +12
+                        </p>
+                        <p style="font-size:14px;">较前天</p>  
+                         </div>
+                         </div>
                         </div>
-                        <div style="color:#7089ba;font-size:15px;width:100%;background:white;text-align:center;padding:7px 0;border-radius:5px">昨天较前天 <span style="font-size:20px">{{yesterday_member}}</span></div>
                     </div>
                 </el-col>
                 <el-col style='float:left;width:32%'>
                  <div class="dayCompare1">
-                     <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-radius:5px">到访率</div>
-                        <div style="display:flex;justify-content: space-around;width:100%;">
+                 <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-bottom:1px solid gainsboro">到访率</div>
+                        <div style="display:flex;justify-content: space-around;width:100%;height:100%;background:white;align-items:center">
                             
-                        <div style="color:#49c236;font-size:32px;width:49%;text-align:center;background:white;padding:7px 0;border-radius:5px"><img src="../../../static/img/z5.png" alt="" width="33" style="display:block;margin:0 auto">{{todayVisitingRate}}</div>
-                        <div style="color:#49c236;font-size:32px;width:49%;text-align:center;background:white;padding:7px 0;border-radius:5px"><img src="../../../static/img/t5.png" alt="" width="33" style="display:block;margin:0 auto">{{todayVisitingRate}}</div>
+                        <div style="height:80%;color:#49c236;font-size:32px;width:50%;text-align:center;background:white;display:flex;flex-direction:column;justify-content:center;border-right:1px solid gainsboro"><p>
+                         {{todayVisitingRate}}   
+                        </p>
+                        <p style="font-size:20px;margin-top:10px">今天</p></div>
+                         <div style="width:50%;text-align:center;background:white;padding:7px 0;border-radius:5px;display:flex;flex-direction:column;justify-content:center;">
+                         <div style="margin-bottom:10px">
+                           <p style="font-size:20px">
+                         {{yesterdayVisitingRate}}   
+                        </p>
+                        <p style="font-size:16px">昨天</p>  
+                         </div>
+                          <div style='border-top:1px solid gainsboro;padding-top:10px;width:80%;margin:0 auto'>
+                           <p  style="font-size:14px;">
+                         +12
+                        </p>
+                        <p style="font-size:14px;">较前天</p>  
+                         </div>
+                         </div>
                         </div>
-                        <div style="color:#49c236;font-size:15px;width:100%;background:white;text-align:center;padding:7px 0;border-radius:5px">昨天较前天 <span style="font-size:20px">{{yesterdayVisitingRate}}</span></div>
                     </div>
                 </el-col>
                 <el-col style='float:left;width:32%'>
                  <div class="dayCompare1">
-                     <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-radius:5px">签单率</div>
-                        <div style="display:flex;justify-content: space-around;width:100%;">
+                 <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-bottom:1px solid gainsboro">签约率</div>
+                        <div style="display:flex;justify-content: space-around;width:100%;height:100%;background:white;align-items:center">
                             
-                        <div style="color:#cbbc5a;font-size:32px;width:49%;text-align:center;background:white;padding:7px 0;border-radius:5px"><img src="../../../static/img/z6.png" alt="" width="33" style="display:block;margin:0 auto">{{todayMemberRate}}</div>
-                        <div style="color:#cbbc5a;font-size:32px;width:49%;text-align:center;background:white;padding:7px 0;border-radius:5px"><img src="../../../static/img/t6.png" alt="" width="33" style="display:block;margin:0 auto">{{todayMemberRate}}</div>
+                        <div style="height:80%;color:#cbbc5a;font-size:32px;width:50%;text-align:center;background:white;display:flex;flex-direction:column;justify-content:center;border-right:1px solid gainsboro"><p>
+                         {{todayMemberRate}}   
+                        </p>
+                        <p style="font-size:20px;margin-top:10px">今天</p></div>
+                         <div style="width:50%;text-align:center;background:white;padding:7px 0;border-radius:5px;display:flex;flex-direction:column;justify-content:center;">
+                         <div style="margin-bottom:10px">
+                           <p style="font-size:20px">
+                         {{yesterdayMemberRate}}   
+                        </p>
+                        <p style="font-size:16px">昨天</p>  
+                         </div>
+                          <div style='border-top:1px solid gainsboro;padding-top:10px;width:80%;margin:0 auto'>
+                           <p  style="font-size:14px;">
+                         +12
+                        </p>
+                        <p style="font-size:14px;">较前天</p>  
+                         </div>
+                         </div>
                         </div>
-                        <div style="color:#cbbc5a;font-size:15px;width:100%;background:white;text-align:center;padding:7px 0;border-radius:5px">昨天较前天 <span style="font-size:20px">{{yesterdayMemberRate}}</span></div>
                     </div>
                 </el-col>
             </div>
@@ -157,6 +247,12 @@
         <div class="echarts" style="position:relative;width: 50%;float:left;">
             <div style="width:100%;background-color:white;height:49px;position:absolute;margin-bottom:5px;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom:1px solid grey">
                 <div style='margin-left:10px;width:100px;position:absolute;top:9px;right:10px;z-index:3' v-if="code =='tmk_m'">
+                    <el-select v-model="value2" size='small' clearable placeholder="选择TMK" @change="updateList1">
+                        <el-option v-for="item in tmks" :key="item.key" :label="item.label" :value="item.key">
+                        </el-option>
+                    </el-select>
+                </div>
+                <div style='margin-left:10px;width:100px;position:absolute;top:9px;right:10px;z-index:3' >
                     <el-select v-model="value2" size='small' clearable placeholder="选择TMK" @change="updateList1">
                         <el-option v-for="item in tmks" :key="item.key" :label="item.label" :value="item.key">
                         </el-option>
@@ -417,7 +513,7 @@ export default {
 
 .dayCompare1 {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
     height: 174px;
     flex-direction: column;

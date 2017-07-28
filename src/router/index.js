@@ -151,14 +151,21 @@ export default new Router({
                               keepAlive: true // 不需要被缓存
                             } ,
                              params:{uid:'rd',status:'0',resource:0},
-                    component: resolve => require(['../components/page/userDetail.vue'], resolve)    // 学员详情
+                    component: resolve => require(['../components/page/userDetail.vue'], resolve)    // 客户详情
                     
                 },{
-                    path: '/reportForm',
+                    path: '/reportForm/tmk',
                     meta: {
                               keepAlive: true // 不需要被缓存
                             } ,
                     component: resolve => require(['../components/page/reportForm.vue'], resolve) , //TMK报表
+                       // 报表统计
+                },,{
+                    path: '/reportForm/cc',
+                    meta: {
+                              keepAlive: true // 不需要被缓存
+                            } ,
+                    component: resolve => require(['../components/page/reportFormCC.vue'], resolve) , //cc报表
                        // 报表统计
                 },{
                     path: '/addCustomer',
@@ -172,14 +179,73 @@ export default new Router({
                     meta: {
                               keepAlive: true // 不需要被缓存
                             } ,
-                    component: resolve => require(['../components/page/publicPool.vue'], resolve) , //公共池
+                    component: resolve => require(['../components/page/publicPool.vue'], resolve) , //客户认领
                       
                 },{
                     path: '/myCustomer',
                     meta: {
                               keepAlive: true // 不需要被缓存
                             } ,
-                    component: resolve => require(['../components/page/myCustomer.vue'], resolve) , //公共池
+                    component: resolve => require(['../components/page/myCustomer.vue'], resolve) , //我的客户
+                      
+                },{
+                    path: '/classLibrary',
+                    meta: {
+                              keepAlive: true // 不需要被缓存
+                            } ,
+                    component: resolve => require(['../components/page/classLibrary.vue'], resolve) , //课程库
+                      
+                },{
+                    path: '/promotionLibrary',
+                    meta: {
+                              keepAlive: true // 不需要被缓存
+                            } ,
+                    component: resolve => require(['../components/page/promotionLibrary.vue'], resolve) , //优惠库
+                      
+                },{
+                    path: '/customerDetail/:uid/:status',
+                    meta: {
+                              keepAlive: true // 不需要被缓存
+                            } ,
+                            params:{uid:'rd',status:'0'},
+                    component: resolve => require(['../components/page/customerDetail.vue'], resolve) , //客户详细
+                      
+                },{
+                    path: '/classTable',
+                    meta: {
+                              keepAlive: true // 不需要被缓存
+                            } ,
+                    component: resolve => require(['../components/page/classTable.vue'], resolve) , //课程表
+                      
+                },{
+                    path: '/myStudents',
+                    meta: {
+                              keepAlive: true // 不需要被缓存
+                            } ,
+                    component: resolve => require(['../components/page/myStudents.vue'], resolve) , //我的学员
+                      
+                },{
+                    path: '/myContracts',
+                    meta: {
+                              keepAlive: true // 不需要被缓存
+                            } ,
+                    component: resolve => require(['../components/page/myContracts.vue'], resolve) , //我的合同
+                      
+                },{
+                    path: '/contractDetail/:order_id/:uid',
+                    meta: {
+                              keepAlive: true // 不需要被缓存
+                            } ,
+                            params:{uid:'ud',order_id:'od'},
+                    component: resolve => require(['../components/page/contractDetail.vue'], resolve) , //合同详细
+                      
+                },{
+                    path: '/studentDetail/:uid',
+                    meta: {
+                              keepAlive: true // 不需要被缓存
+                            } ,
+                             params:{uid:'ud'},
+                    component: resolve => require(['../components/page/studentDetail.vue'], resolve) , //学员详细
                       
                 }
             ]

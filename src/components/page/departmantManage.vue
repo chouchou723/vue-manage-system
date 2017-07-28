@@ -59,9 +59,12 @@ export default {
                     let a = {
                         job_id: data[index].job_id
                     }
-                    console.log(a)
+                    // console.log(a)
                     delete_department(a, token);
-                    this.deleteRow(index, data);
+                    department(token).then((res) => {
+            this.tableData = res.data
+
+        })
                     this.$message({
                         type: 'success',
                         message: '删除成功!'

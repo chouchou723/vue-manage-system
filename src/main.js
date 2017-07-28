@@ -21,7 +21,8 @@ Vue.use(vueEventCalendar, {locale: 'zh',color:'#1fb5ad'}) //locale can be 'zh' o
 // import './mock/index.js';
 // import Mock from './mock'
 // Mock.bootstrap();
-
+import VuePreview from 'vue-preview'
+Vue.use(VuePreview)
 Vue.use(ElementUI);
 Vue.use(Vuex);
 Vue.prototype.$axios = axios;

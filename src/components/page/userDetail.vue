@@ -150,7 +150,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="来源渠道" prop='sour_id' >
-                <div  id='sourceDiv' style="height:40px" :class='{readd:isread}' >
+                <div  id='sourceDiv' style="height:40px;float: left;" :class='{readd:isread}' >
                     
                     <el-form-item prop='sour_id' style="width:142px;margin-right:30px;float:left">
                         <el-cascader :options="source" :props="propsource" v-model="form.sour_id" :show-all-levels="false" placeholder="请选择渠道" ref="source" editable="false" >
@@ -213,7 +213,7 @@
                 <span style="color:#ec6161;">*请在了解资源实际情况后做出判断</span>
             </div>
         </el-dialog>
-        <div style="float:left;width:34%;background-color:white;border-radius:5px;margin-right:12px;height:476px;position:relative">
+        <div style="float:left;width:34%;background-color:white;border-radius:5px;margin-right:12px;min-height:476px;height:auto;position:relative">
             <div class='communityTitle'>
                 <!--  <i class=el-icon-my-tongxunlu style="font-size:31px"></i> -->
                 <span style="font-weight:600;font-size:22px">沟通记录({{number}})</span>
@@ -269,7 +269,7 @@
                 <el-row v-for='item in items1' class='listUser' style='position:relative;margin-left:30px;'>
                     <div style="font-weight:600;magin-right:5px">邀约日期: {{item.alert_time.substring(0,16)}}</div>
                     <div class='inviteRecord'>邀约课程: <span style="color:grey">{{item.course_name.title}}</span> </div>
-                    <div class='inviteRecord'>上课老师: <span style="color:grey">{{item.teach_name}}</span></div>
+                    <div class='inviteRecord'>上课老师: <span style="color:grey">{{item.teach_name.uname}}</span></div>
                     <div class='inviteRecord'>记录时间: <span style="color:grey">{{item.created.substring(0,16)}}</span></div>
                     <div class='inviteRecord'>到访设置: <span :style="{color:item.fla == '已到访'?'blue':'grey'}">{{item.fla}}</span></div>
                 </el-row>
@@ -297,11 +297,6 @@ import {
     getUserInviteList,
     put_student
 } from '../../api/api';
-import {
-    mapGetters,
-    mapActions
-} from 'vuex';
-
 export default {
     data() {
             var nan = (rule, value, callback) => {
@@ -501,9 +496,6 @@ export default {
             }
         },
         methods: {
-            ...mapActions([
-                'sendResourceId'
-            ]),
             resetD(formName) {
                 this.$refs[formName].resetFields();
 
@@ -545,27 +537,19 @@ export default {
                                 customer_id: this.$route.params.uid
                             }
                             getUserList(token, para).then(res => { //获取用户资料
-                                let {
-                                    names,
-                                    age,
-                                    sex,
-                                    source_name,
-                                    school_name,
-                                    created,
-                                    cc_name
-                                } = res.data.info;
+                                let data = res.data.info
                                 this.student = {
-                                    name: names,
-                                    age: age,
-                                    sex: sex,
-                                    school: school_name,
-                                    channel: source_name,
-                                    time: created,
-                                    parent: res.data.famliy[0].uname + '(' + res.data.famliy[0].relation + ')',
-                                    parent_phone: res.data.famliy[0].mobile,
-                                    parent1: res.data.famliy[1] ? res.data.famliy[1].uname + '(' + res.data.famliy[1].relation + ')' : '',
-                                    parent1_phone: res.data.famliy[1] ? res.data.famliy[1].mobile : '',
-                                    teacher: cc_name
+                                    name: data.names,
+                                    age: data.age,
+                                    sex: data.sex,
+                                    school: data.school_name,
+                                    channel: data.source_name,
+                                    time: data.created,
+                                    parent: data.customer_famliy[0].uname + '(' + data.customer_famliy[0].relation + ')',
+                                    parent_phone: data.customer_famliy[0].mobile,
+                                    parent1: data.customer_famliy[1] ? data.customer_famliy[1].uname + '(' + data.customer_famliy[1].relation + ')' : '',
+                                    parent1_phone: data.customer_famliy[1] ? data.customer_famliy[1].mobile : '',
+                                    teacher: data.cc_name
 
                                 }
                             })
@@ -717,7 +701,7 @@ export default {
             commuFormSubmit(formName) { //提交 添加沟通记录
                 this.$refs[formName].validate((valid) => { //替换提交服务
                     if (valid) {
-                        this.commuForm.remind_time = new Date(this.commuForm.remind_time).toLocaleString();
+                        this.commuForm.remind_time = new Date(this.commuForm.remind_time).toLocaleString('chinese',{hour12:false});
                         if (this.in == '') {
                             create_community(this.commuForm, token).then(() => {
                                 this.$message.success('添加成功')
@@ -776,7 +760,7 @@ export default {
             },
 
             editReturn(index, item) { //点击修改沟通记录
-                console.log(item)
+                // console.log(item)
                 this.in = '1';
                 this.commuForm.remark = item.remark
                 this.commuForm.remind_time = item.remind_time == 0 ? '' : item.remind_time;
@@ -808,29 +792,29 @@ export default {
                     customer_id: this.$route.params.uid
                 }
                 getUserList(token, para).then(res => { //获取用户资料
-                    let data = res.data;
+                    let data = res.data.info;
                     let arr = [];
                     this.form = {
-                        names: data.info.names,
-                        sex: data.info.sex === '男' ? '1' : '2',
-                        age: data.info.age + '',
-                        parent: data.famliy[0].uname,
-                        parent1: data.famliy[1] ? data.famliy[1].uname : '',
-                        con: data.famliy[0].relation,
-                        con1: data.famliy[1] ? data.famliy[1].relation : '',
-                        phone: data.famliy[0].mobile,
-                        phone1: data.famliy[1] ? data.famliy[1].mobile : '',
+                        names: data.names,
+                        sex: data.sex === '男' ? '1' : '2',
+                        age: data.age + '',
+                        parent: data.customer_famliy[0].uname,
+                        parent1: data.customer_famliy[1] ? data.customer_famliy[1].uname : '',
+                        con: data.customer_famliy[0].relation,
+                        con1: data.customer_famliy[1] ? data.customer_famliy[1].relation : '',
+                        phone: data.customer_famliy[0].mobile,
+                        phone1: data.customer_famliy[1] ? data.customer_famliy[1].mobile : '',
                         familys: '',
-                        city_id: data.info.city_id - 0,
-                        area_id: data.info.area_id - 0,
-                        address: data.info.address,
-                        school_id: data.info.school_id - 0,
-                        sour_id: data.info.sour_tree,
-                        referee: data.info.referral ? data.info.referral.nickname : '', //推荐人名字
+                        city_id: data.city_id - 0,
+                        area_id: data.area_id - 0,
+                        address: data.address,
+                        school_id: data.school_id - 0,
+                        sour_id: data.sour_tree,
+                        referee: data.referral ? data.referral.nickname : '', //推荐人名字
                         familys_name: '', //推荐人家长姓名
-                        referral_uid: data.info.referral_uid, //推荐人id
+                        referral_uid: data.referral_uid, //推荐人id
                         familys: '',
-                        tmk_id: data.info.tmk_uid,
+                        tmk_id: data.tmk_uid,
                         isActivate: '',
                     }
                 }).then(() => {
@@ -916,13 +900,7 @@ export default {
                     return '修改沟通记录'
                 }
 
-            },
-            ...mapGetters([
-                'getStatus',
-                'getUId',
-                'getResource'
-                // ...
-            ]),
+            }
 
         },
         beforeCreate() {
@@ -936,27 +914,19 @@ export default {
                 customer_id: this.$route.params.uid
             }
             getUserList(token, para).then(res => { //获取用户资料
-                let {
-                    names,
-                    age,
-                    sex,
-                    source_name,
-                    school_name,
-                    created,
-                    cc_name
-                } = res.data.info;
+                let data = res.data.info;
                 this.student = {
-                    name: names,
-                    age: age,
-                    sex: sex,
-                    school: school_name,
-                    channel: source_name,
-                    time: created,
-                    parent: res.data.famliy[0].uname + '(' + res.data.famliy[0].relation + ')',
-                    parent_phone: res.data.famliy[0].mobile,
-                    parent1: res.data.famliy[1] ? res.data.famliy[1].uname + '(' + res.data.famliy[1].relation + ')' : '',
-                    parent1_phone: res.data.famliy[1] ? res.data.famliy[1].mobile : '',
-                    teacher: cc_name
+                    name: data.names,
+                    age: data.age,
+                    sex: data.sex,
+                    school: data.school_name,
+                    channel: data.source_name,
+                    time: data.created,
+                    parent: data.customer_famliy[0].uname + '(' + data.customer_famliy[0].relation + ')',
+                    parent_phone: data.customer_famliy[0].mobile,
+                    parent1: data.customer_famliy[1] ? data.customer_famliy[1].uname + '(' + data.customer_famliy[1].relation + ')' : '',
+                    parent1_phone: data.customer_famliy[1] ? data.customer_famliy[1].mobile : '',
+                    teacher: data.cc_name
 
                 }
             }).catch(() => {

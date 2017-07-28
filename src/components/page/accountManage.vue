@@ -67,7 +67,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item :label-width="formLabelWidth" prop="school" style='display:inline-block;margin-left: -100px'>
-                        <el-select v-model="aform.school" multiple filterable remote placeholder="请输入关键词" :remote-method="remoteMethod" :loading="loading">
+                        <el-select v-model="aform.school"  filterable remote placeholder="请输入关键词" :remote-method="remoteMethod" :loading="loading">
                             <el-option v-for="item in schools" :key="item.value" :label="item.label" :value="item.value">
                             </el-option>
                         </el-select>
@@ -343,9 +343,8 @@ export default {
                             });
                         }) //假如有部门,必须刷新职位，方能更换同部门的不同职位
                 }
-                let schoolData = data[index].school.length == 0 ? [] : data[index].school.map(item => {
-                    return item.id
-                })
+                let schoolData = data[index].school.length == 0 ? [] : data[index].school[0].id
+            
                 this.aform = {
                     aid: data[index].aid,
                     uname: data[index].uname,
@@ -436,7 +435,7 @@ export default {
             addAccount(formName) { //点确定后添加账号
                 this.$refs[formName].validate((valid) => {
                     let f = this.aform;
-                    f.school_id = f.school.join(',');
+                    f.school_id = f.school;
                     let i = this.in;
 
                     if (valid) {
@@ -618,7 +617,7 @@ export default {
 .accou {
     width: 100%;
     position: relative;
-    height: 50px;
+    height: 45px;
     background-color: white;
   margin-top:30px;
   padding-top:10px;
