@@ -3,7 +3,7 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-my-gerenxinxi"></i> 学员合同</el-breadcrumb-item>
-                <el-breadcrumb-item class='ss'>我的学员</el-breadcrumb-item>
+                <el-breadcrumb-item class='ss'>我的学员1</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class='accouMyresourece'>
