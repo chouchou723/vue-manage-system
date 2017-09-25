@@ -6,18 +6,18 @@
                 <el-breadcrumb-item class='ss'>角色管理</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
-        <div class='crea' style="width: 100%;position:relative;background-color:white;margin-bottom:5px;padding:15px 0 15px 0;border-radius:5px">
+        <div class='crea' >
          <h3 class='charatcterH2'>角色管理</h3>
-            <el-button type="primary" size="mid" style='position:absolute;right:10px;top:16%' @click="createCh">创建角色</el-button>
+            <el-button type="primary" size="mid" class='CMbutton' @click="createCh">创建角色</el-button>
         </div>
         <div>
-            <el-dialog :title="alter" :visible.sync="dialogFormVisible" :close-on-click-modal="no" show-close style='z-index:100' class='charDialog'>
+            <el-dialog :title="alter" :visible.sync="dialogFormVisible" :close-on-click-modal="no" top='10%' show-close  class='charDialog' @close='resetTree'>
                 <el-form :model="form">
                     <el-form-item label="角色名称" :label-width="formLabelWidth">
-                        <el-input v-model="form.name" auto-complete="off" placeholder='请输入角色名称' style='width:200px'></el-input>
+                        <el-input v-model="form.name" auto-complete="off" placeholder='请输入角色名称' class='CM200'></el-input>
                     </el-form-item>
                 </el-form>
-                <el-tree :data="data2" show-checkbox="" v-model="form.access" node-key="module_id" ref="tree" highlight-current :props="defaultProps">
+                <el-tree class='CMtree' :data="data2" show-checkbox="" check-strictly v-model="form.access" node-key="module_id" ref="tree" highlight-current :props="defaultProps" v-loading="loading2">
                 </el-tree>
                 <div slot="footer" class="dialog-footer">
                     <el-button type="primary" @click="addChar">确 定</el-button>
@@ -31,7 +31,7 @@
             <el-table-column width='140px' label="操作">
                 <template scope="scope">
                     <el-button type="text" size="small" @click="open4(scope.$index, charData)">修改</el-button>
-                    <el-button type="text" size="small" @click="open2(scope.$index, charData)">删除</el-button>
+                    <el-button type="text" size="small" class='CMred' @click="open2(scope.$index, charData)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -48,24 +48,38 @@ import {
     detail_character
 } from '../../api/api';
 export default {
+    
+    data() {
+        return {
+            loading2:true,
+            charData: [],
+            dialogFormVisible: false,
+            formLabelWidth: '70px',
+            in : '',
+            no: false,
+            form: {
+                roleid: '',
+                name: ''
+            },
+            data2: [],
+            defaultProps: {
+                children: '_child',
+                label: 'menu_name'
+            }
+        }
+    },
     methods: {
-        createCh() { //点击创建角色
-            var that = this;
+        resetTree(){
             this.form.name = '';
             this.form.role_id = '';
-            this.dialogFormVisible = true;
-
-            function dib() {
-                that.$refs.tree.setCheckedKeys([]);
-            };
-            setTimeout(dib, 1)
-
+            this.loading2 =  true;
+             this.$refs.tree.setCheckedKeys([]);
         },
-        deleteRow(index, rows) {
-            rows.splice(index, 1);
+        createCh() { //点击创建角色
+            this.dialogFormVisible = true;
+            this.loading2 =  false;
         },
         open2(index, data) { //删除角色
-
             this.$confirm('是否确定要删除该角色?', '删除角色', {
                     customClass: 'redwarn',
                     confirmButtonText: '确定',
@@ -75,8 +89,11 @@ export default {
                     let a = {
                         roleid: data[index].roleid
                     }
-                    delete_character(a, token);
-                    this.deleteRow(index, data);
+                    delete_character(a, token).then(()=>{
+                        character(token).then((res) => {
+            this.charData = res.data;
+        })
+                    });
                     this.$message({
                         type: 'success',
                         message: '删除成功!'
@@ -97,15 +114,20 @@ export default {
                 roleid: data[index].roleid
             }
             detail_character(para, token).then(res => {
-                let a = res.data.module_ids
-                this.$refs.tree.setCheckedKeys(a);
+                // let a = res.data.module_ids
+                this.$refs.tree.setCheckedKeys(res.data.module_ids);
                 // console.log(a)
+            }).then(()=>{
+                // if( this.$refs.tree.getCheckedKeys().length !=0){
+
+            this.loading2 =  false;
+                // }
             })
             this.in = index;
             this.form.name = data[index].name;
             this.dialogFormVisible = true;
         },
-        addChar() {
+        addChar() {//确定提交
             let s = this.$refs.tree.getCheckedKeys();
             let a = s.join(',');
             let b = this.form.name;
@@ -116,52 +138,35 @@ export default {
                         name: b,
                         module_id: a
                     } //number要替换
-                create_character(para, token).then(() => {
+                create_character(para, token).then((res) => {
+                    if(res.code==0){
+                        this.$message.success('创建成功')
                     character(token).then((res) => {
                         this.charData = res.data;
                     })
-                });
                 this.dialogFormVisible = false;
-                this.$refs.tree.setCheckedKeys([]);
-                this.form.name = '';
+                    }
+                });
             } else if (a && b && c !== '') {
                 let para = {
                         role_id: this.form.roleid,
                         name: b,
                         module_id: a
                     } 
-                put_character(para, token).then(() => {
+                put_character(para, token).then((res) => {
+                    if(res.code==0){
+                        this.$message.success('修改成功')                        
                     character(token).then((res) => {
                         this.charData = res.data;
                     })
-                });
                 this.dialogFormVisible = false;
-                this.in = '';
-                this.$refs.tree.setCheckedKeys([]);
-                this.form.name = '';
+                    }
+                });
             }
 
         }
     },
 
-    data() {
-        return {
-            charData: [],
-            dialogFormVisible: false,
-            formLabelWidth: '70px',
-            in : '',
-            no: false,
-            form: {
-                roleid: '',
-                name: ''
-            },
-            data2: [],
-            defaultProps: {
-                children: '_child',
-                label: 'menu_name'
-            }
-        }
-    },
     beforeCreate() {
         let user = localStorage.getItem('user');
         token = JSON.parse(user).token;
@@ -169,9 +174,11 @@ export default {
     created() {
         character(token).then((res) => {
             this.charData = res.data;
-        })
+        }).then(()=>{
         rangeList(token).then(res => {
                  this.data2 = res.data
+        })
+
         })
     },
     computed: {
@@ -186,6 +193,9 @@ export default {
 }
 </script>
 <style>
+    .crea{
+width: 100%;position:relative;background-color:white;margin-bottom:5px;padding:15px 0 15px 0;border-radius:5px
+    }
 .crea .el-button--primary {
     background-color: #32a4d3;
     border-color: #32a4d3;
@@ -229,5 +239,17 @@ export default {
 
 .charatcterH2{
     padding-left: 10px
+}
+.CMbutton{
+position:absolute;right:10px;top:16%
+}
+.CM200{
+width:200px
+}
+.CMred{
+    color:red
+}
+.CMtree{
+height:550px;overflow:auto
 }
 </style>

@@ -22,37 +22,37 @@
             <el-dialog :title="alter" :visible.sync="dialogFormVisible" :close-on-click-modal="no" custom-class='classLibraryDialog' top='9%' @close='resetD' size='tiny'>
                 <el-form :model="aform" ref="aform" :rules="rules2">
                     <el-form-item label="课程名称" :label-width="formLabelWidth" prop="title">
-                        <el-input v-model="aform.title" placeholder='请输入课程名称' :style='{width:inputLabelWidth}'></el-input>
+                        <el-input v-model="aform.title" placeholder='请输入课程名称' class='CL200'></el-input>
                     </el-form-item>
                     <el-form-item label="课程类型" :label-width="formLabelWidth" prop="kc_tid">
-                        <el-select v-model="aform.kc_tid" :style='{width:inputLabelWidth}'>
+                        <el-select v-model="aform.kc_tid" class='CL200'>
                             <el-option v-for="item in options" :key="item.kc_tid" :label="item.kc_tname" :value="item.kc_tid">
                             </el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="课时" :label-width="formLabelWidth" prop="year_num">
-                        <el-input v-model="aform.year_num" auto-complete="off" placeholder='请输入课时' :style='{width:inputLabelWidth}'></el-input>
+                        <el-input v-model="aform.year_num" auto-complete="off" placeholder='请输入课时'class='CL200'></el-input>
                     </el-form-item>
                     <el-form-item label="签单数" :label-width="formLabelWidth" prop="head_count">
-                        <el-input v-model="aform.head_count" auto-complete="off" placeholder='请输入签单数' :style='{width:inputLabelWidth}'></el-input>
+                        <el-input v-model="aform.head_count" auto-complete="off" placeholder='请输入签单数' class='CL200'></el-input>
                     </el-form-item>
                     <el-form-item label="学费" :label-width="formLabelWidth" prop="tuition_price">
-                        <el-input v-model="aform.tuition_price" auto-complete="off" placeholder='请输入人学费' :style='{width:inputLabelWidth}'></el-input>
+                        <el-input v-model="aform.tuition_price" auto-complete="off" placeholder='请输入学费' class='CL200'></el-input>
                     </el-form-item>
                     <el-form-item label="教材费" :label-width="formLabelWidth" prop="teaching_price">
-                        <el-input v-model="aform.teaching_price" auto-complete="off" placeholder='请输入教材费' :style='{width:inputLabelWidth}'></el-input>
+                        <el-input v-model="aform.teaching_price" auto-complete="off" placeholder='请输入教材费' class='CL200'></el-input>
                     </el-form-item>
                     <el-form-item label="书本费" :label-width="formLabelWidth" prop="book_price">
-                        <el-input v-model="aform.book_price" auto-complete="off" placeholder='请输入书本费' :style='{width:inputLabelWidth}'></el-input>
+                        <el-input v-model="aform.book_price" auto-complete="off" placeholder='请输入书本费' class='CL200'></el-input>
                     </el-form-item>
                     <el-form-item label="有效期" :label-width="formLabelWidth" prop="order_date">
-                        <el-select v-model="aform.order_date" :style='{width:inputLabelWidth}'>
+                        <el-select v-model="aform.order_date" class='CL200'>
                             <el-option v-for="item in period" :key="item.value" :label="item.label" :value="item.value">
                             </el-option>
                         </el-select>
                     </el-form-item>
                 </el-form>
-                <div slot="footer" class="dialog-footer" style="text-align:center;margin-top:40px">
+                <div slot="footer" class="dialog-footer" >
                     <el-button type="primary" @click="addAccount('aform')">确 定</el-button>
                     <el-button @click="dialogFormVisible = false">取 消</el-button>
                 </div>
@@ -62,7 +62,7 @@
             <el-table :data="accountData" border style='width:100%'>
                 <el-table-column prop="title" label="课程名称">
                     <template scope="scope">
-                        <span style='font-weight:600'>{{scope.row.title}}</span>
+                        <span class='CLbold'>{{scope.row.title}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="kecheng_type" label="课程类型">
@@ -79,7 +79,10 @@
                 </el-table-column>
                 <el-table-column prop="order_date" label="有效期" :formatter='formatter'>
                 </el-table-column>
-                <el-table-column prop="person_num" label="当前报名人数">
+                <el-table-column prop="person_num" label="在读数/总销量" width='120'>
+                     <template scope="scope">
+                        <span >{{scope.row.person_num}}/{{scope.row.total_num}}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column label="操作">
                     <template scope="scope">
@@ -181,7 +184,6 @@ export default {
                 },
                 dialogFormVisible: false,
                 formLabelWidth: '31%',
-                inputLabelWidth: '200px',
                 rules2: {
                     title: [{
                         required: true,
@@ -235,8 +237,10 @@ export default {
                 this.fetchData();
             },
             createCh(formName) { //点击创建按钮
+            this.dialogFormVisible = true;
+            },
+            resetD() {
                 this.in = '';
-                this.dialogFormVisible = true;
                 this.aform = {
                     kcid: '',
                     title: '',
@@ -248,9 +252,6 @@ export default {
                     book_price: '',
                     order_date: ''
                 }
-
-            },
-            resetD() {
                 this.$refs['aform'].resetFields();
 
             },
@@ -268,7 +269,6 @@ export default {
                     order_date: data[index].order_date
                 }
                 this.dialogFormVisible = true;
-
             },
             open2(index, data) { //删除课程
                 if (data[index].person_num != 0) {
@@ -280,7 +280,6 @@ export default {
                     });
                 } else {
                     this.$confirm('是否确定要删除该课程?', '删除课程', {
-
                         customClass: 'classredwarn',
                         cancelButtonText: '取消',
                         confirmButtonText: '确定',
@@ -304,7 +303,7 @@ export default {
 
             addAccount(formName) { //点确定后添加课程
                 this.$refs[formName].validate((valid) => {
-                    let f = this.aform;
+                    let f = {...this.aform};
                     let i = this.in;
                     // console.log(valid)
                     if (valid) {
@@ -317,15 +316,14 @@ export default {
                                         type: 'success'
                                     });
                                     this.fetchData();
+                                    this.dialogFormVisible = false;
                                 } else {
                                     this.$message({
                                         type: 'error',
                                         message: res.data
                                     });
                                 }
-                            }).then(() => {
-                                this.dialogFormVisible = false;
-                            });
+                            })
                         } else {
                             let para = f;
                             create_class(para, token).then(res => {
@@ -335,18 +333,15 @@ export default {
                                         type: 'success'
                                     });
                                     this.fetchData();
+                                    this.dialogFormVisible = false;
                                 } else {
                                     this.$message({
                                         type: 'error',
                                         message: res.data
                                     });
                                 }
-                            }).then(() => {
-                                this.dialogFormVisible = false;
-                            });
+                            })
                         }
-                        this.in = '';
-
                     } else {
                         console.log('error submit!!');
                         return false;
@@ -434,7 +429,6 @@ export default {
     padding: 40px 20px;
 }
 
-.classredwarn .el-message-box__btns {}
 
 .el-dialog .el-dialog__header {
     background-color: #1fb5ad;
@@ -487,5 +481,14 @@ export default {
 
 .classLibraryDialog .el-dialog__footer {
     padding: 0 20px 15px;
+}
+.dialog-footer{
+text-align:center;margin-top:40px
+}
+.CL200{
+    width: 200px;
+}
+.CLbold{
+    font-weight: bold
 }
 </style>

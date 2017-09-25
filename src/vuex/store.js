@@ -19,7 +19,8 @@ const state = {
     u_id:'',
     u_status:'',
     u_resource:'',
-    searchKey:''
+    searchKey:'',
+    messageNumber:''
 }
 
 // 定义所需的 mutations
@@ -46,6 +47,9 @@ const mutations = {
     },
     SEARCHKEY(state,key){
         state.searchKey = key
+    },
+    SETMESSNUMBER(state,num){
+        state.messageNumber = num
     }
 }
 

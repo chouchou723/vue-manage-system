@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-let base = 'http://crmv2.dfth.com';
+let base = 'http://pandatest.dfth.com';
 //登录页面
 export const requestLogin = params => {
     return axios.post(`${base}/api/v1/admin/login`, params).then(res => res.data); };
@@ -295,9 +295,14 @@ export const create_student = (params, token) => {
 //修改学员
 export const put_student = (params, token) => {
     axios.defaults.headers.common['Authorization'] = token.Authorization;
-    return axios.put(`${base}/api/v1/customer/update`, params).then(res => res.data);
+    return axios.post(`${base}/api/v1/users/update`, params).then(res => res.data);
 };
 
+//获取标签列表
+export const getTagList = (token,params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/tag/getTagsLists`,{ params: params }).then(res => res.data);
+};
 
 //获取来源渠道
 export const sourceList = (token) => {
@@ -306,15 +311,20 @@ export const sourceList = (token) => {
 };
 
 //获取标签
-export const tagList = (token) => {
+export const tagList = (token,params) => {
     axios.defaults.headers.common['Authorization'] = token.Authorization;
-    return axios.get(`${base}/api/v1/public/getTag`).then(res => res.data);
+    return axios.get(`${base}/api/v1/public/getTag`,{ params: params }).then(res => res.data);
 };
 
 //添加标签
 export const create_tag = (params, token) => {
     axios.defaults.headers.common['Authorization'] = token.Authorization;
     return axios.post(`${base}/api/v1/tag/add`, params).then(res => res.data);
+};
+//修改标签
+export const put_tag = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.put(`${base}/api/v1/tag/add`, params).then(res => res.data);
 };
 //删除标签
 export const delete_tag = (params, token) => {
@@ -631,7 +641,7 @@ export const getMyStudentSign = (token, params) => {
     return axios.get(`${base}/api/v1/checkinItem/userlog`, { params: params }).then(res => res.data);
 };
 
-//CC客户续费转课再购买
+//CC学员续费转课再购买
 export const signThreeContract = (params, token) => {
     axios.defaults.headers.common['Authorization'] = token.Authorization;
     return axios.post(`${base}/api/v1/order/renew`, params).then(res => res.data);
@@ -641,6 +651,182 @@ export const signThreeContract = (params, token) => {
 export const getRemainMoney = (token, params) => {
     axios.defaults.headers.common['Authorization'] = token.Authorization;
     return axios.get(`${base}/api/v1/order/getCourseBalance`, { params: params }).then(res => res.data);
+};
+
+//CC学员冻结
+export const  frozenClass = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/order/freezeCouse`, params).then(res => res.data);
+};
+
+//CC学员转班
+export const transferClass = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/order/transferClass`, params).then(res => res.data);
+};
+//CC学员转校
+export const transferSchool = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/order/transferSchoolMessage`, params).then(res => res.data);
+};
+
+//CC学员接收或拒绝转校
+export const agreeTransferSchool = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/order/transferSchool`, params).then(res => res.data);
+};
+
+//cc删除合同图片
+export const deleteContractImg = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/order/uploadOrderImg`, params).then(res => res.data);
+};
+
+//CC获取学员退费信息
+export const getRefund = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/order/returnsList`, params).then(res => res.data);
+};
+
+//CC立即排班选择性排班
+export const assignClass = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/order/assignsCouse`, params).then(res => res.data);
+};
+
+//CC获取首页报表
+export const getCCindex = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/cc/forms`, { params: params }).then(res => res.data);
+};
+//CC获取客户管理统计表
+export const getReport1 = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/cc/customerForm`, { params: params }).then(res => res.data);
+};
+//CC获取销售额统计表
+export const getReportSA = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/cc/salesNumber`, { params: params }).then(res => res.data);
+};
+//CC获取业务交接
+export const getTransposing = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/cc/transposing`, { params: params }).then(res => res.data);
+};
+//业务交接分配人员
+export const dispatchPerson = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/cc/replaceCc`, params).then(res => res.data);
+};
+//获取消息通知
+export const getMessage = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/message/myMessageList`, params).then(res => res.data);
+};
+
+//获取消息详细
+export const getMessagDetail = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/message/msgInfo`, params).then(res => res.data);
+};
+
+//教务获取课程表
+export const getteachClassTable = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/teacher/syllabus`, { params: params }).then(res => res.data);
+};
+
+//教务课程表详细
+export const getDetailClassTable = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/teacher/checkWork`, { params: params }).then(res => res.data);
+};
+
+//教务签到
+export const  signClass = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/teacher/checkWorkPost`, params).then(res => res.data);
+};
+//教务添加补课
+export const  makeUpLesson = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/teacher/addBuKe`, params).then(res => res.data);
+};
+//教务申请代课
+export const  takeOverLesson = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/teacher/addDaiKe`, params).then(res => res.data);
+};
+//教务停课
+export const  stopLesson = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/teacher/stopClass`, params).then(res => res.data);
+};
+//教务代课审批查询详细
+export const getApprovalDetail = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/teacher/viewApproval`, { params: params }).then(res => res.data);
+};
+//教务获取学员管理列表
+export const getTeachStudentList = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/teacher/studentlist`, { params: params }).then(res => res.data);
+};
+//教务添加补课学生
+export const  putStudentMakeup = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/teacher/addBuKeUser`, params).then(res => res.data);
+};
+//教务发放礼品
+export const  sendPresent = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/teacher/sendAwards`, params).then(res => res.data);
+};
+//教务获取活动管理列表
+export const getActivityList = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/Travel/tplList`, { params: params }).then(res => res.data);
+};
+//教务主管创建生日会活动
+export const  addBirthdayParty = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/Travel/addBirthdayParty`, params).then(res => res.data);
+};
+//教务经理发布活动模板
+export const  addTpl = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/Travel/addTpl`, params).then(res => res.data);
+};
+//教务获取活动模板的详细
+export const getTplInfo = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/Travel/tplInfo`, { params: params }).then(res => res.data);
+};
+//教务获取生日会活动的详细
+export const getBirthdayInfo = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/Travel/birthdayInfo`, { params: params }).then(res => res.data);
+};
+//教务主管发起活动
+export const  addActivity = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/Travel/addActivity`, params).then(res => res.data);
+};
+//教务获取已发布活动列表
+export const getActivityAlreadyList = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/Travel/activityList`, { params: params }).then(res => res.data);
+};
+//教务获取已发布活动的详细的报名学员列表
+export const getActivityOrderList = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/Travel/getOrderList`, { params: params }).then(res => res.data);
+};
+//教务获取已发布活动的详细的报名学员列表
+export const getClassBonus = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/users/classBonus`, { params: params }).then(res => res.data);
 };
 // //code字段说明
 //     tmk_m:  tmk主管

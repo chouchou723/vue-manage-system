@@ -6,6 +6,7 @@ var merge = require('webpack-merge')
 var baseWebpackConfig = require('./webpack.base.conf')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
+// var OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 var env = config.build.env
 
 var webpackConfig = merge(baseWebpackConfig, {
@@ -32,6 +33,11 @@ var webpackConfig = merge(baseWebpackConfig, {
       },
       sourceMap: true
     }),
+    // new OptimizeCssAssetsPlugin( {assetNameRegExp: /.css$/g,//压缩css
+    //   cssProcessor: require('cssnano'),
+    //   cssProcessorOptions: { discardComments: {removeAll: true } },
+    //   canPrint: true
+    // }),
     // extract css into its own file
     new ExtractTextPlugin({
       filename: utils.assetsPath('css/[name].[contenthash].css')

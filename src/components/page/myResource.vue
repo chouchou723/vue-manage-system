@@ -9,7 +9,7 @@
             <h2 class="mydataReturn">
                我的资源({{number}}人)
       </h2>
-        <div style="display:flex;flex-wrap:wrap">
+        <div class="MRtitle">
             
             <div class='studentReturnThreeNew' v-if="code =='tmk_m'">
                 <el-select v-model="valueT" clearable placeholder="选择TMK" @change="updateList" >
@@ -58,24 +58,13 @@
                     <el-option label="未到访" value="4"></el-option>
                 </el-select>
             </div>
-            <div style="width:200px;display:inline-block;margin-left: 10px;margin-bottom: 10px;margin-right:110px">
-                <el-input placeholder="输入手机号或姓名" icon="search" v-model="input2" @keyup.enter.native="updateList" :on-icon-click="updateList" style='margin-right:10px' > </el-input>
+            <div class="MRinput">
+                <el-input placeholder="输入手机号或姓名" icon="search" v-model="input2" @keyup.enter.native="updateList" :on-icon-click="updateList"  > </el-input>
             </div>
-            <div style="position:absolute;right:10px;bottom:10px">
+            <div class="MRadd">
             <el-button type="primary" size="mid" class='myresourceButton' @click="goToAdd">添加资源</el-button>
-                
             </div>
         </div>
-      
-        <!--     
-            <div class='search1'>
-                
-               
-            </div> -->
-          
-            <!-- <div style="align-self:flex-end;margin-top:20px">
-                
-            </div> -->
         </div>
         <div id="table1">
             <el-table :data="tableData" border style="width: 100%" :default-sort="{prop: 'last_time', order: 'descending'}">
@@ -124,13 +113,12 @@ import {
     sourceList,
     getTMK
 } from '../../api/api';
-import {
-    mapActions
-} from 'vuex';
+// import {
+//     mapActions
+// } from 'vuex';
 
 export default {
     data() {
-
             return {
                 code: '',
                 currentPage: 1, //页数
@@ -160,12 +148,9 @@ export default {
             goToAdd(){
                 this.$router.push('/addUser');
             },
-            cac(){
-                
-            },
-            ...mapActions([
-                'sendResourceId'
-            ]),
+            // ...mapActions([
+            //     'sendResourceId'
+            // ]),
             formatter(row, column) {
               let reg = /(\d{4})\d{4}(\d{3})/;
               if(reg.test(row.mobile)){
@@ -180,7 +165,6 @@ export default {
                     u_status: row.status,
                     u_resource: 1
                 }
-
  // this.$router.history.current.meta.keepAlive = false
                 // this.sendResourceId(uid).then(()=>{
                 this.$router.push('/userDetail'+'/'+row.id+'/'+row.status+'/'+1);
@@ -191,7 +175,6 @@ export default {
                 this.fetchData();
 
             },
-
             fetchData() {
                 let para = {
                     tmk_id: this.valueT, //TMK
@@ -206,14 +189,10 @@ export default {
                     last_end_date: this.value4[1] != null? new Date(this.value4[1]).toLocaleDateString(): '',
                     input: this.input2,
                 }
-
                 getMyResoure(para, token).then((res) => { //替换服务
                     this.number = res.data.total;
                     let a = res.data.data;
                     let c = res.data.last_page * this.pagesize;
-
-                    // console.log(a)
-                    // console.log(a)
                     this.tableData = a;
                     this.total = parseInt(c);
                 })
@@ -233,14 +212,16 @@ export default {
         created() {
             this.code = JSON.parse(user).job ? JSON.parse(user).job.code : ''; //获取职位code
             this.fetchData(); //获取表格数据
+            if (this.code == 'tmk_m') {
+                getTMK(token).then((res) => {
+                    this.optionsTMK = res.data
+                    this.optionsTMK.unshift({key:'0',label:'全部TMK'})
+                })
+            }
             let cam = {
                 simple: '1'
             };
-            sourceList(token).then(res => {
-                this.options2 = res.data
-
-            })
-            campusList(cam, token).then((res) => { //获取校区
+            campusList(cam, token).then((res) => {//获取校区
                 let a = res.data;
                 this.options = a.map(item => {
                     return {
@@ -248,13 +229,13 @@ export default {
                         label: item.title
                     };
                 });
+            }).then(()=>{
+                sourceList(token).then(res => {
+                this.options2 = res.data
             })
-            if (this.code == 'tmk_m') {
-                getTMK(token).then((res) => {
-                    this.optionsTMK = res.data
-                    this.optionsTMK.unshift({key:'0',label:'全部TMK'})
-                })
-            }
+           
+            })
+            
 
         },
   //       watch: {
@@ -336,26 +317,17 @@ export default {
     margin-left: 10px
 }
 
-.search1 {
-     padding-left: 10px;
-    margin:0 10px 10px 0;
-    /*align-self:flex-end;*/
-}
-.search1 .el-input{
-    width:158px;
-}
-.kuangyi {
-    padding: 1px;
-    width: 100%;
-    height: 500px;
-    border-style: none;
-}
-
 .block {
     text-align: center;
     margin-top: 10px;
 }
-/*.myresourceButton{
-    float: right;
-}*/
+.MRtitle{
+display:flex;flex-wrap:wrap
+}
+.MRinput{
+width:200px;display:inline-block;margin-left: 10px;margin-bottom: 10px;margin-right:110px
+}
+.MRadd{
+position:absolute;right:10px;bottom:10px
+}
 </style>

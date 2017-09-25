@@ -6,9 +6,9 @@
                 <el-breadcrumb-item class='ss'>部门管理</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
-        <div style="width: 100%;position:relative;background-color:white;margin-bottom:5px;padding:15px 0 15px 0;border-radius:5px">
+        <div class='DMtitle'>
           <h3 class='departH2'>部门管理</h3>
-            <el-button type="primary" size="mid" style='position:absolute;right:10px;top:16%' @click="open3">创建部门</el-button>
+            <el-button type="primary" size="mid" class='DMbutton' @click="open3">创建部门</el-button>
         </div>
         <el-table :data="tableData" border style="width: 100%;">
             <el-table-column prop="full_name" label="部门名称">
@@ -19,7 +19,7 @@
             <el-table-column width='140px' label="操作">
                 <template scope="scope">
                     <el-button type="text" size="small" @click="open4(scope.$index, tableData)">修改</el-button>
-                    <el-button type="text" size="small" @click="open2(scope.$index, tableData)">删除</el-button>
+                    <el-button type="text" size="small" class='DMred' @click="open2(scope.$index, tableData)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -35,9 +35,6 @@ import {
 } from '../../api/api';
 export default {
     methods: {
-        deleteRow(index, rows) {
-            rows.splice(index, 1);
-        },
         open2(index, data) { //删除部门
             if (data[index].user_count != 0) {
                 this.$alert('当前部门有成员,无法删除部门', '删除部门', {
@@ -60,7 +57,9 @@ export default {
                         job_id: data[index].job_id
                     }
                     // console.log(a)
-                    delete_department(a, token);
+                    delete_department(a, token).then((res)=>{
+if(res.code==0){
+
                     department(token).then((res) => {
             this.tableData = res.data
 
@@ -68,6 +67,10 @@ export default {
                     this.$message({
                         type: 'success',
                         message: '删除成功!'
+                    });
+}else{
+    this.$message.error(res.data)
+}
                     });
                 }).catch(() => {
                     this.$message({
@@ -80,10 +83,19 @@ export default {
 
         createde(branch) {
             create_department(branch, token).then(res => {
+                if(res.code==0){
                 department(token).then((res) => {
             this.tableData = res.data
 
         })
+        this.$message({
+                        type: 'success',
+                        message: '添加成功!'
+                    });
+
+                }else{
+    this.$message.error(res.data)
+}
             });
         },
         open3() { //创建部门
@@ -129,11 +141,20 @@ export default {
                         message: '部门名称是: ' + value.value
                     });
                     data[index].full_name = value.value;
-                    put_department(data[index], token).then(()=>{
+                    put_department(data[index], token).then((res)=>{
+                        if(res.code==0){
                          department(token).then((res) => {
             this.tableData = res.data
 
         })
+        this.$message({
+                        type: 'success',
+                        message: '修改成功!'
+                    });
+
+                        }else{
+                            this.$message.error(res.data)
+                        }
                     });
                 })
             }).catch(() => {
@@ -193,5 +214,14 @@ export default {
 }
 .departH2{
     padding-left: 10px
+}
+.DMtitle{
+width: 100%;position:relative;background-color:white;margin-bottom:5px;padding:15px 0 15px 0;border-radius:5px
+}
+.DMbutton{
+position:absolute;right:10px;top:16%
+}
+.DMred{
+    color:red
 }
 </style>

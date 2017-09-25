@@ -1,17 +1,17 @@
 <template>
      <div class="login-wrap">
-        <div class="pass-box" style="margin:auto;width:380px;height:50%;position:absolute;top:0;left:0;right:0;bottom:0;background-color:white;border-radius:5px">
-        <div class="forgetBack" @click='goToLogin'><img src="../../../static/img/back1.png" width='30'alt=""></div>
-            <el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2"  class="demo-ruleForm" style='width:70%;height:270px;margin: auto;position:absolute;top:0;left:0;bottom:0;right:0'>
+        <div class="pass-box" >
+        <div class="forgetBack" @click='goToLogin'><img :src="forgetSrc" width='30'alt=""></div>
+            <el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2"  class="demo-ruleForm" >
                 <el-form-item  prop="mail">
-                    <el-input  placeholder="请输入登录邮箱" v-model='ruleForm2.mail'></el-input>
+                    <el-input  placeholder="请输入手机号码" v-model='ruleForm2.mail'></el-input>
                 </el-form-item>
                 <el-form-item  prop="code">
                     <el-col :span="15">
                         <el-input placeholder="请输入验证码" v-model="ruleForm2.code"></el-input>
                     </el-col>
                     <el-col :span="9">
-                        <el-button type="primary" id="forgetCode" @click="getCode" style="float:right;text-align:center">获取验证码</el-button>
+                        <el-button type="primary" id="forgetCode" @click="getCode" >获取验证码</el-button>
                     </el-col>
                 </el-form-item>
                 <el-form-item  prop="password">
@@ -22,7 +22,7 @@
                 </el-form-item>
                 
                 <el-form-item>
-                    <el-button type="primary" @click="handleSubmit2('ruleForm2')" style='width:100%'>提交</el-button>
+                    <el-button type="primary" @click="handleSubmit2('ruleForm2')" class='forget100'>提交</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -85,8 +85,18 @@ export default {
                 //     }
                 // }, 1);
             }
-
+var isPhone1 = (rule, value, callback) => {
+                var myreg =  /^(((1[0-9]{1}))+\d{9})$/; 
+                if (value == '') {
+                    callback('请输入手机号码')
+                } else if (!myreg.test(value)) {
+                    callback('请输入有效手机号码');
+                }else{
+                    callback();
+                }
+            }
             return {
+                forgetSrc:'../../../static/img/back1.png',
                 receiveCode: '',
                 ruleForm2: {
                     mail:'',
@@ -97,11 +107,7 @@ export default {
                 rules2: {
                     mail: [{
                     required: true,
-                    message: '请输入邮箱地址',
-                    trigger: 'blur'
-                }, {
-                    type: 'email',
-                    message: '请输入正确的邮箱地址',
+                    validator: isPhone1,
                     trigger: 'blur,change'
                 }],
                     password: [{
@@ -183,6 +189,15 @@ export default {
     cursor: pointer;
 }
 #forgetCode{
-    padding:10px;
+    padding:10px;float:right;text-align:center
+}
+.pass-box{
+margin:auto;width:380px;height:50%;position:absolute;top:0;left:0;right:0;bottom:0;background-color:white;border-radius:5px
+}
+.demo-ruleForm{
+width:70%;height:270px;margin: auto;position:absolute;top:0;left:0;bottom:0;right:0
+}
+.forget100{
+width:100%
 }
 </style>

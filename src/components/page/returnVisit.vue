@@ -65,22 +65,22 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <div class='settingTag' v-if="code =='tmk_m'">
+            <!-- <div class='settingTag' v-if="code =='tmk_m'">
                 <span @click='settingTag'>[设置]</span>
-            </div>
+            </div> -->
             <div class="block">
                 <el-pagination layout="prev, pager, next" :total="total" :current-page="currentPage" :page-size="pagesize" @current-change="handleCurrentChange">
                 </el-pagination>
             </div>
         </div>
-        <el-dialog title="设置访问标签" :visible.sync="dialogFormVisible" :close-on-click-modal="no" show-close style='z-index:100' class='tagDialog'>
+        <!-- <el-dialog title="设置访问标签" :visible.sync="dialogFormVisible" :close-on-click-modal="no" show-close style='z-index:100' class='tagDialog'>
             <el-tag :key="tag" v-for="tag in dynamicTags" :closable="true" type="success" :close-transition="false" @close="handleClose(tag)">
                 {{tag}}
             </el-tag>
             <el-input class="input-new-tag" v-if="inputVisible" v-model="inputValue" ref="saveTagInput" size="mini" @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm">
             </el-input>
             <el-button v-else class="button-new-tag" size="small" @click="showInput" sytle='margin-top:7px'>创建标签</el-button>
-        </el-dialog>
+        </el-dialog> -->
     </div>
 </template>
 <script>
@@ -88,9 +88,9 @@ var token, user
 import {
     campusList,
     returnVisitList,
-    tagList,
-    create_tag,
-    delete_tag,
+    // tagList,
+    // create_tag,
+    // delete_tag,
     getTMK
 } from '../../api/api';
 
@@ -99,11 +99,11 @@ export default {
             return {
                 noreturnlist:{0:'未回访'},
                 loading2:true,
-                dynamicTags: [], //动态替换
-                backupTages: [],
-                inputVisible: false,
-                inputValue: '',
-                dialogFormVisible: false,
+                // dynamicTags: [], //动态替换
+                // backupTages: [],
+                // inputVisible: false,
+                // inputValue: '',
+                // dialogFormVisible: false,
                 input2: '',
                 currentPage: 1, //页数
                 pagesize: 15, //默认每页
@@ -186,74 +186,74 @@ export default {
 
                 this.fetchData();
             },
-            settingTag() {
-                //调服务获取tag[]
-                tagList(token).then(res => {
-                    this.dynamicTags = res.data.map(item => {
-                        return item.label
-                    })
-                    this.backupTages = res.data
-                })
-                this.dialogFormVisible = true
-            },
-            handleClose(tag) { //移除
-                //调服务删除tag,把整个tag传
-                let index;
-                this.backupTages.map(item => {
-                    if (item.label === tag) {
-                        index = item.key
-                    }
-                })
-                let para = {
-                    id: index
-                }
-                delete_tag(para, token).then(res => {
-                    this.$message.success('删除成功')
-                        tagList(token).then(res => {
-                            this.dynamicTags = res.data.map(item => {
-                                return item.label
-                            })
-                            this.backupTages = res.data
-                        })
-                    }).catch((res)=>{
-                        this.$message.error('该用户未授权')
-                    })
-                    // console.log(index)
-                    // this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
-            },
+            // settingTag() {
+            //     //调服务获取tag[]
+            //     tagList(token).then(res => {
+            //         this.dynamicTags = res.data.map(item => {
+            //             return item.label
+            //         })
+            //         this.backupTages = res.data
+            //     })
+            //     this.dialogFormVisible = true
+            // },
+            // handleClose(tag) { //移除
+            //     //调服务删除tag,把整个tag传
+            //     let index;
+            //     this.backupTages.map(item => {
+            //         if (item.label === tag) {
+            //             index = item.key
+            //         }
+            //     })
+            //     let para = {
+            //         id: index
+            //     }
+            //     delete_tag(para, token).then(res => {
+            //         this.$message.success('删除成功')
+            //             tagList(token).then(res => {
+            //                 this.dynamicTags = res.data.map(item => {
+            //                     return item.label
+            //                 })
+            //                 this.backupTages = res.data
+            //             })
+            //         }).catch((res)=>{
+            //             this.$message.error('该用户未授权')
+            //         })
+            //         // console.log(index)
+            //         // this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
+            // },
 
-            showInput() {
-                this.inputVisible = true;
-                this.$nextTick(_ => {
-                    this.$refs.saveTagInput.$refs.input.focus();
-                });
-            },
+            // showInput() {
+            //     this.inputVisible = true;
+            //     this.$nextTick(_ => {
+            //         this.$refs.saveTagInput.$refs.input.focus();
+            //     });
+            // },
 
-            handleInputConfirm() {
-                let inputValue = this.inputValue;
-                if (inputValue) {
-                    let para = {
-                        title: inputValue
-                    }
-                    create_tag(para, token).then(res => {
-                        if(res.code == 0){
-                            this.$message.success('添加成功')
-                            tagList(token).then(res => {
-                                this.dynamicTags = res.data.map(item => {
-                                    return item.label
-                                })
-                                this.backupTages = res.data
-                            })
-                        }
-                        }).catch(()=>{
-                            this.$message.error('添加失败')
-                        })
-                        // this.dynamicTags.push(inputValue);
-                        //调服务 上送tag
-                }
-                this.inputVisible = false;
-                this.inputValue = '';
-            }
+            // handleInputConfirm() {
+            //     let inputValue = this.inputValue;
+            //     if (inputValue) {
+            //         let para = {
+            //             title: inputValue
+            //         }
+            //         create_tag(para, token).then(res => {
+            //             if(res.code == 0){
+            //                 this.$message.success('添加成功')
+            //                 tagList(token).then(res => {
+            //                     this.dynamicTags = res.data.map(item => {
+            //                         return item.label
+            //                     })
+            //                     this.backupTages = res.data
+            //                 })
+            //             }
+            //             }).catch(()=>{
+            //                 this.$message.error('添加失败')
+            //             })
+            //             // this.dynamicTags.push(inputValue);
+            //             //调服务 上送tag
+            //     }
+            //     this.inputVisible = false;
+            //     this.inputValue = '';
+            // }
         },
         beforeCreate() {
             user = localStorage.getItem('user');
@@ -305,7 +305,7 @@ export default {
     padding-left: 0;
     padding-right: 0;
 }
-
+/* 
 .redwarn .el-message-box__header {
     background-color: #e95c5c;
     padding: 20px 20px 20px;
@@ -318,7 +318,7 @@ export default {
 .redwarn .el-button--primary {
     background-color: #e95c5c;
     border-color: #e95c5c;
-}
+} */
 
 .block {
     text-align: center;
@@ -387,7 +387,7 @@ export default {
     border-radius: 25px;
 }
 
-.settingTag {
+/* .settingTag {
     position: absolute;
     top: 11px;
     right: 19px;
@@ -396,23 +396,23 @@ export default {
     font-size: 14px;
     background-color: #eef6f6;
     cursor: pointer;
-}
+} */
 
 
 /*#table .el-table th:nth-last-child(2){
   text-align: left
 }*/
 
-.el-dialog .el-dialog__header {
+/* .el-dialog .el-dialog__header {
     background-color: #1fb5ad;
     padding: 20px 20px 20px;
 }
 
 .el-dialog .el-dialog__title {
     color: white;
-}
+} */
 
-.tagDialog .input-new-tag {
+/* .tagDialog .input-new-tag {
     width: 120px
-}
+} */
 </style>

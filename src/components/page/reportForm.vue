@@ -23,7 +23,7 @@
                         </el-dropdown>
                     </div>
                 </div>
-                <div style='margin-left:10px;width:100px;float:right;margin-right:5px' v-if='isCharge'>
+                <div style='margin-left:10px;width:100px;float:right;margin-right:5px' v-if='code=="tmk_m"'>
                     <el-select v-model="value10" size='small' clearable placeholder="全部TMK" @change="updateList1">
                         <el-option v-for="item in tmks" :key="item.key" :label="item.label" :value="item.key">
                         </el-option>
@@ -85,7 +85,7 @@
                         </el-dropdown>
                     </div>
                 </div>
-                <div style='margin-left:10px;width:100px;position:absolute;top:9px;right:10px' v-if='isCharge'>
+                <div style='margin-left:10px;width:100px;position:absolute;top:9px;right:10px' v-if='code=="tmk_m"'>
                     <el-select v-model="value11" size='small' clearable placeholder="全部TMK" @change="updateList2">
                         <el-option v-for="item in tmks" :key="item.key" :label="item.label" :value="item.key">
                         </el-option>
@@ -123,7 +123,7 @@
                 <el-date-picker v-model="value6" type="daterange" size='small' placeholder="选择日期范围" @change="updateList3">
                 </el-date-picker>
             </div>
-            <div style='margin-left:10px;width:100px;position:absolute;top:10px;right:10px;z-index:3' v-if='isCharge'>
+            <div style='margin-left:10px;width:100px;position:absolute;top:10px;right:10px;z-index:3' v-if='code=="tmk_m"'>
                 <el-select v-model="value12" size='small' clearable placeholder="全部TMK" @change="updateList3">
                     <el-option v-for="item in tmks" :key="item.key" :label="item.label" :value="item.key">
                     </el-option>
@@ -135,7 +135,7 @@
         </div>
         <div style="width: 100%;float:left;background: white;margin-top:10px">
             <div class="newResourceAn" style="position:relative;margin-top:10px;border-radius:5px">
-                <div style='margin-left:10px;width:100px;float:right;margin-right:5px' v-if='isCharge'>
+                <div style='margin-left:10px;width:100px;float:right;margin-right:5px' v-if='code=="tmk_m"'>
                     <el-select v-model="value13" size='small' clearable placeholder="全部TMK" @change="updateList4">
                         <el-option v-for="item in tmks" :key="item.key" :label="item.label" :value="item.key">
                         </el-option>
@@ -216,7 +216,7 @@
                 <el-date-picker v-model="value9" type="daterange" size='small' placeholder="选择日期范围" @change="updateList5">
                 </el-date-picker>
             </div>
-            <div style='margin-left:10px;width:100px;position:absolute;top:10px;right:10px;z-index:3' v-if='isCharge'>
+            <div style='margin-left:10px;width:100px;position:absolute;top:10px;right:10px;z-index:3' v-if='code=="tmk_m"'>
                 <el-select v-model="value14" size='small' clearable placeholder="全部TMK" @change="updateList5">
                     <el-option v-for="item in tmks" :key="item.key" :label="item.label" :value="item.key">
                     </el-option>
@@ -243,7 +243,7 @@
                 <el-date-picker v-model="value11" type="daterange" size='small' placeholder="选择日期范围" @change="updateList6">
                 </el-date-picker>
             </div>
-            <div style='margin-left:10px;width:100px;position:absolute;top:10px;right:10px;z-index:3' v-if='isCharge'>
+            <div style='margin-left:10px;width:100px;position:absolute;top:10px;right:10px;z-index:3' v-if='code=="tmk_m"'>
                 <el-select v-model="value14" size='small' clearable placeholder="全部TMK" @change="updateList6">
                     <el-option v-for="item in tmks" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
@@ -263,7 +263,7 @@
     </div>
 </template>
 <script>
-var token
+var token,user
 import IEcharts from 'vue-echarts-v3';
 import {
     campusList,
@@ -275,6 +275,7 @@ export default {
         IEcharts
     },
     data: () => ({
+        code:'',
         radio3: '2',
         isCharge: true,
         currentPage: 1, //页数
@@ -645,10 +646,11 @@ export default {
         },
     },
     beforeCreate() {
-        let user = localStorage.getItem('user');
+        user = localStorage.getItem('user');
         token = JSON.parse(user).token;
     },
     created() {
+        this.code = JSON.parse(user).job ? JSON.parse(user).job.code : '';
         let cam = {
             simple: '1'
         };
@@ -762,13 +764,6 @@ export default {
 }
 
 
-#tableR .el-table__footer .gutter{
-    display: none
-}
-
-#tableS .el-table__footer .gutter{
-    display: none
-}
 .block {
     text-align: center;
     margin-top: 10px;

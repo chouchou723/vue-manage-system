@@ -1,11 +1,12 @@
 <template>
     <div class="login-wrap">
+            <canvas id="canvas">Canvas is not supported in your browser.</canvas>
         <!-- <div class="ms-title">Panda System</div> -->
         <div class="ms-login">
             <img class='ms-title' src="../../../static/img/logo_03.png"  alt="">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="demo-ruleForm" v-bind:class='{hidden:ruleForm.hidden}'>
                 <el-form-item prop="username">
-                    <el-input type='email' v-model="ruleForm.username" placeholder="请输入邮箱"></el-input>
+                    <el-input type='mail' v-model="ruleForm.username" placeholder="请输入邮箱地址"></el-input>
                 </el-form-item>
                 <el-form-item prop="password">
                     <el-input type="password" placeholder="请输入密码" v-model="ruleForm.password" @keyup.enter.native="submitForm('ruleForm')"></el-input>
@@ -30,17 +31,18 @@
                     <img style='margin-left:10px' src="../../../static/img/login_02.png" alt="">
                 </div>
                 <div class="wechat" @click='switchWechat'>
-                    <img style='' src="../../../static/img/login_06.png" height="50" width="50" alt="">
+                    <img  src="../../../static/img/login_06.png" height="50" width="50" alt="">
                 </div>
             </el-form>
             <div class="mail" v-bind:class='{display:ruleForm.isDisplay}'>
                 <img :src="loginAdd" width='265' alt="" height='265'>
-                <span style="font-size:13px;position:absolute;left:54px;bottom:7px">请使用手机微信扫一扫登录</span>
+                <span style="font-size:13px;position:absolute;left:53px;bottom:7px">请使用手机微信扫一扫登录</span>
                 <div class="maillogin">
-                    <img style='margin-left:2px' src="../../../static/img/login_03.png" alt="">
+                    <!-- <span>手机登录</span> -->
+                     <img style='margin-left:2px' src="../../../static/img/login_03.png" alt=""> 
                 </div>
                 <div class="maillog" @click='switchMail'>
-                    <img style='' src="../../../static/img/login_07.png" height="50" width="50" alt="">
+                    <img  src="../../../static/img/login_07.png" height="50" width="50" alt="">
                 </div>
             </div>
         </div>
@@ -52,6 +54,7 @@ import {
     getUserinfo,
     qcodeLogin
 } from '../../api/api';
+
 var i = 1;
 var inter;
 var color = "";
@@ -59,10 +62,6 @@ var str = "0123456789abcdef";
 var length = str.length + 1;
 var span = document.getElementsByTagName("span");
 window.onload = randomNumber;
-
-function generateUUID() {
-
-};
 
 function randomNumber() {
     for (let i = 0; i < 4; i++) { //生成四位数
@@ -92,12 +91,22 @@ export default {
                 }
             }, 1);
         }
+        var isPhone1 = (rule, value, callback) => {
+                var myreg =  /^(((1[0-9]{1}))+\d{9})$/; 
+                if (value == '') {
+                    callback('请输入手机号码')
+                } else if (!myreg.test(value)) {
+                    callback('请输入有效手机号码');
+                }else{
+                    callback();
+                }
+            }
         return {
             fullscreenLoading: false,
             uuid: '',
             loginAdd: '',
             add: '',
-            logining: false,
+            // logining: false,
             codeNumber1: Math.floor(Math.random() * 9) + 1,
             codeNumber2: Math.floor(Math.random() * 9) + 1,
             codeNumber3: Math.floor(Math.random() * 9) + 1,
@@ -113,11 +122,9 @@ export default {
             rules: {
                 username: [{
                     required: true,
-                    message: '请输入邮箱地址',
-                    trigger: 'blur'
-                }, {
-                    type: 'email',
+                    type:'email',
                     message: '请输入正确的邮箱地址',
+                    // validator: isPhone1,
                     trigger: 'blur,change'
                 }],
                 password: [{
@@ -179,7 +186,7 @@ export default {
             const self = this;
             self.$refs[formName].validate((valid) => {
                 if (valid) {
-                    this.logining = true;
+                    // this.logining = true;
                     var loginParams = {
                         username: this.ruleForm.username,
                         password: this.ruleForm.password,
@@ -188,13 +195,8 @@ export default {
                         client_secret: 'EjKXjo27hXenF8a2MgqHvpYv7IhtJ678GfOgnHc5'
                     };
                     this.fullscreenLoading = true;
-        // setTimeout(() => {
-        //   this.fullscreenLoading = false;
-        // }, 3000);
                     requestLogin(loginParams).then(data => {
                         if(data.message =='登录成功'){
-
-                        this.logining = false;
                         let {
                             access_token,
                             status,
@@ -208,12 +210,10 @@ export default {
                                 data
                             } = u;
                             data.token = token;
-                            // console.log(data)
                             localStorage.setItem('user', JSON.stringify(data));
                             if(data.job && data.job.code == 'hr'){
                                  self.$router.push('/api/v1/admin');
                             }else if(!data.wechat){
-
                             self.$router.push('/wechat');
                             }else{
                                 self.$router.push('/Index');
@@ -249,12 +249,12 @@ export default {
             });
         },
         switchWechat() {
-            this.loginAdd = 'http://crmv2.dfth.com/auth/createRqCodeImg?token=' + this.uuid;
+            this.loginAdd = 'http://pandatest.dfth.com/auth/createRqCodeImg?token=' + this.uuid;
             this.ruleForm.hidden = true;
             this.ruleForm.isDisplay = false;
             inter = setInterval(this.codeLogin, 2000)
         },
-        codeLogin() {
+        codeLogin() {//扫二维码登录
             let para = {
                 token: this.uuid
             }
@@ -310,7 +310,8 @@ export default {
         }
     },
     mounted() {
-        this.change()
+        this.change();
+        
     },
     beforeDestroy() {
         clearInterval(inter)
@@ -407,7 +408,7 @@ export default {
 .mail {
     position: absolute;
     left: 50%;
-    margin-left: -128px;
+    margin-left: -129px;
     top: 15%;
 }
 

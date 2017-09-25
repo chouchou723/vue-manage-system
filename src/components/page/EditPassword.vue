@@ -9,8 +9,8 @@
         <div class='editPass'>
       <h3 class='editPassH3'>修改密码</h3>
   </div>
-        <div class="form-box" style="margin:0 auto;width:100%;background-color:white;;padding:40px 0 30px 0">
-            <el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2"  class="demo-ruleForm" style='margin:0 auto;width:358px'>
+        <div class="form-box" >
+            <el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2"  class="demo-ruleForm" >
                 <el-form-item  prop="address">
                     <el-input readonly v-model='mail'></el-input>
                 </el-form-item>
@@ -19,7 +19,7 @@
                         <el-input placeholder="请输入验证码" v-model="ruleForm2.code"></el-input>
                     </el-col>
                     <el-col :span="9">
-                        <el-button type="primary" id="codeNumber" @click="getCode" style="float:right;width:110px;text-align:center">获取验证码</el-button>
+                        <el-button type="primary" id="codeNumber" @click="getCode" >获取验证码</el-button>
                     </el-col>
                 </el-form-item>
                 <el-form-item  prop="pasword">
@@ -30,7 +30,7 @@
                 </el-form-item>
                 
                 <el-form-item>
-                    <el-button type="primary" @click="handleSubmit2('ruleForm2')" style='width:100%'>提交</el-button>
+                    <el-button type="primary" @click="handleSubmit2('ruleForm2')" class='edit100'>提交</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -182,5 +182,17 @@ export default {
 .editPassH3{
     margin-bottom:15px;
     margin-left:10px;
+}
+.form-box{
+margin:0 auto;width:100%;background-color:white;;padding:40px 0 30px 0
+}
+.demo-ruleForm{
+margin:0 auto;width:358px
+}
+#codeNumber{
+float:right;width:110px;text-align:center
+}
+.edit100{
+width:100%
 }
 </style>

@@ -14,17 +14,17 @@
   <el-dialog class='dialog' title="添加菜单" :visible.sync="dialogFormVisible"  :close-on-click-modal="no"  @close = 'resetLevel'>
   <el-form ref="dynamicValidateForm" :model="dynamicValidateForm"   label-width="100px">
   <el-form-item label="菜单名称" prop='menu_name' >
-    <el-input v-model="dynamicValidateForm.menu_name" placeholder='请输入菜单名单'  style="width:180px" ></el-input>
+    <el-input v-model="dynamicValidateForm.menu_name" placeholder='请输入菜单名单'  class="MM180" ></el-input>
   </el-form-item>
   <el-form-item label="菜单级别" prop='level' >
-    <el-select v-model="dynamicValidateForm.level" placeholder="请选择级别" style="width:180px" @change='changeDisplay'>
+    <el-select v-model="dynamicValidateForm.level" placeholder="请选择级别" class="MM180"  @change='changeDisplay'>
       <el-option label="一级菜单" value="0"></el-option>
       <el-option label="二级菜单" value="1"></el-option>
       <el-option label="三级菜单" value="2"></el-option>
     </el-select>
   </el-form-item>
   <el-form-item label="上级菜单" prop='kid' v-if='icTop'>
-    <el-select v-model="dynamicValidateForm.kid" placeholder="选择直属上级" clearable style="width:180px"  @change='getSecond'>
+    <el-select v-model="dynamicValidateForm.kid" placeholder="选择直属上级" clearable class="MM180"   @change='getSecond'>
     <el-option
                     v-for="upMenu in upMenus"
                     :key="upMenu.key"
@@ -34,7 +34,7 @@
     </el-select>
   </el-form-item>
   <el-form-item label="" prop='pid' v-if='icTop1'>
-    <el-select v-model="dynamicValidateForm.pid" placeholder="选择直属二级" clearable style="width:180px" >
+    <el-select v-model="dynamicValidateForm.pid" placeholder="选择直属二级" clearable class="MM180"  >
     <el-option
                     v-for="upMenu1 in upMenus1"
                     :key="upMenu1.key"
@@ -44,26 +44,26 @@
     </el-select>
   </el-form-item>
   <el-form-item label="菜单图标" prop='icon' v-if='icDisplay'>
-    <el-select v-model="dynamicValidateForm.icon" placeholder="请选择图标" style="width:180px"  popper-class='menuIcon'>
+    <el-select v-model="dynamicValidateForm.icon" placeholder="请选择图标" class="MM180"   popper-class='menuIcon'>
     
       <el-option :class='item.value' v-for="(item,index) in cssClass" :label="index+1" :value='item.value' ></el-option>
       <!-- <el-option label="" value="el-icon-my-shouye"><i class="el-icon-my-shouye"></i></el-option> -->
     </el-select>
   </el-form-item>
   <el-form-item label="选择序号" prop='sort_code' >
-   <el-input v-model="dynamicValidateForm.sort_code" placeholder='请输入序号'  style="width:180px" ></el-input>
+   <el-input v-model="dynamicValidateForm.sort_code" placeholder='请输入序号'  class="MM180"  ></el-input>
     </el-select>
   </el-form-item>
   <el-form-item label="菜单地址" prop='location' >
-    <el-input v-model="dynamicValidateForm.location" placeholder='请输入菜单地址'  style="width:180px" ></el-input>
+    <el-input v-model="dynamicValidateForm.location" placeholder='请输入菜单地址'  class="MM180"  ></el-input>
   </el-form-item>
   <el-form-item label="显示状态" prop='status' >
-    <el-select v-model="dynamicValidateForm.status" placeholder="请选择状态" style="width:180px">
+    <el-select v-model="dynamicValidateForm.status" placeholder="请选择状态" class="MM180" >
       <el-option label="显示" value="1"></el-option>
       <el-option label="隐藏" value="0"></el-option>
     </el-select>
   </el-form-item>
-  <el-form-item style='margin-top:60px'>
+  <el-form-item class='MM60'>
     <el-button type="primary" @click="onSubmit('form')">确定</el-button>
     <el-button @click='dialogFormVisible = false'>取消</el-button>
   </el-form-item>
@@ -118,6 +118,18 @@ import { rangeList,create_menuList,put_menuList,delete_menuList,get_level,detail
     methods: {
       resetLevel(){
         this.dynamicValidateForm.level = '';
+        this.in = '';
+        this.dynamicValidateForm = {
+                                        module_id:'',
+                                        menu_name:'',
+                                        icon:'',
+                                        id:'',
+                                        location:'',
+                                        status:'',
+                                        level:'',
+                                        kid:'',
+                                        pid:''},
+            this.dynamicValidateForm.status = '1';
       },
       getSecond(){ //获取二级菜单
         get_level({pid:this.dynamicValidateForm.kid},token).then(res=>{
@@ -130,30 +142,39 @@ import { rangeList,create_menuList,put_menuList,delete_menuList,get_level,detail
          this.icTop1 = false;
          this.dynamicValidateForm.kid = '';
          this.dynamicValidateForm.pid = '';
+           if(this.dynamicValidateForm.module_id){
+
          detail_level({module_id:this.dynamicValidateForm.module_id},token).then(res=>{
          
                this.dynamicValidateForm.sort_code = res.data.sort_code;
             })
+           }
          this.icDisplay = true
         }else if(this.dynamicValidateForm.level == 1){
            this.icDisplay = false
            this.icTop1 = false;
            this.dynamicValidateForm.pid = '';
            this.dynamicValidateForm.icon = '';
+           if(this.dynamicValidateForm.module_id){
+
            detail_level({module_id:this.dynamicValidateForm.module_id},token).then(res=>{
               this.dynamicValidateForm.kid = res.data.pid;
                this.dynamicValidateForm.sort_code = res.data.sort_code;
             })
+           }
            this.icTop = true;
         }else if(this.dynamicValidateForm.level == 2){
            this.icDisplay = false;
            this.dynamicValidateForm.kid = '';
            this.dynamicValidateForm.icon = '';
+             if(this.dynamicValidateForm.module_id){
+
            detail_level({module_id:this.dynamicValidateForm.module_id},token).then(res=>{
               this.dynamicValidateForm.kid = res.data.one_level;
               this.dynamicValidateForm.pid = res.data.pid;
               this.dynamicValidateForm.sort_code = res.data.sort_code;
             })
+             }
            this.icTop = true;
            this.icTop1 = true;
         }
@@ -220,43 +241,48 @@ import { rangeList,create_menuList,put_menuList,delete_menuList,get_level,detail
        this.in = '1';
       },
       addMenu(formName){  //点击创建按钮
-        this.in = '';
-        this.dynamicValidateForm = {
-                                        module_id:'',
-                                        menu_name:'',
-                                        icon:'',
-                                        id:'',
-                                        location:'',
-                                        status:'',
-                                        level:'',
-                                        kid:'',
-                                        pid:''},
             this.dialogFormVisible = true;
-            this.dynamicValidateForm.status = '1';
           },
       onSubmit(formName) {
+        let para = {...this.dynamicValidateForm};
         if(this.dynamicValidateForm.level ==1){
-          this.dynamicValidateForm.pid = this.dynamicValidateForm.kid
+          para.pid = para.kid
         }
-        let para = this.dynamicValidateForm;
         if(this.in !=0){
-put_menuList(para,token).then(()=>{
-          rangeList(token).then(res=>{
-          this.data2 = res.data
-        })
-        }).then(()=>{
-           this.dialogFormVisible = false;
-           this.$router.go();
-        })
+                put_menuList(para,token).then((res)=>{
+                  if(res.code==0){
+                    this.$message.success('修改成功')
+                    rangeList(token).then(res=>{
+                    this.data2 = res.data
+                  })
+                  }
+                  return res
+                        }).then((res)=>{
+                          if(res.code==0){
+                            this.dialogFormVisible = false;
+                            this.$router.go();
+
+                          }else{
+                            this.$message.error(res.message)
+                          }
+                        })
         }else{
-create_menuList(para,token).then(()=>{
-          rangeList(token).then(res=>{
-        this.data2 = res.data
-        })
-        }).then(()=>{
-           this.dialogFormVisible = false;
-           this.$router.go();
-        })
+              create_menuList(para,token).then((res)=>{
+                if(res.code==0){
+                  this.$message.success('创建成功')
+                  rangeList(token).then(res=>{
+                this.data2 = res.data
+                })
+                }  
+                return res
+                      }).then((res)=>{
+                        if(res.code==0){
+                          this.dialogFormVisible = false;
+                          this.$router.go();
+                        }else{
+                          this.$message.error(res.message)
+                        }
+                      })
         }
 },
       renderContent(h, { node, data, store }) {
@@ -306,10 +332,12 @@ create_menuList(para,token).then(()=>{
     created(){
       rangeList(token).then(res=>{
 this.data2 = res.data
-        })
-      get_level({pid:0},token).then(res=>{
+        }).then(()=>{
+          get_level({pid:0},token).then(res=>{
             this.upMenus = res.data;
            })
+        })
+      
     }
   }
 </script>
@@ -353,9 +381,7 @@ this.data2 = res.data
     background-color: #e95c5c;
     border-color: #e95c5c;
 }
-.menuIcon{
 
-}
 .menuIcon li{
   display: list-item;
 }
@@ -366,5 +392,11 @@ this.data2 = res.data
 
 .el-dialog .el-dialog__title {
     color: white;
+}
+.MM180{
+width:180px
+}
+.MM60{
+margin-top:60px
 }
 </style>

@@ -8,22 +8,22 @@
             </el-breadcrumb>
         </div>
         <div class='addUserTitle'>
-            <div style='background:url(../../../static/img/addUser.png) left center/29px 29px no-repeat ;padding-left:30px;'>
-                <span style="font-size=24px;font-weight:600">添加用户资料</span></div>
+            <div class='AUtitle'>
+                <span class='AUadd'>添加用户资料</span></div>
         </div>
         <div>
-            <el-form ref="form" :model="form" :rules='rule' label-width="80px" style='background-color:white;padding:20px 0 10px 10px'>
+            <el-form ref="form" :model="form" :rules='rule' label-width="80px" class='AUform'>
                 <el-form-item label="学生姓名" prop='names'>
-                    <el-input v-model="form.names" placeholder='请输入学生姓名' style="width:142px"></el-input>
+                    <el-input v-model="form.names" placeholder='请输入学生姓名' class='AU142'></el-input>
                 </el-form-item>
                 <el-form-item label="性别" prop='sex'>
-                    <el-select v-model="form.sex" placeholder="请选择性别" style="width:142px">
+                    <el-select v-model="form.sex" placeholder="请选择性别" class='AU142'>
                         <el-option label="男" value="1"></el-option>
                         <el-option label="女" value="2"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="年龄" prop='age'>
-                    <el-select v-model="form.age" placeholder="选择" style="width:142px">
+                    <el-select v-model="form.age" placeholder="选择" class='AU142'>
                         <el-option label="2" value="2"></el-option>
                         <el-option label="3" value="3"></el-option>
                         <el-option label="4" value="4"></el-option>
@@ -44,10 +44,10 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="联系家长" required>
-                    <el-form-item prop="parent" style="width:142px;margin-right:30px;float:left">
+                    <el-form-item prop="parent" class='AU142float'>
                         <el-input v-model="form.parent" placeholder='请输入家长姓名'></el-input>
                     </el-form-item>
-                    <el-form-item prop="con" style="width:142px;margin-right:30px;float:left">
+                    <el-form-item prop="con" class='AU142float'>
                         <el-select v-model="form.con" placeholder="请选择关系">
                             <el-option label="妈妈" value="妈妈"></el-option>
                             <el-option label="爸爸" value="爸爸"></el-option>
@@ -57,15 +57,15 @@
       <el-option :label="connect1" value="0"></el-option> -->
                         </el-select>
                     </el-form-item>
-                    <el-form-item prop="phone" style="width:142px;float:left">
+                    <el-form-item prop="phone" class='AUfloat'>
                         <el-input v-model="form.phone" placeholder='请输入手机号' id='parentPhone' ref="parentPhone"></el-input>
                     </el-form-item>
                 </el-form-item>
                 <el-form-item label="">
-                    <el-form-item prop="parent1" style="width:142px;margin-right:30px;float:left">
+                    <el-form-item prop="parent1" class='AU142float'>
                         <el-input v-model="form.parent1" placeholder='请输入家长姓名'></el-input>
                     </el-form-item>
-                    <el-form-item prop="con1" style="width:142px;margin-right:30px;float:left">
+                    <el-form-item prop="con1" class='AU142float'>
                         <el-select v-model="form.con1" placeholder="请选择关系">
                             <el-option label="妈妈" value="妈妈"></el-option>
                             <el-option label="爸爸" value="爸爸"></el-option>
@@ -75,62 +75,57 @@
       <el-option :label="connect1" value="0"></el-option> -->
                         </el-select>
                     </el-form-item>
-                    <el-form-item prop="phone1" style="width:142px;float:left">
+                    <el-form-item prop="phone1" class='AUfloat'>
                         <el-input v-model="form.phone1" placeholder='请输入手机号'></el-input>
                     </el-form-item>
                     <el-col :span="2">
-                        <span style="margin-left:10px;width:200px;color:grey"> (选填)</span>
+                        <span class='AUalter'> (选填)</span>
                     </el-col>
                 </el-form-item>
                 <el-form-item label="所在地区" required>
-                    <el-form-item prop="city_id" style="width:142px;margin-right:30px;float:left">
+                    <el-form-item prop="city_id" class='AU142float'>
                         <el-select v-model="form.city_id" filterable placeholder="请选择城市" @change='getRegion'>
                             <el-option v-for="item in cities" :key="item.id" :label="item.city_name" :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item prop="area_id" style="width:142px;margin-right:30px;float:left">
+                    <el-form-item prop="area_id" class='AU142float'>
                         <el-select v-model="form.area_id" placeholder="请选择城区">
                             <el-option v-for="item in regions" :key="item.id" :label="item.city_name" :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item prop="address" style="width:142px;float:left">
+                    <el-form-item prop="address" class='AUfloat'>
                         <el-input v-model="form.address" placeholder='请输入具体地址'></el-input>
                     </el-form-item>
                 </el-form-item>
                 <el-form-item label="就近校区" prop='school_id'>
-                    <el-select v-model="form.school_id" placeholder="请选择校区" style="width:142px">
+                    <el-select v-model="form.school_id" placeholder="请选择校区" class='AU142'>
                         <el-option v-for="item in schools" :key="item.id" :label="item.title" :value="item.id">
                         </el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="来源渠道" prop='sour_id'>
-                    <el-form-item prop='sour_id' style="width:142px;margin-right:30px;float:left">
-                        <el-cascader
-    :options="source"
-    :props="propsource"
-    v-model="form.sour_id"
-    :show-all-levels="false"
-    
-    placeholder="请选择渠道">
-  </el-cascader>
+                    <el-form-item prop='sour_id' class='AU142float'>
+                        <el-cascader :options="source" :props="propsource" v-model="form.sour_id" :show-all-levels="false" placeholder="请选择渠道">
+                        </el-cascader>
                     </el-form-item>
-                    <el-form-item prop='referee' style='float:left;width:142px;margin-right:10px'>
-                        <el-autocomplete v-if='this.form.sour_id == 4' v-model="form.referee" :fetch-suggestions="querySearchAsync" placeholder="请输入内容" @select="handleSelect">
+                    <el-form-item prop='referee' class='AU142float'>
+                        <el-autocomplete v-if='this.form.sour_id == 4' v-model="form.referee" :fetch-suggestions="querySearchAsync" placeholder="请输入内容"
+                            @select="handleSelect">
                         </el-autocomplete>
                     </el-form-item>
-                    <el-form-item prop='familys_name' style='float:left;width:100px;'>
-                        <span v-if='this.form.sour_id == 4'>家长姓名:{{form.familys_name}}</span>
+                    <el-form-item prop='familys_name' class='AUfloat'>
+                        <span v-if='this.form.sour_id == 4&&this.form.familys_name'>家长姓名:{{form.familys_name}}</span>
                     </el-form-item>
                     <el-form-item prop='referral_uid' style="display:none">
                         <span>{{form.referral_uid}}</span>
                     </el-form-item>
                     <el-form-item prop='familys' style="display:none">
                     </el-form-item>
-                    <span v-if='nostudent' style="width:200px;color:red;float:left"> {{warning}}</span>
+                    <span v-if='nostudent' class='AUwarn'> {{warning}}</span>
                 </el-form-item>
-                <el-form-item style='margin-top:30px'>
+                <el-form-item>
                     <el-button type="primary" @click="onSubmit('form')">确定</el-button>
                     <el-button @click="back">取消</el-button>
                 </el-form-item>
@@ -139,16 +134,16 @@
     </div>
 </template>
 <script>
-var token
-import {
-    cityList,
-    campusList,
-    sourceList,
-    create_student,
-    repeatStudentList
-} from '../../api/api';
-export default {
-    data() {
+    var token
+    import {
+        cityList,
+        campusList,
+        sourceList,
+        create_student,
+        repeatStudentList
+    } from '../../api/api';
+    export default {
+        data() {
             var nan = (rule, value, callback) => {
                 if (value === '') {
                     callback('请选择')
@@ -156,7 +151,7 @@ export default {
                     callback();
                 }
             }
-             var isArr = (rule, value, callback) => {
+            var isArr = (rule, value, callback) => {
                 if (value == '') {
                     callback('请选择')
                 } else if (Array.isArray(value)) {
@@ -164,22 +159,22 @@ export default {
                 }
             }
             var isPhone = (rule, value, callback) => {
-                var myreg = /^(((1[0-9]{1}))+\d{9})$/; 
+                var myreg = /^(((1[0-9]{1}))+\d{9})$/;
                 if (value == '') {
                     callback('不能为空且必须唯一')
                 } else if (!myreg.test(value)) {
                     callback('请输入有效手机号');
-                }else{
+                } else {
                     callback();
                 }
             }
             var isPhone1 = (rule, value, callback) => {
-                var myreg =  /^(((1[0-9]{1}))+\d{9})$/; 
+                var myreg = /^(((1[0-9]{1}))+\d{9})$/;
                 if (value == '') {
                     callback()
                 } else if (!myreg.test(value)) {
                     callback('请输入有效手机号');
-                }else{
+                } else {
                     callback();
                 }
             }
@@ -212,11 +207,11 @@ export default {
                 schools: [],
                 source: [],
                 studentsList: [],
-                propsource:{
-          value: 'id',
-          label:'names',
-          children: '_child'
-        },
+                propsource: {
+                    value: 'id',
+                    label: 'names',
+                    children: '_child'
+                },
                 rule: {
                     names: [{
                         required: true,
@@ -225,29 +220,33 @@ export default {
                     }, ],
                     sex: [{
                         required: true,
+                        message: '请选择性别',
                         trigger: 'change'
                     }, ],
                     age: [{
                         required: true,
+                        message: '请选择年龄',
                         trigger: 'change'
                     }, ],
                     parent: [{
                         required: true,
+                        message: '请输入家长姓名',
                         trigger: 'blur'
                     }, ],
                     con: [{
                         required: true,
+                        message: '请选择关系',
                         trigger: 'change'
                     }, ],
                     phone: [{
                         required: true,
                         validator: isPhone,
-                         // message: '不能为空且必须唯一',
+                        // message: '不能为空且必须唯一',
                         trigger: 'blur'
                     }],
-                     phone1: [{
+                    phone1: [{
                         validator: isPhone1,
-                         // message: '不能为空且必须唯一',
+                        // message: '不能为空且必须唯一',
                         trigger: 'blur'
                     }],
                     city_id: [{
@@ -262,6 +261,7 @@ export default {
                     }],
                     address: [{
                         required: true,
+                        message: '请输入具体地址',
                         trigger: 'blur'
                     }, ],
                     school_id: [{
@@ -341,12 +341,13 @@ export default {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         if (this.form.parent1 || this.form.con1 || this.form.phone1) {
-                            this.form.familys = this.form.parent + '|' + this.form.con + '|' + this.form.phone + ',' + this.form.parent1 + '|' + this.form.con1 + '|' + this.form.phone1
+                            this.form.familys = this.form.parent + '|' + this.form.con + '|' + this.form.phone +
+                                ',' + this.form.parent1 + '|' + this.form.con1 + '|' + this.form.phone1
                         } else {
                             this.form.familys = this.form.parent + '|' + this.form.con + '|' + this.form.phone
                         }
-                        let para = JSON.parse(JSON.stringify(this.form)) ;
-                        para.sour_id =  para.sour_id.join(',');
+                        let para = JSON.parse(JSON.stringify(this.form));
+                        para.sour_id = para.sour_id.join(',');
                         create_student(para, token).then(res => {
                             // console.log('succ')
                             if (res.code == 0) {
@@ -357,9 +358,9 @@ export default {
                                 this.$refs.form.resetFields();
                             } else {
                                 this.$message.error(res.data);
-                                 this.form.phone = '';
-                                 this.$refs.parentPhone.$refs.input.focus();
-                                 this.$refs.parentPhone.$refs.input.blur();
+                                this.form.phone = '';
+                                this.$refs.parentPhone.$refs.input.focus();
+                                this.$refs.parentPhone.$refs.input.blur();
                                 // this.form.sour_id = this.form.sour_id.split(',')
                                 return false
                             }
@@ -372,8 +373,7 @@ export default {
 
             }
         },
-        computed: {
-        },
+        computed: {},
         beforeCreate() {
             let user = localStorage.getItem('user');
             token = JSON.parse(user).token;
@@ -387,12 +387,56 @@ export default {
                 this.source = res.data
             })
         }
-}
+    }
+
 </script>
 <style>
-.addUserTitle {
-    padding: 15px 10px 15px 15px;
-    background-color: white;
-    border-bottom: 1px solid #f3f3f3;
-}
+    .addUserTitle {
+        padding: 15px 10px 15px 15px;
+        background-color: white;
+        border-bottom: 1px solid #f3f3f3;
+    }
+
+    .AUtitle {
+        background: url(../../../static/img/addUser.png) left center/29px 29px no-repeat;
+        padding-left: 30px;
+    }
+
+    .AUadd {
+        font-size: 24px;
+        font-weight: 600
+    }
+
+    .AUform {
+        background-color: white;
+        padding: 20px 0 10px 10px
+    }
+
+    .AU142 {
+        width: 142px
+    }
+
+    .AU142float {
+        width: 142px;
+        margin-right: 30px;
+        float: left
+    }
+
+    .AUfloat {
+        width: 142px;
+        float: left
+    }
+
+    .AUalter {
+        margin-left: 10px;
+        width: 200px;
+        color: grey
+    }
+
+    .AUwarn {
+        width: 200px;
+        color: red;
+        float: left
+    }
+
 </style>

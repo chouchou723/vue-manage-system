@@ -35,7 +35,7 @@
                         <span>{{student.parent_phone}}</span>
                     </el-col>
                 </el-form-item>
-                <el-form-item label="">
+                <el-form-item label="" v-if='student.parent1||student.parent1_phone'>
                     <span style='width:100px;float:left'>{{student.parent1}}</span>
                     <el-col :span="11">
                         <span>{{student.parent1_phone}}</span>
@@ -50,7 +50,7 @@
                 <el-form-item label="录入时间:" prop='time'>
                     <span>{{student.time}}</span>
                 </el-form-item>
-                <el-form-item label="课程顾问(CC):" prop='teacher' v-if="!this.$route.params.status == '待认领'">
+                <el-form-item label="课程顾问(CC):" prop='teacher' v-if="this.$route.params.status != '待认领'">
                     <span>{{student.teacher}}</span>
                 </el-form-item>
             </el-form>
@@ -267,7 +267,7 @@
             </div>
             <div style="min-height:298px">
                 <el-row v-for='item in items1' class='listUser' style='position:relative;margin-left:30px;'>
-                    <div style="font-weight:600;magin-right:5px">邀约日期: {{item.alert_time.substring(0,16)}}</div>
+                    <div style="font-weight:600;margin-right:5px">邀约日期: {{item.alert_time.substring(0,16)}}</div>
                     <div class='inviteRecord'>邀约课程: <span style="color:grey">{{item.course_name.title}}</span> </div>
                     <div class='inviteRecord'>上课老师: <span style="color:grey">{{item.teach_name.uname}}</span></div>
                     <div class='inviteRecord'>记录时间: <span style="color:grey">{{item.created.substring(0,16)}}</span></div>
@@ -1067,7 +1067,8 @@ export default {
     height: 30px;
     background: url(../../../static/img/edit.png) right/30px 30px no-repeat;
     cursor: pointer;
-    margin-top: 15px;
+    width: 30px;
+    float:right;
 }
 
 .tableUserD .editSpan:hover {
@@ -1101,7 +1102,7 @@ export default {
 .tableUserD .block {
     text-align: center;
     position: absolute;
-    bottom: 10px;
+    bottom: -33px;
     width: 100%;
 }
 

@@ -6,18 +6,11 @@
         </el-breadcrumb>
         <div class='noEff'>
             <h2 class="studentReturnnoEff">
-            
-        客户认领({{number}}人)
-        </h2>
-            <!-- <div class='studentReturnNoneed' v-if="code =='cc_m'">
-                <el-select v-model="valueT" clearable placeholder="选择CC" @change="updateList">
-                    <el-option v-for="item in optionsCC" :key="item.key" :label="item.label" :value="item.key">
-                    </el-option>
-                </el-select>
-            </div> -->
+                客户认领({{number}}人)
+            </h2>
         </div>
         <div id="table2">
-            <el-table :data="publicData" border style="width: 100%" >
+            <el-table :data="publicData" border style="width: 100%">
                 <el-table-column prop="names" label="姓名" width='140'>
                     <template scope="scope">
                         <span class='nicknameSpan'>{{scope.row.names}}</span>
@@ -33,15 +26,15 @@
                 </el-table-column>
                 <el-table-column prop="created" label="录入时间" sortable>
                 </el-table-column>
-                <el-table-column label="操作" width='140'>
+                <el-table-column label="操作" width='140' v-if='!code.includes("_c")'>
                     <template scope="scope">
-                        <el-button type="text" size="small" @click="claim(scope.$index, publicData)" style='color:white;background:#1fb5ad;padding:5px 20px 5px'>认领</el-button>
-                        <!--   <el-button type="text" size="small" @click="open2(scope.$index, accountData)">删除</el-button> -->
+                        <el-button type="text" size="small" @click="claim(scope.$index, publicData)" class='PPc'>认领</el-button>
                     </template>
                 </el-table-column>
             </el-table>
         </div>
-        <el-dialog title="认领客户" :visible.sync="dialogFormVisible" :close-on-click-modal="no" top='33%' size='tiny' show-close style='z-index:100' class='publicDialog'>
+        <el-dialog title="认领客户" :visible.sync="dialogFormVisible" :close-on-click-modal="no" top='33%' size='tiny' show-close style='z-index:100'
+            class='publicDialog'>
             <span style="font-size:16px">是否确认要认领该客户?</span>
             <div slot="footer" class="dialog-footer" style='text-align:center'>
                 <el-button type="primary" @click="claimYes" style='margin-right:20px'>是</el-button>
@@ -50,20 +43,19 @@
         </el-dialog>
         <div class="block">
             <span class="demonstration"></span>
-            <el-pagination layout="prev, pager, next" :total="total" @current-change="handleCurrentChange">
+            <el-pagination layout="prev, pager, next" :total="total" @current-change="handleCurrentChange" :page-size='pagesize'>
             </el-pagination>
         </div>
     </div>
 </template>
 <script>
-var user, token
-import {
-    getPublicPoolList,
-    // getAllCCList,
-    claim_customer
-} from '../../api/api';
-export default {
-    data() {
+    var user, token
+    import {
+        getPublicPoolList,
+        claim_customer
+    } from '../../api/api';
+    export default {
+        data() {
             return {
                 dialogFormVisible: false,
                 no: false,
@@ -71,8 +63,6 @@ export default {
                 total: 0,
                 number: 0,
                 publicData: [],
-                // optionsCC: [],
-                // valueT: '', //全部CC下拉
                 currentPage: 1, //页数
                 pagesize: 15, //默认每页
                 claimConfirm: {
@@ -94,6 +84,8 @@ export default {
                         });
                         this.fetchData();
                         this.dialogFormVisible = false;
+                    } else {
+                        this.$message.error(res.data)
                     }
                 })
             },
@@ -105,13 +97,12 @@ export default {
                     return row.mobile
                 }
             },
-            handleCurrentChange: function(val) { //换页
+            handleCurrentChange: function (val) { //换页
                 this.currentPage = val;
                 this.fetchData();
             },
             fetchData() {
                 let para = {
-                    // cc_id: this.valueT, //CC
                     page: this.currentPage
                 }
                 getPublicPoolList(token, para).then((res) => { //
@@ -123,7 +114,6 @@ export default {
                 })
             },
         },
-
         beforeCreate() {
             user = localStorage.getItem('user');
             token = JSON.parse(user).token;
@@ -131,69 +121,63 @@ export default {
         created() {
             this.code = JSON.parse(user).job ? JSON.parse(user).job.code : '';
             this.fetchData();
-            // if (this.code == 'cc_m') {
-            //     getAllCCList(token).then((res) => {
-            //         this.optionsCC = res.data;
-            //         this.optionsCC.unshift({
-            //             key: '0',
-            //             label: '全部CC'
-            //         })
-            //     })
-            // }
         },
-}
+    }
+
 </script>
 <style>
-#table2 .el-table td,
-#table2 .el-table th {
-    padding: 1px;
-    text-align: center
-}
+    #table2 .el-table td,
+    #table2 .el-table th {
+        padding: 1px;
+        text-align: center
+    }
 
-#table2 .el-table th>div,
-#table2 .el-table .cell {
-    padding-left: 0;
-    padding-right: 0;
-}
+    #table2 .el-table th>div,
+    #table2 .el-table .cell {
+        padding-left: 0;
+        padding-right: 0;
+    }
 
+    .nicknameSpan {
+        font-weight: 600;
+    }
 
-.nicknameSpan {
-    font-weight: 600;
-}
+    .block {
+        text-align: center;
+        margin-top: 10px;
+    }
 
-.block {
-    text-align: center;
-    margin-top: 10px;
-}
+    .studentReturnnoEff {
+        float: left;
+        margin-right: 5px;
+        padding-left: 10px;
+    }
 
-.studentReturnnoEff {
-    float: left;
-    margin-right: 5px;
-    padding-left: 10px;
-}
+    .noEff {
+        width: 100%;
+        position: relative;
+        height: 46px;
+        background-color: white;
+        margin-top: 30px;
+        padding-top: 10px;
+        margin-bottom: 5px;
+        border-radius: 5px;
+    }
 
-.noEff {
-    width: 100%;
-    position: relative;
-    height: 46px;
-    background-color: white;
-    margin-top: 30px;
-    padding-top: 10px;
-    margin-bottom: 5px;
-    border-radius: 5px;
-}
+    .publicDialog .el-dialog__body {
+        text-align: center;
+        /*color:#ec6161;*/
+    }
 
-.publicDialog .el-dialog__body {
-    text-align: center;
-    /*color:#ec6161;*/
-}
+    .publicPool .el-dialog .el-dialog__header {
+        background-color: #1fb5ad;
+        padding: 20px 20px 20px;
+    }
 
-.publicPool .el-dialog .el-dialog__header {
-    background-color: #1fb5ad;
-    padding: 20px 20px 20px;
-}
-
-.publicPool .el-dialog .el-dialog__title {
-    color: white;
+    .publicPool .el-dialog .el-dialog__title {
+        color: white;
+    }
+.PPc{
+color:white;background:#1fb5ad;padding:5px 20px 5px
 }
 </style>

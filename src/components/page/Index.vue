@@ -6,13 +6,14 @@
                 <!--  <el-breadcrumb-item> </el-breadcrumb-item> -->
             </el-breadcrumb>
         </div>
+        <!-- tmk第一个报表 -->
         <div style="width: 50%;float:left" v-if="code.includes('tmk')">
             <div class="h1" style="position:relative;height:50px;margin-bottom:8px;">
                 <div style="background-color:white;border-radius:5px;width:99%;margin:0 auto">
                     <h3 style='margin-bottom:20px;padding:14px'>
-            
-       日数据对比统计
-        </h3>
+
+                        日数据对比统计
+                    </h3>
                 </div>
                 <div style='margin-left:10px;width:100px;position:absolute;top:10px;right:10px' v-if="code =='tmk_m'">
                     <el-select v-model="value1" size='small' clearable placeholder="选择TMK" @change="updateList">
@@ -68,17 +69,24 @@
                 </el-col>
             </div>
         </div>
-        <div style="width: 50%;float:left" v-else>
+        <!-- cc第一个报表 -->
+        <div style="width: 50%;float:left" v-if="code.includes('cc')">
             <div class="h1" style="position:relative;height:50px;margin-bottom:8px;">
                 <div style="background-color:white;border-radius:5px;width:99%;margin:0 auto">
                     <h3 style='margin-bottom:20px;padding:14px'>
-            
-       日数据对比统计
-        </h3>
+
+                        日数据对比统计
+                    </h3>
                 </div>
-                <div style='margin-left:10px;width:100px;position:absolute;top:10px;right:10px' v-if="code =='cc_m'">
-                    <el-select v-model="value1" size='small' clearable placeholder="选择TMK" @change="updateList">
-                        <el-option v-for="item in tmks" :key="item.key" :label="item.label" :value="item.key">
+                <div style='margin-left:10px;width:100px;position:absolute;top:10px;right:120px' v-if="code.includes('_c')">
+                        <el-select v-model="valueR" size='small' clearable placeholder="选择校区" @change="updateListGetCC">
+                                <el-option v-for="item in optionR" :key="item.id" :label="item.title" :value="item.id">
+                                    </el-option>
+                        </el-select>
+                    </div>
+                <div style='margin-left:10px;width:100px;position:absolute;top:10px;right:10px' v-if="code =='cc_m'||code.includes('_c')">
+                    <el-select v-model="valueCC" size='small' clearable placeholder="选择CC" @change="updateListCC">
+                        <el-option v-for="item in ccs" :key="item.aid" :label="item.uname" :value="item.aid">
                         </el-option>
                     </el-select>
                 </div>
@@ -88,187 +96,448 @@
                     <div class="dayCompare1">
                         <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-bottom:1px solid gainsboro">客户认领</div>
                         <div style="display:flex;justify-content: space-around;width:100%;height:100%;background:white;align-items:center">
-                            
-                        <div style="height:80%;color:#6fc7ca;font-size:32px;width:50%;text-align:center;background:white;display:flex;flex-direction:column;justify-content:center;border-right:1px solid gainsboro"><p>
-                         {{today_Customers}}   
-                        </p>
-                        <p style="font-size:20px;margin-top:10px">今天</p></div>
-                         <div style="width:50%;text-align:center;background:white;padding:7px 0;border-radius:5px;display:flex;flex-direction:column;justify-content:center;">
-                         <div style="margin-bottom:10px">
-                           <p style="font-size:20px">
-                         {{yesterday_customers}}   
-                        </p>
-                        <p style="font-size:16px">昨天</p>  
-                         </div>
-                          <div style='border-top:1px solid gainsboro;padding-top:10px;width:80%;margin:0 auto'>
-                           <p  style="font-size:14px;">
-                         +12
-                        </p>
-                        <p style="font-size:14px;">较前天</p>  
-                         </div>
-                         </div>
+
+                            <div style="height:80%;color:#6fc7ca;font-size:32px;width:50%;text-align:center;background:white;display:flex;flex-direction:column;justify-content:center;border-right:1px solid gainsboro">
+                                <p>
+                                    {{ccindex.today_Customers}}
+                                </p>
+                                <p style="font-size:20px;margin-top:10px">今天</p>
+                            </div>
+                            <div style="width:50%;text-align:center;background:white;padding:7px 0;border-radius:5px;display:flex;flex-direction:column;justify-content:center;">
+                                <div style="margin-bottom:10px">
+                                    <p style="font-size:20px">
+                                        {{ccindex.yesterday_Customers}}
+                                    </p>
+                                    <p style="font-size:16px">昨天</p>
+                                </div>
+                                <div style='border-top:1px solid gainsboro;padding-top:10px;width:80%;margin:0 auto'>
+                                    <p style="font-size:14px;">
+                                        {{ccindex.before_yesterday_customers}}
+                                    </p>
+                                    <p style="font-size:14px;">较前天</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </el-col>
                 <el-col style='float:left;width:32%'>
                     <div class="dayCompare1">
-                    <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-bottom:1px solid gainsboro">邀约量</div>
+                        <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-bottom:1px solid gainsboro">邀约量</div>
                         <div style="display:flex;justify-content: space-around;width:100%;height:100%;background:white;align-items:center">
-                            
-                        <div style="height:80%;color:#ed8d7a;font-size:32px;width:50%;text-align:center;background:white;display:flex;flex-direction:column;justify-content:center;border-right:1px solid gainsboro"><p>
-                         {{today_Invitation}}   
-                        </p>
-                        <p style="font-size:20px;margin-top:10px">今天</p></div>
-                         <div style="width:50%;text-align:center;background:white;padding:7px 0;border-radius:5px;display:flex;flex-direction:column;justify-content:center;">
-                         <div style="margin-bottom:10px">
-                           <p style="font-size:20px">
-                         {{yesterday_Invitation}}   
-                        </p>
-                        <p style="font-size:16px">昨天</p>  
-                         </div>
-                          <div style='border-top:1px solid gainsboro;padding-top:10px;width:80%;margin:0 auto'>
-                           <p  style="font-size:14px;">
-                         +12
-                        </p>
-                        <p style="font-size:14px;">较前天</p>  
-                         </div>
-                         </div>
+
+                            <div style="height:80%;color:#ed8d7a;font-size:32px;width:50%;text-align:center;background:white;display:flex;flex-direction:column;justify-content:center;border-right:1px solid gainsboro">
+                                <p>
+                                    {{ccindex.today_Invitation}}
+                                </p>
+                                <p style="font-size:20px;margin-top:10px">今天</p>
+                            </div>
+                            <div style="width:50%;text-align:center;background:white;padding:7px 0;border-radius:5px;display:flex;flex-direction:column;justify-content:center;">
+                                <div style="margin-bottom:10px">
+                                    <p style="font-size:20px">
+                                        {{ccindex.yesterday_Invitation}}
+                                    </p>
+                                    <p style="font-size:16px">昨天</p>
+                                </div>
+                                <div style='border-top:1px solid gainsboro;padding-top:10px;width:80%;margin:0 auto'>
+                                    <p style="font-size:14px;">
+                                        {{ccindex.before_yesterday_Invitation}}
+                                    </p>
+                                    <p style="font-size:14px;">较前天</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </el-col>
                 <el-col style='float:left;width:32%'>
                     <div class="dayCompare1">
-                    <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-bottom:1px solid gainsboro">到访量</div>
+                        <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-bottom:1px solid gainsboro">到访量</div>
                         <div style="display:flex;justify-content: space-around;width:100%;height:100%;background:white;align-items:center">
-                            
-                        <div style="height:80%;color:#71b4db;font-size:32px;width:50%;text-align:center;background:white;display:flex;flex-direction:column;justify-content:center;border-right:1px solid gainsboro"><p>
-                         {{today_visiting}}   
-                        </p>
-                        <p style="font-size:20px;margin-top:10px">今天</p></div>
-                         <div style="width:50%;text-align:center;background:white;padding:7px 0;border-radius:5px;display:flex;flex-direction:column;justify-content:center;">
-                         <div style="margin-bottom:10px">
-                           <p style="font-size:20px">
-                         {{yesterday_visiting}}   
-                        </p>
-                        <p style="font-size:16px">昨天</p>  
-                         </div>
-                          <div style='border-top:1px solid gainsboro;padding-top:10px;width:80%;margin:0 auto'>
-                           <p  style="font-size:14px;">
-                         +12
-                        </p>
-                        <p style="font-size:14px;">较前天</p>  
-                         </div>
-                         </div>
+
+                            <div style="height:80%;color:#71b4db;font-size:32px;width:50%;text-align:center;background:white;display:flex;flex-direction:column;justify-content:center;border-right:1px solid gainsboro">
+                                <p>
+                                    {{ccindex.today_Visiting}}
+                                </p>
+                                <p style="font-size:20px;margin-top:10px">今天</p>
+                            </div>
+                            <div style="width:50%;text-align:center;background:white;padding:7px 0;border-radius:5px;display:flex;flex-direction:column;justify-content:center;">
+                                <div style="margin-bottom:10px">
+                                    <p style="font-size:20px">
+                                        {{ccindex.yesterday_Visiting}}
+                                    </p>
+                                    <p style="font-size:16px">昨天</p>
+                                </div>
+                                <div style='border-top:1px solid gainsboro;padding-top:10px;width:80%;margin:0 auto'>
+                                    <p style="font-size:14px;">
+                                        {{ccindex.before_yesterday_Visiting}}
+                                    </p>
+                                    <p style="font-size:14px;">较前天</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </el-col>
             </div>
             <div style="height:150px;margin-top:20px;display:flex; align-items:center;justify-content: space-around;">
                 <el-col style='float:left;width:32%'>
-                <div class="dayCompare1">
-                <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-bottom:1px solid gainsboro">签约量</div>
+                    <div class="dayCompare1">
+                        <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-bottom:1px solid gainsboro">签约量</div>
                         <div style="display:flex;justify-content: space-around;width:100%;height:100%;background:white;align-items:center">
-                            
-                        <div style="height:80%;color:#7089ba;font-size:32px;width:50%;text-align:center;background:white;display:flex;flex-direction:column;justify-content:center;border-right:1px solid gainsboro"><p>
-                         {{today_member}}   
-                        </p>
-                        <p style="font-size:20px;margin-top:10px">今天</p></div>
-                         <div style="width:50%;text-align:center;background:white;padding:7px 0;border-radius:5px;display:flex;flex-direction:column;justify-content:center;">
-                         <div style="margin-bottom:10px">
-                           <p style="font-size:20px">
-                         {{yesterday_member}}   
-                        </p>
-                        <p style="font-size:16px">昨天</p>  
-                         </div>
-                          <div style='border-top:1px solid gainsboro;padding-top:10px;width:80%;margin:0 auto'>
-                           <p  style="font-size:14px;">
-                         +12
-                        </p>
-                        <p style="font-size:14px;">较前天</p>  
-                         </div>
-                         </div>
+
+                            <div style="height:80%;color:#7089ba;font-size:32px;width:50%;text-align:center;background:white;display:flex;flex-direction:column;justify-content:center;border-right:1px solid gainsboro">
+                                <p>
+                                    {{ccindex.today_Order}}
+                                </p>
+                                <p style="font-size:20px;margin-top:10px">今天</p>
+                            </div>
+                            <div style="width:50%;text-align:center;background:white;padding:7px 0;border-radius:5px;display:flex;flex-direction:column;justify-content:center;">
+                                <div style="margin-bottom:10px">
+                                    <p style="font-size:20px">
+                                        {{ccindex.yesterday_Order}}
+                                    </p>
+                                    <p style="font-size:16px">昨天</p>
+                                </div>
+                                <div style='border-top:1px solid gainsboro;padding-top:10px;width:80%;margin:0 auto'>
+                                    <p style="font-size:14px;">
+                                        {{ccindex.before_yesterday_Order}}
+                                    </p>
+                                    <p style="font-size:14px;">较前天</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </el-col>
                 <el-col style='float:left;width:32%'>
-                 <div class="dayCompare1">
-                 <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-bottom:1px solid gainsboro">到访率</div>
+                    <div class="dayCompare1">
+                        <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-bottom:1px solid gainsboro">到访率</div>
                         <div style="display:flex;justify-content: space-around;width:100%;height:100%;background:white;align-items:center">
-                            
-                        <div style="height:80%;color:#49c236;font-size:32px;width:50%;text-align:center;background:white;display:flex;flex-direction:column;justify-content:center;border-right:1px solid gainsboro"><p>
-                         {{todayVisitingRate}}   
-                        </p>
-                        <p style="font-size:20px;margin-top:10px">今天</p></div>
-                         <div style="width:50%;text-align:center;background:white;padding:7px 0;border-radius:5px;display:flex;flex-direction:column;justify-content:center;">
-                         <div style="margin-bottom:10px">
-                           <p style="font-size:20px">
-                         {{yesterdayVisitingRate}}   
-                        </p>
-                        <p style="font-size:16px">昨天</p>  
-                         </div>
-                          <div style='border-top:1px solid gainsboro;padding-top:10px;width:80%;margin:0 auto'>
-                           <p  style="font-size:14px;">
-                         +12
-                        </p>
-                        <p style="font-size:14px;">较前天</p>  
-                         </div>
-                         </div>
+
+                            <div style="height:80%;color:#49c236;font-size:32px;width:50%;text-align:center;background:white;display:flex;flex-direction:column;justify-content:center;border-right:1px solid gainsboro">
+                                <p>
+                                    {{ccindex.todayVisitingRate}}
+                                </p>
+                                <p style="font-size:20px;margin-top:10px">今天</p>
+                            </div>
+                            <div style="width:50%;text-align:center;background:white;padding:7px 0;border-radius:5px;display:flex;flex-direction:column;justify-content:center;">
+                                <div style="margin-bottom:10px">
+                                    <p style="font-size:20px">
+                                        {{ccindex.yesterdayVisitingRate}}
+                                    </p>
+                                    <p style="font-size:16px">昨天</p>
+                                </div>
+                                <div style='border-top:1px solid gainsboro;padding-top:10px;width:80%;margin:0 auto'>
+                                    <p style="font-size:14px;">
+                                        {{ccindex.beforeYesterdayVisitingRate}}
+                                    </p>
+                                    <p style="font-size:14px;">较前天</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </el-col>
                 <el-col style='float:left;width:32%'>
-                 <div class="dayCompare1">
-                 <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-bottom:1px solid gainsboro">签约率</div>
+                    <div class="dayCompare1">
+                        <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-bottom:1px solid gainsboro">签约率</div>
                         <div style="display:flex;justify-content: space-around;width:100%;height:100%;background:white;align-items:center">
-                            
-                        <div style="height:80%;color:#cbbc5a;font-size:32px;width:50%;text-align:center;background:white;display:flex;flex-direction:column;justify-content:center;border-right:1px solid gainsboro"><p>
-                         {{todayMemberRate}}   
-                        </p>
-                        <p style="font-size:20px;margin-top:10px">今天</p></div>
-                         <div style="width:50%;text-align:center;background:white;padding:7px 0;border-radius:5px;display:flex;flex-direction:column;justify-content:center;">
-                         <div style="margin-bottom:10px">
-                           <p style="font-size:20px">
-                         {{yesterdayMemberRate}}   
-                        </p>
-                        <p style="font-size:16px">昨天</p>  
-                         </div>
-                          <div style='border-top:1px solid gainsboro;padding-top:10px;width:80%;margin:0 auto'>
-                           <p  style="font-size:14px;">
-                         +12
-                        </p>
-                        <p style="font-size:14px;">较前天</p>  
-                         </div>
-                         </div>
+
+                            <div style="height:80%;color:#cbbc5a;font-size:32px;width:50%;text-align:center;background:white;display:flex;flex-direction:column;justify-content:center;border-right:1px solid gainsboro">
+                                <p>
+                                    {{ccindex.todayMemberRate}}
+                                </p>
+                                <p style="font-size:20px;margin-top:10px">今天</p>
+                            </div>
+                            <div style="width:50%;text-align:center;background:white;padding:7px 0;border-radius:5px;display:flex;flex-direction:column;justify-content:center;">
+                                <div style="margin-bottom:10px">
+                                    <p style="font-size:20px">
+                                        {{ccindex.yesterdayMemberRate}}
+                                    </p>
+                                    <p style="font-size:16px">昨天</p>
+                                </div>
+                                <div style='border-top:1px solid gainsboro;padding-top:10px;width:80%;margin:0 auto'>
+                                    <p style="font-size:14px;">
+                                        {{ccindex.beforeYesterdayMemberRate}}
+                                    </p>
+                                    <p style="font-size:14px;">较前天</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </el-col>
             </div>
         </div>
-        <div class="echarts" style="position:relative;width: 50%;float:left;">
+        <!-- 教务第一个报表 -->
+        <div style="width: 50%;float:left" v-if="!code.includes('cc')&&!code.includes('tmk')">
+            <div class="h1" style="position:relative;height:50px;margin-bottom:8px;">
+                <div style="background-color:white;border-radius:5px;width:99%;margin-right:1%">
+                    <h3 style='margin-bottom:20px;padding:14px'>
+
+                        签到统计
+                    </h3>
+                </div>
+                <div style='margin-left:10px;width:100px;position:absolute;top:10px;right:10px'>
+                    <el-select v-model="valueTeach" size='small' clearable placeholder="选择老师" @change="updateList">
+                        <el-option v-for="item in teachersName" :key="item.aid" :label="item.uname" :value="item.aid">
+                        </el-option>
+                    </el-select>
+                </div>
+            </div>
+            <div style="display:flex; align-items:center;justify-content: space-around;">
+                <el-col style='float:left;width:24%;margin-right:1%'>
+                    <div class="dayCompare1">
+                        <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-bottom:1px solid gainsboro">学员人数(人)</div>
+                        <div style="display:flex;justify-content: space-around;width:100%;height:100%;background:white;align-items:center">
+
+                            <div style="height:90%;color:#666666;font-size:22px;line-height:22px;width:90%;text-align:center;background:white;display:flex;flex-direction:column;justify-content:space-around;">
+                                <div style='display:flex;justify-content:space-between;'>
+                                    <span style="margin-left:10px;font-size:16px;">日</span>
+                                    <span style="margin-right:10px;">10</span>
+                                </div>
+                                <div style='display:flex;justify-content:space-between;'>
+                                    <span style="margin-left:10px;font-size:16px;">周</span>
+                                    <span style="margin-right:10px;">10</span>
+                                </div>
+                                <div style='display:flex;justify-content:space-between;'>
+                                    <span style="margin-left:10px;font-size:16px;">月</span>
+                                    <span style="margin-right:10px;">10</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </el-col>
+                <el-col style='float:left;width:24%;margin-right:1%'>
+                    <div class="dayCompare1">
+                        <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-bottom:1px solid gainsboro">出勤量(人)</div>
+                        <div style="display:flex;justify-content: space-around;width:100%;height:100%;background:white;align-items:center">
+
+                            <div style="height:90%;color:#666666;font-size:22px;line-height:22px;width:90%;text-align:center;background:white;display:flex;flex-direction:column;justify-content:space-around;">
+                                <div style='display:flex;justify-content:space-between;'>
+                                    <span style="margin-left:10px;font-size:16px;">日</span>
+                                    <span style="margin-right:10px;">10</span>
+                                </div>
+                                <div style='display:flex;justify-content:space-between;'>
+                                    <span style="margin-left:10px;font-size:16px;">周</span>
+                                    <span style="margin-right:10px;">10</span>
+                                </div>
+                                <div style='display:flex;justify-content:space-between;'>
+                                    <span style="margin-left:10px;font-size:16px;">月</span>
+                                    <span style="margin-right:10px;">10</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </el-col>
+                <el-col style='float:left;width:24%;margin-right:1%'>
+                    <div class="dayCompare1">
+                        <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-bottom:1px solid gainsboro">出勤率</div>
+                        <div style="display:flex;justify-content: space-around;width:100%;height:100%;background:white;align-items:center">
+
+                            <div style="height:90%;color:#666666;font-size:22px;line-height:22px;width:90%;text-align:center;background:white;display:flex;flex-direction:column;justify-content:space-around;">
+                                <div style='display:flex;justify-content:space-between;'>
+                                    <span style="margin-left:10px;font-size:16px;">日</span>
+                                    <span style="margin-right:10px;">10</span>
+                                </div>
+                                <div style='display:flex;justify-content:space-between;'>
+                                    <span style="margin-left:10px;font-size:16px;">周</span>
+                                    <span style="margin-right:10px;">10</span>
+                                </div>
+                                <div style='display:flex;justify-content:space-between;'>
+                                    <span style="margin-left:10px;font-size:16px;">月</span>
+                                    <span style="margin-right:10px;">10</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </el-col>
+                <el-col style='float:left;width:24%;margin-right:1%'>
+                    <div class="dayCompare1">
+                        <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-bottom:1px solid gainsboro">请假量</div>
+                        <div style="display:flex;justify-content: space-around;width:100%;height:100%;background:white;align-items:center">
+
+                            <div style="height:90%;color:#666666;font-size:22px;line-height:22px;width:90%;text-align:center;background:white;display:flex;flex-direction:column;justify-content:space-around;">
+                                <div style='display:flex;justify-content:space-between;'>
+                                    <span style="margin-left:10px;font-size:16px;">日</span>
+                                    <span style="margin-right:10px;">10</span>
+                                </div>
+                                <div style='display:flex;justify-content:space-between;'>
+                                    <span style="margin-left:10px;font-size:16px;">周</span>
+                                    <span style="margin-right:10px;">10</span>
+                                </div>
+                                <div style='display:flex;justify-content:space-between;'>
+                                    <span style="margin-left:10px;font-size:16px;">月</span>
+                                    <span style="margin-right:10px;">10</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </el-col>
+            </div>
+        </div>
+        <!-- 教务第二个报表 -->
+        <div style="width: 50%;float:left" v-if="!code.includes('cc')&&!code.includes('tmk')">
+            <div class="h1" style="position:relative;height:50px;margin-bottom:8px;">
+                <div style="background-color:white;border-radius:5px;width:99%;margin-right:1%">
+                    <h3 style='margin-bottom:20px;padding:14px'>
+
+                        业绩统计
+                    </h3>
+                </div>
+                <div style='margin-left:10px;width:100px;position:absolute;top:10px;right:10px'>
+                    <el-select v-model="valueTeach2" size='small' clearable placeholder="选择老师" @change="updateList">
+                        <el-option v-for="item in teachersName" :key="item.aid" :label="item.uname" :value="item.aid">
+                        </el-option>
+                    </el-select>
+                </div>
+            </div>
+            <div style="display:flex; align-items:center;justify-content: space-around;">
+                <el-col style='float:left;width:19%;margin-right:1%'>
+                    <div class="dayCompare1">
+                        <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-bottom:1px solid gainsboro">试听(人)</div>
+                        <div style="display:flex;justify-content: space-around;width:100%;height:100%;background:white;align-items:center">
+
+                            <div style="height:90%;color:#666666;font-size:22px;line-height:22px;width:90%;text-align:center;background:white;display:flex;flex-direction:column;justify-content:space-around;">
+                                <div style='display:flex;justify-content:space-between;'>
+                                    <span style="margin-left:10px;font-size:16px;">日</span>
+                                    <span style="margin-right:10px;">10</span>
+                                </div>
+                                <div style='display:flex;justify-content:space-between;'>
+                                    <span style="margin-left:10px;font-size:16px;">周</span>
+                                    <span style="margin-right:10px;">10</span>
+                                </div>
+                                <div style='display:flex;justify-content:space-between;'>
+                                    <span style="margin-left:10px;font-size:16px;">月</span>
+                                    <span style="margin-right:10px;">10</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </el-col>
+                <el-col style='float:left;width:19%;margin-right:1%'>
+                    <div class="dayCompare1">
+                        <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-bottom:1px solid gainsboro">新报名(人)</div>
+                        <div style="display:flex;justify-content: space-around;width:100%;height:100%;background:white;align-items:center">
+
+                            <div style="height:90%;color:#666666;font-size:22px;line-height:22px;width:90%;text-align:center;background:white;display:flex;flex-direction:column;justify-content:space-around;">
+                                <div style='display:flex;justify-content:space-between;'>
+                                    <span style="margin-left:10px;font-size:16px;">日</span>
+                                    <span style="margin-right:10px;">10</span>
+                                </div>
+                                <div style='display:flex;justify-content:space-between;'>
+                                    <span style="margin-left:10px;font-size:16px;">周</span>
+                                    <span style="margin-right:10px;">10</span>
+                                </div>
+                                <div style='display:flex;justify-content:space-between;'>
+                                    <span style="margin-left:10px;font-size:16px;">月</span>
+                                    <span style="margin-right:10px;">10</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </el-col>
+                <el-col style='float:left;width:19%;margin-right:1%'>
+                    <div class="dayCompare1">
+                        <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-bottom:1px solid gainsboro">试听转化率</div>
+                        <div style="display:flex;justify-content: space-around;width:100%;height:100%;background:white;align-items:center">
+
+                            <div style="height:90%;color:#666666;font-size:22px;line-height:22px;width:90%;text-align:center;background:white;display:flex;flex-direction:column;justify-content:space-around;">
+                                <div style='display:flex;justify-content:space-between;'>
+                                    <span style="margin-left:10px;font-size:16px;">日</span>
+                                    <span style="margin-right:10px;">10</span>
+                                </div>
+                                <div style='display:flex;justify-content:space-between;'>
+                                    <span style="margin-left:10px;font-size:16px;">周</span>
+                                    <span style="margin-right:10px;">10</span>
+                                </div>
+                                <div style='display:flex;justify-content:space-between;'>
+                                    <span style="margin-left:10px;font-size:16px;">月</span>
+                                    <span style="margin-right:10px;">10</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </el-col>
+                <el-col style='float:left;width:19%;margin-right:1%'>
+                    <div class="dayCompare1">
+                        <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-bottom:1px solid gainsboro">续费</div>
+                        <div style="display:flex;justify-content: space-around;width:100%;height:100%;background:white;align-items:center">
+
+                            <div style="height:90%;color:#666666;font-size:22px;line-height:22px;width:90%;text-align:center;background:white;display:flex;flex-direction:column;justify-content:space-around;">
+                                <div style='display:flex;justify-content:space-between;'>
+                                    <span style="margin-left:10px;font-size:16px;">日</span>
+                                    <span style="margin-right:10px;">10</span>
+                                </div>
+                                <div style='display:flex;justify-content:space-between;'>
+                                    <span style="margin-left:10px;font-size:16px;">周</span>
+                                    <span style="margin-right:10px;">10</span>
+                                </div>
+                                <div style='display:flex;justify-content:space-between;'>
+                                    <span style="margin-left:10px;font-size:16px;">月</span>
+                                    <span style="margin-right:10px;">10</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </el-col>
+                <el-col style='float:left;width:19%;margin-right:1%'>
+                    <div class="dayCompare1">
+                        <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-bottom:1px solid gainsboro">转介绍</div>
+                        <div style="display:flex;justify-content: space-around;width:100%;height:100%;background:white;align-items:center">
+
+                            <div style="height:90%;color:#666666;font-size:22px;line-height:22px;width:90%;text-align:center;background:white;display:flex;flex-direction:column;justify-content:space-around;">
+                                <div style='display:flex;justify-content:space-between;'>
+                                    <span style="margin-left:10px;font-size:16px;">日</span>
+                                    <span style="margin-right:10px;">10</span>
+                                </div>
+                                <div style='display:flex;justify-content:space-between;'>
+                                    <span style="margin-left:10px;font-size:16px;">周</span>
+                                    <span style="margin-right:10px;">10</span>
+                                </div>
+                                <div style='display:flex;justify-content:space-between;'>
+                                    <span style="margin-left:10px;font-size:16px;">月</span>
+                                    <span style="margin-right:10px;">10</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </el-col>
+            </div>
+        </div>
+        <!-- cc,tmk第二个报表 -->
+        <div class="echartsIndex" style="position:relative;width: 50%;float:left;" v-if="code.includes('cc')||code.includes('tmk')">
             <div style="width:100%;background-color:white;height:49px;position:absolute;margin-bottom:5px;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom:1px solid grey">
-                <div style='margin-left:10px;width:100px;position:absolute;top:9px;right:10px;z-index:3' v-if="code =='tmk_m'">
+                <!-- <div style='margin-left:10px;width:100px;position:absolute;top:9px;right:10px;z-index:3' v-if="code =='tmk_m'">
                     <el-select v-model="value2" size='small' clearable placeholder="选择TMK" @change="updateList1">
                         <el-option v-for="item in tmks" :key="item.key" :label="item.label" :value="item.key">
                         </el-option>
                     </el-select>
-                </div>
-                <div style='margin-left:10px;width:100px;position:absolute;top:9px;right:10px;z-index:3' >
-                    <el-select v-model="value2" size='small' clearable placeholder="选择TMK" @change="updateList1">
-                        <el-option v-for="item in tmks" :key="item.key" :label="item.label" :value="item.key">
+                </div> -->
+                <!-- <div style='margin-left:10px;width:100px;position:absolute;top:9px;right:10px;z-index:3' v-if="code =='cc_m'">
+                    <el-select v-model="value2CC" size='small' clearable placeholder="选择CC" @change="updateList1CC">
+                        <el-option v-for="item in ccs" :key="item.aid" :label="item.uname" :value="item.aid">
                         </el-option>
                     </el-select>
-                </div>
+                </div> -->
             </div>
             <div style="width:100%;position:absolute;bottom:0;height:364px;background-color:white;border-bottom-left-radius:5px;border-bottom-right-radius:5px;"></div>
             <IEcharts :option="line" style='height:414px;width:100%'></IEcharts>
         </div>
-        <div style="width: 49.7%;float:left;margin-right:5px;margin-top:20px">
+        <!-- 教务第三个报表 -->
+        <div class="echarts1" style="position:relative;width: 50%;margin-top:5px;" v-if="!code.includes('cc')&&!code.includes('tmk')">
+
+            <div style="width:99%;position:absolute;top:0;height:364px;background-color:white;border-bottom-left-radius:5px;border-bottom-right-radius:5px;"></div>
+            <IEcharts :option="lineTeacher" style='height:364px;width:100%'></IEcharts>
+        </div>
+        <!-- 教务第四个报表 -->
+        <div class="echarts1" style="position:relative;width: 50%;margin-top:5px;" v-if="!code.includes('cc')&&!code.includes('tmk')">
+
+            <div style="width:99%;position:absolute;top:0;height:364px;background-color:white;border-bottom-left-radius:5px;border-bottom-right-radius:5px;"></div>
+            <IEcharts :option="lineTeacher" style='height:364px;width:100%'></IEcharts>
+        </div>
+        <div style="width: 49.7%;float:left;margin-right:0.3%;margin-top:20px;height:451px;background-color:white">
             <div class="h1" style="position:relative;height:50px;border-bottom:1px solid #cccccc;background-color:white;border-top-left-radius:5px;border-top-right-radius:5px;">
                 <div>
                     <h3 style='float:left;padding:15px 0 20px 10px'>
-            
-       系统通知
-        </h3>
+
+                        消息通知
+                    </h3>
                 </div>
                 <div class='notifyA' style='float:right;margin-top:12px;font-size: 14px;'>
                     <el-breadcrumb separator=" " id='systemMore'>
@@ -277,23 +546,31 @@
                     </el-breadcrumb>
                 </div>
             </div>
-            <div v-for="content in notifyData" style="padding:10px 10px 20px 10px;border-bottom:1px solid #e8e8e8;font-size:14px;background-color:white;">
+            <div v-for="content in notifyData" class='messageS' @click='gotoMessage' v-if='notifyData.length !=0'>
                 <div style="height:30px">
-                    <div style="float:left;font-weight:600" :class="{green:content.date.substring(0,10).replace(/0/g,'') == new Date().toLocaleString().substring(0,9).replace(/0/g,'')}">{{content.title}}</div>
-                    <div style="float:right;color:#bebebe">{{content.date.substring(0,10).replace(/0/g,'') == new Date().toLocaleString().substring(0,9).replace(/0/g,'')?content.date.substring(11): content.date.substring(0,10).replace(/0/g,'').replace(/\-/g,'') - new Date().toLocaleString().substring(0,9).replace(/0/g,'').replace(/\-/g,'') == -1? '昨天'+content.date.substring(11) :content.date.substring(5)}}</div>
+                    <div style="float:left;font-weight:600" :class="{green:content.created.substring(0,10).replace(/0/g,'') == new Date().toLocaleString().substring(0,9).replace(/0/g,'')}">{{content.type}}通知</div>
+                    <div style="float:right;color:#bebebe">{{new Date(content.created).toLocaleDateString() == new Date().toLocaleDateString().substring(0,9)?content.created.substring(11):
+                        new Date(content.created.substring(0,10)).valueOf() - new Date().toLocaleDateString().valueOf() ==
+                        -86400000? '昨天'+content.created.substring(11) :content.created.substring(5)}}</div>
                 </div>
-                <div style="color:#666666">
-                    {{ content.content}}
+                <div style="color:#666666" v-if='content.type=="转校"'>
+                    学生:{{ content.content.child}}的转校申请,请您确认
+                </div>
+                <div style="color:#666666" v-if='content.type=="转校失败"'>
+                    {{ content.content.msg}}
                 </div>
             </div>
+            <div v-if='notifyData.length ==0' class='messageNoS' style="text-align:center">
+                暂无未读消息
+            </div>
         </div>
-        <div style="width: 49.8%;float:right;margin-top:20px;height:451px;background-color:white">
+        <div style="width: 49.9%;float:right;margin-top:20px;height:451px;background-color:white" v-if="code.includes('cc')||code.includes('tmk')">
             <div class="h1" style="position:relative;height:50px;border-bottom:1px solid #cccccc;background-color:white;border-top-left-radius:5px;border-top-right-radius:5px;">
                 <div>
                     <h3 style='float:left;padding:15px 0 20px 10px'>
-            
-       任务提醒
-        </h3>
+
+                        任务提醒
+                    </h3>
                 </div>
                 <div class='notifyA' style='float:right;margin-top:12px;font-size: 14px;'>
                     <el-breadcrumb separator=" " id='taskMore'>
@@ -302,118 +579,245 @@
                     </el-breadcrumb>
                 </div>
             </div>
-            <div v-for="content in taskData" style="padding:10px 10px 20px 10px;border-bottom:1px solid #e8e8e8;font-size:14px;background-color:white;">
+            <div v-for="content in taskData" v-if="taskData.length !=0" style="padding:10px 10px 20px 10px;border-bottom:1px solid #e8e8e8;font-size:14px;background-color:white;">
                 <div style="height:30px">
-                    <div style="float:left;" class="green"><i class="el-icon-my-tongzhigonggao"></i>{{content.title}} 提醒</div>
-                    <div style="float:right;color:#bebebe">{{content.date.substring(0,10).replace(/0/g,'') == new Date().toLocaleString().substring(0,9).replace(/0/g,'')?content.date.substring(11): content.date.substring(0,10).replace(/0/g,'').replace(/\-/g,'') - new Date().toLocaleString().substring(0,9).replace(/0/g,'').replace(/\-/g,'') == -1? '昨天'+content.date.substring(11) :content.date.substring(5)}}</div>
+                    <div style="float:left;" class="green"><i class="el-icon-my-tongzhigonggao"></i>{{content.title}}</div>
+                    <div style="float:right;color:#bebebe">
+                        {{new Date(content.date).toLocaleDateString() == new Date().toLocaleDateString().substring(0,9)?content.date.substring(11):
+                        new Date(content.date.substring(0,10)).valueOf() - new Date().toLocaleDateString().valueOf() ==
+                        -86400000? '昨天'+content.date.substring(11) :content.date.substring(5)}}</div>
                 </div>
                 <div style="color:#666666;min-height:19px">
                     {{ content.content}}
                 </div>
             </div>
+            <div v-if="taskData.length ==0" class='messageNoS' style="text-align:center">
+                今日暂无提醒
+            </div>
+        </div>
+        <div style="width: 49.8%;float:right;margin-top:20px;height:451px;background-color:white" v-if="!code.includes('cc')&&!code.includes('tmk')">
+            <div class="h1" style="position:relative;height:50px;border-bottom:1px solid #cccccc;background-color:white;border-top-left-radius:5px;border-top-right-radius:5px;">
+                <div>
+                    <h3 style='float:left;padding:15px 0 20px 10px'>
+
+                        今日课表
+                    </h3>
+                </div>
+                <div style='margin-left:10px;width:100px;position:absolute;top:12px;left:90px'>
+                    <el-select v-model="valueTeacher" size='small' clearable placeholder="选择老师" @change="updateListClass" v-if="code.includes('_c')||code.includes('_m')">
+                        <el-option v-for="item in teachersName" :key="item.aid" :label="item.uname" :value="item.aid">
+                        </el-option>
+                    </el-select>
+                </div>
+                <div class='notifyA' style='float:right;margin-top:12px;font-size: 14px;'>
+                    <el-breadcrumb separator=" " id='taskMore'>
+                        <el-breadcrumb-item :to="{ path: '/courseTable'}">更多>></el-breadcrumb-item>
+                        <el-breadcrumb-item> </el-breadcrumb-item>
+                    </el-breadcrumb>
+                </div>
+            </div>
+            <div id="tablere">
+                <el-table :data="ssData" border style="width: 100%;">
+                    <el-table-column prop="title" label="课程名称">
+                    </el-table-column>
+                    <el-table-column prop="class_time" label="上课时间">
+                    </el-table-column>
+                    <el-table-column prop="class_room" label="上课教室">
+                            <template scope="scope">
+                                    <span >{{scope.row.class_room.names}}</span>
+                                </template>
+                    </el-table-column>
+                    <el-table-column prop="status" label="备注">
+                        <template scope="scope">
+                            <span :style="scope.row.ps=='代课'? 'color:#1fb5ad' : 'color:#dba31c' ">{{scope.row.status=='default'?'—':''}}</span>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </div>
+
         </div>
     </div>
 </template>
 <script>
-var token, user
-import IEcharts from 'vue-echarts-v3';
-import {
-    getTMK,
-    getIndexData,
-    getDayTask
-} from '../../api/api';
-export default {
-    components: {
-        IEcharts
-    },
-    data: () => ({
-        notifyData: [{
-            title: '徐家汇校区通知',
-            content: '夫君子之行，静以修身，俭以养德，非淡泊无以明志，非宁静无以致远',
-            date: '2017-06-12 14:30'
-        }, {
-            title: '徐家汇校区通知',
-            content: '欲思其利,必虑其害,欲思其成,必虑其败',
-            date: '2017-06-11 14:30'
-        }, {
-            title: '徐家汇校区通知',
-            content: '下周一开始要努力工作',
-            date: '2017-06-06 14:30'
-        }, {
-            title: '徐家汇校区通知',
-            content: '风萧萧兮易水寒',
-            date: '2017-06-04 14:30'
-        }, {
-            title: '徐家汇校区通知',
-            content: '千里之行始于足下',
-            date: '2017-06-03 14:30'
-        }],
-        taskData: [],
-        today_Customers: 0,
-        today_Invitation: 0,
-        today_visiting: 0,
-        today_member: 0,
-        todayVisitingRate: 0,
-        todayMemberRate: 0,
-        yesterday_customers: 0,
-        yesterday_Invitation: 0,
-        yesterday_visiting: 0,
-        yesterday_member: 0,
-        yesterdayVisitingRate: 0,
-        yesterdayMemberRate: 0,
-        tmks: [],
-        value1: "",
-        value2: "",
-        code:'',
-        line: {
-            color: ["#F7BA2A", "#16b8be", "#ed42b3"],
-            title: {
-                text: '客户发展趋势图',
-                padding: [15, 5, 5, 5]
+    var token, user
+    import {
+        mapActions
+    } from 'vuex';
+    import IEcharts from 'vue-echarts-v3';
+    import {
+        getTMK,
+        getAllCCList,
+        getIndexData,
+        getDayTask,
+        getMessage,
+        getCCindex,
+        campusList,
+        getTeacherList,
+        getDateClass
+    } from '../../api/api';
+    export default {
+        components: {
+            IEcharts
+        },
+        data: () => ({
+            valueTeach2:'',
+            valueTeach:'',
+            valueTeacher:'',
+            aid:'',
+            ssData: [],
+            valueR:'',
+            optionR:[],
+            notifyData: [],
+            taskData: [],
+            today_Customers: 0,
+            today_Invitation: 0,
+            today_visiting: 0,
+            today_member: 0,
+            todayVisitingRate: 0,
+            todayMemberRate: 0,
+            yesterday_customers: 0,
+            yesterday_Invitation: 0,
+            yesterday_visiting: 0,
+            yesterday_member: 0,
+            yesterdayVisitingRate: 0,
+            yesterdayMemberRate: 0,
+            tmks: [],
+            ccs: [],
+            teachersName:[],
+            ccindex: {
+                today_Customers: '',
+                yesterday_Customers: '',
+                before_yesterday_customers: '',
+                today_Invitation: '',
+                yesterday_Invitation: '',
+                before_yesterday_Invitation: '',
+                today_Visiting: '',
+                yesterday_Visiting: '',
+                before_yesterday_Visiting: '',
+                today_Order: '',
+                yesterday_Order: '',
+                before_yesterday_Order: '',
+                todayVisitingRate: '',
+                yesterdayVisitingRate: '',
+                beforeYesterdayVisitingRate: '',
+                todayMemberRate: '',
+                yesterdayMemberRate: '',
+                beforeYesterdayMemberRate: ''
             },
-            tooltip: {
-                trigger: 'axis'
-            },
-            xAxis: {
-                axisTick: {
-                    alignWithLabel: true
+            value1: "",
+            value2: "",
+            valueCC: '',
+            value2CC: '',
+            code: '',
+            line: {
+                color: ["#F7BA2A", "#16b8be", "#ed42b3"],
+                title: {
+                    text: '客户发展趋势图',
+                    padding: [15, 5, 5, 5]
                 },
-                data: []
+                tooltip: {
+                    trigger: 'axis'
+                },
+                xAxis: {
+                    axisTick: {
+                        alignWithLabel: true
+                    },
+                    data: []
 
+                },
+                yAxis: {
+                    splitLine: {
+                        show: false
+                    }
+                },
+
+
+                // backgroundColor:'white'
             },
-            yAxis: {
-                splitLine: {
-                    show: false
+            lineTeacher: {
+                color: ["#F7BA2A", "#16b8be", "#ed42b3"],
+                title: {
+                    // text: '客户发展趋势图',
+                    // padding: [15, 5, 5, 5]
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                xAxis: {
+                    axisTick: {
+                        alignWithLabel: true
+                    },
+                    data: []
+
+                },
+                yAxis: {
+                    splitLine: {
+                        show: false
+                    }
+                },
+            },
+            contGet: ''
+        }),
+
+        methods: {
+            ...mapActions([
+                'setMessNumber'
+            ]),
+            updateListClass(){
+                let para = {
+                    date:new Date().toLocaleDateString(),
+                    aid:this.valueTeacher
                 }
+                getDateClass(token,para).then(res=>{
+                    this.ssData = res.data
+                })
             },
-           
-            
-            // backgroundColor:'white'
-        }
-    }),
-
-    methods: {
-        updateList() {
-            let para = {
+            gotoMessage() {
+                this.$router.push('/systemMessage/');
+            },
+            updateList() { //tmk
+                let para = {
                     tmk_id: this.value1
                 }
-                getIndexData(token,para).then(res => {
-                this.changeNumber(res)
-            })
+                getIndexData(token, para).then(res => {
+                    this.changeNumber(res);
+                    this.changeChart(res);
+                })
                 //调服务
-        },
-        updateList1() {
-            let para = {
-                    tmk_id: this.value2
+            },
+            updateListCC() { //tmk
+                let para = {
+                    cc_id: this.valueCC
                 }
-                getIndexData(token).then(res => {
-                this.changeChart(res)
-            })
-                //调服务
-        },
-        changeNumber(data){
-            let a = data.data
-            this.today_Customers = a.today_Customers;
+                getCCindex(token,para).then(res => {
+                    this.changeNumberCC(res)
+                    this.changeChartCC(res)
+                })
+            },
+            updateListGetCC() {
+                this.valueCC='';
+                let para = {
+                    school_id:this.valueR
+                }
+                getAllCCList(token,para).then((res) => {
+                    this.optionsCC = res.data;
+                    this.optionsCC.unshift({
+                        aid: 0,
+                        uname: '全部CC'
+                    })
+                })
+                let para1 = {
+                    school_id:this.valueR,
+                    cc_id: this.valueCC
+                }
+                getCCindex(token,para1).then(res => {
+                    this.changeNumberCC(res)
+                    this.changeChartCC(res)
+                })
+            },
+            changeNumber(data) { //TMK
+                let a = data.data
+                this.today_Customers = a.today_Customers;
                 this.today_Invitation = a.today_Invitation;
                 this.today_visiting = a.today_visiting;
                 this.today_member = a.today_member;
@@ -425,10 +829,10 @@ export default {
                 this.yesterday_member = a.yesterday_member;
                 this.yesterdayVisitingRate = a.yesterdayVisitingRate;
                 this.yesterdayMemberRate = a.yesterdayMemberRate;
-        },
-        changeChart(data){
-            this.line.xAxis.data = data.data.weekList.week;
-            this.line.series = [{//以后改成动态获取
+            },
+            changeChart(data) { //TMK
+                this.line.xAxis.data = data.data.weekList.week;
+                this.line.series = [{ //以后改成动态获取
                     name: "已邀约",
                     type: "line",
                     data: data.data.weekList.invitation
@@ -441,149 +845,295 @@ export default {
                     type: "line",
                     data: data.data.weekList.member
                 }];
-            this.line.legend = {
-                orient: 'horizontal',
-                bottom: 10,
-                data: ["已邀约", "已到访", "已签单"],
-                // backgroundColor:'white'
-            }
-        }
-    },
-    beforeCreate() {
-        user = localStorage.getItem('user');
-        token = JSON.parse(user).token;
-    },
-    created() {
-        this.code = JSON.parse(user).job ? JSON.parse(user).job.code : ''; //获取职位code
-        getIndexData(token).then(res => {
-                this.changeNumber(res)
-                this.changeChart(res)
-            })
-        let para = {
-            date : new Date().toLocaleDateString()
-        }
-        getDayTask(para,token).then(res=>{
-            // let arr = []
-            // for(let i =0;i<=4;i++){
-            //     arr.unshift(res[i])
-            // }
-            if(res.length ==0){
-                // arr = [{title:'今日暂无提醒'}]
-                this.taskData = [{title:'今日暂无',content:'',date:''}]
-            }else{
+                this.line.legend = {
+                    orient: 'horizontal',
+                    bottom: 10,
+                    data: ["已邀约", "已到访", "已签单"],
+                    // backgroundColor:'white'
+                };
 
-                this.taskData = res.map(item=>{
-                    return {title:item.remind_time.substring(11, 16),
-                        content:item.remark,
-                        date:item.create_at.substring(0,16)}
+                // this.lineTeacher.xAxis.data = data.data.weekList.week;
+                // this.lineTeacher.series = [{ //以后改成动态获取
+                //     name: "已邀约",
+                //     type: "line",
+                //     data: data.data.weekList.invitation
+                // }, {
+                //     name: "已到访",
+                //     type: "line",
+                //     data: data.data.weekList.visiting
+                // }, {
+                //     name: "已签单",
+                //     type: "line",
+                //     data: data.data.weekList.member
+                // }];
+                // this.lineTeacher.legend = {
+                //     orient: 'horizontal',
+                //     bottom: 10,
+                //     data: ["已邀约", "已到访", "已签单"],
+                //     // backgroundColor:'white'
+                // }
+            },
+            changeNumberCC(data) {
+                let a = data.data
+                // console.log(a)
+                this.ccindex = a
+            },
+            changeChartCC(data) {
+                this.line.xAxis.data = data.data.weekList.week;
+                this.line.series = [{ //以后改成动态获取
+                    name: "已邀约",
+                    type: "line",
+                    data: data.data.weekList.invitation
+                }, {
+                    name: "已到访",
+                    type: "line",
+                    data: data.data.weekList.visiting
+                }, {
+                    name: "已签单",
+                    type: "line",
+                    data: data.data.weekList.member
+                }];
+                this.line.legend = {
+                    orient: 'horizontal',
+                    bottom: 10,
+                    data: ["已邀约", "已到访", "已签单"],
+                    // backgroundColor:'white'
+                };
+            },
+            getM() {
+                let p = {
+                    length: 5
+                }
+                let that = this;
+                getMessage(p, token).then(res => {
+                    // console.log(res);
+                    that.notifyData = res.data.list;
+                    that.setMessNumber(res.data.total);
+                })
+                
+            }
+        },
+        beforeCreate() {
+            user = localStorage.getItem('user');
+            token = JSON.parse(user).token;
+        },
+        created() {
+            this.code = JSON.parse(user).job ? JSON.parse(user).job.code : ''; //获取职位code
+            this.aid = JSON.parse(user).aid ? JSON.parse(user).aid : ''; //获取aid
+            
+            if (this.code.includes('tmk')) {
+                getIndexData(token).then(res => {
+                    this.changeNumber(res)
+                    this.changeChart(res)
                 })
             }
-        })
-            if (this.code == 'tmk_m') {
-        getTMK(token).then((res) => {
-                this.tmks = res.data;
-                 this.tmks.unshift({key:'0',label:'全部TMK'})
-            })
+            if (this.code.includes('cc')) {
+                getCCindex(token).then(res => {
+                    this.changeNumberCC(res)
+                    this.changeChartCC(res)
+                })
             }
+            if (this.code.includes('cc') || this.code.includes('tmk')) { //获取任务提醒
+                let para = {
+                    date: new Date().toLocaleDateString()
+                }
+                getDayTask(para, token).then(res => {
+                    if (res.length != 0) {
+                        this.taskData = res.data.map(item => {
+                            return {
+                                title: item.topic,
+                                content: item.remark,
+                                date: item.create_at.substring(0, 16)
+                            }
+                        })
+                    }
+                })
+            }
+            if(this.code.includes('_c')){
 
-
+                    let cam={
+                        simple:1
+                    }
+                    campusList(cam, token).then((res) => { //获取校区
+                    this.optionR = res.data
+                })
+                }
+            this.contGet = setInterval(this.getM, 600000)
+            let p = {
+                length: 5
+            }
+            getMessage(p, token).then(res => { //获取消息通知
+                // console.log(res);
+                this.notifyData = res.data.list;
+                this.setMessNumber(res.data.total);
+            })
+            if (this.code == 'tmk_m') {
+                getTMK(token).then((res) => {
+                    this.tmks = res.data;
+                    this.tmks.unshift({
+                        key: '0',
+                        label: '全部TMK'
+                    })
+                })
+            }
+            if (this.code == 'cc_m'||this.code.includes('_c')) {
+                getAllCCList(token).then((res) => {
+                    this.ccs = res.data.filter(item=>{
+                        return item.uname !=JSON.parse(user).uname
+                    });
+                    this.ccs.unshift({
+                        aid: 0,
+                        uname: '全部CC'
+                    })
+                })
+            }
+            if(this.code.includes('teach')){
+                let para = {
+                    date:new Date().toLocaleDateString(),
+                    aid:this.aid
+                }
+                getDateClass(token,para).then(res=>{
+                    this.ssData = res.data
+                })
+            }
+            if(this.code=='teach_c'||this.code=='teach_m'){
+                getTeacherList(token).then((res) => { //获取老师
+                    this.teachersName = res.data;
+                })
+            }
+        },
+        beforeDestroy() {
+            clearInterval(this.contGet)
+        }
     }
-}
+
 </script>
 <style>
-.green {
-    color: #1fb5ad;
-}
+    .green {
+        color: #1fb5ad;
+    }
 
-.notifyA a:link {
-    color: #6fc7ca
-}
+    .notifyA a:link {
+        color: #6fc7ca
+    }
 
-.notifyA a:visited {
-    color: #6fc7ca
-}
+    .notifyA a:visited {
+        color: #6fc7ca
+    }
 
-.notifyA a:hover {
-    text-decoration: underline;
-}
+    .notifyA a:hover {
+        text-decoration: underline;
+    }
 
-.notifyA a:acitve {
-    text-decoration: underline;
-}
+    .notifyA a:acitve {
+        text-decoration: underline;
+    }
 
-.dayCompare1 {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 174px;
-    flex-direction: column;
-    /*box-shadow: 2px 2px 9px #888888;*/
-    /*border:1px solid grey;*/
-    /*padding: 0 20px 12px 20px;*/
-    border-radius: 8px;
-    flex: auto;
-    /*background-color: white;*/
-}
+    .dayCompare1 {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 174px;
+        flex-direction: column;
+        /*box-shadow: 2px 2px 9px #888888;*/
+        /*border:1px solid grey;*/
+        /*padding: 0 20px 12px 20px;*/
+        border-radius: 8px;
+        flex: auto;
+        /*background-color: white;*/
+    }
 
-.dayCompare {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    height: 154px;
-    flex-direction: column;
-    /*box-shadow: 2px 2px 9px #888888;*/
-    /*border:1px solid grey;*/
-    padding: 0 20px 12px 20px;
-    border-radius: 8px;
-    flex: auto;
-    background-color: white;
-}
-.echarts {
-    float: left;
-    width: 100%;
-    height: 414px;
-    z-index: 1;
-}
+    .dayCompare {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        height: 162px;
+        flex-direction: column;
+        /*box-shadow: 2px 2px 9px #888888;*/
+        /*border:1px solid grey;*/
+        padding: 0 20px 12px 20px;
+        border-radius: 8px;
+        flex: auto;
+        background-color: white;
+    }
 
-#table .el-table td,
-#table .el-table th {
-    padding: 5px 5px;
-    text-align: center
-}
+    .echartsIndex {
+        float: left;
+        width: 100%;
+        height: 414px;
+        z-index: 1;
+    }
 
-#table .el-table th>div,
-#table .el-table .cell {
-    padding-left: 0;
-    padding-right: 0;
-}
+    .echarts1 {
+        float: left;
+        width: 100%;
+        height: 364px;
+        z-index: 1;
+    }
 
-.block {
-    text-align: center;
-    margin-top: 10px;
-}
+    #table .el-table td,
+    #table .el-table th {
+        padding: 5px 5px;
+        text-align: center
+    }
 
-.drop .el-dropdown {
-    font-size: 1.17em;
-    color: black;
-}
+    #table .el-table th>div,
+    #table .el-table .cell {
+        padding-left: 0;
+        padding-right: 0;
+    }
 
-.datec .el-date-editor--daterange.el-input {
-    width: 187px
-}
+    .block {
+        text-align: center;
+        margin-top: 10px;
+    }
 
-.echarts .drop .el-dropdown {
-    color: rgb(31, 181, 173);
-}
-#systemMore .el-breadcrumb__item__inner:hover{
-    cursor: pointer;
-}
-#taskMore .el-breadcrumb__item__inner:hover{
-    cursor: pointer;
-}
-#systemMore .el-breadcrumb__item__inner{
-    font-weight: 500
-}
-#taskMore .el-breadcrumb__item__inner{
-    font-weight: 500
-}
+    .drop .el-dropdown {
+        font-size: 1.17em;
+        color: black;
+    }
+    .datec .el-date-editor--daterange.el-input {
+        width: 187px
+    }
+    .echarts .drop .el-dropdown {
+        color: rgb(31, 181, 173);
+    }
+    #systemMore .el-breadcrumb__item__inner:hover {
+        cursor: pointer;
+    }
+    #taskMore .el-breadcrumb__item__inner:hover {
+        cursor: pointer;
+    }
+    #systemMore .el-breadcrumb__item__inner {
+        font-weight: 500
+    }
+    #taskMore .el-breadcrumb__item__inner {
+        font-weight: 500
+    }
+    #tablere .el-table td,
+    #tablere .el-table th {
+        padding: 5px 5px;
+        text-align: center
+    }
+    #tablere .el-table th>div,
+    #tablere .el-table .cell {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .messageS {
+        padding: 10px 10px 20px 10px;
+        border-bottom: 1px solid #e8e8e8;
+        font-size: 14px;
+        background-color: white;
+    }
+    .messageS:hover {
+        cursor: pointer
+    }
+    .messageNoS {
+        padding: 50px;
+        /* border-bottom:1px solid #e8e8e8; */
+        font-size: 14px;
+        background-color: white;
+    }
+
 </style>

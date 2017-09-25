@@ -38,6 +38,8 @@
                 </el-table-column>
                 <el-table-column prop="remark" label="优惠理由">
                 </el-table-column>
+                <el-table-column prop="sales_total" label="使用数" width='80'>
+                    </el-table-column>
                 <el-table-column label="操作" width='280'>
                     <template scope="scope">
                         <el-button type="text" size="small" @click="editCh(scope.$index, accountData)">修改</el-button>
@@ -210,9 +212,9 @@ export default {
         computed: {
             alter: function() {
                 if (this.in === '') {
-                    return '添加课程'
+                    return '添加优惠库'
                 }
-                return '修改课程'
+                return '修改优惠库'
             }
         }
 }
@@ -258,7 +260,6 @@ export default {
     padding: 40px 20px;
 }
 
-.classredwarn .el-message-box__btns {}
 
 .el-dialog .el-dialog__header {
     background-color: #1fb5ad;

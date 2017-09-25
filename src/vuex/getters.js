@@ -25,3 +25,6 @@ export const getResource = state => {
 export const getSearchKey = state => {
     return state.searchKey
 }
+export const getMessNumber = state => {
+    return state.messageNumber
+}

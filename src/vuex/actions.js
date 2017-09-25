@@ -22,3 +22,7 @@ export const sendResourceId = ({commit},uid) =>{
 export const searchKey = ({commit},key) =>{
 	commit('SEARCHKEY',key)
 }
+
+export const setMessNumber = ({commit},num) =>{
+	commit('SETMESSNUMBER',num)
+}

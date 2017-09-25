@@ -29,7 +29,7 @@
                         </el-option>
                     </el-select>
                 </div>
-                <div style="position:absolute;top:10px;right:100px;width:200px">
+                <div class='AMinput'>
                     <el-input placeholder="请输入手机号或姓名" icon="search" v-model="input2" :on-icon-click="handleIconClick" @keyup.enter.native="handleIconClick">
                     </el-input>
                 </div>
@@ -56,7 +56,7 @@
                         <el-input type="password" v-model="aform.pwd" auto-complete="off" :style='{width:inputLabelWidth}'></el-input>
                     </el-form-item> -->
                     <el-form-item label="所属校区" :label-width="formLabelWidth" prop="region" style='display:inline-block'>
-                        <el-select v-model="aform.region" filterable :style='{width:inputLabelWidth}' @change='campusGet' clearable>
+                        <el-select v-model="aform.region"  filterable :style='{width:inputLabelWidth}' @change='campusGet' clearable>
                          <el-option v-for="item in cities" :key="item.id" :label="item.city_name" :value="item.id">
                             </el-option>
                            <!--  
@@ -67,7 +67,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item :label-width="formLabelWidth" prop="school" style='display:inline-block;margin-left: -100px'>
-                        <el-select v-model="aform.school"  filterable remote placeholder="请输入关键词" :remote-method="remoteMethod" :loading="loading">
+                        <el-select v-model="aform.school"  multiple filterable remote placeholder="请输入关键词" :remote-method="remoteMethod" :loading="loading">
                             <el-option v-for="item in schools" :key="item.value" :label="item.label" :value="item.value">
                             </el-option>
                         </el-select>
@@ -121,11 +121,11 @@
                 </el-table-column>
                 <el-table-column prop="last_login_time" label="最近登录时间">
                 </el-table-column>
-                <el-table-column prop="loginTime" label="登录次数" width='80'>
+                <el-table-column prop="login_count" label="登录次数" width='80'>
                 </el-table-column>
                 <el-table-column prop="status" label="使用状态" width='80' column-key='status'>
                     <template scope="scope">
-                        <span class='redBlack'>{{scope.row.status}}</span>
+                        <span :style="scope.row.status=='停用'?'color:red':'color:black'">{{scope.row.status}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" width='80'>
@@ -152,7 +152,7 @@ import {
     departList,
     put_account,
     create_account,
-    delete_account,
+    // delete_account,
     department
 } from '../../api/api';
 export default {
@@ -164,17 +164,17 @@ export default {
                     callback();
                 }
             }
-            var validatePass = (rule, value, callback) => {
-                if (value == '') {
-                    callback(new Error('请输入密码'));
-                } else{
-                    callback()
-                }
-            };
+            // var validatePass = (rule, value, callback) => {
+            //     if (value == '') {
+            //         callback(new Error('请输入密码'));
+            //     } else{
+            //         callback()
+            //     }
+            // };
             var isPhone1 = (rule, value, callback) => {
                 var myreg =  /^(((1[0-9]{1}))+\d{9})$/; 
                 if (value == '') {
-                    callback()
+                    callback('请输入手机号')
                 } else if (!myreg.test(value)) {
                     callback('请输入有效手机号');
                 }else{
@@ -255,19 +255,18 @@ export default {
                     did: [{
                         required: true,
                         validator: nan,
-                        trigger: 'blur'
+                        trigger: 'change'
                     }],
                     job_id: [{
                         required: true,
                         validator: nan,
-                        trigger: 'blur'
+                        trigger: 'change'
                     }]
                 },
                 schools: [], //选好城市之后的校区
                 loading: false,
                 cities: [], //form中的城市
-                jobs: [], //部门 change之后更新
-                backUp: [] //备份用的元数据
+                jobs: [] //部门 change之后更新
             }
         },
         methods: {
@@ -302,17 +301,16 @@ export default {
                 })
             },
             createCh(formName) { //点击创建按钮
-                // let that = this;
-                 // this.$refs[formName].resetFields();
-                this.in = '';
                 this.dialogFormVisible = true;
+            },
+            resetD(){
+                this.in = '';
                 this.aform = {
                     aid: '',
                     uname: '',
                     name: '',
                     sex: '',
                     tel: '',
-                    pwd: '',
                     checkPass: '',
                     region: '',
                     school: [],
@@ -320,12 +318,7 @@ export default {
                     job_id: '',
                     fla: ''
                 };
-                // setTimeout( that.$refs[formName].resetFields(), 2000)
-
-            },
-            resetD(){
                 this.$refs['aform'].resetFields();
-
             },
             editCh(index, data) { //点击就修改
                 this.in = index;
@@ -334,7 +327,6 @@ export default {
                         did: data[index].did
                     };
                     departList(para, token).then((res) => {
-                            // console.log(res)
                             this.jobs = res.data[0]._child.map(item => {
                                 return {
                                     value: item.job_id,
@@ -343,15 +335,13 @@ export default {
                             });
                         }) //假如有部门,必须刷新职位，方能更换同部门的不同职位
                 }
-                let schoolData = data[index].school.length == 0 ? [] : data[index].school[0].id
-            
+                let schoolData = data[index].school.length == 0 ? [] : data[index].school.map(item=>{return item.id})
                 this.aform = {
                     aid: data[index].aid,
                     uname: data[index].uname,
                     name: data[index].name,
                     sex: data[index].sex,
                     tel: data[index].tel,
-                    pwd: '',
                     region: '',
                     school: schoolData,
                     did: data[index].did - 0,
@@ -361,47 +351,34 @@ export default {
                  this.dialogFormVisible = true;
 
             },
-            open2(index, data) { //删除账号
-                this.$confirm('是否确定要删除该账号?', '删除账号', {
-                        customClass: 'redwarn',
-                        confirmButtonText: '确定',
-                        cancelButtonText: '取消',
-                        type: 'warning'
-                    }).then(() => {
-                        let para = {
-                            aid: data[index].aid
-                        }
-                        delete_account(para, token).then(() => {
+            // open2(index, data) { //删除账号
+            //     this.$confirm('是否确定要删除该账号?', '删除账号', {
+            //             customClass: 'redwarn',
+            //             confirmButtonText: '确定',
+            //             cancelButtonText: '取消',
+            //             type: 'warning'
+            //         }).then(() => {
+            //             let para = {
+            //                 aid: data[index].aid
+            //             }
+            //             delete_account(para, token).then(() => {
 
-                            this.fetchData();
-                        })
-                        this.$message({
-                            type: 'success',
-                            message: '删除成功!'
-                        });
-                    }).then(() => {
-                        this.beRed();
-                    })
-                    // .catch(() => {
-                    //   this.$message({
-                    //     type: 'info',
-                    //     message: '已取消删除'
-                    //   });          
-                    // });
-            },
-            beRed() { //停用变红
-                let span = document.getElementsByClassName('redBlack');
-                let length = span.length;
-                for (let i = 0; i < length; i++) {
-                    if (span[i].innerText.indexOf('停用') > -1) {
-                        span[i].style.color = 'red';
-                    } else {
-                        span[i].style.color = 'black';
-                    }
-
-                }
-
-            },
+            //                 this.fetchData();
+            //             })
+            //             this.$message({
+            //                 type: 'success',
+            //                 message: '删除成功!'
+            //             });
+            //         }).then(() => {
+            //             this.beRed();
+            //         })
+            //         // .catch(() => {
+            //         //   this.$message({
+            //         //     type: 'info',
+            //         //     message: '已取消删除'
+            //         //   });          
+            //         // });
+            // },
             campusGet() { //城市change之后获取校区
                 let para = {
                     simple: '1',
@@ -434,14 +411,12 @@ export default {
             },
             addAccount(formName) { //点确定后添加账号
                 this.$refs[formName].validate((valid) => {
-                    let f = this.aform;
-                    f.school_id = f.school;
+                    let f = {...this.aform};
+                    f.school_id = f.school.join(',');
                     let i = this.in;
-
                     if (valid) {
                         if (i !== '') {
-                            let para = f;
-                            put_account(para, token).then(res => {
+                            put_account(f, token).then(res => {
                                 if(res.code ==0){
                                  this.$message({
                                     message: '修改成功',
@@ -458,8 +433,7 @@ export default {
                                  this.dialogFormVisible = false;
                             });
                         }else {
-                            let para = f;
-                            create_account(para, token).then(res => {
+                            create_account(f, token).then(res => {
                                if(res.code ==0){
                                  this.$message({
                                     message: '创建成功',
@@ -476,8 +450,6 @@ export default {
                                  this.dialogFormVisible = false;
                             });
                         }
-                        this.in = '';
-                       
                     }else {
                         console.log('error submit!!');
                         return false;
@@ -498,18 +470,6 @@ export default {
                     let c = res.last_page * this.pagesize;
                     this.total = parseInt(c);
                     this.accountData = a;
-                }).then((res) => {
-                    let span = document.getElementsByClassName('redBlack');
-                    let length = span.length;
-                    for (let i = 0; i < length; i++) {
-                        // span[i].className = '';
-                        if (span[i].innerText.indexOf('停用') > -1) {
-                            span[i].style.color = 'red';
-                        } else {
-                            span[i].style.color = 'black';
-                        }
-
-                    }
                 })
 
             },
@@ -524,11 +484,10 @@ export default {
         },
         created() { //创建组件时
             this.fetchData();
-
             let cam = {
                 simple: '1'
             };
-            campusList(cam, token).then((res) => { //获取校区
+            campusList(cam, token).then((res) => {//获取校区
                 let a = res.data.map(item => {
                     return {
                         value: item.id,
@@ -555,8 +514,6 @@ export default {
                     this.cities = res.data
                 })
             })
-
-
         },
         computed: {
             alter: function() {
@@ -663,5 +620,11 @@ export default {
 
 .accountManageDialog .el-dialog__footer {
     padding: 0 20px 15px;
+}
+.AMinput{
+position:absolute;
+top:10px;
+right:100px;
+width:200px
 }
 </style>
