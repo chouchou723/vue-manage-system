@@ -1,31 +1,37 @@
 <template>
         <div>
-            <div class="crumbs">
+            <!-- <div class="crumbs">
                 <el-breadcrumb separator="/">
-                    <el-breadcrumb-item><i class="el-icon-my-tongjifenxi"></i> 合同变更流失表</el-breadcrumb-item>
+                    <el-breadcrumb-item><i class="el-icon-my-tongjifenxi"></i> TMK工作量</el-breadcrumb-item>
                 </el-breadcrumb>
-            </div>
+            </div> -->
             <!-- 合同变更统计 -->
-            <div style="width: 60%;float:left;background: white;margin-top:10px;position:relative;height:auto;">
+            <div style="width: 63%;float:left;background: white;position:relative;height:auto;border-top-left-radius:5px;">
                 <div class="newResourceAn" style="position:relative;margin-top:10px;height:70px;border-bottom:1px solid gainsboro">
                     <div style='margin-left:10px;width:100px;float:right;margin-right:5px' v-if='code.includes("_m")'>
                         <el-select class='circleSelect' v-model="valueCM1" size='small' clearable :placeholder="code.includes('cc')?'选择CC':code.includes('tmk')?'选择TMK':'选择老师'" @change="updateListCM">
-                            <el-option v-for="item in ccs" :key="item.aid" :label="item.uname" :value="item.aid">
+                            <el-option v-for="item in ccs" :key="item.key" :label="item.label" :value="item.key">
                             </el-option>
                         </el-select>
                     </div>
-                    <div style='margin-left:10px;width:100px;float:right;margin-right:5px' v-if='code.includes("_c")'>
+                    <!-- <div style='margin-left:10px;width:100px;float:right;margin-right:5px' v-if='code.includes("_c")'>
                         <el-select v-model="valueCM5" size='small' clearable placeholder="选择校区" @change="updateListCM">
                             <el-option v-for="item in ccs" :key="item.aid" :label="item.uname" :value="item.aid">
                             </el-option>
                         </el-select>
-                    </div>
+                    </div> -->
                     <div style='float:left;'>
                         <h4 style='margin-bottom:10px;padding-top:5px;padding-left:10px'>
                             <span>工作量</span>
                         </h4>
                     </div>
-                    <div class='drop' style='float:left;width:111px;margin-top:4px;margin-left:4px'>
+                    <div style='margin-left:10px;width:110px;float:left'>
+                            <el-select v-model="valueCM6" size='small' clearable placeholder="最近一周" @change="updateListCM">
+                                    <el-option label="最近一周" value="lastweek"></el-option>
+                                    <el-option label="最近一个月" value="lastmonth"></el-option>
+                            </el-select>
+                        </div>
+                    <!-- <div class='drop' style='float:left;width:111px;margin-top:4px;margin-left:4px'>
                         <el-dropdown @command="handleCommandCM">
                             <span class="el-dropdown-link">
             [{{titleCM}}<i class="el-icon-caret-bottom el-icon--right"></i>]
@@ -35,7 +41,7 @@
                                 <el-dropdown-item command="最近一个月">最近一个月</el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
-                    </div>
+                    </div> -->
                     <!-- <div style='margin-left:10px;width:140px;float:left'>
                             <el-select v-model="value6" size='small' clearable placeholder="选择校区" @change="updateList4">
                                 <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
@@ -72,12 +78,12 @@
                                 </el-select>
                             </div>
                 </div>
-                <div style="width:90%;position:absolute;top:88px;left:30px;z-index:100;font-size:12px">
+                <div style="width:90%;position:absolute;top:88px;left:30px;z-index:100;font-size:12px;">
                     <span style="display:inline-block;vertical-align: middle;"><img src="../../../static/img/info.png" width='20'alt=""></span>
                     <span style="color:grey;line-height:20px;">根据发展客户的次数绘制</span>
                 </div>
                 <IEcharts :option="line" style='height:400px;width:100%;float:left'></IEcharts>
-                <div id="tableS" style='width: 90%;margin:0 auto'>
+                <div id="tableRTMK2" style='width: 90%;margin:0 auto'>
                     <el-table :data="resourceData" border show-summary style="width: 100%">
                         <el-table-column prop="date" label="日期">
                         </el-table-column>
@@ -94,27 +100,27 @@
                     </el-table>
     
                     <div class="block">
-                        <el-pagination layout="prev, pager, next" :total="total2" :current-page="currentPage2" :page-size="pagesize2" @current-change="handleCurrentChange2">
+                        <el-pagination layout="prev, pager, next" :total="total" :current-page="currentPage" :page-size="pagesize" @current-change="handleCurrentChange">
                         </el-pagination>
                     </div>
                 </div>
     
             </div>
             <!-- 新资源渠道 -->
-            <div style="width: 40%;float:left;background: white;margin-top:10px;position:relative;height:auto;">
+            <div style="width: 37%;float:left;background: white;position:relative;height:auto;border-top-right-radius:5px;">
                     <div class="newResourceAn" style="position:relative;margin-top:10px;height:70px;border-bottom:1px solid gainsboro">
                         <div style='margin-left:10px;width:100px;float:right;margin-right:5px' v-if='code.includes("_m")'>
-                            <el-select class='circleSelect' v-model="valueCM1" size='small' clearable :placeholder="code.includes('cc')?'选择CC':code.includes('tmk')?'选择TMK':'选择老师'" @change="updateListCM">
-                                <el-option v-for="item in ccs" :key="item.aid" :label="item.uname" :value="item.aid">
+                            <el-select class='circleSelect' v-model="valueRE4" size='small' clearable :placeholder="code.includes('cc')?'选择CC':code.includes('tmk')?'选择TMK':'选择老师'" @change="updateListRE">
+                                <el-option v-for="item in ccs" :key="item.key" :label="item.label" :value="item.key">
                                 </el-option>
                             </el-select>
                         </div>
-                        <div style='margin-left:10px;width:100px;float:right;margin-right:5px' v-if='code.includes("_c")'>
+                        <!-- <div style='margin-left:10px;width:100px;float:right;margin-right:5px' v-if='code.includes("_c")'>
                             <el-select v-model="valueCM5" size='small' clearable placeholder="选择校区" @change="updateListCM">
                                 <el-option v-for="item in ccs" :key="item.aid" :label="item.uname" :value="item.aid">
                                 </el-option>
                             </el-select>
-                        </div>
+                        </div> -->
                         <div style='float:left;'>
                             <h4 style='margin-bottom:10px;padding-top:5px;padding-left:10px'>
                                 <span >新资源来源渠道统计</span>
@@ -145,16 +151,16 @@
                             </div> -->
                             <div style="clear:both"></div>
                         <div style='width:100px;float:left;margin-left:10px'>
-                            <el-date-picker v-model="valueRE1" type="week" size='small' placeholder="周选择" @change="updateListCM" style='width:100px'>
+                            <el-date-picker v-model="valueRE1" type="week" size='small' placeholder="周选择" @change="updateListRE" style='width:100px'>
                                 </el-date-picker>
                         </div>
                         <div class='datec' style='float:left;margin-left:10px'>
                           
-                            <el-date-picker v-model="valueRE2" type="month" size='small' placeholder="月选择" @change="updateListCM" style='width:100px'>
+                            <el-date-picker v-model="valueRE2" type="month" size='small' placeholder="月选择" @change="updateListRE" style='width:100px'>
                             </el-date-picker>
                         </div>
                         <div style='width:140px;float:left;margin-left:10px'>
-                                <el-select v-model="valueRE3" size='small' clearable placeholder="选择校区" @change="updateListCM">
+                                <el-select v-model="valueRE3" size='small' clearable placeholder="选择校区" @change="updateListRE">
                                     <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
                                     </el-option>
                                 </el-select>
@@ -169,7 +175,7 @@
                             </IEcharts>
         
                         </div>
-                    <div id="tableS" style='width: 90%;margin:0 auto'>
+                    <div id="tableRTMK" style='width: 90%;margin:0 auto'>
                         <el-table :data="resourceData" border show-summary style="width: 100%">
                             <el-table-column prop="date" label="日期">
                             </el-table-column>
@@ -187,7 +193,7 @@
         
                 </div>
     <!-- 课耗排行榜 -->
-    <div style="width: 100%;float:left;background: white;margin-top:10px;height:auto">
+    <div style="width: 100%;float:left;background: white;margin-top:10px;height:auto" v-if='code.includes("_c")'>
         <div class="newResourceAn" style="position:relative;margin-top:10px;height:45px;border-bottom:1px solid gainsboro">
 
             <div style='float:left;'>
@@ -225,12 +231,12 @@
                             </el-select>
                         </div>  -->
             <div class='datec' style='float:left;margin-left:10px'>
-                <el-select v-model="valueSA1" size='small' clearable placeholder="切换日周月" style='width:75px'>
+                <el-select v-model="valueSA1" size='small' clearable placeholder="切换日周月" style='width:75px' @change="updateListSA">
                     <el-option label="本日" value="1"></el-option>
                     <el-option label="本周" value="2"></el-option>
                     <el-option label="本月" value="3"></el-option>
                 </el-select>
-                <el-date-picker v-model="valueSA2" type="month" size='small' placeholder="选择月份" @change="updateListCM" style='width:100px'>
+                <el-date-picker v-model="valueSA2" type="month" size='small' placeholder="选择月份" @change="updateListSA" style='width:100px'>
                 </el-date-picker>
             </div>
             <!-- <div style='width:100px;float:right;margin-right:10px'>
@@ -247,7 +253,7 @@
             <div style="margin-top:10px"> <span style="display:inline-block;vertical-align: middle;"><img src="../../../static/img/rank.png" width='20'alt=""></span>
                 <span style="color:grey;line-height:20px;">第十名</span></div>
         </div>
-        <div id="tableSA" style="width:90%;margin:0 auto;position:relative">
+        <div id="tableRTMK1" style="width:90%;margin:0 auto;position:relative">
             <el-radio-group v-model="radio3" @change='getNewRank' style="position:absolute;top:-55px;left:45%" v-if="code.includes('_c')">
                 <el-radio-button :label='1'>按老师</el-radio-button>
                 <el-radio-button :label='2'>按校区</el-radio-button>
@@ -257,30 +263,30 @@
                 </el-table-column>
             </el-table>
             <el-table :data="SAData" border y style="width: 90%;float:left" :show-header='backface' id='tableright'>
-                <el-table-column prop="rank1" label="日期">
+                <el-table-column prop="rank1" >
                 </el-table-column>
-                <el-table-column prop="rank2" label="签单量">
+                <el-table-column prop="rank2" >
                 </el-table-column>
-                <el-table-column prop="rank3" label="人头数">
+                <el-table-column prop="rank3" >
                 </el-table-column>
-                <el-table-column prop="rank4" label="日期">
+                <el-table-column prop="rank4" >
                     </el-table-column>
-                    <el-table-column prop="rank5" label="签单量">
+                    <el-table-column prop="rank5" >
                     </el-table-column>
-                    <el-table-column prop="rank6" label="人头数">
+                    <el-table-column prop="rank6" >
                     </el-table-column>
-                    <el-table-column prop="rank7" label="日期">
+                    <el-table-column prop="rank7" >
                         </el-table-column>
-                        <el-table-column prop="rank8" label="签单量">
+                        <el-table-column prop="rank8" >
                         </el-table-column>
-                        <el-table-column prop="rank9" label="人头数">
+                        <el-table-column prop="rank9" >
                         </el-table-column>
-                        <el-table-column prop="rank10" label="日期">
+                        <el-table-column prop="rank10" >
                             </el-table-column>
             </el-table>
             <div style="clear:both"></div>
             <div class="block">
-                <el-pagination layout="prev, pager, next" :total="total" :current-page="currentPage" :page-size="pagesize" @current-change="handleCurrentChange">
+                <el-pagination layout="prev, pager, next" :total="total3" :current-page="currentPage3" :page-size="pagesize3" @current-change="handleCurrentChange3">
                 </el-pagination>
             </div>
         </div>
@@ -292,10 +298,10 @@
         var token, user
         import IEcharts from 'vue-echarts-v3';
         import {
-            getReport1,
-            getReportSA,
+            gettmkFormsPiclData,
+            gettmkFormsTableData,
             campusList,
-            getAllCCList,
+            getTMK,
             sourceList
         } from '../../api/api';
         export default {
@@ -303,35 +309,6 @@
                 IEcharts
             },
             data: () => ({
-                frozenlist: [{
-                    title: 'art1',
-                    num: '10人',
-                    rate: '2%'
-                }, {
-                    title: 'art2',
-                    num: '10人',
-                    rate: '2%'
-                }, {
-                    title: 'art3',
-                    num: '10人',
-                    rate: '2%'
-                }, {
-                    title: 'art2',
-                    num: '10人',
-                    rate: '2%'
-                }, {
-                    title: 'art3',
-                    num: '10人',
-                    rate: '2%'
-                }, {
-                    title: 'art2',
-                    num: '10人',
-                    rate: '2%'
-                }, {
-                    title: 'art3',
-                    num: '10人',
-                    rate: '2%'
-                }],
                 titleData: [{
                     title: '排名'
                 }, {
@@ -353,114 +330,75 @@
                 }, {
                     title: '到访量'
                 }],
-                datatype: '',
                 code: '',
                 radio3: '2',
-                isCharge: true,
                 currentPage: 1, //页数
                 pagesize: 7, //默认每页
                 total: 0, //总页数
                 currentPage2: 1, //页数
-                pagesize2: 3, //默认每页
+                pagesize2: 7, //默认每页
                 total2: 0, //总页数
-                workData: [{
-                    date: '2017.6.12',
-                    resource: '2',
-                    comm: '3',
-                    active: '4',
-                    noneed: '5',
-                    return: '6'
-                }, {
-                    date: '2017.6.13',
-                    resource: '2',
-                    comm: '3',
-                    active: '4',
-                    noneed: '5',
-                    return: '6'
-                }, {
-                    date: '2017.6.14',
-                    resource: '2',
-                    comm: '3',
-                    active: '4',
-                    noneed: '5',
-                    return: '6'
-                }, {
-                    date: '2017.6.15',
-                    resource: '2',
-                    comm: '3',
-                    active: '4',
-                    noneed: '5',
-                    return: '6'
-                }, {
-                    date: '2017.6.16',
-                    resource: '2',
-                    comm: '3',
-                    active: '4',
-                    noneed: '5',
-                    return: '6'
-                }, {
-                    date: '2017.6.17',
-                    resource: '2',
-                    comm: '3',
-                    active: '4',
-                    noneed: '5',
-                    return: '6'
-                }, {
-                    date: '2017.6.18',
-                    resource: '2',
-                    comm: '3',
-                    active: '4',
-                    noneed: '5',
-                    return: '6'
-                }],
+                currentPage3: 1, //页数
+                pagesize3: 7, //默认每页
+                total3: 0, //总页数
                 ccs: [],
                 resourceData: [],
                 SAData: [{rank1:'第一名',rank2:'第二名',rank3:'第三名',rank4:'第四名',rank5:'第五名',rank6:'第六名',rank7:'第七名',rank8:'第八名',rank9:'第九名',rank10:'第十名'},
-                {rank1:'第一名',rank2:'第二名',rank3:'第三名',rank4:'第四名',rank5:'第五名',rank6:'第六名',rank7:'第七名',rank8:'第八名',rank9:'第九名',rank10:'第十名'},
+                {rank1:'张一',rank2:'张聪',rank3:'汪苏泷',rank4:'第四名',rank5:'第五名',rank6:'第六名',rank7:'第七名',rank8:'第八名',rank9:'第九名',rank10:'第十名'},
                 {rank1:'21',rank2:'12',rank3:'11',rank4:'9',rank5:'8',rank6:'7',rank7:'6',rank8:'3',rank9:'2',rank10:'1'}
             ],
-                HMData: [],
-                options: [],
-                options1: [],
+                options: [],//校区
+                options1: [],//渠道
                 titleCM: '最近一周',
-                titleST: '最近一周',
-                titleSR: '最近一周',
-                titleHM: '最近一周',
-                titleHT: '最近一周',
                 valueCM1: '',
                 valueCM2: '',
                 valueCM3: '1',
                 valueCM4: '',
                 valueCM5: '',
+                valueCM6:'lastweek',//最近一周
+                periodCM: 'w',
                 valueRE1:'',
                 valueRE2:'',
-                periodCM: 'w',
+                valueRE3:'',
+                valueRE4:'',
                 valueSA1: '1',
                 valueSA2: '',
-                periodSA: 'w',
-                valueST1: '',
-                valueST2: '',
-                valueST3: '1',
-                valueST5: '',
-                periodST: 'w',
                 backface: false,
-                backface1: true,
                 line: {
-                    color: ["#13CE66", "#F7BA2A", "#16b8be", "#ed42b3", "#20a0ff"],
-                    title: {
-                        // text: '客户管理趋势图',
-                        textStyle: {
-                            fontSize: 17
-                        },
-                        padding: [15, 5, 5, 5]
-                    },
+                    color: ["#4dc0e5", "#0075aa", "#0baa32", "#b6a800", "#ed6a3a"],
+                    // title: {
+                    //     // text: '客户管理趋势图',
+                    //     textStyle: {
+                    //         fontSize: 17
+                    //     },
+                    //     padding: [15, 5, 5, 5]
+                    // },
+                    dataZoom: [{
+                        startValue: '2017-05-01',
+                        textStyle:{
+                            fontSize:9
+                        }
+                    }, 
+                    {
+                        type: 'inside',
+                        
+                        // maxSpan:2
+                        // filterMode: 'filter'
+                    }],
                     tooltip: {
                         trigger: 'axis'
                     },
                     xAxis: {
-                        axisTick: {
-                            alignWithLabel: true
+                        axisTick: {//刻度设置
+                            alignWithLabel: true,
+                            // interval: 0
                         },
+                        axisLabel: {
+                        // showMinLabel:true,
+                        showMaxLabel:true,                    
+                        // rotate:90,
+                        // interval: 0
+                    },
                         data: []
     
                     },
@@ -470,336 +408,86 @@
                         }
                     },
                     grid: {
-                        width: '90%',
-                        left: '5%'
-                    },
-                    series: [],
-                    backgroundColor: 'white'
-                },
-                line2: {
-                    color: ["#ec6941"],
-                    title: {
-    
-                        textStyle: {
-                            fontSize: 17
-                        },
-                        padding: [15, 5, 5, 5]
-                    },
-                    tooltip: {
-                        trigger: 'axis',
-                        formatter: "{a} : {c} <br/>"
-                    },
-                    xAxis: {
-                        axisTick: {
-                            alignWithLabel: true
-                        },
-    
-    
-                    },
-                    yAxis: {
-                        splitLine: {
-                            show: true
-                        }
-                    },
-                    series: []
-                },
-                line3: {
-                    color: ["#ec6941"],
-                    title: {
-                        textStyle: {
-                            fontSize: 17
-                        },
-                        padding: [15, 5, 5, 5]
-                    },
-                    tooltip: {
-                        trigger: 'axis',
-                        formatter: "{a} : {c} <br/>"
-                    },
-                    xAxis: {
-                        axisTick: {
-                            alignWithLabel: true
-                        },
-                        data: []
-    
-                    },
-                    yAxis: {
-                        splitLine: {
-                            show: true
-                        }
-                    },
-                    series: [],
-                    backgroundColor: 'white'
-                },
-                line4: {
-                    color: ["#13CE66", "#F7BA2A", "#16b8be", "#ed42b3", "#20a0ff", "#c7be40"],
-                    title: {
-                        text: '合同管理趋势图',
-                        textStyle: {
-                            fontSize: 17
-                        },
-                        padding: [15, 5, 5, 5]
-                    },
-                    tooltip: {
-                        trigger: 'axis'
-                    },
-                    xAxis: {
-                        axisTick: {
-                            alignWithLabel: true
-                        },
-                        data: []
-    
-                    },
-                    yAxis: {
-                        splitLine: {
-                            show: true
-                        }
-                    },
-                    legend: {
-                        orient: 'horizontal',
-                        bottom: 10,
-                        data: ["冻结量", "延期量", "转班量", "转校量", "过期量", "退费量"]
+                        width: '80%',
+                        // left: '5%'
                     },
                     series: [],
                     backgroundColor: 'white'
                 },
                 pie_radius: {
-                    color: ["#13CE66", "#F7BA2A", "#16b8be", "#ed42b3", "#20a0ff", "#c7be40"],
+                    color: ["#30b44a", "#da7cbb", "#80b8df", "#1fd9a1","#f27a52",  "#decf00"],
                     tooltip: {
                         trigger: 'item',
                         formatter: "{b} : {c} ({d}%)"
                     },
                     legend: {
-                        orient: 'horizontal',
-                        bottom: 20,
-                        data: ["线上TIN", "线下OUT", "顺访WI","续费","转介绍","其他"]
-                    },
-                    // graphic: [{
-                    //     type: 'image',
-                    //     id: 'logo',
-                    //     right: 'center',
-                    //     top: 'center',
-                    //     z: -10,
-                    //     bounding: 'raw',
-                    //     origin: [75, 75],
-                    //     style: {
-                    //         image: '../../../static/img/charts.png',
-                    //         width: 150,
-                    //         height: 150,
-                    //         opacity: 0.4
-                    //     }
-                    // }],
-                    series: [{
-                        name: '冻结占比',
-                        type: 'pie',
-                        radius: ['40%', '60%'],
-                        label: {
-                            normal: {
-                                show: true,
-                                formatter: "{b}\n{c}({d}%)",
-                                padding: 110
-                            }
-                        },
-                        labelLine: {
-                            normal: {
-                                length2: 5
-                            }
-                        },
-                        itemStyle: {
-                            emphasis: {
-                                shadowBlur: 10,
-                                shadowOffsetX: 0,
-                                shadowColor: 'rgba(0, 0, 0, 0.5)'
-                            }
-                        }
-                    }],
-                    backgroundColor: 'white'
-                },
-                pie_radius2: {
-                    color: ["#48d4ab", "#aee9d7", "#32997b", "#2ab58c"],
-                    legend: {
-                        orient: 'horizontal',
-                        bottom: 20,
-                        data: ["常规班", "夏令营", "暑假班", "考级班"]
-                    },
-                    tooltip: {
-                        trigger: 'item',
-                        formatter: "{b}:{c} ({d}%)"
-                    },
-                    // graphic: [{
-                    //     type: 'image',
-                    //     id: 'logo',
-                    //     right: 'center',
-                    //     top: 'center',
-                    //     z: -10,
-                    //     bounding: 'raw',
-                    //     origin: [75, 75],
-                    //     style: {
-                    //         image: '../../../static/img/charts.png',
-                    //         width: 150,
-                    //         height: 150,
-                    //         opacity: 0.4
-                    //     }
-                    // }],
-                    series: [{
-                        name: '冻结占比',
-                        type: 'pie',
-                        radius: ['40%', '60%'],
-                        label: {
-                            normal: {
-                                show: true,
-                                formatter: "{b}\n{c}({d}%)",
-                                align: 'right'
-                            }
-                        },
-                        labelLine: {
-                            normal: {
-                                length2: 5
-                            }
-                        },
-                        itemStyle: {
-                            emphasis: {
-                                shadowBlur: 10,
-                                shadowOffsetX: 0,
-                                shadowColor: 'rgba(0, 0, 0, 0.5)'
-                            }
-                        }
-                    }],
-                    backgroundColor: 'white'
-                },
-                funnel: {
-                    color: ["#13CE66", "#F7BA2A", "#16b8be", "#ed42b3", "#20a0ff"],
-                    tooltip: {
-                        trigger: 'item',
-                        formatter: "{b} : {c}"
-                    },
-                    toolbox: {
-                        // feature: {
-                        //     dataView: {
-                        //         readOnly: false
-                        //     },
-                        //     restore: {},
-                        //     saveAsImage: {}
-                        // }
-                    },
-                    // legend: {
-    
-                    //     data: ['客户认领量', '沟通量', '邀约量', '到访量', '签单量'],
-                    //     orient: 'horizontal',
-                    //     bottom: 10,
-                    // },
-                    calculable: true,
-                    series: [{
-                        name: '漏斗图',
-                        type: 'funnel',
-                        left: '0',
-                        top: 60,
-                        //x2: 80,
-                        bottom: 60,
-                        width: '80%',
-                        // height: {totalHeight} - y - y2,
-                        min: 0,
-                        max: 100,
-                        minSize: '0%',
-                        maxSize: '100%',
-                        sort: 'descending',
-                        gap: 2,
-                        label: {
-                            normal: {
-                                show: true,
-                                position: 'outside',
-                                formatter: "{b} : {c}"
-                            },
-                            emphasis: {
-                                textStyle: {
-                                    fontSize: 14
-                                }
-                            }
-                        },
-                        labelLine: {
-                            normal: {
-                                length: 10,
-                                lineStyle: {
-                                    width: 1,
-                                    type: 'solid'
-                                }
-                            }
-                        },
-                        itemStyle: {
-                            normal: {
-                                borderColor: '#fff',
-                                borderWidth: 1
-                            }
-                        },
-                        data: [{
-                                value: 1,
-                                name: '客户认领量'
-                            },
-                            {
-                                value: 40,
-                                name: '沟通量'
-                            },
-                            {
-                                value: 20,
-                                name: '邀约量'
-                            },
-                            {
-                                value: 80,
-                                name: '到访量'
-                            },
-                            {
-                                value: 100,
-                                name: '签单量'
-                            }
-                        ]
-                    }]
-                },
-                bar: {
-                    color: ["#6b9ed4"],
-                    title: {
-                        text: 'CC销售额排行榜',
-                        textStyle: {
-                            fontSize: 17
-                        },
-                        padding: [15, 5, 5, 5]
-                    },
-                    xAxis: {
-    
-                        axisTick: {
-                            interval: 0
-                        },
-                        axisLabel: {
-                            interval: 0
-                        },
-                        data: [
-                            // "张帅", "李东", "鹿晗", "吴亦凡", "李易峰", "杨洋", "张帅", "李东", "鹿晗", "吴亦凡", "李易峰", "杨洋", "张帅",
-                            // "李东", "鹿晗", "吴亦凡", "李易峰", "杨洋", "鹿晗", "吴亦凡", "李易峰", "杨洋"
-                        ],
-    
-                    },
-                    yAxis: {
-    
-                    },
-                    tooltip: {
-                        trigger: 'item'
-                    },
-                    legend: {
+                        width:'250px',
                         orient: 'horizontal',
                         bottom: 10,
-                        data: ["销售额"]
+                        data:[{name:'线上TIN',textStyle:{
+                            width:'50px'
+                        }
+                    },{name:'线下OUT',textStyle:{
+                        width:'50px'
+                        }
+                    },{name:'顺访WI',textStyle:{
+                            width:'50px'
+                        }
+                    },{name:'续费',textStyle:{
+                            padding:[0,20,0,0]
+                        }
+                    },{name:'转介绍',textStyle:{
+                        padding:[0,14,0,0]
+                        }
+                    },{name:'其他',textStyle:{
+                            width:'150px'
+                        }
+                    },]
+                        // data: ["线上TIN", "线下OUT", "顺访WI","续费","转介绍","其他"]
                     },
-                    barGap: 0,
+                    // graphic: [{
+                    //     type: 'image',
+                    //     id: 'logo',
+                    //     right: 'center',
+                    //     top: 'center',
+                    //     z: -10,
+                    //     bounding: 'raw',
+                    //     origin: [75, 75],
+                    //     style: {
+                    //         image: '../../../static/img/charts.png',
+                    //         width: 150,
+                    //         height: 150,
+                    //         opacity: 0.4
+                    //     }
+                    // }],
                     series: [{
-                        name: "销售额",
-                        type: "bar",
-                        data: []
-                    }]
+                        name: '占比',
+                        type: 'pie',
+                        radius: ['40%', '60%'],
+                        label: {
+                            normal: {
+                                show: true,
+                                formatter: "{b}\n{c}({d}%)",
+                                padding: 1
+                            }
+                        },
+                        labelLine: {
+                            normal: {
+                                length2: 5
+                            }
+                        },
+                        itemStyle: {
+                            emphasis: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }],
+                    backgroundColor: 'white'
                 },
             }),
-    
             methods: {
-                getNewRank() {
-                    //切换不同的标签来获取最新数据
-                },
                 handleCurrentChange: function (val) { //变更页数
                     this.currentPage = val;
                     // this.fetchData();
@@ -808,91 +496,38 @@
                     this.currentPage2 = val;
                     // this.fetchData();
                 },
-                updateListCM() {
+                handleCurrentChange3: function (val) { //变更页数
+                    this.currentPage3 = val;
+                    // this.fetchData();
+                },
+                updateListCM() {//第一张表格
                     if (this.valueCM2 != '') {
     
-                        this.periodCM = ''
+                        this.valueCM6 = ''
                     }
-                    this.getResoureData();
-                },
-                updateListSA() {
-                    if (this.valueSA4 != '') {
-                        this.periodSA = ''
-                    }
-                    this.getSAData();
-                },
-                updateListST() {
-                    if (this.valueST2 != '') {
-                        this.periodST = ''
-                    }
-                    this.getSTData();
-                },
+                    if (this.valueCM6 != '') {
     
-                handleCommandCM(command) {
-                    this.titleCM = command;
-                    this.valueCM2 = ''
-                    if (command == '最近一周') {
-                        this.periodCM = 'w'
-                    } else {
-                        this.periodCM = 'm'
+                        this.valueCM2 = ''
                     }
-                    this.getResoureData();
-                    // if(this.backface){
-                    //     this.backface = false;
-                    //     this.backface1 = true;
-                    // }else{
-                    //     this.backface1 = false;
-                    // this.backface = true;
-                    // }
-                    //调服务查询表单
+                    this.getCM1Data();
+                    // this.getCM2Data();                    
                 },
-                handleCommandSA(command) {
-                    this.titleSA = command;
-                    this.valueSA4 = '';
-                    if (command == '最近一周') {
-                        this.periodSA = 'w'
-                    } else {
-                        this.periodSA = 'm'
-                    }
-                    this.getSAData();
-                    //调服务查询表单
-                },
-                handleCommandST(command) {
-                    this.titleST = command;
-                    this.valueST2 = '';
-                    if (command == '最近一周') {
-                        this.periodST = 'w'
-                    } else {
-                        this.periodST = 'm'
-                    }
-                    this.getSTData();
-                    //调服务查询表单
-                },
-                getResoureData() {
+                getCM1Data() {//折线图
                     let para = {
-                        // period:this.periodCM,
-                        // startDay: this.valueCM2[0] != null? new Date(this.valueCM2[0]).toLocaleDateString(): '',
-                        // endDay: this.valueCM2[1] != null? new Date(this.valueCM2[1]).toLocaleDateString(): '',                    
-                        // cc_id: this.valueCM1
+                        tmk_id:this.valueCM1,
+                        start_date: this.valueCM2[0] != null ? new Date(this.valueCM2[0]).toLocaleDateString() : '',
+                        end_date:this.valueCM2[1] != null ? new Date(this.valueCM2[1]).toLocaleDateString() : '',
+                        short_date:this.valueCM6,
+                        column:this.valueCM3,
+                        school_id:this.valueCM4,
+                        source_id:this.valueCM5,
                     }
-                    getReport1(token, para).then(res => {
-                        this.resourceData = res.data
-                    })
-                },
-                getCTData() {
-                    let para = {
-                        period: this.periodCM,
-                        startDay: this.valueCM2[0] != null ? new Date(this.valueCM2[0]).toLocaleDateString() : '',
-                        endDay: this.valueCM2[1] != null ? new Date(this.valueCM2[1]).toLocaleDateString() : '',
-                        cc_id: this.valueCM1,
-                        view: 'picture'
-                    }
-                    getReport1(token, para).then(res => {
+                    gettmkFormsPiclData(token, para).then(res => {
                         let data = res.data;
-                        // console.log(data)
+                        console.log(data)
                         this.line.xAxis.data = data.day;
                         this.line.series = [{ //以后改成动态获取
-                            name: "客户认领量",
+                            name: "新资源",
                             type: "line",
                             data: data.newResources
                         }, {
@@ -920,65 +555,43 @@
                         };
                     })
                 },
-                getSAData() {
+                getCM2Data() {//表格
                     let para = {
-                        // period:this.periodSA,
-                        // startDay: this.valueSA4[0] != null? new Date(this.valueSA4[0]).toLocaleDateString(): '',
-                        // endDay: this.valueSA4[1] != null? new Date(this.valueSA4[1]).toLocaleDateString(): '',
-                        // cc_id: this.valueSA1,
-                        // view:'table'
+                        tmk_id:this.valueCM1,
+                        start_date: this.valueCM2[0] != null ? new Date(this.valueCM2[0]).toLocaleDateString() : '',
+                        end_date:this.valueCM2[1] != null ? new Date(this.valueCM2[1]).toLocaleDateString() : '',
+                        short_date:this.valueCM6,
+                        column:this.valueCM3,
+                        school_id:this.valueCM4,
+                        source_id:this.valueCM5,
                     }
-                    getReportSA(token, para).then(res => {
-                        this.SAData = res.data
+                    gettmkFormsTableData(token, para).then(res => {
+                    let a = res.data;
+                    let c = res.last_page * this.pagesize;
+                    this.total = parseInt(c);
+                    this.resourceData = a;
                     })
                 },
-                getSTData() {
-                    let para = {
-                        // period:this.periodST,
-                        // startDay: this.valueST2[0] != null? new Date(this.valueST2[0]).toLocaleDateString(): '',
-                        // endDay: this.valueST2[1] != null? new Date(this.valueST2[1]).toLocaleDateString(): '',
-                        // cc_id: this.valueST1,
-                        // view:'picture'
-                    }
-                    getReportSA(token, para).then(res => {
-                        let data = res.data;
-                        // console.log(data)
-                        this.line3.xAxis.data = data.day;
-                        this.line3.series = [{ //以后改成动态获取
-                            name: "新报名合同",
-                            type: "line",
-                            data: data.t1
-                        }, {
-                            name: "续费合同",
-                            type: "line",
-                            data: data.t2
-                        }, {
-                            name: "再购买合同",
-                            type: "line",
-                            data: data.t3
-                        }, {
-                            name: "转课补费合同",
-                            type: "line",
-                            data: data.t4
-                        }, {
-                            name: "全部合同",
-                            type: "line",
-                            data: data.all
-                        }];
-                        this.line3.legend = {
-                            orient: 'horizontal',
-                            bottom: 10,
-                            data: ["新报名合同", "续费合同", "再购买合同", "转课补费合同", "全部合同"],
-                            // backgroundColor:'white'
-                        };
-                    })
+                // handleCommandCM(command) {//最近一周切换
+                //     this.titleCM = command;
+                //     this.valueCM2 = ''
+                //     if (command == '最近一周') {
+                //         this.periodCM = 'w'
+                //     } else {
+                //         this.periodCM = 'm'
+                //     }
+                //     // this.getSAData();
+                //     //调服务查询表单
+                // },
+                updateListRE() {//第二张表格
+                    
+                    // this.getREData();
                 },
-                getSRData() {
+                getRE1Data() {//饼状图
                     let para = {
-                        period: this.periodSR,
-                        startDay: this.valueSR1[0] != null ? new Date(this.valueSR1[0]).toLocaleDateString() : '',
-                        endDay: this.valueSR1[1] != null ? new Date(this.valueSR1[1]).toLocaleDateString() : '',
-                        cc_id: this.valueSR1,
+                        startDay: this.valueRE1,
+                        endDay: this.valueSR2,
+                        cc_id: this.valueSR3,
                         view: 'rank'
                     }
                     getReportSA(token, para).then(res => {
@@ -988,46 +601,34 @@
                         this.bar.series[0].data = data.money
                     })
                 },
-                getHMData() {
+                getRE2Data() {//表格
                     let para = {
-                        period: this.periodHM,
-                        startDay: this.valueHM2[0] != null ? new Date(this.valueHM2[0]).toLocaleDateString() : '',
-                        endDay: this.valueHM2[1] != null ? new Date(this.valueHM2[1]).toLocaleDateString() : '',
-                        cc_id: this.valueCM1
+                        // period:this.periodCM,
+                        // startDay: this.valueCM2[0] != null? new Date(this.valueCM2[0]).toLocaleDateString(): '',
+                        // endDay: this.valueCM2[1] != null? new Date(this.valueCM2[1]).toLocaleDateString(): '',                    
+                        // cc_id: this.valueCM1
                     }
-                    // getHM(token, para).then(res => {
-                    //     this.HMData = res.data
-                    // })
+                    getReport1(token, para).then(res => {
+                        this.resourceData = res.data
+                    })
                 },
-                getChart1() {
-                    this.line.xAxis.data = data.data.weekList.week;
-                    this.line.series = [{ //以后改成动态获取
-                        name: "新资源",
-                        type: "line",
-                        data: data.data.weekList.newResources
-                    }, {
-                        name: "沟通记录量",
-                        type: "line",
-                        data: data.data.weekList.newCall
-                    }, {
-                        name: "激活无需求",
-                        type: "line",
-                        data: data.data.weekList.activation
-                    }, {
-                        name: "认定无效",
-                        type: "line",
-                        data: data.data.weekList.invalid
-                    }, {
-                        name: "回访量",
-                        type: "line",
-                        data: data.data.weekList.returnCall
-                    }];
-                    this.line.legend = {
-                        orient: 'horizontal',
-                        bottom: 10,
-                        data: ["新资源", "沟通记录量", "激活无需求", "认定无效", "回访量"],
-                        // backgroundColor:'white'
-                    };
+                updateListSA() {//第三张表格
+                    
+                    // this.getSAData();
+                },
+                getSAData() {
+                    let para = {
+                        // period:this.periodCM,
+                        // startDay: this.valueCM2[0] != null? new Date(this.valueCM2[0]).toLocaleDateString(): '',
+                        // endDay: this.valueCM2[1] != null? new Date(this.valueCM2[1]).toLocaleDateString(): '',                    
+                        // cc_id: this.valueCM1
+                    }
+                    getReport1(token, para).then(res => {
+                        this.resourceData = res.data
+                    })
+                },
+                getNewRank() {
+                    //切换不同的标签来获取最新数据
                 },
             },
             beforeCreate() {
@@ -1035,9 +636,10 @@
                 token = JSON.parse(user).token;
             },
             created() {
+                document.body.scrollTop = 0
                 this.code = JSON.parse(user).job ? JSON.parse(user).job.code : '';
                 // this.getResoureData();
-                this.getCTData();
+                // this.getCTData();
                 let cam = {
             simple: '1'
         };
@@ -1073,49 +675,51 @@
                 //     this.options1 = res.data
     
                 // })
-                // this.line.legend = {
-                //     orient: 'horizontal',
-                //     bottom: 10,
-                //     data: ["客户认领量", "沟通量", "邀约量","到访量","签单量"],
-                //     // backgroundColor:'white'
-                // };
-                // this.line.xAxis.data = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"]
-                this.line2.xAxis.data = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"]
-                this.line3.xAxis.data = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"]
-                // this.line.series = [{ //以后改成动态获取
-                //     name: "客户认领量",
-                //     type: "line",
-                //     data: [2, 5, 10, 5, 1, 5, 10]
-                // }, {
-                //     name: "沟通量",
-                //     type: "line",
-                //     data: [3, 10, 12, 3, 9, 0, 2]
-                // }, {
-                //     name: "邀约量",
-                //     type: "line",
-                //     data: [4, 8, 18, 15, 4, 2, 1]
-                // }, {
-                //     name: "到访量",
-                //     type: "line",
-                //     data: [5, 11, 9, 4,19, 10, 12]
-                // }, {
-                //     name: "签单量",
-                //     type: "line",
-                //     data: [14, 18, 8, 5, 14, 12, 11]
-                // }]
-                // this.line2.series = [{ //以后改成动态获取
-                //     name: "人数",
-                //     type: "line",
-                //     data: [2, 5, 10, 5, 1, 5, 10]
-                // }]
-                // this.line3.series = [{ //以后改成动态获取
-                //     name: "人数",
-                //     type: "line",
-                //     data: [2, 5, 10, 5, 1, 5, 10]
-                // }]
-                if (this.code.includes('cc_m')) {
-                    getAllCCList(token).then((res) => {
+                this.line.legend = {
+                    orient: 'horizontal',
+                    top: 30,
+                    data: ["新资源", "沟通量", "资源激活","无效认定","学员回访"],
+                    // backgroundColor:'white'
+                };
+                this.line.xAxis.data = ["2017-05-01", "2017-05-02", "2017-05-03", "2017-05-04", "2017-05-05", "2017-05-06", "2017-05-07",
+                "2017-05-08", "2017-05-09", "2017-05-10", "2017-05-11", "2017-05-12", "2017-05-13", "2017-05-14",
+                "2017-05-15", "2017-05-16", "2017-05-17", "2017-05-18", "2017-05-19", "2017-05-20", "2017-05-21",
+                "2017-05-22", "2017-05-23", "2017-05-24", "2017-05-25", "2017-05-26", "2017-05-27", "2017-05-28",
+                "2017-05-29", "2017-05-30", "2017-05-31", 
+                "2017-06-01", "2017-06-02", "2017-06-03", "2017-06-04", "2017-06-05", "2017-06-06", "2017-06-07",
+                "2017-06-08", "2017-06-09", "2017-06-10", "2017-06-11", "2017-06-12", "2017-06-13", "2017-06-14",
+                "2017-06-15", "2017-06-16", "2017-06-17", "2017-06-18", "2017-06-19", "2017-06-20", "2017-06-21",
+                "2017-06-22", "2017-06-23", "2017-06-24", "2017-06-25", "2017-06-26", "2017-06-27", "2017-06-28",
+                "2017-06-29", "2017-06-30",  ]
+                // this.line.xAxis.axisLabel={
+                //     showMinLabel:true,
+                //     //     showMaxLabel:true,
+                // }
+                this.line.series = [{ //以后改成动态获取
+                    name: "新资源",
+                    type: "line",
+                    data: [2, 5, 10, 5, 1, 5, 10,2, 5, 10, 5, 1, 5, 10,2, 5, 10, 5, 1, 5, 10,2, 5, 10, 5, 1, 5, 10,2, 5, 10, 5, 1, 5, 10,2, 5, 10, 5, 1, 5, 10]
+                }, {
+                    name: "沟通量",
+                    type: "line",
+                    data: [3, 10, 12, 3, 9, 0, 2,3, 10, 12, 3, 9, 0, 2,3, 10, 12, 3, 9, 0, 2,3, 10, 12, 3, 9, 0, 2,3, 10, 12, 3, 9, 0, 2,3, 10, 12, 3, 9, 0, 2]
+                }, {
+                    name: "资源激活",
+                    type: "line",
+                    data: [4, 8, 18, 15, 4, 2, 1,4, 8, 18, 15, 4, 2, 1,4, 8, 18, 15, 4, 2, 1,4, 8, 18, 15, 4, 2, 1,4, 8, 18, 15, 4, 2, 1,4, 8, 18, 15, 4, 2, 1,]
+                }, {
+                    name: "无效认定",
+                    type: "line",
+                    data: [5, 11, 9, 4,19, 10, 12]
+                }, {
+                    name: "学员回访",
+                    type: "line",
+                    data: [14, 18, 8, 5, 14, 12, 11]
+                }]
+                if (this.code == 'tmk_m'||this.code=='cc_c') {
+                    getTMK(token).then((res) => {
                         this.ccs = res.data
+                        this.ccs.unshift({key:'0',label:'全部TMK'})
                     })
                 }
                 this.pie_radius.series[0].data = [
@@ -1145,67 +749,72 @@
     
     </script>
     <style>
+       #tableRTMK2 .el-table th, #tableRTMK .el-table th{
+           background: #f2f2f2
+       }
         .echarts {
             float: left;
             width: 100%;
             height: 400px;
             z-index: 1;
         }
-        /* #tableSA{
+        /* #tableRTMK1TMK{
              height: 443px;
          } */
     
-        #tableSA .el-table__empty-block {
+        /* #tableRTMK .el-table__empty-block {
             min-height: 120px;
-        }
+        } */
     
         #tableright {
             border-left: none;
         }
     
-        #tableSA .el-table td,
-        #tableSA .el-table th {
+        #tableRTMK .el-table td,
+        #tableRTMK .el-table th:not(.gutter) {
             padding: 5px 5px;
             text-align: center
         }
     
-        #tableSA .el-table th>div,
-        #tableSA .el-table .cell {
+        #tableRTMK .el-table th>div,
+        #tableRTMK .el-table .cell {
             padding-left: 0;
             padding-right: 0;
+            background: #f2f2f2
         }
     
-        #tableR .el-table td,
-        #tableR .el-table th {
+        #tableRTMK1 .el-table td,
+        #tableRTMK1 .el-table th:not(.gutter) {
             padding: 5px 5px;
             text-align: center
         }
     
-        #tableR .el-table th>div,
-        #tableR .el-table .cell {
+        #tableRTMK1 .el-table th>div,
+        #tableRTMK1 .el-table .cell {
             padding-left: 0;
             padding-right: 0;
         }
     
-        #tableS .el-table td,
-        #tableS .el-table th {
+        #tableRTMK2 .el-table td,
+        #tableRTMK2 .el-table th:not(.gutter) {
             padding: 5px 5px;
             text-align: center
         }
     
-        #tableS .el-table th>div,
-        #tableS .el-table .cell {
+        #tableRTMK2 .el-table th>div,
+        #tableRTMK2 .el-table .cell {
             padding-left: 0;
             padding-right: 0;
+            background: #f2f2f2
         }
-        /* #tableR .el-table__footer .gutter {
+        /* #tableRTMK1 .el-table__footer .gutter {
                 display: none
             }
         
-            #tableS .el-table__footer .gutter {
+            #tableRTMK2 .el-table__footer .gutter {
                 display: none
             }
-            #tableSA .el-table__footer .gutter {
+            #tableRTMK1TMK .el-table__footer .gutter {
                 display: none
             } */
     
@@ -1243,20 +852,6 @@
         .backfa1 {
             transform: rotateY(180deg);
             backface-visibility: hidden;
-        }
-    
-        .circleG {
-            position: relative
-        }
-    
-        .circleG::before {
-            content: ' ';
-            top: 10px;
-            left: 5px;
-            width: 12px;
-            height: 12px;
-            background: #7fee1d;
-            border-radius: 6px;
         }
         .circleSelect .el-input__inner{
     border-radius: 28px

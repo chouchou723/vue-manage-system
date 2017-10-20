@@ -1,11 +1,11 @@
 <template>
     <div class="tableCharacter">
-        <div class="crumbs">
+        <!-- <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-my-shezhi"></i> 组织架构</el-breadcrumb-item>
                 <el-breadcrumb-item class='ss'>角色管理</el-breadcrumb-item>
             </el-breadcrumb>
-        </div>
+        </div> -->
         <div class='crea' >
          <h3 class='charatcterH2'>角色管理</h3>
             <el-button type="primary" size="mid" class='CMbutton' @click="createCh">创建角色</el-button>

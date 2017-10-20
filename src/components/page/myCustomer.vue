@@ -1,14 +1,15 @@
 <template>
     <div>
-        <div class="crumbs">
+        <!-- <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-my-yonhu"></i> 客户管理</el-breadcrumb-item>
                 <el-breadcrumb-item class='ss'>我的客户</el-breadcrumb-item>
             </el-breadcrumb>
-        </div>
-        <div class='accouMyresourece'>
-            <h2 class="mydataReturn">
+        </div> -->
+        <div class='accouMyresoureceMC'>
+            <h2 class="myMCReturn">
                 我的客户({{number}}人)
+                <el-button type="primary" size="mid" class='myresourceButton' @click="goToAdd" v-if='!code.includes("_c")'>添加客户</el-button>
             </h2>
             <div class="MCUtitle">
                 <div class='studentReturnThreeNew' v-if="code.includes('_c')">
@@ -18,7 +19,7 @@
                     </el-select>
                 </div>
                 <div class='studentReturnThreeNew' v-if="code =='cc_m'||code.includes('_c')">
-                    <el-select v-model="valueCC" clearable placeholder="选择CC" @change="updateList">
+                    <el-select v-model="valueCC"  placeholder="选择CC" @change="updateList">
                         <el-option v-for="item in optionsCC" :key="item.aid" :label="item.uname" :value="item.aid">
                         </el-option>
                     </el-select>
@@ -54,13 +55,13 @@
                     <el-input placeholder="输入手机号或姓名" icon="search" v-model="input2" @keyup.enter.native="updateList" :on-icon-click="updateList">
                     </el-input>
                 </div>
-                <div class="MCUadd" v-if='!code.includes("_c")'>
-                    <el-button type="primary" size="mid" class='myresourceButton' @click="goToAdd">添加客户</el-button>
-                </div>
+                <!-- <div class="MCUadd" >
+                   
+                </div> -->
             </div>
         </div>
-        <div id="table" v-loading="loading2">
-            <el-table :data="customerData" border style="width: 100%">
+        <div id="tableMC" v-loading="loading2">
+            <el-table :data="customerData"  style="width: 100%" @sort-change='sortChange'>
                 <el-table-column prop="names" label="学生" width="80">
                     <template scope="scope">
                         <span @click="switchDetail(scope.row)" class='nicknameSpan'>{{scope.row.names}}</span>
@@ -74,9 +75,9 @@
                 </el-table-column>
                 <el-table-column prop="soure_name" label="渠道来源">
                 </el-table-column>
-                <el-table-column prop="created" label="录入时间" sortable>
+                <el-table-column prop="created" label="录入时间" sortable='custom'>>
                 </el-table-column>
-                <el-table-column prop="last_time" label="最近联系时间" sortable>
+                <el-table-column prop="last_time" label="最近联系时间" sortable='custom'>>
                 </el-table-column>
                 <el-table-column prop="status" label="客户状态" column-key='status' width='80'>
                     <template scope="scope">
@@ -118,6 +119,9 @@
         getMyCustomerTag,
         campusList
     } from '../../api/api';
+    import {
+    mapActions,mapGetters
+} from 'vuex';
     export default {
         data() {
             return {
@@ -150,14 +154,40 @@
                     label: 'names',
                     children: '_child'
                 },
+                sortName:'',
+                sortOrder:'',
             }
         },
         methods: {
+            ...mapActions([
+                'setmyCustomerS'
+            ]),
+            sortChange(column){
+                let {prop,order} = column
+                // console.log(prop)
+                this.sortName=prop;
+                this.sortOrder = order;
+                this.currentPage = 1;
+                this.fetchData()
+            },
             goToAdd() { //添加客户
                 this.$router.push('/addCustomer');
             },
             switchDetail(row) { //点击名字进详细
-                this.$router.push('/customerDetail' + '/' + row.id + '/' + row.status);
+                let d = {
+                    school_id: this.valueR,
+                    page: this.currentPage,
+                    cc_uid: this.valueCC,
+                    sour_id: this.value2,
+                    create_start_time: this.value3,
+                    last_start_time: this.value4,
+                    status: this.value5,
+                    tag_id: this.valueTag,
+                    sortName:this.sortName,
+                    sortOrder:this.sortOrder
+                }
+                this.setmyCustomerS(d)
+                this.$router.push({ name: 'customerDetailList', params: { uid: row.id,status: row.status}});
             },
             updateList() {
                 this.currentPage = 1;
@@ -166,19 +196,51 @@
             updateListCC() {
                 this.currentPage = 1;
                 this.valueCC = '';
-                let para = {
+                this.optionsCC = [{
+                    aid: 0,
+                    uname: '全部CC'
+                }];
+                if (this.valueR != '') {
+                    let para = {
                     school_id: this.valueR
                 }
                 getAllCCList(token, para).then((res) => {
                     this.optionsCC = res.data;
                     this.optionsCC.unshift({
-                        aid: 0,
+                        aid: '0',
                         uname: '全部CC'
                     })
-                })
+                }).then(()=>{
+                        this.valueCC = '0'
+                    })
+                }else{
+                    this.valueCC = '0'
+                }
                 this.fetchData();
             },
             fetchData() { //查询列表
+                if(Object.keys(this.getmyCustomerS).length!=0){
+                    this.valueR =  this.getmyCustomerS.school_id;
+                    this.valueCC =  this.getmyCustomerS.cc_uid;
+                    this.value2 =  this.getmyCustomerS.sour_id;
+                    this.value3 =  this.getmyCustomerS.create_start_time;
+                    this.currentPage =  this.getmyCustomerS.page;
+                    this.value4 =  this.getmyCustomerS.last_start_time;
+                    this.value5 = this.getmyCustomerS.status;
+                    this.valueTag =  this.getmyCustomerS.tag_id;
+                    this.sortName =  this.getmyCustomerS.sortName;
+                    this.sortOrder =  this.getmyCustomerS.sortOrder;
+                    let para = {
+                        school_id: this.valueR
+                    }
+                    getAllCCList(token, para).then((res) => {
+                        this.optionsCC = res.data;
+                        this.optionsCC.unshift({
+                            aid: '0',
+                            uname: '全部CC'
+                        })
+                    })
+                }
                 let para = {
                     school_id: this.valueR,
                     page: this.currentPage,
@@ -190,7 +252,9 @@
                     last_end_time: this.value4[1] != null ? new Date(this.value4[1]).toLocaleDateString() : '',
                     status: this.value5,
                     input: this.input2,
-                    tag_id: this.valueTag
+                    tag_id: this.valueTag,
+                    sortName:this.sortName,
+                    sortOrder:this.sortOrder
                 }
                 getMyCustomerList(token, para).then((res) => { //重新获取列表
                     this.number = res.data.total;
@@ -199,7 +263,9 @@
                     this.customerData = a;
                     this.total = parseInt(c);
                 }).then(() => {
-                    this.loading2 = false
+                    this.loading2 = false;
+                    this.setmyCustomerS({})
+
                 }).catch(() => {
                     this.$message.error('该用户未授权');
                     this.loading2 = false
@@ -273,6 +339,32 @@
         },
         created() {
             this.code = JSON.parse(user).job ? JSON.parse(user).job.code : '';
+            if ((this.code == 'cc_m' || this.code.includes('_c'))&&Object.keys(this.getmyCustomerS).length==0) {
+                    if(this.code.includes('cc_c')||this.code.includes('teach_c')){//销售经理 和 教务经理 默认进来全部CC
+                    this.optionsCC.unshift({
+                        aid: '0',
+                        uname: '全部CC'
+                    })
+                    this.valueCC='0'
+                }else{
+                    getAllCCList(token).then((res) => {
+                        this.optionsCC = res.data;
+                        this.optionsCC.unshift({
+                            aid: '0',
+                            uname: '全部CC'
+                        })
+                        this.valueCC='0'
+                    })
+                }
+
+                    // getAllCCList(token).then((res) => {
+                    //     this.optionsCC = res.data;
+                    //     this.optionsCC.unshift({
+                    //         aid: 0,
+                    //         uname: '全部CC'
+                    //     })
+                    // })
+                }
             this.fetchData();
             sourceList(token).then(res => {
                 // let a = res.data.splice(0,1);
@@ -293,17 +385,15 @@
                     // })
                     this.backupTages = res.data
                 })
-                if (this.code == 'cc_m' || this.code.includes('_c')) {
-                    getAllCCList(token).then((res) => {
-                        this.optionsCC = res.data;
-                        this.optionsCC.unshift({
-                            aid: 0,
-                            uname: '全部CC'
-                        })
-                    })
-                }
+                
             })
         },
+        computed: {
+        ...mapGetters([
+            'getmyCustomerS'
+            // ...
+        ])
+    },
         // mounted() {
 
         // },
@@ -315,18 +405,18 @@
 
 </script>
 <style>
-    #table {
+    #tableMC {
         position: relative;
     }
 
-    #table .el-table td,
-    #table .el-table th {
+    #tableMC .el-table td,
+    #tableMC .el-table th:not(.gutter) {
         padding: 5px 5px;
         text-align: center
     }
 
-    #table .el-table th>div,
-    #table .el-table .cell {
+    #tableMC .el-table th>div,
+    #tableMC .el-table .cell {
         padding-left: 0;
         padding-right: 0;
     }
@@ -342,9 +432,10 @@
 
     .nicknameSpan {
         font-weight: 600;
+        color:#1fb5ad
     }
 
-    .accouMyresourece {
+    .accouMyresoureceMC {
         width: 100%;
         position: relative;
         height: auto;
@@ -352,16 +443,17 @@
         flex-wrap: wrap;
         justify-content: space-between;
         background-color: white;
-        margin-top: 30px;
+        margin-top: 0;
         padding-top: 10px;
-        margin-bottom: 5px;
+        /* margin-bottom: 5px; */
         border-radius: 5px;
     }
 
-    .mydataReturn {
+    .myMCReturn {
         margin-bottom: 15px;
         padding-left: 10px;
-        width: 350px;
+        margin-right:25%;
+        /* width: 350px; */
     }
 
     .studentReturnThreeNew {
@@ -413,23 +505,23 @@
         cursor: pointer;
     }
 
-    .accouMyresourece .el-date-editor--daterange.el-input {
+    /* .accouMyresoureceMC .el-date-editor--daterange.el-input {
         width: 180px;
         font-size: 12px;
-    }
+    } */
 
-    .el-dialog .el-dialog__header {
+    /* .el-dialog .el-dialog__header {
         background-color: #1fb5ad;
         padding: 20px 20px 20px;
     }
 
     .el-dialog .el-dialog__title {
         color: white;
-    }
+    } */
 
-    .tagDialog .input-new-tag {
+    /* .tagDialog .input-new-tag {
         width: 120px
-    }
+    } */
 
     .MCUtitle {
         display: flex;

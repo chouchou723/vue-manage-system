@@ -39,7 +39,7 @@
                     </div>
                 </el-dialog>
             </div>
-            <div id="table">
+            <div id="table2PL">
                 <el-table :data="accountData" border style='width:100%'>
                     <el-table-column prop="name" label="产品型号" width='280'>
                         <template scope="scope">
@@ -246,19 +246,19 @@
         border-color: #32a4d3;
     }
     
-    #table .el-table td,
-    #table .el-table th {
+    #table2PL .el-table td,
+    #table2PL .el-table th:not(.gutter) {
         padding: 5px 5px;
         text-align: center
     }
     
-    #table .el-table th>div,
-    #table .el-table .cell {
+    #table2PL .el-table th>div,
+    #table2PL .el-table .cell {
         padding-left: 0;
         padding-right: 0;
     }
     
-    #table .classDel {
+    #table2PL .classDel {
         color: #e95c5c;
     }
     

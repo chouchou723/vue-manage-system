@@ -4,12 +4,12 @@
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-moban"></i> 资源管理</el-breadcrumb-item>
                 <el-breadcrumb-item :to="{ path: '/myResource' }">我的资源</el-breadcrumb-item>
-                <el-breadcrumb-item class='ss'>添加客户</el-breadcrumb-item>
+                <el-breadcrumb-item class='ss'>录入资料</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class='addUserTitle'>
             <div class='AUtitle'>
-                <span class='AUadd'>添加用户资料</span></div>
+                <span class='AUadd'>录入资料</span></div>
         </div>
         <div>
             <el-form ref="form" :model="form" :rules='rule' label-width="80px" class='AUform'>
@@ -53,30 +53,35 @@
                             <el-option label="爸爸" value="爸爸"></el-option>
                             <el-option label="爷爷" value="爷爷"></el-option>
                             <el-option label="奶奶" value="奶奶"></el-option>
+                            <el-option label="外公" value="外公"></el-option>
+                            <el-option label="外婆" value="外婆"></el-option>
                             <!--  <el-option :label="connect" value="1"></el-option>
       <el-option :label="connect1" value="0"></el-option> -->
                         </el-select>
                     </el-form-item>
                     <el-form-item prop="phone" class='AUfloat'>
-                        <el-input v-model="form.phone" placeholder='请输入手机号' id='parentPhone' ref="parentPhone"></el-input>
+                        <el-input v-model="form.phone" placeholder='请输入手机号' id='parentPhone' ref="parentPhone" :maxlength='maxlength'></el-input>
                     </el-form-item>
                 </el-form-item>
                 <el-form-item label="">
                     <el-form-item prop="parent1" class='AU142float'>
-                        <el-input v-model="form.parent1" placeholder='请输入家长姓名'></el-input>
+                        <el-input v-model="form.parent1" placeholder='请输入家长姓名' ></el-input>
                     </el-form-item>
+                    <div style='position:absolute;color:#ff4949;bottom:-26px;font-size:12px' v-if="secondRule">第二家长信息如若填写,必须填写完全,不然将不予保存</div>
                     <el-form-item prop="con1" class='AU142float'>
-                        <el-select v-model="form.con1" placeholder="请选择关系">
+                        <el-select v-model="form.con1" placeholder="请选择关系" clearable>
                             <el-option label="妈妈" value="妈妈"></el-option>
                             <el-option label="爸爸" value="爸爸"></el-option>
                             <el-option label="爷爷" value="爷爷"></el-option>
                             <el-option label="奶奶" value="奶奶"></el-option>
+                            <el-option label="外公" value="外公"></el-option>
+                            <el-option label="外婆" value="外婆"></el-option>
                             <!--  <el-option :label="connect" value="1"></el-option>
       <el-option :label="connect1" value="0"></el-option> -->
                         </el-select>
                     </el-form-item>
                     <el-form-item prop="phone1" class='AUfloat'>
-                        <el-input v-model="form.phone1" placeholder='请输入手机号'></el-input>
+                        <el-input v-model="form.phone1" placeholder='请输入手机号' :maxlength='maxlength'></el-input>
                     </el-form-item>
                     <el-col :span="2">
                         <span class='AUalter'> (选填)</span>
@@ -107,23 +112,32 @@
                 </el-form-item>
                 <el-form-item label="来源渠道" prop='sour_id'>
                     <el-form-item prop='sour_id' class='AU142float'>
-                        <el-cascader :options="source" :props="propsource" v-model="form.sour_id" :show-all-levels="false" placeholder="请选择渠道">
+                        <el-cascader :options="source" :props="propsource" v-model="form.sour_id" :show-all-levels="false" placeholder="请选择渠道"  @change="handleChange(form.sour_id)">
                         </el-cascader>
                     </el-form-item>
-                    <el-form-item prop='referee' class='AU142float'>
-                        <el-autocomplete v-if='this.form.sour_id == 4' v-model="form.referee" :fetch-suggestions="querySearchAsync" placeholder="请输入内容"
-                            @select="handleSelect">
-                        </el-autocomplete>
-                    </el-form-item>
-                    <el-form-item prop='familys_name' class='AUfloat'>
+                    <!-- <el-form-item prop='referee' class='AU172float'>
+                       
+                        <el-select
+                        v-if='this.form.sour_id == 4'
+                        v-model="form.referee"
+                        filterable
+                        remote
+                        placeholder="请输入学员关键词"
+                        :remote-method="remoteMethod"
+                        :loading="loading">
+                        <el-option
+                          v-for="item in options4"
+                          :key="item.label.uid"
+                          :label="item.label.nickname"
+                          :value="item.label.uid">
+                        </el-option>
+                      </el-select>
+                    </el-form-item> -->
+                    <!-- <el-form-item prop='familys_name' class='AUfloat'>
                         <span v-if='this.form.sour_id == 4&&this.form.familys_name'>家长姓名:{{form.familys_name}}</span>
-                    </el-form-item>
-                    <el-form-item prop='referral_uid' style="display:none">
-                        <span>{{form.referral_uid}}</span>
-                    </el-form-item>
-                    <el-form-item prop='familys' style="display:none">
-                    </el-form-item>
-                    <span v-if='nostudent' class='AUwarn'> {{warning}}</span>
+                    </el-form-item> -->
+                    
+                    <!-- <span v-if='isWarning' class='AUwarn'> {{warning}}</span> -->
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="onSubmit('form')">确定</el-button>
@@ -144,6 +158,16 @@
     } from '../../api/api';
     export default {
         data() {
+            var isName = (rule, value, callback) => {
+                var myreg = /^[\u4e00-\u9fa5a-zA-Z]+$/;
+                if (value == '') {
+                    callback('请输入学生姓名')
+                } else if (!myreg.test(value)) {
+                    callback('请输入有效的学生姓名');
+                } else {
+                    callback();
+                }
+            }
             var nan = (rule, value, callback) => {
                 if (value === '') {
                     callback('请选择')
@@ -179,7 +203,10 @@
                 }
             }
             return {
-                nostudent: false,
+                maxlength:11,
+                loading:false,
+                options4:[],
+                // nostudent: false,
                 warning: '*系统中没有该成员', //以后改成调服务显示
                 form: {
                     names: '',
@@ -197,10 +224,10 @@
                     address: '',
                     school_id: '',
                     sour_id: [],
-                    referee: '',
-                    familys_name: '',
-                    referral_uid: '',
-                    familys: ''
+                    // referee: '',
+                    // familys_name: '',
+                    // referral_uid: '',
+                    // familys: ''
                 },
                 cities: [],
                 regions: [],
@@ -215,7 +242,8 @@
                 rule: {
                     names: [{
                         required: true,
-                        message: '请输入姓名',
+                        validator: isName,
+                        // message: '请输入姓名',
                         trigger: 'blur'
                     }, ],
                     sex: [{
@@ -275,54 +303,103 @@
                         trigger: 'change'
                     }, ],
                 },
+                // secondRule:false,
+                hasSelect:0
             }
         },
         methods: {
-            querySearchAsync(queryString, cb) {
-                let para = {
-                    input: queryString
-                }
-                repeatStudentList(token, para).then(res => {
-                    // console.log(res.data)
-                    if (res.data.length != 0) {
-                        this.studentsList = res.data.map(item => {
-                            return {
-                                referral_uid: item.label.uid,
-                                value: item.label.nickname,
-                                familys_name: item.label.familys_name,
-                                mobile: item.label.mobile
-                            }
-                        })
-                        var studentsList = this.studentsList;
-                        if (isNaN(queryString)) {
-
-                            var results = studentsList.filter(item => {
-                                return item.value.indexOf(queryString) > -1
-                            });
-                        } else {
-                            var results = studentsList
-                        }
-                    } else {
-                        var results = [];
-                        this.nostudent = true;
-                    }
-
-                    clearTimeout(this.timeout);
-                    this.timeout = setTimeout(() => {
-                        cb(results);
-                    }, 2000 * Math.random());
-                })
-
+    //         remoteMethod(query) {
+    //     if (query !== '') {
+    //       this.loading = true;
+    //       let para = {
+    //                 input: query
+    //             }
+    //             repeatStudentList(token, para).then(res => {
+    //                 if(res.data.length!=0){
+    //                     this.loading = false;
+    //                     this.options4 = res.data.filter(item => {
+    //           return item.label.nickname.toLowerCase()
+    //             .indexOf(query.toLowerCase()) > -1;
+    //         });
+    //                 }
+    //             })
+    //     } else {
+    //         // this.nostudent = true;
+    //         this.form.referee = ''
+    //       this.options4 = [];
+    //     }
+    //   },
+            // changerule(){
+            //     let that= this;
+            //     setTimeout(function() {
+                    
+            //         if(that.form.parent1||that.form.phone1||that.form.con1){
+    
+            //             that.secondRule = true;
+            //         }else if(that.form.parent1&&that.form.phone1&&that.form.con1){
+            //             that.secondRule = false;
+            //         }else{
+            //             that.secondRule = false;
+            //         }
+            //     }, 0);
+            // },
+            handleChange(val){
+                this.$refs['form'].validate((valid) => {})
+                // if(val!=4){
+                //     this.form.referee = ''
+                // }
             },
-            handleSelect(item) {
-                this.nostudent = false;
-                this.form.familys_name = item.familys_name;
-                this.form.referral_uid = item.referral_uid
-            },
+            // querySearchAsync(queryString, cb) {
+            //     let para = {
+            //         input: queryString
+            //     }
+            //     repeatStudentList(token, para).then(res => {
+            //         // console.log(res.data)
+            //         if (res.data.length != 0) {
+            //             this.studentsList = res.data.map(item => {
+            //                 return {
+            //                     referral_uid: item.label.uid,
+            //                     value: item.label.nickname,
+            //                     familys_name: item.label.familys_name,
+            //                     mobile: item.label.mobile
+            //                 }
+            //             })
+            //             var studentsList = this.studentsList;
+            //             if (isNaN(queryString)) {
+
+            //                 var results = studentsList.filter(item => {
+            //                     return item.value.indexOf(queryString) > -1
+            //                 });
+            //             } else {
+            //                 var results = studentsList
+            //             }
+            //         } else {
+            //             var results = [];
+            //             if(this.hasSelect!=1){
+            //                 this.nostudent = true;
+
+            //             }
+            //         }
+
+            //         clearTimeout(this.timeout);
+            //         this.timeout = setTimeout(() => {
+            //             cb(results);
+            //         }, 2000 * Math.random());
+            //     })
+
+            // },
+            // handleSelect(item) {
+            //     this.nostudent = false;
+            //     this.hasSelect = 1;
+            //     this.form.familys_name = item.familys_name;
+            //     this.form.referral_uid = item.referral_uid
+            // },
             back() {
                 this.$router.push('/myResource');
             },
             getRegion() {
+                this.form.area_id = '';
+                this.form.school_id = ''
                 let para = {
                     pid: this.form.city_id
                 }
@@ -339,7 +416,7 @@
             },
             onSubmit(formName) {
                 this.$refs[formName].validate((valid) => {
-                    if (valid) {
+                    if (valid&&this.isWarning===false) {
                         if (this.form.parent1 || this.form.con1 || this.form.phone1) {
                             this.form.familys = this.form.parent + '|' + this.form.con + '|' + this.form.phone +
                                 ',' + this.form.parent1 + '|' + this.form.con1 + '|' + this.form.phone1
@@ -366,6 +443,9 @@
                             }
                         })
                     } else {
+                        // if(this.form.referee==''){
+                        //     this.$message.info('还有未填写项目')
+                        // }
                         console.log('error submit!!');
                         return false;
                     }
@@ -373,7 +453,22 @@
 
             }
         },
-        computed: {},
+        computed: {
+            isWarning(){
+                return false
+                // return this.form.sour_id == 4&&this.form.referee==""
+            },
+            secondRule(){
+                if(this.form.parent1&&this.form.phone1&&this.form.con1){
+                        return false;
+                    }else if(this.form.parent1||this.form.phone1||this.form.con1){
+    
+                       return true;
+                    }else{
+                        return false;
+                    }
+            }
+        },
         beforeCreate() {
             let user = localStorage.getItem('user');
             token = JSON.parse(user).token;
@@ -384,7 +479,9 @@
                 this.cities = res.data
             })
             sourceList(token).then(res => {
-                this.source = res.data
+                this.source = res.data.filter(item=>{
+                        return item.id!=4
+                    })
             })
         }
     }
@@ -421,7 +518,11 @@
         margin-right: 30px;
         float: left
     }
-
+    .AU172float {
+        width: 172px;
+        margin-right: 30px;
+        float: left
+    }
     .AUfloat {
         width: 142px;
         float: left

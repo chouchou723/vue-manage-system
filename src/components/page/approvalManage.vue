@@ -1,27 +1,27 @@
 <template>
     <div>
-        <div class="crumbs">
+        <!-- <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item ><i class="el-icon-my-shouye"></i> 审批管理</el-breadcrumb-item>
+                <el-breadcrumb-item ><i class="el-icon-my-shengpi"></i> 审批管理</el-breadcrumb-item>
             </el-breadcrumb>
-        </div>
+        </div> -->
         <div class='systemTitle'>
             <h2 style='background:white;padding:9px 17px'>
-                审批消息(未处理{{number}}条)
+                审批记录(未处理{{number}}条)
             </h2>
         </div>
         <div class="systemwrapper">
             <div style="position:relative;width:450px;height:900px;float:left;margin-top:10px;margin-left:25px;border:1px solid gainboro;border-radius:5px;box-shadow:0 -9px 20px gainsboro"
                 v-loading='loading'>
-                <div v-for="(content,index) in notifyData" :class="[content.read =='0'?'greenContent':'','systemContent']" @click='chooseContent(content,index)'
+                <div v-for="(content,index) in notifyData" v-if="notifyData.length!=0" :class="[content.read =='0'?'greenContent':'','systemContent']" @click='chooseContent(content,index)'
                     :id='index'>
                     <div v-if="content.read == '0'" style="position:absolute;top:16px;left:0">
                         <span class='circle'></span>
                     </div>
                     <div style="height:40px;margin-left:5px">
                         <div style="float:left;font-weight:600;font-size: 16px;" :class="{green:content.created.substring(0,10).replace(/0/g,'') == new Date().toLocaleString().substring(0,9).replace(/0/g,'')}">{{content.type}}审批</div>
-                        <div style="float:right;">{{content.created.substring(0,10).replace(/0/g,'') == new Date().toLocaleDateString().substring(0,9).replace(/0/g,'').replace(/\//g,'-')?content.created.substring(11):
-                            new Date(content.created.substring(0,10)).valueOf() - new Date().toLocaleDateString().valueOf()
+                        <div style="float:right;">{{new Date(content.created).toDateString() == new Date().toDateString()?content.created.substring(11):
+                            new Date(content.created.substring(0,10)).valueOf() - new Date(new Date().toDateString()).valueOf()
                             == -86400000? '昨天'+content.created.substring(11) :content.created.substring(5)}}</div>
                     </div>
                     <div style="margin-left:5px" v-if='content.type=="转校"'>
@@ -34,12 +34,13 @@
                     学生:{{ content.content.child}}的转校申请, {{ content.content.msg}}
                 </div>
                 </div>
+                <div v-if="notifyData.length==0" style='text-align:center;margin-top:30px'>暂无记录</div>
                 <div class="sysblock">
                     <el-pagination layout="prev, pager, next" :total="total" :current-page="currentPage" :page-size="pagesize" @current-change="handleCurrentChange">
                     </el-pagination>
                 </div>
             </div>
-            <div v-if="display" style="flex:auto;height:837px;float:right;margin-top:66px;margin-right:2%;background:#f3f3f3;border-radius:5px;box-shadow:9px 12px 10px gainsboro">
+            <div v-if="display" style="flex:auto;height:837px;float:right;margin-right:2%;background:#f3f3f3;border-radius:5px;box-shadow:9px 12px 10px gainsboro">
                 <div class='detailContent'>
 
                     <div style="height:30px;margin-left:20px;padding-bottom:10px;border-bottom:1px solid gainsboro">
@@ -122,10 +123,10 @@
         getMessagDetail,
         agreeTransferSchool
     } from '../../api/api';
-    import {
-        mapGetters,
-        mapActions
-    } from 'vuex';
+    // import {
+    //     mapGetters,
+    //     mapActions
+    // } from 'vuex';
     export default {
         data() {
 
@@ -161,9 +162,9 @@
             };
         },
         methods: {
-            ...mapActions([
-                'setMessNumber'
-            ]),
+            // ...mapActions([
+            //     'setMessNumber'
+            // ]),
             acceptStudent(data, agree) {
                 let para = {
                     message_id: data.id,
@@ -228,7 +229,7 @@
                     }else{
                         this.number = 0
                     }
-                    this.setMessNumber( this.number)
+                    // this.setMessNumber( this.number)
                 }
                 let para = {
                     msgid: data.id
@@ -247,7 +248,8 @@
             },
             getM(){
                 let p ={
-                    page: this.currentPage
+                    page: this.currentPage,
+                    type:1
                 }
                 getMessage(p,token).then(res=>{
                 // console.log(res);
@@ -255,7 +257,7 @@
                 this.notifyData = res.data.list.data;
                 let c = res.data.list.last_page * this.pagesize;
                 this.total = parseInt(c);
-                this.setMessNumber(this.number)
+                // this.setMessNumber(this.number)
             })
             }
 
@@ -266,7 +268,8 @@
         },
         created() {
             let para = {
-                page: this.currentPage
+                page: this.currentPage,
+                type:1
             }
             getMessage(para, token).then(res => {
                 this.number = res.data.total;
@@ -279,9 +282,9 @@
             // this.mail = JSON.parse(user).name ? JSON.parse(user).name : ''; //获取mail
         },
         computed: {
-            ...mapGetters([
-                'getMessNumber'
-            ])
+            // ...mapGetters([
+            //     'getMessNumber'
+            // ])
         },
         beforeDestroy() {
             clearInterval(this.contGet)

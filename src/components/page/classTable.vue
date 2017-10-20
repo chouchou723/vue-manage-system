@@ -1,43 +1,43 @@
 <template>
     <div class='classTable'>
-        <div class="crumbs">
+        <!-- <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-my-richeng"></i> 课程管理</el-breadcrumb-item>
-                <el-breadcrumb-item class='ss'>课程表</el-breadcrumb-item>
+                <el-breadcrumb-item class='ss'>排课表</el-breadcrumb-item>
             </el-breadcrumb>
-        </div>
+        </div> -->
         <div class='classT'>
             <div class="h1">
                 <h3 class='classTH2'>
-                    课程表
+                    排课表
                 </h3>
-                <div class='oneSelect' v-if="code.includes('_c')">
-                    <el-select v-model="valueR" clearable placeholder="选择校区" @change="updateListCC">
+                <div class='oneSelectClassTable' v-if="code.includes('_c')">
+                    <el-select v-model="valueR"  placeholder="选择校区" @change="updateListCC">
                         <el-option v-for="item in optionR" :key="item.id" :label="item.title" :value="item.id">
                         </el-option>
                     </el-select>
                 </div>
-                <div class='oneSelect'>
+                <div class='oneSelectClassTable2'>
                     <el-select v-model="value" clearable placeholder="选择教室" filterable @change="updateList">
                         <el-option v-for="item in classRoom" :key="item.id" :label="item.names" :value="item.id">
                         </el-option>
                     </el-select>
                 </div>
-                <el-button type="primary" size="mid" class='buttonAdd' @click="createCh('classform')" v-if='code =="cc_m"&&!code.includes("_c")'>添加班级</el-button>
+                <el-button type="primary" size="mid" class='buttonAdd' @click="createCh('classform')" v-if='code =="cc_m"'>添加班级</el-button>
             </div>
             <el-dialog :title="alter" :visible.sync="dialogFormVisible" :close-on-click-modal="no" custom-class='classTableDialog' top='20%'
                 @close='resetD'>
                 <el-form :model="classform" :rules="rules2" ref="classform" label-position='right' label-width="80px">
                     <el-form-item label="课程" required>
                         <el-form-item prop="kc_tid" class='CT142I'>
-                            <el-select v-model="classform.kc_tid" filterable placeholder="请选择课程类型" @change='getClassName'>
+                            <el-select v-model="classform.kc_tid" filterable placeholder="请选择课程类型" @change='getClassName' :disabled='canEdit'>
                                 <el-option v-for="item in classkind" :key="item.kc_tid" :label="item.kc_tname" :value="item.kc_tid">
                                 </el-option>
                             </el-select>
                         </el-form-item>
                         <el-form-item prop="course_id" class='CT142I'>
-                            <el-select v-model="classform.course_id" placeholder="请选择课程名">
-                                <el-option v-for="item in courseName" :key="item.kcid" :label="item.title" :value="item.kcid">
+                            <el-select v-model="classform.course_id" placeholder="请选择课程名" :disabled='canEdit'>
+                                <el-option v-for="item in courseName" :key="item.kcid" :label="item.title" :value="item.kcid" >
                                 </el-option>
                             </el-select>
                         </el-form-item>
@@ -73,7 +73,7 @@
                         </el-form-item>
                     </el-form-item>
                     <el-form-item label="开班日期" prop="start_time">
-                        <el-date-picker v-model="classform.start_time" type="date" placeholder="选择日期" class='CT142'>
+                        <el-date-picker v-model="classform.start_time" type="date" placeholder="选择日期" class='CT142' :picker-options="pickerOptions0" :disabled='canEdit'>
                         </el-date-picker>
                     </el-form-item>
                     <el-form-item label="结班日期" prop="end_time">
@@ -89,24 +89,28 @@
             </el-dialog>
         </div>
         <div>
-            <div class='classWeek'>
+            <div class='classweekClassT'>
+                    <i class="el-icon-arrow-left" @click='lastWeek'></i>
                 <el-date-picker v-model="value3" type="week" class='CT210' :format="format" placeholder="当前周" :clearable='no' :editable='no'
                     :picker-options="dateRangeOptions1" @change='updateClass'>
                 </el-date-picker>
+                <i class="el-icon-arrow-right" @click='nextWeek'></i>
             </div>
             <div class="CTweek">
                 <div class='CTweekT'>老师</div>
-                <div v-for='item in week' class='CTweekI'>{{item}}</div>
+                <div v-for='(item,index) in week' class='CTweekI'>{{item}}
+                    <span>{{index==0?w1:index==1?w2:index==2?w3:index==3?w4:index==4?w5:index==5?w6:index==6?w7:''}}</span>
+                </div>
             </div>
             <div v-for='(t,index) in teachers' class='CTlesson'>
                 <div class='CTlessonN'>{{t.uname}}</div>
                 <div v-for='item in t.week' class='CTlessonI'>
                     <div v-for='(i,index) in item' v-if='Array.isArray(item)' class='lessonhover' @click='showClass(i,$event)'>
-                        <div class='CTlessonD'><span class='CTlesson26'>{{i.class_time.substring(0,5)}}</span>
+                        <div class='CTlessonD'><span class='CTlesson26'>{{i.class_time}}</span>
                             <span class="CTlesson73">{{i.class_room.names}}({{i.syllabus_person_num}}人)</span></div>
                         <div class='CTlessonC'><span class='CTlesson15'>{{i.course?i.course.title:i.title}}</span>
                             <div class='CTlessonFlex'>
-                                <img :src="src" width='20' alt="" class='classImg' @click='editClass(i,index)'>
+                                <img :src="src" width='20' alt="" class='classImg' @click='editClass(i,index)' v-if="code.includes('cc_m')">
                             </div>
                         </div>
                     </div>
@@ -120,27 +124,27 @@
             </div>
         </div>
         <el-dialog title="班级详情" :visible.sync="dialogFormVisibleClass" :close-on-click-modal="no" custom-class='classDetailDialog'
-            top='10%' size='tiny'>
-            <div class='CTclass'>
-                <div class='CTclassTitle'>
-                    <div class='CTclass600'>课程:{{classDetail.title}}</div>
-                    <div class='CTclass600'>上课时间:{{classDetail.time}}</div>
-                    <div class='CTclass600'>上课老师：{{classDetail.teacher}}</div>
-                    <div class='CTclass600'>教室：{{classDetail.classroom}}</div>
-                    <div class='CTclass600'>班级人数：{{classDetail.number}}</div>
-                    <div class='CTclass600'>开班时间：{{classDetail.date}}</div>
+            top='5%' size='tiny'>
+            <div class='CTTclass'>
+                <div class='CTTclassTitle'>
+                    <div class='CTTclass600'>课程:{{classDetail.title}}</div>
+                    <div class='CTTclass600'>上课时间:{{classDetail.time}}</div>
+                    <div class='CTTclass600'>上课老师：{{classDetail.teacher}}</div>
+                    <div class='CTTclass600'>教室：{{classDetail.classroom}}</div>
+                    <div class='CTTclass600'>班级人数：{{classDetail.number}}</div>
+                    <div class='CTTclass600'>开班时间：{{classDetail.date}}</div>
                 </div>
             </div>
-            <div class='CTclassList'>
-                <div class='CTclassS'>
+            <div class='CTTclassList'>
+                <div class='CTTclassS'>
                     <div>学生姓名</div>
                     <div>剩余课时</div>
                 </div>
-                <div class='CTclassC' v-for='s in students' v-if='students.length!=0'>
+                <div class='CTTclassC' v-for='s in students' v-if='students.length!=0'>
                     <div>{{s.child_name}}</div>
                     <div>{{s.course_curr_num}}</div>
                 </div>
-                <div v-if='students.length==0' class='CTclassN'>暂无学生</div>
+                <div v-if='students.length==0' class='CTTclassN'>暂无学生</div>
             </div>
         </el-dialog>
     </div>
@@ -178,6 +182,12 @@
                 }
             }
             return {
+                canEdit:false,
+                pickerOptions0: {
+                    disabledDate(time) {
+                        return time.getTime() < Date.now() - 8.64e7;
+                    }
+                },
                 valueR: '',
                 optionR: '',
                 classRoom: [],
@@ -258,9 +268,22 @@
                 },
                 dialogFormVisible: false,
                 dialogFormVisibleClass: false,
+                thisWeekStart:'',
+                thisWeekEnd:'',
+
             }
         },
         methods: {
+            lastWeek() {
+                let date = new Date(this.thisWeekStart)
+                let c = date.setDate(date.getDate() - 6);
+                this.value3 = new Date(c)
+            },
+            nextWeek() {
+                let date = new Date(this.thisWeekStart)
+                let c = date.setDate(date.getDate() + 8);
+                this.value3 = new Date(c)
+            },
             getClassName() { //获取课程名称
                 let para = {
                     pid: this.classform.kc_tid,
@@ -273,7 +296,8 @@
             showClass(i, e) { //获取课程详细
                 if (e.target.localName == 'span') {
                     let para = {
-                        id: i.id
+                        id: i.id,
+                        schooltime:i.schoolDate
                     }
                     getClassDetail(token, para).then(res => {
                         this.classDetail = {
@@ -310,6 +334,7 @@
                 this.dialogFormVisible = true;
             },
             resetD() {
+                this.canEdit = false;
                 this.in = '';
                 this.courseName = []
                 this.classform = {
@@ -328,6 +353,9 @@
             },
             editClass(data, index) { //点击就修改
                 // console.log(data)
+                if(data.syllabus_person_num!=0){
+                    this.canEdit = true;
+                }
                 this.in = index;
                 if (data.course) {
                     let para = {
@@ -411,14 +439,14 @@
                 let year = a.getFullYear();
                 let month = a.getMonth()
                 let day = a.getDate() - 1;
-                let thisWeekStart = new Date(year, month, day).toLocaleDateString()
+                this.thisWeekStart = new Date(year, month, day).toLocaleDateString()
                 let year1 = a.getFullYear();
                 let month1 = a.getMonth()
                 let day1 = a.getDate() + 5;
-                let thisWeekEnd = new Date(year1, month1, day1).toLocaleDateString()
+                this.thisWeekEnd = new Date(year1, month1, day1).toLocaleDateString()
                 let para = {
-                    start_date: thisWeekStart,
-                    end_date: thisWeekEnd,
+                    start_date:  this.thisWeekStart,
+                    end_date: this.thisWeekEnd,
                     classroom_id: this.value,
                     school_id: this.valueR
                 }
@@ -440,25 +468,62 @@
                     simple: 1
                 }
                 campusList(cam, token).then((res) => { //获取校区
-                    this.optionR = res.data
+                    this.optionR = res.data;
+                    this.valueR = res.data[0].id
                 })
             }
             getClassRoom(token).then((res) => { //获取教室
                 this.classRoom = res.data;
             }).then(() => {
+                if(this.code=='cc_m'){
+
                 getTeacherList(token).then((res) => { //获取老师
                     this.teachersName = res.data;
                 })
-            }).then(() => {
                 getClassKind(token).then((res) => { //获取课程分类
                     this.classkind = res.data
                 })
+                }
             });
 
 
 
         },
         computed: {
+            w1(){
+                let a = new Date(this.value3);
+                let b = new Date(a.setDate(a.getDate() - 1));
+                return b.toLocaleDateString().substring(5);
+            },
+            w2(){
+                let a = new Date(this.value3);
+                return a.toLocaleDateString().substring(5);
+            },
+            w3(){
+                let a = new Date(this.value3);
+                let b = new Date(a.setDate(a.getDate() + 1));
+                return b.toLocaleDateString().substring(5);
+            },
+            w4(){
+                let a = new Date(this.value3);
+                let b = new Date(a.setDate(a.getDate() + 2));
+                return b.toLocaleDateString().substring(5);
+            },
+            w5(){
+                let a = new Date(this.value3);
+                let b = new Date(a.setDate(a.getDate() + 3));
+                return b.toLocaleDateString().substring(5);
+            },
+            w6(){
+                let a = new Date(this.value3);
+                let b = new Date(a.setDate(a.getDate() + 4));
+                return b.toLocaleDateString().substring(5);
+            },
+            w7(){
+                let a = new Date(this.value3);
+                let b = new Date(a.setDate(a.getDate() + 5));
+                return b.toLocaleDateString().substring(5);
+            },
             alter: function () {
                 if (this.in === '') {
                     return '添加班级'
@@ -484,17 +549,27 @@
 
 </script>
 <style>
+     .classweekClassT .el-icon-arrow-left:hover,
+    .classweekClassT .el-icon-arrow-right:hover {
+        cursor: pointer;
+        color: #1fb5ad;
+    }
+
+    .classweekClassT .el-icon-arrow-left,
+    .classweekClassT .el-icon-arrow-right {
+        color: rgb(191, 217, 216)
+    }
     .h1 .el-button--primary {
         background-color: #32a4d3;
         border-color: #32a4d3;
     }
 
-    .el-dialog .el-dialog__header {
+    .classTable .el-dialog .el-dialog__header {
         background-color: #1fb5ad;
         padding: 20px 20px 20px;
     }
 
-    .el-dialog .el-dialog__title {
+    .classTable .el-dialog .el-dialog__title {
         color: white;
     }
 
@@ -503,7 +578,7 @@
         position: relative;
         height: 45px;
         background-color: white;
-        margin-top: 30px;
+        /* margin-top: 10px; */
         padding-top: 10px;
         margin-bottom: 5px;
         border-radius: 5px;
@@ -516,13 +591,18 @@
         padding-left: 10px
     }
 
-    .oneSelect {
+    .oneSelectClassTable {
+        display: inline-block;
+        margin-bottom: 10px;
+        margin-left: 10px;
+        width: 160px
+    }
+    .oneSelectClassTable2 {
         display: inline-block;
         margin-bottom: 10px;
         margin-left: 10px;
         width: 140px
     }
-
     .buttonAdd {
         position: absolute;
         right: 10px;
@@ -549,7 +629,7 @@
         padding: 0 20px 15px;
     }
 
-    .classWeek {
+    .classweekClassT {
         width: 100%;
         background-color: white;
         text-align: center;
@@ -597,8 +677,8 @@
         width: 142px;
     }
 
-   .classWeek .CT210 {
-        width: 210px
+   .classweekClassT .CT210 {
+        width: 220px
     }
 
     .CTweek {
@@ -622,7 +702,7 @@
         height: 40px;
         line-height: 40px;
         background: white;
-        flex: auto;
+        flex: 1 1 1px;
         border-right: 1px solid gainsboro;
         border-bottom: 1px solid gainsboro;
     }
@@ -644,7 +724,8 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
-        color: darkslategrey
+        color: darkslategrey;
+        min-height: 80px;
     }
 
     .CTlessonI {
@@ -670,7 +751,7 @@
         width: 73%;
         text-align: center;
         line-height: 20px;
-        text-decoration: underline;
+        /* text-decoration: underline; */
     }
 
     .CTlessonC {
@@ -683,37 +764,37 @@
         font-size: 13px;
         font-style: oblique;
         font-weight: bold;
-        text-shadow: 18px 6px 1px gainsboro;
+        /* text-shadow: 18px 6px 1px gainsboro; */
     }
 
     .CTlessonFlex {
         flex: auto
     }
 
-    .CTclass {
+    .CTTclass {
         height: 200px;
         text-align: left
     }
 
-    .CTclassTitle {
+    .CTTclassTitle {
         padding-left: 30%;
         padding-bottom: 10px;
         padding-top: 10px;
         background: white
     }
 
-    .CTclass600 {
+    .CTTclass600 {
         font-weight: 600;
         margin-bottom: 10px
     }
 
-    .CTclassList {
+    .CTTclassList {
         max-height: 500px;
         overflow-y: auto;
         background: white
     }
 
-    .CTclassS {
+    .CTTclassS {
         display: flex;
         justify-content: space-between;
         padding: 10px 0;
@@ -722,7 +803,7 @@
         font-weight: 600
     }
 
-    .CTclassC {
+    .CTTclassC {
         display: flex;
         justify-content: space-between;
         padding: 10px 0;
@@ -730,9 +811,9 @@
         margin-right: 20%
     }
 
-    .CTclassN {
+    .CTTclassN {
         text-align: center;
         padding: 10px 0;
     }
-
+   
 </style>

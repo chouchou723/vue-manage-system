@@ -2,11 +2,11 @@
     <div class="login-wrap">
             <canvas id="canvas">Canvas is not supported in your browser.</canvas>
         <!-- <div class="ms-title">Panda System</div> -->
-        <div class="ms-login">
+        <div class="ms-login" v-if='!passD'>
             <img class='ms-title' src="../../../static/img/logo_03.png"  alt="">
-            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="demo-ruleForm" v-bind:class='{hidden:ruleForm.hidden}'>
+            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px"  v-bind:class='{hidden:ruleForm.hidden}'>
                 <el-form-item prop="username">
-                    <el-input type='mail' v-model="ruleForm.username" placeholder="请输入邮箱地址"></el-input>
+                    <el-input type='mail' v-model="ruleForm.username" placeholder="请输入手机号或者邮箱地址"></el-input>
                 </el-form-item>
                 <el-form-item prop="password">
                     <el-input type="password" placeholder="请输入密码" v-model="ruleForm.password" @keyup.enter.native="submitForm('ruleForm')"></el-input>
@@ -36,7 +36,7 @@
             </el-form>
             <div class="mail" v-bind:class='{display:ruleForm.isDisplay}'>
                 <img :src="loginAdd" width='265' alt="" height='265'>
-                <span style="font-size:13px;position:absolute;left:53px;bottom:7px">请使用手机微信扫一扫登录</span>
+                <span style="font-size:13px;position:absolute;left:52px;bottom:7px">请使用手机微信扫一扫登录</span>
                 <div class="maillogin">
                     <!-- <span>手机登录</span> -->
                      <img style='margin-left:2px' src="../../../static/img/login_03.png" alt=""> 
@@ -46,13 +46,40 @@
                 </div>
             </div>
         </div>
+        <div class="pass-box" v-if='passD'>
+            <div class="forgetBack" @click='goToLogin'><img :src="forgetSrc" width='30'alt=""></div>
+                <el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2"  class="demo-ruleForm" >
+                    <el-form-item  prop="mail">
+                        <el-input type='mail' placeholder="请输入邮箱地址" v-model='ruleForm2.mail'></el-input>
+                    </el-form-item>
+                    <el-form-item  prop="code1">
+                        <el-col :span="15">
+                            <el-input placeholder="请输入验证码" v-model="ruleForm2.code1"></el-input>
+                        </el-col>
+                        <el-col :span="9">
+                            <el-button type="primary" id="forgetCode" @click="getCode" :disabled='canClick'>{{canButton}}</el-button>
+                        </el-col>
+                    </el-form-item>
+                    <el-form-item  prop="password1">
+                        <el-input type="password" placeholder="请输入新密码" v-model="ruleForm2.password1" auto-complete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item  prop="checkPass">
+                        <el-input type="password"placeholder="请再次输入新密码"  v-model="ruleForm2.checkPass" auto-complete="off"></el-input>
+                    </el-form-item>
+                    
+                    <el-form-item>
+                        <el-button type="primary" @click="handleSubmit2('ruleForm2')" class='forget100'>提交</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
     </div>
 </template>
 <script>
 import {
     requestLogin,
     getUserinfo,
-    qcodeLogin
+    qcodeLogin,
+    findPassword,findToEditPwd
 } from '../../api/api';
 
 var i = 1;
@@ -75,6 +102,36 @@ function randomNumber() {
 
 export default {
     data: function() {
+        var validatePass = (rule, value, callback) => {
+                if (value.length < 6) {
+                    callback(new Error('请输入至少6位'));
+                } else {
+                    var regex = new RegExp('(?=.*[0-9])(?=.*[a-zA-Z]).{6,30}');
+                    if (!regex.test(value)) {
+                        callback(new Error('密码中必须包含字母、数字，至少6个字符，最多30个字符'));
+                    }
+                    if (this.ruleForm2.checkPass !== '') {
+                        this.$refs.ruleForm2.validateField('checkPass');
+                    }
+                    callback();
+                }
+            };
+            var validatePass2 = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('请再次输入密码'));
+                } else if (value !== this.ruleForm2.password1) {
+                    callback(new Error('两次输入密码不一致!'));
+                } else {
+                    callback();
+                }
+            };
+            var validCode = (rule, value, callback) => {
+                if (!value) {
+                    return callback(new Error('请输入验证码'))
+                }else{
+                    callback()
+                }
+            }
         var valid = (rule, value, callback) => {
             if (!value) {
                 return callback(new Error('请输入验证码'))
@@ -91,17 +148,42 @@ export default {
                 }
             }, 1);
         }
-        var isPhone1 = (rule, value, callback) => {
-                var myreg =  /^(((1[0-9]{1}))+\d{9})$/; 
-                if (value == '') {
-                    callback('请输入手机号码')
-                } else if (!myreg.test(value)) {
-                    callback('请输入有效手机号码');
+        // var isPhone1 = (rule, value, callback) => {
+        //         var myreg =  /^(((1[0-9]{1}))+\d{9})$/; 
+        //         if (value == '') {
+        //             callback('请输入手机号码')
+        //         } else if (!myreg.test(value)) {
+        //             callback('请输入有效手机号码');
+        //         }else{
+        //             callback();
+        //         }
+        //     }
+            var isphone1Mail = (rule, value, callback) => {
+                if(isFinite(value)){
+
+                    let myreg =  /^(((1[0-9]{1}))+\d{9})$/; 
+                    if (value == '') {
+                        callback('请输入手机号或者邮箱地址')
+                    } else if (!myreg.test(value)) {
+                        callback('请输入有效手机号码');
+                    }else{
+                        callback();
+                    }
                 }else{
-                    callback();
+                    let myreg1 = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+                    if (value == '') {
+                        callback('请输入手机号或者邮箱地址')
+                    } else if (!myreg1.test(value)) {
+                        callback('请输入正确的邮箱地址');
+                    }else{
+                        callback();
+                    }
                 }
             }
         return {
+            clock:'',
+                a: 60,
+                canClick: false,
             fullscreenLoading: false,
             uuid: '',
             loginAdd: '',
@@ -122,10 +204,18 @@ export default {
             rules: {
                 username: [{
                     required: true,
-                    type:'email',
-                    message: '请输入正确的邮箱地址',
-                    // validator: isPhone1,
-                    trigger: 'blur,change'
+                    // type:'email',
+                    // message: '请输入正确的邮箱地址',
+                    validator: isphone1Mail,
+                    trigger: 'change blur'
+                },
+                
+                {
+                    required: true,
+                    // type:'email',
+                    // message: '请输入正确的邮箱地址',
+                    // validator: isphone1Mail,
+                    trigger: 'blur'
                 }],
                 password: [{
                     required: true,
@@ -137,10 +227,47 @@ export default {
                     validator: valid,
                     trigger: 'blur'
                 }]
-            }
+            },
+            forgetSrc:'../../../static/img/back1.png',
+                receiveCode: '',
+                ruleForm2: {
+                    mail:'',
+                    password1: '',
+                    checkPass: '',
+                    code1: ''
+                },
+                rules2: {
+                    mail: [{
+                    required: true,
+                    type:'email',
+                    message: '请输入正确的邮箱地址',
+                    // validator: isPhone1,
+                    trigger: 'change'
+                }],
+                    password1: [{
+                        validator: validatePass,
+                        trigger: 'blur'
+                    }],
+                    checkPass: [{
+                        validator: validatePass2,
+                        trigger: 'blur'
+                    }],
+                    code1: [{
+                        validator: validCode,
+                        trigger: 'blur'
+                    }]
+                },
+                passD:false
         }
     },
     computed: {
+        canButton() {
+                if (this.canClick == true) {
+                    return  '重新获取:'+this.a + 's'
+                } else {
+                    return '获取验证码'
+                }
+            },
         _codeNumber1: {
             set: function(value) {
                 this.codeNumber1 = value;
@@ -179,8 +306,81 @@ export default {
     },
 
     methods: {
+        goToLogin(){
+                this.passD= false;
+                this.$refs['ruleForm2'].resetFields();
+                // this.$refs['ruleForm'].resetFields();
+            },
+            handleSubmit2(formName) {
+                this.$refs.ruleForm2.validate((valid) => {
+                    if (valid) {
+                        let para = {
+                            mail:this.ruleForm2.mail,
+                    password: this.ruleForm2.password1,
+                    checkPass: this.ruleForm2.checkPass,
+                    code: this.ruleForm2.code1
+                        }
+                        findToEditPwd(para).then(res=>{
+                            if(res.code ==0){
+
+                            this.$message({
+                                    message: '修改成功',
+                                    type: 'success'
+                                });
+                            }
+                                 return res
+                        }).then(res=>{
+                            if(res.code == 0){
+
+                             this.$router.push('/login');
+                            }else{
+                                 this.$message.error(res.message);
+                                 this.ruleForm2.code1 = '';
+                            }
+
+                        })
+                        //替换提交服务
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
+            getCode() {
+                let myreg1 = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+                let a =  myreg1.test(this.ruleForm2.mail);
+                if (this.canClick == false&&a) {
+                    this.canClick = true;
+                   this.clock = setInterval(this.doLoop, 1000); 
+                   let para = {
+                    mail: this.ruleForm2.mail
+                }
+                findPassword(para).then((res) => {
+                   if(res.code ==0){
+                        this.$message.success('验证码已发送')
+                   }else{
+                    this.$message.error(res.message)
+                   }
+                });
+                }else{
+                    this.$message.error('请输入需要找回的邮箱地址')
+                }
+                
+            },
+            doLoop() {
+               this.a--;
+                if(this.a<=0){
+                    clearInterval(this.clock); //清除js定时器
+                    this.a = 60; //重置时间
+                    this.canClick =false;
+                }
+            },
         goToForget(){
-            this.$router.push('/forgetPassword')
+            // console.log(1)
+            this.passD = true;
+            // this.$refs['ruleForm2'].resetFields();
+                this.$refs['ruleForm'].resetFields();
+            // this.$router.push('/forgetPassword')
         },
         submitForm(formName) {
             const self = this;
@@ -310,13 +510,17 @@ export default {
         }
     },
     mounted() {
-        this.change();
-        
+        this.change();    
     },
     beforeDestroy() {
         clearInterval(inter)
     },
     created() {
+        // let userc = localStorage.getItem('user');
+        // if(userc){
+
+        //     localStorage.removeItem('user')
+        // }
         var d = new Date().getTime();
         this.uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
             var r = (d + Math.random() * 16) % 16 | 0;
@@ -328,6 +532,27 @@ export default {
 }
 </script>
 <style scoped>
+.forgetBack{
+    position:absolute;
+    top:10px;
+    left:10px;
+    color:grey
+}
+.forgetBack:hover{
+    cursor: pointer;
+}
+#forgetCode{
+    padding:10px 5px;float:right;text-align:center
+}
+.pass-box{
+margin:auto;width:380px;height:50%;position:absolute;top:0;left:0;right:0;bottom:0;background-color:white;border-radius:5px;
+}
+.demo-ruleForm{
+width:70%;height:270px;margin: auto;position:absolute;top:0;left:0;bottom:0;right:0
+}
+.forget100{
+width:100%
+}
 .login-wrap {
     position: relative;
     width: 100%;
@@ -408,7 +633,7 @@ export default {
 .mail {
     position: absolute;
     left: 50%;
-    margin-left: -129px;
+    margin-left: -131px;
     top: 15%;
 }
 

@@ -1,5 +1,5 @@
 <template>
-    <div class="tableUserD">
+    <div class="tableUserDTSD">
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item id='canHover' to="/teachStudentManage"><i class="el-icon-my-kaoqinliuchengtongji"></i> 学员管理</el-breadcrumb-item>
@@ -19,12 +19,12 @@
                 <el-form-item label="性别:" prop='sex'>
                     <span>{{student.sex}}</span>
                 </el-form-item>
-                <el-form-item label="身份证号:" prop='id_number'>
-                    <span>{{student.id_number}}</span>
-                </el-form-item>
                 <el-form-item label="年龄:" prop='age'>
                     <span>{{student.age}}</span>
                 </el-form-item>
+                <el-form-item label="身份证号:" prop='id_number'>
+                        <span>{{student.id_number}}</span>
+                    </el-form-item>
                 <el-form-item label="家长:" prop='parent'>
                     <span>{{student.parent}}</span>
                 </el-form-item>
@@ -46,7 +46,7 @@
                 <el-form-item label="校区:" prop='school'>
                     <span>{{student.school}}</span>
                 </el-form-item>
-                <el-form-item label="课程顾问(CC):" prop='teacher'>
+                <el-form-item label="CC:" prop='teacher'>
                     <span>{{student.teacher}}</span>
                 </el-form-item>
             </el-form>
@@ -72,7 +72,7 @@
                     </el-select>
                 </div> -->
             </div>
-            <div id="table1">
+            <div id="table1TSD">
                 <el-table :data="tableData" border style="width: 100%">
                     <el-table-column prop="course_id" label="课程">
                     </el-table-column>
@@ -141,7 +141,7 @@
                 <span style="font-weight:600;font-size:22px">合同课程({{contractNumber}}个)</span>
 
             </div>
-            <div id="table4">
+            <div id="table4TSD">
                 <div v-for="item in students" class='table4Title'>
                     <div class='table4Div'>
                         <div style="display:flex;align-items:center;margin-left:10px">
@@ -280,8 +280,9 @@
             updateList() { //考勤记录更新
                 let para = {
                     page: 1,
-                    course_id: this.value1,
-                    teacher_uid: this.valueR
+                    course_id: this.valueR,
+                    uid: this.$route.params.uid,
+                    // teacher_uid: this.valueR
                 }
                 getMyStudentSign(token, para).then(res => {
                     this.tableData = res.data.data;
@@ -295,7 +296,8 @@
                 this.currentPage1 = val;
                 let p = {
                     page: this.currentPage1,
-                    customer_id: this.$route.params.uid
+                    course_id: this.valueR,
+                    uid: this.$route.params.uid
                 }
                 getMyStudentSign(token, p).then(res => {
                     this.tableData = res.data.data;
@@ -309,12 +311,13 @@
             token = JSON.parse(user).token;
         },
         created() {
+            document.body.scrollTop = 0
             this.userName = JSON.parse(user).uname;
             this.code = JSON.parse(user).job ? JSON.parse(user).job.code : '';
             let para = {
                 uid: this.$route.params.uid
             }
-            returnVisitDetail(token, para).then(res => { //获取用户资料
+            returnVisitDetail(token, para).then(res => {//获取用户资料
                 let data = res.data.info;
                 this.student = {
                     name: data.child_name,
@@ -344,7 +347,7 @@
                 this.classList = res.data.course
                 this.gainList = res.data.continuity
             })
-            getMyStudentLessonDetail(token, para).then(res => { //合同课程
+            getMyStudentLessonDetail(token, para).then(res => {//合同课程
                 if (res.data.length != 0) {
 
                     this.contractNumber = res.data.length
@@ -584,19 +587,19 @@
     }
 
 
-    .tableUserD .block {
+    .tableUserDTSD .block {
         text-align: center;
         position: absolute;
         bottom: 10px;
         width: 100%;
     }
 
-    .tableUserD .el-dialog .el-dialog__header {
+    .tableUserDTSD .el-dialog .el-dialog__header {
         background-color: #1fb5ad;
         padding: 20px 20px 20px;
     }
 
-    .tableUserD .el-dialog .el-dialog__title {
+    .tableUserDTSD .el-dialog .el-dialog__title {
         color: white;
     }
 
@@ -610,14 +613,14 @@
         color: white;
     }
 
-    #table1 .el-table td,
-    #table1 .el-table th {
+    #table1TSD .el-table td,
+    #table1TSD .el-table th:not(.gutter) {
         padding: 1px;
         text-align: center
     }
 
-    #table1 .el-table th>div,
-    #table1 .el-table .cell {
+    #table1TSD .el-table th>div,
+    #table1TSD .el-table .cell {
         padding-left: 0;
         padding-right: 0;
     }
@@ -655,14 +658,14 @@
         border-right: 1px solid rgb(223, 236, 235)
     }
 
-    #table4 .el-table td,
-    #table4 .el-table th {
+    #table4TSD .el-table td,
+    #table4TSD .el-table th:not(.gutter) {
         padding: 1px;
         text-align: center
     }
 
-    #table4 .el-table th>div,
-    #table4 .el-table .cell {
+    #table4TSD .el-table th>div,
+    #table4TSD .el-table .cell {
         padding-left: 0;
         padding-right: 0;
     }

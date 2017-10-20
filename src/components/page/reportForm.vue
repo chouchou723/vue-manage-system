@@ -740,7 +740,7 @@ export default {
 }
 
 #tableR .el-table td,
-#tableR .el-table th {
+#tableR .el-table th:not(.gutter) {
     padding: 5px 5px;
     text-align: center
 }
@@ -752,7 +752,7 @@ export default {
 }
 
 #tableS .el-table td,
-#tableS .el-table th {
+#tableS .el-table th:not(.gutter) {
     padding: 5px 5px;
     text-align: center
 }

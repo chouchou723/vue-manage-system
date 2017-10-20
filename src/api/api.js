@@ -12,9 +12,9 @@ export const getUserinfo = (token) => {
 };
 
 //获取自己菜单
-export const menuList = token => {
+export const menuList = (token,params) => {
     axios.defaults.headers.common['Authorization'] = token.Authorization;
-    return axios.get(`${base}/api/v1/userinfo/menu`).then(res => res.data);
+    return axios.get(`${base}/api/v1/userinfo/menu`,{ params: params }).then(res => res.data);
 };
 
 //忘记密码获取验证码
@@ -30,6 +30,12 @@ export const findToEditPwd = params => {
 export const upload = (token,params) => {
     axios.defaults.headers.common['Authorization'] = token.Authorization;
     return axios.post(`${base}/api/v1/userinfo/uploadAvatar`,params).then(res => res.data);
+};
+
+//获取菜单权限
+export const getAccess = (token,params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/public/authority`,params).then(res => res.data);
 };
 
 //提交修改密码
@@ -52,7 +58,7 @@ export const qCode = (params, token) => {
 
 //二维码登陆
 export const qcodeLogin = (params) => {
-    return axios.get('http://crmv2.dfth.com/auth/loginQrCode', { params: params }).then(res => res.data); };
+    return axios.get(`${base}/auth/loginQrCode`, { params: params }).then(res => res.data); };
 
 //获取当月任务提醒
 export const getTask = (params, token) => {
@@ -76,6 +82,16 @@ export const searchResource = (params, token) => {
 export const getIndexData = (token,params) => {
     axios.defaults.headers.common['Authorization'] = token.Authorization;
     return axios.get(`${base}/api/v1/customer/forms`, { params: params }).then(res => res.data);
+};
+//获取资源统计表数据
+export const gettmkFormsPiclData = (token,params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/reportForms/tmkFormsPic`, { params: params }).then(res => res.data);
+};
+//获取资源发展表数据
+export const gettmkFormsTableData = (token,params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/reportForms/tmkFormsTable`, { params: params }).then(res => res.data);
 };
 
 
@@ -533,7 +549,7 @@ export const getTeacherList = (token, params) => {
     return axios.get(`${base}/api/v1/teacher/list`, { params: params }).then(res => res.data);
 };
 
-//获取全部老师列表
+//获取全部cc列表
 export const getAllCCList = (token, params) => {
     axios.defaults.headers.common['Authorization'] = token.Authorization;
     return axios.get(`${base}/api/v1/cc/getCcList`, { params: params }).then(res => res.data);
@@ -580,7 +596,11 @@ export const put_customer = (params, token) => {
     axios.defaults.headers.common['Authorization'] = token.Authorization;
     return axios.put(`${base}/api/v1/cc/updateCustomer`, params).then(res => res.data);
 };
-
+//TMK修改or激活客户资料
+export const TMKput_customer = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.put(`${base}/api/v1/customer/update`, params).then(res => res.data);
+};
 //CC确认客户无需求
 export const confirm_noDemand = (params, token) => {
     axios.defaults.headers.common['Authorization'] = token.Authorization;
@@ -827,6 +847,12 @@ export const getActivityOrderList = (token, params) => {
 export const getClassBonus = (token, params) => {
     axios.defaults.headers.common['Authorization'] = token.Authorization;
     return axios.get(`${base}/api/v1/users/classBonus`, { params: params }).then(res => res.data);
+};
+
+//教务获取首页报表
+export const getTeachIndex = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/teacher/forms`, { params: params }).then(res => res.data);
 };
 // //code字段说明
 //     tmk_m:  tmk主管

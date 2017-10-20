@@ -1,9 +1,9 @@
 <template>
-    <div class="publicPool">
-        <el-breadcrumb separator="/">
+    <div class="activityTem">
+        <!-- <el-breadcrumb separator="/">
             <el-breadcrumb-item><i class="el-icon-my-tongzhi"></i> 活动管理</el-breadcrumb-item>
             <el-breadcrumb-item class='ss'>活动模板</el-breadcrumb-item>
-        </el-breadcrumb>
+        </el-breadcrumb> -->
         <div class='noEff'>
             <h2 class="studentReturnnoEff">
 
@@ -20,11 +20,11 @@
                  <el-button type="success" @click="createBirthdayActivity" v-if='code.includes("_m")'>发起生日会活动</el-button>
             </div>
         </div>
-        <div id="table2">
-            <el-table :data="publicData" border style="width: 100%">
+        <div id="table2AT">
+            <el-table :data="publicData"  style="width: 100%">
                 <el-table-column prop="names" label="活动名称" width='140'>
                     <template scope="scope">
-                        <span class='nicknameSpan' @click='showAct(scope.row.id,scope.row.type_id)'>{{scope.row.names}}</span>
+                        <span class='nicknameSpanAT' @click='showAct(scope.row.id,scope.row.type_id)'>{{scope.row.names}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="type_id" label="活动类型" width='120'>
@@ -50,15 +50,15 @@
                                 
                             </template>
                 </el-table-column>
-                <el-table-column prop="created" label="创建时间" sortable>
+                <el-table-column prop="created" label="创建时间" >
                 </el-table-column>
                 <el-table-column prop="course_num" label="发起次数" width='120'>
                     </el-table-column>
                 <el-table-column label="操作" width='140'>
                     <template scope="scope">
-                          <el-button   type="text" size="small" v-if='code.includes("_c")&&scope.row.type_id!="生日会"'@click="claim(scope.row.id)" style="font-size:14px">修改</el-button>
+                          <el-button   type="text" size="small" v-if='code.includes("_c")&&scope.row.type_id!="生日会"'@click="claim(scope.row.id)" style="font-size:14px;">修改</el-button>
                           <el-button  v-if='code.includes("_m")&&scope.row.type_id!="生日会"' type="text" size="small" @click="launch(scope.row.id)" style="font-size:14px">发起</el-button>                       
-                          <el-button  v-if='code.includes("_m")&&scope.row.type_id=="生日会"' type="text" size="small" @click="claimB(scope.row.id)" style="font-size:14px">修改</el-button>
+                          <el-button  v-if='code.includes("_m")&&scope.row.type_id=="生日会"' type="text" size="small" @click="claimB(scope.row.id)" style="font-size:14px;color:#e4c318">修改</el-button>
                         <!--   <el-button type="text" size="small" @click="open2(scope.$index, accountData)">删除</el-button> -->
                     </template>
                 </el-table-column>
@@ -170,7 +170,7 @@
                 </div>
                 <el-form-item style='margin-top:40px;'>
                     <el-button type="primary" @click="onSubmit('form')">确定</el-button>
-                    <el-button @click="dialogFormVisibleAdd = false">取消</el-button>
+                    <el-button @click="dialogFormVisible = false">取消</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -214,7 +214,7 @@
                 
                 </el-form-item>
                 <el-form-item prop='start_end_time' label='活动起止时间' >
-                    <el-date-picker v-model="formBirthday.start_end_time" format="yyyy-MM-dd HH:mm" type="datetimerange" placeholder="活动起止时间" style="width:280px">
+                    <el-date-picker v-model="formBirthday.start_end_time" format="yyyy-MM-dd HH:mm" type="datetimerange" placeholder="活动起止时间" style="width:280px" :picker-options="pickerOptions0">
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item label="活动地点" prop='address'>
@@ -241,7 +241,7 @@
                     </div>
                 <el-form-item style='margin-top:40px;'>
                     <el-button type="primary" @click="onBirthdaySubmit('formBirthday')">确定</el-button>
-                    <el-button @click="dialogFormVisibleAdd = false">取消</el-button>
+                    <el-button @click="dialogFormVisibleBirthday = false">取消</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -333,12 +333,12 @@
                         <el-input v-model="formLaunch.address" placeholder='请输入活动地点' style="width:280px"></el-input>
                     </el-form-item>
             <el-form-item prop='start_end_time' label='活动起止时间' >
-                <el-date-picker v-model="formLaunch.start_end_time" format="yyyy-MM-dd HH:mm" type="datetimerange" placeholder="活动起止时间" style="width:280px">
+                <el-date-picker v-model="formLaunch.start_end_time" format="yyyy-MM-dd HH:mm" type="datetimerange" placeholder="活动起止时间" style="width:280px" :picker-options="pickerOptions0">
                 </el-date-picker>
             </el-form-item>
             <el-form-item style='margin-top:40px;'>
                 <el-button type="primary" @click="onSubmitLaunch('formLaunch')">确定</el-button>
-                <el-button @click="dialogFormVisibleAdd = false">取消</el-button>
+                <el-button @click="dialogFormVisibleLaunch = false">取消</el-button>
             </el-form-item>
         </el-form>
     </el-dialog>
@@ -394,6 +394,11 @@
                 }
             }
             return {
+                pickerOptions0: {
+                    disabledDate(time) {
+                        return time.getTime() < Date.now() - 8.64e7;
+                    }
+                },
                 loading2:false,
                 loadingB:false,
                 imageUrl: '',
@@ -649,12 +654,12 @@
             handleAvatarSuccess(){},
             onSubmit(form){
                 this.$refs[form].validate((valid) => {
-                    this.loading2 = true;
                     if (valid&&this.imageUrl&&this.form.content) {
+                        this.loading2 = true;
                         let para = {...this.form}
                 para.age = para.minage+'-'+para.maxage
                 para.images = this.imageUrl
-                console.log(para)     
+                // console.log(para)     
                 if(this.in!=''){
                     para.id = this.in;
                     addTpl(para,token).then(res=>{
@@ -929,23 +934,24 @@
 
 </script>
 <style>
-    #table2 .el-table td,
-    #table2 .el-table th {
+    #table2AT .el-table td,
+    #table2AT .el-table th:not(.gutter) {
         padding: 1px;
         text-align: center
     }
 
-    #table2 .el-table th>div,
-    #table2 .el-table .cell {
+    #table2AT .el-table th>div,
+    #table2AT .el-table .cell {
         padding-left: 0;
         padding-right: 0;
     }
 
 
-    .nicknameSpan {
+    .nicknameSpanAT {
         font-weight: 600;
+        color:#1fb5ad
     }
-     .nicknameSpan:hover {
+     .nicknameSpanAT:hover {
         cursor: pointer;
     }
     .block {
@@ -964,7 +970,7 @@
         position: relative;
         height: 46px;
         background-color: white;
-        margin-top: 30px;
+        /* margin-top: 30px; */
         padding-top: 10px;
         margin-bottom: 5px;
         border-radius: 5px;
@@ -975,12 +981,12 @@
         /*color:#ec6161;*/
     }
 
-    .publicPool .el-dialog .el-dialog__header {
+    .activityTem .el-dialog .el-dialog__header {
         background-color: #1fb5ad;
         padding: 20px 20px 20px;
     }
 
-    .publicPool .el-dialog .el-dialog__title {
+    .activityTem .el-dialog .el-dialog__title {
         color: white;
     }
 #activityD .ql-link,#activityD .ql-video,#activityDB .ql-link,#activityDB .ql-video{

@@ -1,9 +1,10 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-
+import {
+    getAccess
+} from '../api/api';
 Vue.use(Router);
-
-export default new Router({
+const router = new Router({
     // mode:'history',
     routes: [{
             path: '/',
@@ -152,31 +153,24 @@ export default new Router({
                     component: resolve => require(['../components/page/invalidResource.vue'], resolve), //无效资源
                 },
                 {
-                    path: '/userDetail/:uid/:status/:resource',
+                    path: '/userDetail',
+                    children: [
+                        { name: "userDetailList",
+                        path: "/userDetail/:uid/:status/:resource", 
+                        params: {
+                            uid: 'rd',
+                            status: '0',
+                            resource: 0
+                        },
+                        component: resolve => require(['../components/page/userDetail.vue'], resolve), //客户详情
+                    }  
+                    ],
                     meta: {
                         keepAlive: true // 不需要被缓存
                     },
-                    params: {
-                        uid: 'rd',
-                        status: '0',
-                        resource: 0
-                    },
+                    
                     component: resolve => require(['../components/page/userDetail.vue'], resolve) // 客户详情
 
-                }, {
-                    path: '/reportForm/tmk',
-                    meta: {
-                        keepAlive: true // 不需要被缓存
-                    },
-                    component: resolve => require(['../components/page/reportTMK.vue'], resolve), //TMK报表
-                    // 报表统计
-                },{
-                    path: '/reportForm/cc',
-                    meta: {
-                        keepAlive: true // 不需要被缓存
-                    },
-                    component: resolve => require(['../components/page/reportSale.vue'], resolve), //cc工作量报表
-                    // 报表统计
                 },{
                     path: '/addCustomer',
                     meta: {
@@ -220,14 +214,21 @@ export default new Router({
                     component: resolve => require(['../components/page/tagLibrary.vue'], resolve), //标签库
 
                 },{
-                    path: '/customerDetail/:uid/:status',
+                    path: '/customerDetail',
+                    children: [
+                        { name: "customerDetailList",
+                        path: "/customerDetail/:uid/:status", 
+                        params: {
+                            uid: 'rd',
+                            status: '0'
+                        },
+                        component: resolve => require(['../components/page/customerDetail.vue'], resolve), //客户详细
+                    }  
+                    ],
                     meta: {
                         keepAlive: true // 不需要被缓存
                     },
-                    params: {
-                        uid: 'rd',
-                        status: '0'
-                    },
+                    
                     component: resolve => require(['../components/page/customerDetail.vue'], resolve), //客户详细
 
                 }, {
@@ -273,21 +274,21 @@ export default new Router({
                     component: resolve => require(['../components/page/studentDetail.vue'], resolve), //学员详细
 
                 }, {
-                    path: '/personnelAssign/cc',
+                    path: '/personnelAssignCc',
                     meta: {
                         keepAlive: true // 不需要被缓存
                     },
                     component: resolve => require(['../components/page/personnelAssignCC.vue'], resolve), //人员调配CC
 
                 }, {
-                    path: '/personnelAssign/tmk',
+                    path: '/personnelAssignTmk',
                     meta: {
                         keepAlive: true // 不需要被缓存
                     },
                     component: resolve => require(['../components/page/personnelAssignTMK.vue'], resolve), //人员调配TMK
 
                 }, {
-                    path: '/personnelAssign/edu',
+                    path: '/personnelAssignEdu',
                     meta: {
                         keepAlive: true // 不需要被缓存
                     },
@@ -308,6 +309,7 @@ export default new Router({
                     component: resolve => require(['../components/page/activityAlready.vue'], resolve), //已发起活动
 
                 }, {
+                    name:'activityDetail',
                     path: '/activityDetail/:id/:type',
                     meta: {
                         keepAlive: true // 不需要被缓存
@@ -343,7 +345,7 @@ export default new Router({
                     component: resolve => require(['../components/page/courseTable.vue'], resolve), //教务课程表
 
                 },{
-                    path: '/reportForm/edu',
+                    path: '/reportFormEdu',
                     meta: {
                         keepAlive: true // 不需要被缓存
                     },
@@ -353,7 +355,21 @@ export default new Router({
                     meta: {
                         keepAlive: true // 不需要被缓存
                     },
-                    component: resolve => require(['../components/page/reportChange.vue'], resolve), //教务报表变更流失
+                    component: resolve => require(['../components/page/reportChange.vue'], resolve), //教务,cc变更流失报表
+                }, {
+                    path: '/reportFormTmk',
+                    meta: {
+                        keepAlive: true // 不需要被缓存
+                    },
+                    component: resolve => require(['../components/page/reportTMK.vue'], resolve), //TMK工作量报表
+                    // 报表统计
+                },{
+                    path: '/reportFormCc',
+                    meta: {
+                        keepAlive: true // 不需要被缓存
+                    },
+                    component: resolve => require(['../components/page/reportSale.vue'], resolve), //cc工作量,tmk资源发展报表
+                    // 报表统计
                 },{
                     path: '/inventoryTable',
                     meta: {
@@ -431,8 +447,42 @@ export default new Router({
             component: resolve => require(['../components/page/forgetPassword.vue'], resolve) //忘记密码
         },
     ],
-    scrollBehavior (to, from, savedPosition) {
-        return { x: 0, y: 0 }
-      }
+    // scrollBehavior (to, from, savedPosition) {
+    //     console.log(savedPosition)
+    //     return {  y: 0 }
+    //   }
 })
+router.beforeEach((to, from, next) => {
+    let user = localStorage.getItem('user');
+   if(!user&&to.path!=="/login"){
+        next('/login')
+    }else if(user&&to.path!=="/login"){
+        let token = JSON.parse(user).token;
+        let para = {
+            path: to.path
+        };
+        getAccess(token,para).then((res) => {
+            if(res.data==1){
+                
+                next()
+                // document.body.scrollTop = 0
+            }else{
+                Vue.prototype.$message.error('对不起,您无权限访问此页面')
+                // next('/login')
+            }
+            return res
+        }).then(res=>{
+            if(res.data!==1){
+            setTimeout(function() {
+                    next('/login')
+                }, 1000);
+            }
+        })
+    }else{
+        localStorage.removeItem('user');
+        next()
+    }
+    
+  })
+export {router}
 

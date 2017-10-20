@@ -1,18 +1,19 @@
 <template>
     <div class="crumbs">
-        <el-breadcrumb separator="/">
+        <!-- <el-breadcrumb separator="/">
             <el-breadcrumb-item><i class="el-icon-my-moban"></i> 资源管理</el-breadcrumb-item>
             <el-breadcrumb-item class='ss'>我的资源</el-breadcrumb-item>
-        </el-breadcrumb>
+        </el-breadcrumb> -->
         <div class='accouMyresourece'>
             
             <h2 class="mydataReturn">
                我的资源({{number}}人)
+               <el-button type="primary" size="mid" class='myresourceButton' @click="goToAdd" v-if="!code.includes('_c')">添加资源</el-button>
       </h2>
         <div class="MRtitle">
             
-            <div class='studentReturnThreeNew' v-if="code =='tmk_m'">
-                <el-select v-model="valueT" clearable placeholder="选择TMK" @change="updateList" >
+            <div class='studentReturnThreeNew' v-if="code =='tmk_m'||code=='cc_c'">
+                <el-select v-model="valueT"  placeholder="选择TMK" @change="updateList" >
                     <el-option v-for="item in optionsTMK" :key="item.key" :label="item.label" :value="item.key">
                     </el-option>
                 </el-select>
@@ -38,7 +39,7 @@
      @change="updateList"
      clearable
      change-on-select
-    placeholder="请选择渠道" >
+    placeholder="选择渠道" >
   </el-cascader>
             </div>
             <div class='studentReturnThreeN'>
@@ -61,16 +62,16 @@
             <div class="MRinput">
                 <el-input placeholder="输入手机号或姓名" icon="search" v-model="input2" @keyup.enter.native="updateList" :on-icon-click="updateList"  > </el-input>
             </div>
-            <div class="MRadd">
+            <!-- <div class="MRadd">
             <el-button type="primary" size="mid" class='myresourceButton' @click="goToAdd">添加资源</el-button>
-            </div>
+            </div> -->
         </div>
         </div>
-        <div id="table1">
-            <el-table :data="tableData" border style="width: 100%" :default-sort="{prop: 'last_time', order: 'descending'}">
+        <div id="table1MR">
+            <el-table :data="tableData"  style="width: 100%" @sort-change='sortChange'>
                 <el-table-column prop="names" label="姓名" width='80'>
                     <template scope="scope">
-                        <span @click="switchDetail(scope.row)" class='nicknameSpan'>{{scope.row.names}}</span>
+                        <span @click="switchDetail(scope.row)" class='nicknameSpanT'>{{scope.row.names}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="sex" label="性别" width='80'>
@@ -85,11 +86,11 @@
                 </el-table-column>
                 <el-table-column prop="sour_name" label="渠道来源">
                 </el-table-column>
-                <el-table-column prop="created" label="录入时间" sortable >
+                <el-table-column prop="created" label="录入时间" sortable='custom' >
                 </el-table-column>
                 <el-table-column prop="tmk_name" label="TMK" width='80' >
                 </el-table-column>
-                <el-table-column prop="last_time" label="最近联系时间" sortable>
+                <el-table-column prop="last_time" label="最近联系时间" sortable='custom'>
                 </el-table-column>
                 <el-table-column prop="status" label="资源状态" column-key='status' width='80'>
                     <template scope="scope">
@@ -113,9 +114,9 @@ import {
     sourceList,
     getTMK
 } from '../../api/api';
-// import {
-//     mapActions
-// } from 'vuex';
+import {
+    mapActions,mapGetters
+} from 'vuex';
 
 export default {
     data() {
@@ -136,7 +137,9 @@ export default {
                 value4: '',
                 value5: '',
                 valueR: '',
-                valueT: '',
+                valueT: '0',
+                sortName:'',
+                sortOrder:'',
                  propsource:{
           value: 'id',
           label:'names',
@@ -145,12 +148,20 @@ export default {
             }
         },
         methods: {
+            sortChange(column){
+                let {prop,order} = column
+                // console.log(prop)
+                this.sortName=prop;
+                this.sortOrder = order;
+                this.currentPage = 1;
+                this.fetchData()
+            },
             goToAdd(){
                 this.$router.push('/addUser');
             },
-            // ...mapActions([
-            //     'sendResourceId'
-            // ]),
+            ...mapActions([
+                'setMyResourceS'
+            ]),
             formatter(row, column) {
               let reg = /(\d{4})\d{4}(\d{3})/;
               if(reg.test(row.mobile)){
@@ -167,7 +178,20 @@ export default {
                 }
  // this.$router.history.current.meta.keepAlive = false
                 // this.sendResourceId(uid).then(()=>{
-                this.$router.push('/userDetail'+'/'+row.id+'/'+row.status+'/'+1);
+                    let d = {
+                    tmk_id: this.valueT, //TMK
+                    group_id: this.valueR, //资源类型
+                    school_id: this.value1, //校区
+                    sour_id: this.value2, //渠道
+                    status: this.value5, //资源状态
+                    page: this.currentPage, //页签
+                    input_start_date: this.value3,
+                    last_start_date:this.value4,
+                    sortName:this.sortName,
+                    sortOrder:this.sortOrder
+                }
+                this.setMyResourceS(d)
+                this.$router.push({ name: 'userDetailList', params: { uid: row.id,status: row.status,resource:1}});
                 // })
             },
             updateList() {
@@ -176,6 +200,18 @@ export default {
 
             },
             fetchData() {
+                if(Object.keys(this.getMyResourceS).length!=0){
+                    this.valueT =  this.getMyResourceS.tmk_id;
+                    this.valueR =  this.getMyResourceS.group_id;
+                    this.value1 =  this.getMyResourceS.school_id;
+                    this.value2 =  this.getMyResourceS.sour_id;
+                    this.value5 =  this.getMyResourceS.status;
+                    this.currentPage = this.getMyResourceS.page;
+                    this.value3 =  this.getMyResourceS.input_start_date;
+                    this.value4 =  this.getMyResourceS.last_start_date;
+                    this.sortName =  this.getMyResourceS.sortName;
+                    this.sortOrder =  this.getMyResourceS.sortOrder;
+                }
                 let para = {
                     tmk_id: this.valueT, //TMK
                     group_id: this.valueR, //资源类型
@@ -188,13 +224,18 @@ export default {
                     last_start_date:this.value4[0] != null? new Date(this.value4[0]).toLocaleDateString(): '',
                     last_end_date: this.value4[1] != null? new Date(this.value4[1]).toLocaleDateString(): '',
                     input: this.input2,
-                }
+                    sortName:this.sortName,
+                    sortOrder:this.sortOrder
+                } 
+
                 getMyResoure(para, token).then((res) => { //替换服务
                     this.number = res.data.total;
                     let a = res.data.data;
                     let c = res.data.last_page * this.pagesize;
                     this.tableData = a;
                     this.total = parseInt(c);
+                }).then(()=>{
+                    this.setMyResourceS({})
                 })
             },
 
@@ -211,8 +252,9 @@ export default {
 
         created() {
             this.code = JSON.parse(user).job ? JSON.parse(user).job.code : ''; //获取职位code
-            this.fetchData(); //获取表格数据
-            if (this.code == 'tmk_m') {
+            
+                this.fetchData(); //获取表格数据
+            if (this.code == 'tmk_m'||this.code=='cc_c') {
                 getTMK(token).then((res) => {
                     this.optionsTMK = res.data
                     this.optionsTMK.unshift({key:'0',label:'全部TMK'})
@@ -238,6 +280,12 @@ export default {
             
 
         },
+        computed: {
+        ...mapGetters([
+            'getMyResourceS'
+            // ...
+        ])
+    },
   //       watch: {
   //   '$route' (to, from) {
   //     // 对路由变化作出响应...
@@ -260,23 +308,32 @@ export default {
 }
 </script>
 <style>
-.accouMyresourece .el-date-editor--daterange.el-input{
-  width:184px;
+/* .studentReturnThreeN .accouMyresourece  .el-input{
+    font-size: 10px
+ 
 }
-#table1 .el-table td,
-#table1 .el-table th {
+.studentReturnThreeN .accouMyresourece .el-date-editor--daterange .el-input{
+  width:164px;
+ 
+} */
+#table1MR .el-table td,
+#table1MR .el-table th:not(.gutter) {
     padding: 1px;
     text-align: center
 }
 
-#table1 .el-table th>div,
-#table1 .el-table .cell {
+#table1MR .el-table th>div,
+#table1MR .el-table .cell {
     padding-left: 0;
     padding-right: 0;
 }
 
-.nicknameSpan:hover {
+.nicknameSpanT:hover {
     cursor: pointer;
+}
+.nicknameSpanT{
+    font-weight: 600;
+        color:#1fb5ad
 }
 
 .accouMyresourece {
@@ -287,7 +344,7 @@ export default {
     flex-wrap: wrap;
   justify-content: space-between;
     background-color: white;
-  margin-top:30px;
+  margin-top:0;
   padding-top:10px;
   margin-bottom: 5px;
   border-radius: 5px;
@@ -298,13 +355,13 @@ export default {
     /*margin-top: 20px;*/
     margin-bottom: 15px;
     padding-left: 10px;
-    width:200px;/*
-    margin-right:70%;*/
+    margin-right:10%;
+    /* width:330px; */
 }
 
 .studentReturnThreeNew {
    display: inline-block;
-    width: 100px;
+    width: 105px;
     /*margin-right: 10px;*/
     margin-bottom: 10px;
     margin-left: 10px
@@ -322,12 +379,13 @@ export default {
     margin-top: 10px;
 }
 .MRtitle{
-display:flex;flex-wrap:wrap
+display:flex;flex-wrap:wrap;
+margin-right:5px;
 }
 .MRinput{
-width:200px;display:inline-block;margin-left: 10px;margin-bottom: 10px;margin-right:110px
+width:162px;display:inline-block;margin-left: 10px;margin-bottom: 10px;
 }
 .MRadd{
-position:absolute;right:10px;bottom:10px
+position:absolute;left:230px;top:10px
 }
 </style>

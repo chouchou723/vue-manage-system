@@ -22,7 +22,7 @@
                     <el-button type="primary" size="mid" class='buttonAdd' @click="createCh('aform')">导出表格</el-button>
                 </div>
             </div>
-            <div id="table">
+            <div id="tableIM">
                 <el-table :data="accountData" border style='width:100%'>
                     <el-table-column prop="title" label="产品型号">
                         <template scope="scope">
@@ -198,14 +198,14 @@
         border-color: #32a4d3;
     }
     
-    #table .el-table td,
-    #table .el-table th {
+    #tableIM .el-table td,
+    #tableIM .el-table th:not(.gutter) {
         padding: 5px 5px;
         text-align: center
     }
     
-    #table .el-table th>div,
-    #table .el-table .cell {
+    #tableIM .el-table th>div,
+    #tableIM .el-table .cell {
         padding-left: 0;
         padding-right: 0;
     }

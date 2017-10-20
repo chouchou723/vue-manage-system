@@ -5,7 +5,7 @@
         </div>   -->
         <div class="hoverbg" v-if="this.code != 'hr'">
             <div class='search'>
-                <el-input placeholder="请输入姓名,手机号" icon="search" clearable v-model="input2" :on-icon-click="handleIconClick" @keyup.enter.native='handleIconClick'>
+                <el-input placeholder="请输入完整的姓名或手机号" icon="search" clearable v-model="input2" :on-icon-click="handleIconClick" @keyup.enter.native='handleIconClick'>
                 </el-input>
             </div>
         </div>
@@ -13,13 +13,16 @@
             <img id='addUser' src="../../../static/img/add.png" height="30" width="28" @click="gotoAdd" >
             </div> -->
         <div class="user-info">
-            <el-dropdown @command="handleCommand">
+            <el-dropdown @command="handleCommand" >
                 <span class="el-dropdown-link">
-                    <img class="user-logo" :src="agetSrc">
-                    <div >
-                     {{username}}
+                    <img class="user-logo" :src="agetSrc" @click='gotoSetting'>
+                    <div class="Header-logo">
+                         <span class='Header-username'>
+                             {{username}}
+                             </span>
                      <span class='duty_color'>[{{duty}}]</span>
-        </div>
+                    </div>
+                    <img src="../../../static/img/more.png" height="20" alt="" class='header-more'>
         </span>
         <el-dropdown-menu slot="dropdown">
             <el-dropdown-item command='setting'>头像设置</el-dropdown-item>
@@ -106,11 +109,15 @@
             // refresh() {
             //     this.$router.go();
             // },
+            gotoSetting(){
+                this.$router.push('/setting');
+            },
             handleCommand(command) {
                 if (command == 'loginout') {
-                    localStorage.removeItem('user')
                     // this.$router.go();
                     this.$router.push('/login');
+            // localStorage.removeItem('user')
+                    
                 }
                 if (command == 'setting') {
                     this.$router.push('/setting');
@@ -189,15 +196,15 @@
 
         },
         beforeDestroy() {
-            clearInterval(this.contGet)
-            this.$router.go();
+            clearInterval(this.contGet);
+            // this.$router.go();
         },
     }
 
 </script>
 <style>
     .hoverbg{
-width: 245px;height: 70px;float: left; padding-left:183px
+width: 245px;height: 48px;float: left; padding-left:183px
 	} 
 
     .hoverrt {
@@ -249,13 +256,16 @@ width: 245px;height: 70px;float: left; padding-left:183px
 
     .user-info {
         float: right;
-        padding-right: 50px;
+        padding-right: 37px;
         font-size: 16px;
         color: #fff;
     }
 
     .duty_color {
         color: #1fb5ad;
+        line-height: 12px;
+        font-size: 12px;
+        flex: 0 0 12px;
     }
 
     .messageAmount {
@@ -283,7 +293,9 @@ width: 245px;height: 70px;float: left; padding-left:183px
         cursor: pointer;
         vertical-align: middle;
     }
-
+    .user-info .el-dropdown{
+        padding-right: 13px;
+    }
     .user-info .user-logo {
         position: absolute;
         left: 0;
@@ -365,5 +377,20 @@ width: 245px;height: 70px;float: left; padding-left:183px
         opacity: 1;
         filter: alpha(opacity=100)
     }
+}
+.Header-logo{
+    display: flex;
+    flex-direction: column;
+    height: 48px;
+    align-items: center;
+    justify-content: center;
+}
+.Header-username{
+flex:0 0 15px;line-height:21px;
+}
+.header-more{
+    position: absolute;
+    right:-21px;
+    top:14px;
 }
 </style>

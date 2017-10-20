@@ -115,7 +115,7 @@
                 </div>
             </el-dialog>
         </div>
-        <div id="table">
+        <div id="tableSM">
             <el-table :data="accountData" border style='width:100%'>
                 <el-table-column prop="title" label="校区名">
                     <template scope="scope">
@@ -534,14 +534,14 @@ export default {
     border-color: #32a4d3;
 }
 
-#table .el-table td,
-#table .el-table th {
+#tableSM .el-table td,
+#tableSM .el-table th:not(.gutter) {
     padding: 5px 5px;
     text-align: center
 }
 
-#table .el-table th>div,
-#table .el-table .cell {
+#tableSM .el-table th>div,
+#tableSM .el-table .cell {
     padding-left: 0;
     padding-right: 0;
 }

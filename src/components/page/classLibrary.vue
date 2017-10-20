@@ -1,12 +1,12 @@
 <template>
     <div class='classLibrary'>
-        <div class="crumbs">
+        <!-- <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-my-richeng"></i> 课程管理</el-breadcrumb-item>
                 <el-breadcrumb-item class='ss'>课程库</el-breadcrumb-item>
             </el-breadcrumb>
-        </div>
-        <div class='accou'>
+        </div> -->
+        <div class='classLi'>
             <div class="h1">
                 <h3 class='accountH2'>
                课程库({{number}}个)
@@ -58,7 +58,7 @@
                 </div>
             </el-dialog>
         </div>
-        <div id="table">
+        <div id="tableCL">
             <el-table :data="accountData" border style='width:100%'>
                 <el-table-column prop="title" label="课程名称">
                     <template scope="scope">
@@ -288,16 +288,18 @@ export default {
                         let a = {
                             kcid: data[index].kcid
                         }
-                        delete_class(a, token).then(() => {
-                            this.fetchData();
-                        });
-                        this.$message({
+                        delete_class(a, token).then((res) => {
+                            if(res.code==0){
+                                this.fetchData();
+                                this.$message({
                             type: 'success',
                             message: '删除成功!'
+                        })
+                            }
                         }).catch((res) => {
                             this.$message.error('该用户未授权')
                         })
-                    })
+                    }).catch(()=>{})
                 }
             },
 
@@ -394,19 +396,19 @@ export default {
     border-color: #32a4d3;
 }
 
-#table .el-table td,
-#table .el-table th {
+#tableCL .el-table td,
+#tableCL .el-table th:not(.gutter) {
     padding: 5px 5px;
     text-align: center
 }
 
-#table .el-table th>div,
-#table .el-table .cell {
+#tableCL .el-table th>div,
+#tableCL .el-table .cell {
     padding-left: 0;
     padding-right: 0;
 }
 
-#table .classDel {
+#tableCL .classDel {
     color: #e95c5c;
 }
 
@@ -444,12 +446,12 @@ export default {
     margin-top: 10px;
 }
 
-.accou {
+.classLi {
     width: 100%;
     position: relative;
     height: 45px;
     background-color: white;
-    margin-top: 30px;
+    /* margin-top: 30px; */
     padding-top: 10px;
     margin-bottom: 5px;
     border-radius: 5px;

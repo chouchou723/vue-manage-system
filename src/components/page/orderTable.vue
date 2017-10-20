@@ -30,7 +30,7 @@
                 </div>
             </div>
         </div>
-        <div id="table">
+        <div id="table2OT">
             <el-table :data="accountData" border style='width:100%'>
                 <el-table-column prop="title" label="录入时间">
                     <template scope="scope">
@@ -142,14 +142,14 @@ export default {
     border-color: #32a4d3;
 }
 
-#table .el-table td,
-#table .el-table th {
+#table2OT .el-table td,
+#table2OT .el-table th:not(.gutter) {
     padding: 5px 5px;
     text-align: center
 }
 
-#table .el-table th>div,
-#table .el-table .cell {
+#table2OT .el-table th>div,
+#table2OT .el-table .cell {
     padding-left: 0;
     padding-right: 0;
 }

@@ -1,11 +1,10 @@
 <template>
     <div>
-        <div class="crumbs">
+        <!-- <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item :to="{ path: '/Index'}"><i class="el-icon-my-shouye"></i> 首页</el-breadcrumb-item>
-                <el-breadcrumb-item class='ss'>头像设置</el-breadcrumb-item>
+                <el-breadcrumb-item ><i class="el-icon-my-guanliyuan"></i> 头像设置</el-breadcrumb-item>
             </el-breadcrumb>
-        </div>
+        </div> -->
         <div class='settingT'>
             <h3 class='settingH3'>头像设置</h3>
         </div>
@@ -28,8 +27,8 @@
             </div>
             <!-- </el-upload> -->
             <!-- </el-form> -->
-            <my-upload field="file" @crop-upload-success="cropUploadSuccess" @crop-upload-fail="cropUploadFail" v-model="show" :width="300"
-                :height="300" url="http://pandatest.dfth.com/api/v1/userinfo/uploadAvatar" :headers="headers" img-format="jpg"></my-upload>
+            <my-upload field="file" @crop-upload-success="cropUploadSuccess" @crop-upload-fail="cropUploadFail" v-model="show" :width="40"
+                :height="40" url="http://pandatest.dfth.com/api/v1/userinfo/uploadAvatar" :headers="headers" img-format="jpg"></my-upload>
         </div>
     </div>
 </template>
@@ -54,8 +53,8 @@
                 },
                 img: [{
                     src: '',
-                    w: 400,
-                    h: 400
+                    w: 200,
+                    h: 200
                 }]
             }
         },
@@ -70,6 +69,7 @@
                 this.show = !this.show;
             },
             cropUploadSuccess(jsonData, field) {
+                // console.log(jsonData)
                 // this.$message({
                 //                             message: '上传成功',
                 //                             type: 'success'
@@ -79,7 +79,8 @@
                 let a = JSON.parse(user);
                 a.avatar = jsonData.data;
                 localStorage.setItem('user', JSON.stringify(a));
-                this.$router.go();
+                window.location.reload();
+                // this.$router.go();
             },
             cropUploadFail(status, field) {
                 this.$message.error('上传失败')
@@ -131,7 +132,7 @@
         position: relative;
         height: 35px;
         background-color: white;
-        margin-top: 30px;
+        margin-top: 0;
         padding-top: 10px;
         margin-bottom: 10px;
         border-radius: 5px;

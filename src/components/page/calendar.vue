@@ -1,17 +1,17 @@
 <template>
     <div id='calendarcc'>
-        <div class="crumbs">
+        <!-- <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-my-wodericheng"></i> 任务提醒</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-my-yewuzhongxin"></i> 任务提醒</el-breadcrumb-item>
             </el-breadcrumb>
-        </div>
-        <div class='editPass'>
+        </div> -->
+        <div class='editPassCald'>
             <h3 class='editPassH3'>任务提醒({{number}})</h3>
         </div>
         <vue-event-calendar :events="demoEvents"  @month-changed="handleMonthChanged">
             <template scope="props" class="event-item1">
                 <div v-for="(event, index) in props.showEvents" class="event-item" @click='goTo(event)'>
-                    <div >
+                    <div class="calhidden">
                         <div class='caltitle'>
                             <div class="caldiv" > <i class="el-icon-my-tongzhigonggao"></i>{{event.title}}</div>
                             <!-- <div style="float:right;color:grey;margin-top:5px" >{{event.creat.substring(0,10).replace(/0/g,'') == new Date().toLocaleString().substring(0,9).replace(/0/g,'')?event.creat.substring(11): event.creat.substring(0,10).replace(/0/g,'').replace(/\-/g,'') - new Date().toLocaleString().substring(0,9).replace(/0/g,'').replace(/\-/g,'') == -1? '昨天'+event.creat.substring(11) :event.creat.substring(5)}}</div> -->
@@ -49,7 +49,15 @@ export default {
         },
         methods: {
             goTo(data){
-                 this.$router.push(data.url);
+                let a =data.url.split('/')
+                // console.log(a)
+                if(a[1]=='userDetail'){
+                    this.$router.push({ name: 'userDetailList', params: { uid: a[2],status: a[3],resource:a[4]}});
+                }else if(a[1]=='customerDetail'){
+                    this.$router.push({ name: 'customerDetailList', params: { uid: a[2],status: a[3]}});
+                }else{
+                     this.$router.push(data.url);
+                }
             },
             handleMonthChanged(month) {
                 let year = month.substring(0, 4);
@@ -100,7 +108,7 @@ export default {
                     }
                 })
                 let arr = this.demoEvents.filter(item => {
-                    item.date == new Date().toLocaleDateString()
+                    return item.date == new Date().toLocaleDateString()
                 })
                 this.number = arr.length
             }).then(() => {
@@ -111,10 +119,18 @@ export default {
 }
 </script>
 <style>
+    .events-wrapper{
+        overflow:hidden;
+    }
 .cal-events {
-    overflow: auto;
+    overflow-y:scroll;
+	overflow-x:hidden;
+    width:114%;
+    
 }
-
+.event-item{
+    width:89%;
+}
 .cal-events::-webkit-scrollbar {
     display: none
 }
@@ -143,12 +159,12 @@ export default {
     cursor: pointer;
 }
 
-.editPass {
+.editPassCald {
     width: 100%;
     position: relative;
     height: 35px;
     background-color: white;
-    margin-top: 30px;
+    /* margin-top: 10px; */
     padding-top: 10px;
     margin-bottom: 10px;
     border-radius: 5px;

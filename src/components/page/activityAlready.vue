@@ -1,10 +1,10 @@
 <template>
 
     <div class="crumbsInval">
-        <el-breadcrumb separator="/">
+        <!-- <el-breadcrumb separator="/">
            <el-breadcrumb-item><i class="el-icon-my-tongzhi"></i> 活动管理</el-breadcrumb-item>
             <el-breadcrumb-item class='ss'>已发布活动</el-breadcrumb-item>
-        </el-breadcrumb>
+        </el-breadcrumb> -->
         <div class='noInvalid'>
             <h2 class="studentinvalid">
             
@@ -23,11 +23,11 @@
                 </el-select>
             </div>
         </div>
-        <div id="table3">
-            <el-table :data="noEffData" border style="width: 100%" :default-sort="{prop: 'created', order: 'descending'}">
+        <div id="table3AA">
+            <el-table :data="noEffData"  style="width: 100%;border-radius:5px" >
                 <el-table-column prop="names" label="活动名称" >
                     <template scope="scope">
-                        <span @click="switchDetail(scope.row)" class='nicknameSpan'>{{scope.row.names}}</span>
+                        <span @click="switchDetail(scope.row)" class='nicknameSpanAA'>{{scope.row.names}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="type_id" label="活动类型" width='90'>
@@ -75,6 +75,9 @@ import {
     getMyResoure,
     getActivityAlreadyList
 } from '../../api/api';
+import {
+    mapActions,mapGetters
+} from 'vuex';
 export default {
     data() {
             return {
@@ -89,6 +92,9 @@ export default {
             }
         },
         methods: {
+            ...mapActions([
+                'setmyActS'
+            ]),
             formatter(row, column) {
                 let reg = /(\d{4})\d{4}(\d{3})/;
                 if (reg.test(row.mobile)) {
@@ -102,7 +108,14 @@ export default {
                 this.fetchData();
             },
             switchDetail(row) {
-                this.$router.push('/activityDetail'+'/'+row.id+'/'+row.type_id);
+                let d = {
+                    type_id: this.value,
+                    status: this.value1,
+                    page: this.currentPage,
+                }
+                this.setmyActS(d)
+                this.$router.push({ name: 'activityDetail', params: { id: row.id,type: row.type_id}});
+                // this.$router.push('/activityDetail'+'/'+row.id+'/'+row.type_id);
             },
             updateList() {
                 this.currentPage = 1;
@@ -110,13 +123,18 @@ export default {
 
             },
             fetchData() {
+                if(Object.keys(this.getmyActS).length!=0){
+                    this.value =  this.getmyActS.type_id;
+                    this.value1 =  this.getmyActS.status;
+                    this.currentPage =  this.getmyActS.page;
+                }
                 let para = {
                     type_id: this.value,
                     status: this.value1,
                     page: this.currentPage,
                 }
 
-                getActivityAlreadyList(token,para).then((res) => { //替换服务
+                getActivityAlreadyList(token,para).then((res) => {//替换服务
                     this.number = res.data.total;
                     let a = res.data.data;
                     let c = res.data.last_page * this.pagesize;
@@ -125,6 +143,8 @@ export default {
                     // console.log(a)
                     this.noEffData = a;
                     this.total = parseInt(c);
+                }).then(()=>{
+                    this.setmyActS({})
                 })
             },
         },
@@ -137,26 +157,33 @@ export default {
             // this.code = JSON.parse(user).job?JSON.parse(user).job.code : '';
             this.fetchData();
         },
+        computed: {
+        ...mapGetters([
+            'getmyActS'
+            // ...
+        ])
+    },
 }
 </script>
 <style>
-#table3 .el-table td,
-#table3 .el-table th {
+#table3AA .el-table td,
+#table3AA .el-table th:not(.gutter) {
     padding: 1px;
     text-align: center
 }
 
-#table3 .el-table th>div,
-#table3 .el-table .cell {
+#table3AA .el-table th>div,
+#table3AA .el-table .cell {
     padding-left: 0;
     padding-right: 0;
 }
 
-.nicknameSpan:hover {
+.nicknameSpanAA:hover {
     cursor: pointer;
 }
-.nicknameSpan{
+.nicknameSpanAA{
     font-weight: 600;
+    color:#1fb5ad
 }
 .crumbsInval .block {
     text-align: center;
@@ -186,8 +213,7 @@ export default {
     width: 100%;
     position: relative;
     height: 46px;
-    margin-top: 15px;
-     margin-top:30px;
+     /* margin-top:30px; */
   padding-top:10px;
   margin-bottom: 5px;
   border-radius: 5px;

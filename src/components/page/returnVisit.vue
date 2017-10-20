@@ -1,62 +1,65 @@
 <template>
     <div>
-        <div class="crumbs">
+        <!-- <div class="crumbs">
             <el-breadcrumb separator="/">
-               <!--  <el-breadcrumb-item><i class="el-icon-menu"></i> 客户管理</el-breadcrumb-item> -->
                 <el-breadcrumb-item><i class="el-icon-my-tongxunlu"></i>学员回访</el-breadcrumb-item>
             </el-breadcrumb>
-        </div>
+        </div> -->
         <div class='accouVisit'>
           
               
-        <div>
+       
               <h2 class="studentReturn">
             
         学员回访({{number}}人)
         </h2>
-                <div class='studentReturnThree' v-if="code =='tmk_m'">
-                    <el-select v-model="value2" clearable placeholder="选择TMK" @change="updateList">
-                        <el-option v-for="item in options1" :key="item.key" :label="item.label" :value="item.key">
-                        </el-option>
-                    </el-select>
-                </div>
-                <div class='studentReturnThreeS'>
-                    <el-select v-model="value1" clearable filterable placeholder="选择校区" @change="updateList">
-                        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
-                        </el-option>
-                    </el-select>
-                </div>
-                <div class='studentReturnThree'>
-                    <el-select v-model="status" clearable placeholder="回访状态" @change="updateList">
-                        <el-option label="已回访" value="1"></el-option>
-                        <el-option label="未回访" value="0"></el-option>
-                    </el-select>
-                </div>
-                <div class='studentReturnThreeS'>
-                    <el-date-picker v-model="value3" type="daterange" placeholder="请选择签约时间" @change="updateList">
-                    </el-date-picker>
-                </div>
+        
+   
+    <div style="display:flex;flex-wrap:wrap;margin-right: 5px;">
+<div class='studentReturnThree' v-if="code =='tmk_m'||code=='cc_c'">
+                <el-select v-model="value2"  placeholder="选择TMK" @change="updateList">
+                    <el-option v-for="item in options1" :key="item.key" :label="item.label" :value="item.key">
+                    </el-option>
+                </el-select>
+            </div>
+            <div class='studentReturnThreeS'>
+                <el-select v-model="value1" clearable filterable placeholder="选择校区" @change="updateList">
+                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                    </el-option>
+                </el-select>
+            </div>
+            <div class='studentReturnThree'>
+                <el-select v-model="status" clearable placeholder="回访状态" @change="updateList">
+                    <el-option label="已回访" value="1"></el-option>
+                    <el-option label="未回访" value="0"></el-option>
+                </el-select>
+            </div>
+            <div class='studentReturnThreedate'>
+                <el-date-picker v-model="value3" type="daterange" placeholder="请选择签约时间" @change="updateList">
+                </el-date-picker>
+            </div>
+        <div class='studentReturnThreeS'>
+            <el-input placeholder="输入手机号或姓名" icon="search" v-model="input2" @keyup.enter.native="updateList" :on-icon-click="updateList">
+            </el-input>
         </div>
-                <div class='fourSelect'>
-                    <el-input placeholder="输入手机号或姓名" icon="search" v-model="input2" @keyup.enter.native="updateList" :on-icon-click="updateList">
-                    </el-input>
-                </div>
+       
+    </div>
             
         </div>
-        <div id="table" v-loading="loading2">
-            <el-table :data="returnData" :default-sort="{prop: 'last_time', order: 'descending'}" border>
+        <div id="tableRV" v-loading="loading2">
+            <el-table :data="returnData"  @sort-change='sortChange'>
                 <el-table-column prop="nickname" label="学生" width="150">
                     <template scope="scope">
-                        <span @click="switchDetail(scope.row)" class='nicknameSpan'>{{scope.row.nickname}}</span>
+                        <span @click="switchDetail(scope.row)" class='nicknameSpanReturn'>{{scope.row.nickname}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="school_name" label="校区">
                 </el-table-column>
-                <el-table-column prop="regtime" sortable label="签约时间" width="180">
+                <el-table-column prop="regtime" sortable='custom' label="签约时间" width="180">
                 </el-table-column>
-                <el-table-column prop="last_time" sortable label="最近回访时间" width="180">
+                <el-table-column prop="last_time" sortable='custom' label="最近回访时间" width="180">
                 </el-table-column>
-                <el-table-column prop="visit_count" sortable :sort-method='sortM' label="回访次数"width="100">
+                <el-table-column prop="visit_count"   label="回访次数"width="100">
                 </el-table-column>
                 <el-table-column class-name='tagClass' prop="tags" label="回访标签" width="250">
                     <template scope="scope">
@@ -93,7 +96,9 @@ import {
     // delete_tag,
     getTMK
 } from '../../api/api';
-
+import {
+    mapActions,mapGetters
+} from 'vuex';
 export default {
     data() {
             return {
@@ -114,14 +119,24 @@ export default {
                 options: [], //表单上方的select
                 options1: [], //表单上方的select
                 value1: '', //对应select的值
-                value2: '', //对应select的值
+                value2: '0', //对应select的值
                 status: '', //对应select的值
                 value3: '', //对应select的值
                 value4: '', //点击tag
                 code: '',
+                sortName:'',
+                sortOrder:'',
             }
         },
         methods: {
+            sortChange(column){
+                let {prop,order} = column
+                // console.log(prop)
+                this.sortName=prop;
+                this.sortOrder = order;
+                this.currentPage = 1;
+                this.fetchData()
+            },
             sortM(a,b){
                 let i = parseInt(a.visit_count);
                 let h = parseInt(b.visit_count);
@@ -141,12 +156,22 @@ export default {
                 }
                
             },
-            // ...mapActions([
-            //     'sendUser'
-            // ]),
+            ...mapActions([
+            'setmyReturnS'
+        ]),
             switchDetail(row) {
                 // console.log(row)
                 // this.sendUser(row.uid)
+                let d = {
+                    page: this.currentPage,
+                    tmk_uid: this.value2,
+                    school_id: this.value1,
+                    status: this.status,
+                    start_time: this.value3,
+                    sortName:this.sortName,
+                    sortOrder:this.sortOrder
+                }
+                this.setmyReturnS(d)
                 this.$router.push('/returnDetail'+'/'+row.uid); 
             },
             updateList() {
@@ -155,6 +180,15 @@ export default {
 
             },
             fetchData() {
+                if(Object.keys(this.getmyReturnS).length!=0){
+                    this.currentPage = this.getmyReturnS.page;
+                    this.value2 =  this.getmyReturnS.tmk_uid;
+                    this.value1 =  this.getmyReturnS.school_id;
+                    this.status =  this.getmyReturnS.status;
+                    this.value3 =  this.getmyReturnS.start_time;
+                    this.sortName =  this.getmyReturnS.sortName;
+                    this.sortOrder =  this.getmyReturnS.sortOrder;
+                }
                 let para = {
                     page: this.currentPage,
                     tmk_uid: this.value2,
@@ -163,7 +197,9 @@ export default {
                     start_time: this.value3[0] != null? new Date(this.value3[0]).toLocaleDateString(): '',
                     end_time: this.value3[1] != null?new Date(this.value3[1]).toLocaleDateString(): '',
                     input: this.input2,
-                    tag_id: this.value4
+                    tag_id: this.value4,
+                    sortName:this.sortName,
+                    sortOrder:this.sortOrder
                 }
 
                 returnVisitList(token, para).then((res) => { //替换服务
@@ -175,7 +211,8 @@ export default {
                     this.returnData = a;
                     this.total = parseInt(c);
                 }).then(()=>{
-                    this.loading2 = false
+                    this.loading2 = false;
+                    this.setmyReturnS({})
                 }).catch(()=>{
                     this.$message.error('该用户未授权');
                     this.loading2 = false
@@ -274,13 +311,19 @@ export default {
                     };
                 });
             })
-            if (this.code == 'tmk_m') {
+            if (this.code == 'tmk_m'||this.code=='cc_c') {
             getTMK(token).then((res) => {
                 this.options1 = res.data;
                  this.options1.unshift({key:'0',label:'全部TMK'})
             })
         }
         },
+        computed: {
+        ...mapGetters([
+            'getmyReturnS'
+            // ...
+        ])
+    },
         // mounted() {
 
         // },
@@ -291,17 +334,17 @@ export default {
 }
 </script>
 <style>
-#table{
+#tableRV{
     position: relative;
 }
-#table .el-table td,
-#table .el-table th {
+#tableRV .el-table td,
+#tableRV .el-table th:not(.gutter) {
     padding: 5px 5px;
     text-align: center
 }
 
-#table .el-table th>div,
-#table .el-table .cell {
+#tableRV .el-table th>div,
+#tableRV .el-table .cell {
     padding-left: 0;
     padding-right: 0;
 }
@@ -332,18 +375,19 @@ export default {
     background-color: white;
     display: flex;
     flex-wrap: wrap;
-  justify-content: space-between;
-  margin-top:30px;
+  justify-content: flex-start;
+  margin-top:0;
   padding-top:10px;
-  margin-bottom: 10px;
+  /* margin-bottom: 10px; */
   border-radius: 5px;
 }
 
-.nicknameSpan:hover {
+.nicknameSpanReturn:hover {
     cursor: pointer;
 }
-.nicknameSpan{
+.nicknameSpanReturn{
     font-weight: 600;
+    color:#1fb5ad
 }
 
 .fourSelect {
@@ -364,14 +408,27 @@ export default {
     display: inline-block;
     width: 105px;
      margin-left: 10px;
+     margin-bottom: 15px;
 }
 
 .studentReturnThreeS {
     display: inline-block;
     margin-left: 10px;
-    width: 174px;
+    width: 159px;
+    margin-bottom: 15px;
+    
 }
-
+.studentReturnThreedate {
+    display: inline-block;
+    margin-left: 10px;
+    /* width: 189px; */
+    margin-bottom: 15px;
+    
+}
+/* .studentReturnThreedate .el-date-editor--daterange.el-input{
+    width: 189px;
+    font-size: 10px
+} */
 .el-tag--success {
     background-color: #1fb5ad;
     border-color: #bcf1d4;
@@ -399,7 +456,7 @@ export default {
 } */
 
 
-/*#table .el-table th:nth-last-child(2){
+/*#tableRV .el-table th:nth-last-child(2){
   text-align: left
 }*/
 

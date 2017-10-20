@@ -48,16 +48,6 @@ export default {
                     callback();
                 }
             };
-            // var validatePass = (rule, value, callback) => {
-            //     if (value === '') {
-            //         callback(new Error('请输入密码'));
-            //     } else {
-            //         if (this.ruleForm2.checkPass !== '') {
-            //             this.$refs.ruleForm2.validateField('checkPass');
-            //         }
-            //         callback();
-            //     }
-            // };
             var validatePass2 = (rule, value, callback) => {
                 if (value === '') {
                     callback(new Error('请再次输入密码'));
@@ -73,17 +63,6 @@ export default {
                 }else{
                     callback()
                 }
-                // setTimeout(() => {
-                //     if (!Number.isInteger(value)) {
-                //         callback(new Error('请输入数字值'));
-                //     } else {
-                //         if (value != this.receiveCode) {
-                //             callback(new Error('验证码错误'));
-                //         } else {
-                //             callback();
-                //         }
-                //     }
-                // }, 1);
             }
 var isPhone1 = (rule, value, callback) => {
                 var myreg =  /^(((1[0-9]{1}))+\d{9})$/; 

@@ -1,11 +1,10 @@
 <template>
     <div>
-        <div class="crumbs">
+        <!-- <div class="crumbs">
             <el-breadcrumb separator=" ">
                 <el-breadcrumb-item><i class="el-icon-my-shouye"></i>首页 </el-breadcrumb-item>
-                <!--  <el-breadcrumb-item> </el-breadcrumb-item> -->
             </el-breadcrumb>
-        </div>
+        </div> -->
         <!-- tmk第一个报表 -->
         <div style="width: 50%;float:left" v-if="code.includes('tmk')">
             <div class="h1" style="position:relative;height:50px;margin-bottom:8px;">
@@ -15,14 +14,193 @@
                         日数据对比统计
                     </h3>
                 </div>
-                <div style='margin-left:10px;width:100px;position:absolute;top:10px;right:10px' v-if="code =='tmk_m'">
+                <div style='margin-left:10px;width:100px;position:absolute;top:12px;left:150px' v-if='code=="tmk_m"'>
                     <el-select v-model="value1" size='small' clearable placeholder="选择TMK" @change="updateList">
                         <el-option v-for="item in tmks" :key="item.key" :label="item.label" :value="item.key">
                         </el-option>
                     </el-select>
                 </div>
+                <div class='notifyA' style='position:absolute;right:3px;top:10px;font-size: 14px;'>
+                        <el-breadcrumb separator=" " id='systemMore'>
+                            <el-breadcrumb-item ><span style='font-weight:500;color:#1fb5ad'>更多>></span></el-breadcrumb-item>
+                            <!-- :to="{ path: '/reportForm/tmk'}" -->
+                            <el-breadcrumb-item> </el-breadcrumb-item>
+                        </el-breadcrumb>
+                    </div>
             </div>
             <div style="display:flex; align-items:center;justify-content: space-around;">
+                <el-col style='float:left;width:32%'>
+                    <div class="dayCompare1">
+                        <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-bottom:1px solid gainsboro">新资源</div>
+                        <div style="display:flex;justify-content: space-around;width:100%;height:100%;background:white;align-items:center">
+
+                            <div style="height:80%;color:#6fc7ca;font-size:32px;width:50%;text-align:center;background:white;display:flex;flex-direction:column;justify-content:center;border-right:1px solid gainsboro">
+                                <p>
+                                    {{tmkindex.today_Customers}}
+                                </p>
+                                <p style="font-size:20px;margin-top:10px">今天</p>
+                            </div>
+                            <div style="width:50%;text-align:center;background:white;padding:7px 0;border-radius:5px;display:flex;flex-direction:column;justify-content:center;">
+                                <div style="margin-bottom:10px">
+                                    <p style="font-size:20px">
+                                        {{tmkindex.yesterday_customers}}
+                                    </p>
+                                    <p style="font-size:16px">昨天</p>
+                                </div>
+                                <div style='border-top:1px solid gainsboro;padding-top:10px;width:80%;margin:0 auto'>
+                                    <p style="font-size:14px;">
+                                        {{tmkindex.befor_yesterday_customers}}
+                                    </p>
+                                    <p style="font-size:14px;">较前天</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </el-col>
+                <el-col style='float:left;width:32%'>
+                    <div class="dayCompare1">
+                        <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-bottom:1px solid gainsboro">邀约量</div>
+                        <div style="display:flex;justify-content: space-around;width:100%;height:100%;background:white;align-items:center">
+
+                            <div style="height:80%;color:#ed8d7a;font-size:32px;width:50%;text-align:center;background:white;display:flex;flex-direction:column;justify-content:center;border-right:1px solid gainsboro">
+                                <p>
+                                    {{tmkindex.today_Invitation}}
+                                </p>
+                                <p style="font-size:20px;margin-top:10px">今天</p>
+                            </div>
+                            <div style="width:50%;text-align:center;background:white;padding:7px 0;border-radius:5px;display:flex;flex-direction:column;justify-content:center;">
+                                <div style="margin-bottom:10px">
+                                    <p style="font-size:20px">
+                                        {{tmkindex.yesterday_Invitation}}
+                                    </p>
+                                    <p style="font-size:16px">昨天</p>
+                                </div>
+                                <div style='border-top:1px solid gainsboro;padding-top:10px;width:80%;margin:0 auto'>
+                                    <p style="font-size:14px;">
+                                        {{tmkindex.befor_yesterday_Invitation}}
+                                    </p>
+                                    <p style="font-size:14px;">较前天</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </el-col>
+                <el-col style='float:left;width:32%'>
+                    <div class="dayCompare1">
+                        <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-bottom:1px solid gainsboro">到访量</div>
+                        <div style="display:flex;justify-content: space-around;width:100%;height:100%;background:white;align-items:center">
+
+                            <div style="height:80%;color:#71b4db;font-size:32px;width:50%;text-align:center;background:white;display:flex;flex-direction:column;justify-content:center;border-right:1px solid gainsboro">
+                                <p>
+                                    {{tmkindex.today_visiting}}
+                                </p>
+                                <p style="font-size:20px;margin-top:10px">今天</p>
+                            </div>
+                            <div style="width:50%;text-align:center;background:white;padding:7px 0;border-radius:5px;display:flex;flex-direction:column;justify-content:center;">
+                                <div style="margin-bottom:10px">
+                                    <p style="font-size:20px">
+                                        {{tmkindex.yesterday_visiting}}
+                                    </p>
+                                    <p style="font-size:16px">昨天</p>
+                                </div>
+                                <div style='border-top:1px solid gainsboro;padding-top:10px;width:80%;margin:0 auto'>
+                                    <p style="font-size:14px;">
+                                        {{tmkindex.befor_yesterday_visiting}}
+                                    </p>
+                                    <p style="font-size:14px;">较前天</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </el-col>
+            </div>
+            <div style="height:150px;margin-top:20px;display:flex; align-items:center;justify-content: space-around;">
+                <el-col style='float:left;width:32%'>
+                    <div class="dayCompare1">
+                        <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-bottom:1px solid gainsboro">签约量</div>
+                        <div style="display:flex;justify-content: space-around;width:100%;height:100%;background:white;align-items:center">
+
+                            <div style="height:80%;color:#7089ba;font-size:32px;width:50%;text-align:center;background:white;display:flex;flex-direction:column;justify-content:center;border-right:1px solid gainsboro">
+                                <p>
+                                    {{tmkindex.today_member}}
+                                </p>
+                                <p style="font-size:20px;margin-top:10px">今天</p>
+                            </div>
+                            <div style="width:50%;text-align:center;background:white;padding:7px 0;border-radius:5px;display:flex;flex-direction:column;justify-content:center;">
+                                <div style="margin-bottom:10px">
+                                    <p style="font-size:20px">
+                                        {{tmkindex.yesterday_member}}
+                                    </p>
+                                    <p style="font-size:16px">昨天</p>
+                                </div>
+                                <div style='border-top:1px solid gainsboro;padding-top:10px;width:80%;margin:0 auto'>
+                                    <p style="font-size:14px;">
+                                        {{tmkindex.befor_yesterday_member}}
+                                    </p>
+                                    <p style="font-size:14px;">较前天</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </el-col>
+                <el-col style='float:left;width:32%'>
+                    <div class="dayCompare1">
+                        <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-bottom:1px solid gainsboro">到访率</div>
+                        <div style="display:flex;justify-content: space-around;width:100%;height:100%;background:white;align-items:center">
+
+                            <div style="height:80%;color:#49c236;font-size:32px;width:50%;text-align:center;background:white;display:flex;flex-direction:column;justify-content:center;border-right:1px solid gainsboro">
+                                <p>
+                                    {{tmkindex.todayVisitingRate}}
+                                </p>
+                                <p style="font-size:20px;margin-top:10px">今天</p>
+                            </div>
+                            <div style="width:50%;text-align:center;background:white;padding:7px 0;border-radius:5px;display:flex;flex-direction:column;justify-content:center;">
+                                <div style="margin-bottom:10px">
+                                    <p style="font-size:20px">
+                                        {{tmkindex.yesterdayVisitingRate}}
+                                    </p>
+                                    <p style="font-size:16px">昨天</p>
+                                </div>
+                                <div style='border-top:1px solid gainsboro;padding-top:10px;width:80%;margin:0 auto'>
+                                    <p style="font-size:14px;">
+                                        {{tmkindex.befor_yesterdayVisitingRate}}
+                                    </p>
+                                    <p style="font-size:14px;">较前天</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </el-col>
+                <el-col style='float:left;width:32%'>
+                    <div class="dayCompare1">
+                        <div style="color:#666666;font-size:18px;width:100%;background:white;text-align:center;padding:6px 0;border-bottom:1px solid gainsboro">签约率</div>
+                        <div style="display:flex;justify-content: space-around;width:100%;height:100%;background:white;align-items:center">
+
+                            <div style="height:80%;color:#cbbc5a;font-size:32px;width:50%;text-align:center;background:white;display:flex;flex-direction:column;justify-content:center;border-right:1px solid gainsboro">
+                                <p>
+                                    {{tmkindex.todayMemberRate}}
+                                </p>
+                                <p style="font-size:20px;margin-top:10px">今天</p>
+                            </div>
+                            <div style="width:50%;text-align:center;background:white;padding:7px 0;border-radius:5px;display:flex;flex-direction:column;justify-content:center;">
+                                <div style="margin-bottom:10px">
+                                    <p style="font-size:20px">
+                                        {{tmkindex.yesterdayMemberRate}}
+                                    </p>
+                                    <p style="font-size:16px">昨天</p>
+                                </div>
+                                <div style='border-top:1px solid gainsboro;padding-top:10px;width:80%;margin:0 auto'>
+                                    <p style="font-size:14px;">
+                                        {{tmkindex.befor_yesterdayMemberRate}}
+                                    </p>
+                                    <p style="font-size:14px;">较前天</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </el-col>
+            </div>
+            <!-- <div style="display:flex; align-items:center;justify-content: space-around;">
                 <el-col style='float:left;width:32%'>
                     <div class="dayCompare">
                         <div style="color:#6fc7ca;font-size:14px">较昨天{{yesterday_customers}}</div>
@@ -67,29 +245,36 @@
                         <div style="color:#cbbc5a;font-size:18px">签单率</div>
                     </div>
                 </el-col>
-            </div>
+            </div> -->
         </div>
         <!-- cc第一个报表 -->
         <div style="width: 50%;float:left" v-if="code.includes('cc')">
             <div class="h1" style="position:relative;height:50px;margin-bottom:8px;">
-                <div style="background-color:white;border-radius:5px;width:99%;margin:0 auto">
-                    <h3 style='margin-bottom:20px;padding:14px'>
+                <div style="background-color:white;border-radius:5px;width:99%;margin:0 auto;display:flex;align-items:center">
+                    <h3 style='padding:14px'>
 
                         日数据对比统计
                     </h3>
+                    <div style='width:100px;margin-right:10px' v-if="code.includes('cc_c')">
+                            <el-select v-model="valueR" size='small' clearable placeholder="选择校区" @change="updateListGetCC">
+                                    <el-option v-for="item in optionR" :key="item.id" :label="item.title" :value="item.id">
+                                        </el-option>
+                            </el-select>
+                        </div>
+                    <div style='width:100px;' v-if="code =='cc_m'||code.includes('cc_c')">
+                            <el-select v-model="valueCC" size='small' clearable placeholder="选择CC" @change="updateListCC">
+                                <el-option v-for="item in ccs" :key="item.aid" :label="item.uname" :value="item.aid">
+                                </el-option>
+                            </el-select>
+                        </div>
                 </div>
-                <div style='margin-left:10px;width:100px;position:absolute;top:10px;right:120px' v-if="code.includes('_c')">
-                        <el-select v-model="valueR" size='small' clearable placeholder="选择校区" @change="updateListGetCC">
-                                <el-option v-for="item in optionR" :key="item.id" :label="item.title" :value="item.id">
-                                    </el-option>
-                        </el-select>
+                <div class='notifyA' style='position:absolute;right:3px;top:10px;font-size: 14px;'>
+                        <el-breadcrumb separator=" " id='systemMore'>
+                                <!-- :to="{ path: '/reportForm/cc'}" -->
+                            <el-breadcrumb-item ><span style='font-weight:500;color:#1fb5ad'>更多>></span></el-breadcrumb-item>
+                            <el-breadcrumb-item> </el-breadcrumb-item>
+                        </el-breadcrumb>
                     </div>
-                <div style='margin-left:10px;width:100px;position:absolute;top:10px;right:10px' v-if="code =='cc_m'||code.includes('_c')">
-                    <el-select v-model="valueCC" size='small' clearable placeholder="选择CC" @change="updateListCC">
-                        <el-option v-for="item in ccs" :key="item.aid" :label="item.uname" :value="item.aid">
-                        </el-option>
-                    </el-select>
-                </div>
             </div>
             <div style="display:flex; align-items:center;justify-content: space-around;">
                 <el-col style='float:left;width:32%'>
@@ -265,7 +450,7 @@
             </div>
         </div>
         <!-- 教务第一个报表 -->
-        <div style="width: 50%;float:left" v-if="!code.includes('cc')&&!code.includes('tmk')">
+        <div style="width: 50%;float:left" v-if="code.includes('teach')">
             <div class="h1" style="position:relative;height:50px;margin-bottom:8px;">
                 <div style="background-color:white;border-radius:5px;width:99%;margin-right:1%">
                     <h3 style='margin-bottom:20px;padding:14px'>
@@ -273,7 +458,13 @@
                         签到统计
                     </h3>
                 </div>
-                <div style='margin-left:10px;width:100px;position:absolute;top:10px;right:10px'>
+                <div style='width:100px;position:absolute;top:10px;right:120px' v-if="code.includes('teach_c')">
+                    <el-select v-model="valueTeachR" size='small' clearable placeholder="选择校区" @change="updateListGetTeach">
+                            <el-option v-for="item in optionR" :key="item.id" :label="item.title" :value="item.id">
+                                </el-option>
+                    </el-select>
+                </div>
+                <div style='margin-left:10px;width:100px;position:absolute;top:10px;right:10px' v-if="code.includes('teach_c')||code.includes('teach_m')">
                     <el-select v-model="valueTeach" size='small' clearable placeholder="选择老师" @change="updateList">
                         <el-option v-for="item in teachersName" :key="item.aid" :label="item.uname" :value="item.aid">
                         </el-option>
@@ -297,7 +488,7 @@
                                 </div>
                                 <div style='display:flex;justify-content:space-between;'>
                                     <span style="margin-left:10px;font-size:16px;">月</span>
-                                    <span style="margin-right:10px;">10</span>
+                                    <span style="margin-right:10px;">{{teachIndex.studentNumber}}</span>
                                 </div>
                             </div>
                         </div>
@@ -319,7 +510,7 @@
                                 </div>
                                 <div style='display:flex;justify-content:space-between;'>
                                     <span style="margin-left:10px;font-size:16px;">月</span>
-                                    <span style="margin-right:10px;">10</span>
+                                    <span style="margin-right:10px;">{{teachIndex.signNumber}}</span>
                                 </div>
                             </div>
                         </div>
@@ -341,7 +532,7 @@
                                 </div>
                                 <div style='display:flex;justify-content:space-between;'>
                                     <span style="margin-left:10px;font-size:16px;">月</span>
-                                    <span style="margin-right:10px;">10</span>
+                                    <span style="margin-right:10px;">{{teachIndex.signRate}}</span>
                                 </div>
                             </div>
                         </div>
@@ -363,7 +554,7 @@
                                 </div>
                                 <div style='display:flex;justify-content:space-between;'>
                                     <span style="margin-left:10px;font-size:16px;">月</span>
-                                    <span style="margin-right:10px;">10</span>
+                                    <span style="margin-right:10px;">{{teachIndex.leaveNumber}}</span>
                                 </div>
                             </div>
                         </div>
@@ -372,7 +563,7 @@
             </div>
         </div>
         <!-- 教务第二个报表 -->
-        <div style="width: 50%;float:left" v-if="!code.includes('cc')&&!code.includes('tmk')">
+        <div style="width: 50%;float:left" v-if="code.includes('teach')">
             <div class="h1" style="position:relative;height:50px;margin-bottom:8px;">
                 <div style="background-color:white;border-radius:5px;width:99%;margin-right:1%">
                     <h3 style='margin-bottom:20px;padding:14px'>
@@ -380,9 +571,15 @@
                         业绩统计
                     </h3>
                 </div>
-                <div style='margin-left:10px;width:100px;position:absolute;top:10px;right:10px'>
-                    <el-select v-model="valueTeach2" size='small' clearable placeholder="选择老师" @change="updateList">
-                        <el-option v-for="item in teachersName" :key="item.aid" :label="item.uname" :value="item.aid">
+                <div style='width:100px;position:absolute;top:10px;right:120px' v-if="code.includes('teach_c')">
+                    <el-select v-model="valueTeachR1" size='small' clearable placeholder="选择校区" @change="updateListGetTeach1">
+                            <el-option v-for="item in optionR" :key="item.id" :label="item.title" :value="item.id">
+                                </el-option>
+                    </el-select>
+                </div>
+                <div style='margin-left:10px;width:100px;position:absolute;top:10px;right:10px' v-if="code.includes('teach_c')||code.includes('teach_m')">
+                    <el-select v-model="valueTeach1" size='small' clearable placeholder="选择老师" @change="updateList">
+                        <el-option v-for="item in teachersName1" :key="item.aid" :label="item.uname" :value="item.aid">
                         </el-option>
                     </el-select>
                 </div>
@@ -404,7 +601,7 @@
                                 </div>
                                 <div style='display:flex;justify-content:space-between;'>
                                     <span style="margin-left:10px;font-size:16px;">月</span>
-                                    <span style="margin-right:10px;">10</span>
+                                    <span style="margin-right:10px;">{{teachIndex.invitation}}</span>
                                 </div>
                             </div>
                         </div>
@@ -426,7 +623,7 @@
                                 </div>
                                 <div style='display:flex;justify-content:space-between;'>
                                     <span style="margin-left:10px;font-size:16px;">月</span>
-                                    <span style="margin-right:10px;">10</span>
+                                    <span style="margin-right:10px;">{{teachIndex.newOrder}}</span>
                                 </div>
                             </div>
                         </div>
@@ -448,7 +645,7 @@
                                 </div>
                                 <div style='display:flex;justify-content:space-between;'>
                                     <span style="margin-left:10px;font-size:16px;">月</span>
-                                    <span style="margin-right:10px;">10</span>
+                                    <span style="margin-right:10px;">{{teachIndex.newOrderRate}}</span>
                                 </div>
                             </div>
                         </div>
@@ -470,7 +667,7 @@
                                 </div>
                                 <div style='display:flex;justify-content:space-between;'>
                                     <span style="margin-left:10px;font-size:16px;">月</span>
-                                    <span style="margin-right:10px;">10</span>
+                                    <span style="margin-right:10px;">{{teachIndex.renewOrder}}</span>
                                 </div>
                             </div>
                         </div>
@@ -492,7 +689,7 @@
                                 </div>
                                 <div style='display:flex;justify-content:space-between;'>
                                     <span style="margin-left:10px;font-size:16px;">月</span>
-                                    <span style="margin-right:10px;">10</span>
+                                    <span style="margin-right:10px;">{{teachIndex.referral}}</span>
                                 </div>
                             </div>
                         </div>
@@ -541,7 +738,7 @@
                 </div>
                 <div class='notifyA' style='float:right;margin-top:12px;font-size: 14px;'>
                     <el-breadcrumb separator=" " id='systemMore'>
-                        <el-breadcrumb-item :to="{ path: '/systemMessage'}" style='font-weight:500'>更多>></el-breadcrumb-item>
+                        <el-breadcrumb-item :to="{ path: '/systemMessage'}" style='font-weight:500'><span style='font-weight:500;color:#1fb5ad'>更多>></span></el-breadcrumb-item>
                         <el-breadcrumb-item> </el-breadcrumb-item>
                     </el-breadcrumb>
                 </div>
@@ -550,7 +747,7 @@
                 <div style="height:30px">
                     <div style="float:left;font-weight:600" :class="{green:content.created.substring(0,10).replace(/0/g,'') == new Date().toLocaleString().substring(0,9).replace(/0/g,'')}">{{content.type}}通知</div>
                     <div style="float:right;color:#bebebe">{{new Date(content.created).toLocaleDateString() == new Date().toLocaleDateString().substring(0,9)?content.created.substring(11):
-                        new Date(content.created.substring(0,10)).valueOf() - new Date().toLocaleDateString().valueOf() ==
+                        new Date(content.created.substring(0,10)).valueOf() - new Date(new Date().toDateString()).valueOf() ==
                         -86400000? '昨天'+content.created.substring(11) :content.created.substring(5)}}</div>
                 </div>
                 <div style="color:#666666" v-if='content.type=="转校"'>
@@ -559,6 +756,9 @@
                 <div style="color:#666666" v-if='content.type=="转校失败"'>
                     {{ content.content.msg}}
                 </div>
+                <div style="color:#666666" v-if='content.type=="代课申请失败"'>
+                        您的代课申请请求未通过
+                    </div>
             </div>
             <div v-if='notifyData.length ==0' class='messageNoS' style="text-align:center">
                 暂无未读消息
@@ -574,7 +774,7 @@
                 </div>
                 <div class='notifyA' style='float:right;margin-top:12px;font-size: 14px;'>
                     <el-breadcrumb separator=" " id='taskMore'>
-                        <el-breadcrumb-item :to="{ path: '/calendar'}">更多>></el-breadcrumb-item>
+                        <el-breadcrumb-item :to="{ path: '/calendar'}"><span style='font-weight:500;color:#1fb5ad'>更多>></span></el-breadcrumb-item>
                         <el-breadcrumb-item> </el-breadcrumb-item>
                     </el-breadcrumb>
                 </div>
@@ -584,7 +784,7 @@
                     <div style="float:left;" class="green"><i class="el-icon-my-tongzhigonggao"></i>{{content.title}}</div>
                     <div style="float:right;color:#bebebe">
                         {{new Date(content.date).toLocaleDateString() == new Date().toLocaleDateString().substring(0,9)?content.date.substring(11):
-                        new Date(content.date.substring(0,10)).valueOf() - new Date().toLocaleDateString().valueOf() ==
+                        new Date(content.date.substring(0,10)).valueOf() -new Date(new Date().toDateString()).valueOf() ==
                         -86400000? '昨天'+content.date.substring(11) :content.date.substring(5)}}</div>
                 </div>
                 <div style="color:#666666;min-height:19px">
@@ -595,7 +795,7 @@
                 今日暂无提醒
             </div>
         </div>
-        <div style="width: 49.8%;float:right;margin-top:20px;height:451px;background-color:white" v-if="!code.includes('cc')&&!code.includes('tmk')">
+        <div style="width: 49.8%;float:right;margin-top:20px;height:451px;background-color:white" v-if="code.includes('teach')">
             <div class="h1" style="position:relative;height:50px;border-bottom:1px solid #cccccc;background-color:white;border-top-left-radius:5px;border-top-right-radius:5px;">
                 <div>
                     <h3 style='float:left;padding:15px 0 20px 10px'>
@@ -603,9 +803,15 @@
                         今日课表
                     </h3>
                 </div>
-                <div style='margin-left:10px;width:100px;position:absolute;top:12px;left:90px'>
-                    <el-select v-model="valueTeacher" size='small' clearable placeholder="选择老师" @change="updateListClass" v-if="code.includes('_c')||code.includes('_m')">
-                        <el-option v-for="item in teachersName" :key="item.aid" :label="item.uname" :value="item.aid">
+                <div style='width:100px;float:left;margin-top:14px;margin-left:10px;' v-if="code.includes('teach_c')">
+                    <el-select v-model="valueTeachR2" size='small' clearable placeholder="选择校区" @change="updateListGetTeach2">
+                            <el-option v-for="item in optionR" :key="item.id" :label="item.title" :value="item.id">
+                                </el-option>
+                    </el-select>
+                </div>
+                <div style='width:100px;float:left;margin-top:14px;margin-left:10px;' v-if="code.includes('_c')||code.includes('_m')">
+                    <el-select v-model="valueTeach2" size='small' clearable placeholder="选择老师" @change="updateListClass" >
+                        <el-option v-for="item in teachersName2" :key="item.aid" :label="item.uname" :value="item.aid">
                         </el-option>
                     </el-select>
                 </div>
@@ -653,16 +859,20 @@
         getCCindex,
         campusList,
         getTeacherList,
-        getDateClass
+        getDateClass,
+        getTeachIndex
     } from '../../api/api';
     export default {
         components: {
             IEcharts
         },
         data: () => ({
-            valueTeach2:'',
+            valueTeach1:'',
             valueTeach:'',
-            valueTeacher:'',
+            valueTeach2:'',
+            valueTeachR:'',
+            valueTeachR1:'',
+            valueTeachR2:'',
             aid:'',
             ssData: [],
             valueR:'',
@@ -684,25 +894,10 @@
             tmks: [],
             ccs: [],
             teachersName:[],
+            teachersName1:[],
+            teachersName2:[],
+            tmkindex:{},
             ccindex: {
-                today_Customers: '',
-                yesterday_Customers: '',
-                before_yesterday_customers: '',
-                today_Invitation: '',
-                yesterday_Invitation: '',
-                before_yesterday_Invitation: '',
-                today_Visiting: '',
-                yesterday_Visiting: '',
-                before_yesterday_Visiting: '',
-                today_Order: '',
-                yesterday_Order: '',
-                before_yesterday_Order: '',
-                todayVisitingRate: '',
-                yesterdayVisitingRate: '',
-                beforeYesterdayVisitingRate: '',
-                todayMemberRate: '',
-                yesterdayMemberRate: '',
-                beforeYesterdayMemberRate: ''
             },
             value1: "",
             value2: "",
@@ -756,7 +951,8 @@
                     }
                 },
             },
-            contGet: ''
+            contGet: '',
+            teachIndex:{}
         }),
 
         methods: {
@@ -766,7 +962,7 @@
             updateListClass(){
                 let para = {
                     date:new Date().toLocaleDateString(),
-                    aid:this.valueTeacher
+                    aid:this.valueTeach2
                 }
                 getDateClass(token,para).then(res=>{
                     this.ssData = res.data
@@ -785,7 +981,7 @@
                 })
                 //调服务
             },
-            updateListCC() { //tmk
+            updateListCC() { //cc
                 let para = {
                     cc_id: this.valueCC
                 }
@@ -816,19 +1012,22 @@
                 })
             },
             changeNumber(data) { //TMK
+                // let a = data.data
+                // this.today_Customers = a.today_Customers;
+                // this.today_Invitation = a.today_Invitation;
+                // this.today_visiting = a.today_visiting;
+                // this.today_member = a.today_member;
+                // this.todayVisitingRate = a.todayVisitingRate;
+                // this.todayMemberRate = a.todayMemberRate;
+                // this.yesterday_customers = a.yesterday_customers;
+                // this.yesterday_Invitation = a.yesterday_Invitation;
+                // this.yesterday_visiting = a.yesterday_visiting;
+                // this.yesterday_member = a.yesterday_member;
+                // this.yesterdayVisitingRate = a.yesterdayVisitingRate;
+                // this.yesterdayMemberRate = a.yesterdayMemberRate;
                 let a = data.data
-                this.today_Customers = a.today_Customers;
-                this.today_Invitation = a.today_Invitation;
-                this.today_visiting = a.today_visiting;
-                this.today_member = a.today_member;
-                this.todayVisitingRate = a.todayVisitingRate;
-                this.todayMemberRate = a.todayMemberRate;
-                this.yesterday_customers = a.yesterday_customers;
-                this.yesterday_Invitation = a.yesterday_Invitation;
-                this.yesterday_visiting = a.yesterday_visiting;
-                this.yesterday_member = a.yesterday_member;
-                this.yesterdayVisitingRate = a.yesterdayVisitingRate;
-                this.yesterdayMemberRate = a.yesterdayMemberRate;
+                // console.log(a)
+                this.tmkindex = a
             },
             changeChart(data) { //TMK
                 this.line.xAxis.data = data.data.weekList.week;
@@ -900,6 +1099,60 @@
                     // backgroundColor:'white'
                 };
             },
+            updateListGetTeach() {
+                this.valueTeach='';
+                let para = {
+                    school_id:this.valueTeachR
+                }
+                getTeacherList(token,para).then((res) => { //获取老师
+                    this.teachersName = res.data;
+
+                })
+                // let para1 = {
+                //     school_id:this.valueR,
+                //     cc_id: this.valueCC
+                // }
+                // getCCindex(token,para1).then(res => {
+                //     this.changeNumberCC(res)
+                //     this.changeChartCC(res)
+                // })
+            },
+            updateListGetTeach1() {
+                this.valueTeach1='';
+                let para = {
+                    school_id:this.valueTeachR1
+                }
+                getTeacherList(token,para).then((res) => { //获取老师
+                    this.teachersName1 = res.data;
+
+                })
+                // let para1 = {
+                //     school_id:this.valueR,
+                //     cc_id: this.valueCC
+                // }
+                // getCCindex(token,para1).then(res => {
+                //     this.changeNumberCC(res)
+                //     this.changeChartCC(res)
+                // })
+            },
+            updateListGetTeach2() {
+                this.valueTeach2='';
+                let para = {
+                    school_id:this.valueTeachR2
+                }
+                getTeacherList(token,para).then((res) => { //获取老师
+                    this.teachersName2 = res.data;
+
+                })
+                // let para1 = {
+                //     school_id:this.valueR,
+                //     cc_id: this.valueCC
+                // }
+                // getCCindex(token,para1).then(res => {
+                //     this.changeNumberCC(res)
+                //     this.changeChartCC(res)
+                // })
+            },
             getM() {
                 let p = {
                     length: 5
@@ -922,6 +1175,7 @@
             this.aid = JSON.parse(user).aid ? JSON.parse(user).aid : ''; //获取aid
             
             if (this.code.includes('tmk')) {
+                // this.value1 = this.aid+''
                 getIndexData(token).then(res => {
                     this.changeNumber(res)
                     this.changeChart(res)
@@ -962,32 +1216,38 @@
             let p = {
                 length: 5
             }
-            getMessage(p, token).then(res => { //获取消息通知
+            getMessage(p, token).then(res => {//获取消息通知
                 // console.log(res);
                 this.notifyData = res.data.list;
                 this.setMessNumber(res.data.total);
             })
             if (this.code == 'tmk_m') {
                 getTMK(token).then((res) => {
-                    this.tmks = res.data;
+                    this.tmks = res.data.filter(item=>{
+                        return item.label !=JSON.parse(user).uname
+                    });
                     this.tmks.unshift({
                         key: '0',
                         label: '全部TMK'
                     })
                 })
             }
-            if (this.code == 'cc_m'||this.code.includes('_c')) {
+            if (this.code == 'cc_m'||this.code.includes('cc_c')) {
                 getAllCCList(token).then((res) => {
                     this.ccs = res.data.filter(item=>{
                         return item.uname !=JSON.parse(user).uname
                     });
                     this.ccs.unshift({
-                        aid: 0,
+                        aid: '0',
                         uname: '全部CC'
                     })
+                    // this.valueCC = '0'
                 })
             }
             if(this.code.includes('teach')){
+                getTeachIndex(token).then(res=>{
+                    this.teachIndex = res.data
+                })
                 let para = {
                     date:new Date().toLocaleDateString(),
                     aid:this.aid
@@ -998,7 +1258,16 @@
             }
             if(this.code=='teach_c'||this.code=='teach_m'){
                 getTeacherList(token).then((res) => { //获取老师
-                    this.teachersName = res.data;
+                    let a = res.data.filter(item=>{
+                        return item.uname !=JSON.parse(user).uname
+                    });;
+                    a.unshift({
+                        aid: '0',
+                        uname: '全部老师'
+                    })
+                    this.teachersName = a;
+                    this.teachersName1 = a;
+                    this.teachersName2 = a;
                 })
             }
         },
@@ -1071,8 +1340,8 @@
         z-index: 1;
     }
 
-    #table .el-table td,
-    #table .el-table th {
+    /* #table .el-table td,
+    #table .el-table th:not(.gutter) {
         padding: 5px 5px;
         text-align: center
     }
@@ -1081,7 +1350,7 @@
     #table .el-table .cell {
         padding-left: 0;
         padding-right: 0;
-    }
+    } */
 
     .block {
         text-align: center;
@@ -1111,7 +1380,7 @@
         font-weight: 500
     }
     #tablere .el-table td,
-    #tablere .el-table th {
+    #tablere .el-table th:not(.gutter) {
         padding: 5px 5px;
         text-align: center
     }

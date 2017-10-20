@@ -1,11 +1,10 @@
 <template>
     <div>
-        <div class="crumbs">
+        <!-- <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item  :to="{ path: '/Index'}"><i class="el-icon-date"></i> 首页</el-breadcrumb-item>
-                <el-breadcrumb-item class='ss'>微信绑定</el-breadcrumb-item>
+                <el-breadcrumb-item ><i class="el-icon-my-xiaoxi"></i> 微信绑定</el-breadcrumb-item>
             </el-breadcrumb>
-        </div>
+        </div> -->
          <div class='wechatT'>
       <h3 class='wechatH3'>{{wechatTitle}}
       <span  v-if='!this.changewechat' style="margin-left:31%;color:#f16060">**请绑定微信，用于登录及接收工作事宜**</span>
@@ -173,7 +172,7 @@ export default {
     position: relative;
     height: 35px;
     background-color: white;
-  margin-top:30px;
+  margin-top:0;
   padding-top:10px;
   margin-bottom: 10px;
   border-radius: 5px;

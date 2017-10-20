@@ -1,25 +1,25 @@
 <template>
     <div>
-        <div class="crumbs">
+        <!-- <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-my-gerenxinxi"></i> 学员合同</el-breadcrumb-item>
                 <el-breadcrumb-item class='ss'>我的学员</el-breadcrumb-item>
             </el-breadcrumb>
-        </div>
-        <div class='accouMyresourece'>
-            <h2 class="mydataReturn">
+        </div> -->
+        <div class='accouMyStudents'>
+            <h2 class="myMSReturn">
                 学员({{number}}人)
             </h2>
             <div class="MStitle">
-                <div class='studentReturnThreeNew' v-if="code.includes('_c')">
+                <div class='studentReturnThreeNewMS' v-if="code.includes('_c')">
                     <el-select v-model="valueR" clearable placeholder="选择校区" @change="updateListCC">
                         <el-option v-for="item in optionR" :key="item.id" :label="item.title" :value="item.id">
                         </el-option>
                     </el-select>
                 </div>
 
-                <div class='studentReturnThreeNew' v-if="code =='cc_m'||code.includes('_c')">
-                    <el-select v-model="valueCC" clearable placeholder="选择CC" @change="updateList">
+                <div class='studentReturnThreeNewMS' v-if="code =='cc_m'||code.includes('_c')">
+                    <el-select v-model="valueCC" placeholder="选择CC" @change="updateList">
                         <el-option v-for="item in optionsCC" :key="item.aid" :label="item.uname" :value="item.aid">
                         </el-option>
                     </el-select>
@@ -28,13 +28,13 @@
                     <el-date-picker v-model="value" type="month" placeholder="生日月份" @change="updateList">
                     </el-date-picker>
                 </div>
-                <div class='studentReturnThreeNew'>
+                <div class='studentReturnThreeNewMS'>
                     <el-select v-model="value1" clearable filterable placeholder="课程名称" @change="updateList">
                         <el-option v-for="item in classkind" :key="item.kcid" :label="item.title" :value="item.kcid">
                         </el-option>
                     </el-select>
                 </div>
-                <div class='studentReturnThreeNew'>
+                <div class='studentReturnThreeNewMS'>
                     <el-select v-model="value3" clearable placeholder="剩余课时" @change="updateList">
                         <el-option label="6节以下" value="1"></el-option>
                         <el-option label="6节至12节" value="2"></el-option>
@@ -42,13 +42,13 @@
                         <el-option label="24节以上" value="4"></el-option>
                     </el-select>
                 </div>
-                <div class='studentReturnThreeNew'>
+                <div class='studentReturnThreeNewMS'>
                     <el-select v-model="value5" clearable placeholder="排班状态" @change="updateList">
                         <el-option label="已排班" value="1"></el-option>
                         <el-option label="未排班" value="0"></el-option>
                     </el-select>
                 </div>
-                <div class='studentReturnThreeNew'>
+                <div class='studentReturnThreeNewMS'>
                     <el-select v-model="value6" clearable placeholder="使用状态" @change="updateList">
                         <el-option label="正常" value="1"></el-option>
                         <el-option label="冻结" value="2"></el-option>
@@ -56,7 +56,7 @@
                         <el-option label="已结束" value="4"></el-option>
                     </el-select>
                 </div>
-                <!-- <div class='studentReturnThreeNew'>
+                <!-- <div class='studentReturnThreeNewMS'>
                     <el-select v-model="valueTag" clearable filterable placeholder="标签类型" @change="updateList">
                         <el-option v-for="item in backupTages" :key="item.key" :label="item.label" :value="item.key">
                         </el-option>
@@ -71,11 +71,11 @@
                 </div> -->
             </div>
         </div>
-        <div id="table" v-loading="loading2">
+        <div id="table1MS" v-loading="loading2">
             <div v-for="item in customerData" class='customerDataDiv' v-if='customerData.length!=0'>
                 <div class='customerDiv'>
                     <div @click='gotoDetail(item)' class='myStudentsSpan'>
-                        <img :src="item.img" width='40' height='40' alt="" class="MSradius">
+                        <img :src="item.img" width='35' height='35' alt="" class="MSradius">
                         <div class="MSname">{{item.child_name}}</div>
                     </div>
                     <div class="MSgrey">出生日期: {{item.birthday}}</div>
@@ -165,6 +165,10 @@
         getClassLibrary,
         campusList
     } from '../../api/api';
+    import {
+        mapActions,
+        mapGetters
+    } from 'vuex';
     export default {
         data() {
             return {
@@ -198,6 +202,17 @@
         },
         methods: {
             gotoDetail(row) {
+                let d = {
+                    school_id: this.valueR,
+                    page: this.currentPage,
+                    cc_uid: this.valueCC,
+                    birthday: this.value,
+                    kcid: this.value1,
+                    course_curr_num: this.value3, //剩余课时
+                    scheduling_status: this.value5, //排班状态
+                    status: this.value6, //使用状态
+                }
+                this.setmyStudentS(d)
                 this.$router.push('/studentDetail/' + row.uid);
             },
             updateList() {
@@ -207,19 +222,53 @@
             updateListCC() {
                 this.currentPage = 1;
                 this.valueCC = '';
-                let para = {
-                    school_id: this.valueR
-                }
-                getAllCCList(token, para).then((res) => {
-                    this.optionsCC = res.data;
-                    this.optionsCC.unshift({
-                        aid: 0,
-                        uname: '全部CC'
+                this.optionsCC = [{
+                    aid: 0,
+                    uname: '全部CC'
+                }];
+                if (this.valueR != '') {
+                    let para = {
+                        school_id: this.valueR
+                    }
+                    getAllCCList(token, para).then((res) => {
+                        this.optionsCC = res.data;
+                        this.optionsCC.unshift({
+                            aid: '0',
+                            uname: '全部CC'
+                        })
+                    }).then(()=>{
+                        this.valueCC = '0'
                     })
-                })
+                } else {
+                    this.valueCC = '0';
+                }
                 this.fetchData();
             },
+            ...mapActions([
+                'setmyStudentS'
+            ]),
             fetchData() {
+                if (Object.keys(this.getmyStudentS).length != 0) {
+                    this.valueR = this.getmyStudentS.school_id;
+                    this.currentPage = this.getmyStudentS.page;
+                    this.valueCC = this.getmyStudentS.cc_uid;
+                    this.value = this.getmyStudentS.birthday;
+                    this.value1 = this.getmyStudentS.kcid;
+                    this.value3 = this.getmyStudentS.course_curr_num;
+                    this.value5 = this.getmyStudentS.scheduling_status;
+                    this.value6 = this.getmyStudentS.status;
+                    let para = {
+                        school_id: this.valueR
+                    }
+                    getAllCCList(token, para).then((res) => {
+                        this.optionsCC = res.data;
+                        this.optionsCC.unshift({
+                            aid: '0',
+                            uname: '全部CC'
+                        })
+                    })
+                }
+
                 let para = {
                     school_id: this.valueR,
                     page: this.currentPage,
@@ -240,7 +289,8 @@
                     this.customerData = a;
                     this.total = parseInt(c);
                 }).then(() => {
-                    this.loading2 = false
+                    this.loading2 = false;
+                    this.setmyStudentS({})
                 }).catch(() => {
                     this.$message.error('该用户未授权');
                     this.loading2 = false
@@ -318,61 +368,47 @@
         },
         created() {
             this.code = JSON.parse(user).job ? JSON.parse(user).job.code : '';
-            let para = {
-                school_id: this.valueR,
-                page: this.currentPage,
-                cc_uid: this.valueCC,
-                birthday: this.value,
-                kcid: this.value1,
-                course_curr_num: this.value3, //剩余课时
-                scheduling_status: this.value5, //排版状态
-                status: this.value6, //使用状态
-                input: this.input2,
-                // tag_id: this.valueTag
-            }
-            getMyStudent(token, para).then((res) => { //获取学员
-                this.number = res.data.total;
-                let a = res.data.data;
-                let c = res.data.last_page * this.pagesize;
-                // console.log(a)
-                this.customerData = a;
-                this.total = parseInt(c);
-            }).then(() => {
-                this.loading2 = false;
-                let si = {
-                    simple: 1,
+            if (this.code.includes('_c')) {
+
+                let cam = {
+                    simple: 1
                 }
-                getClassLibrary(token, si).then((res) => { //获取课程名称
-                    this.classkind = res.data
-                }).then(() => {
-
-                    // tagList(token).then(res => {
-                    //     this.backupTages = res.data
-                    // })
-                    if (this.code.includes('_c')) {
-
-                        let cam = {
-                            simple: 1
-                        }
-                        campusList(cam, token).then((res) => { //获取校区
-                            this.optionR = res.data
-                        })
-                    }
-                    if (this.code == 'cc_m' || this.code.includes('_c')) {
-                        getAllCCList(token).then((res) => {
-                            this.optionsCC = res.data;
-                            this.optionsCC.unshift({
-                                aid: '0',
-                                uname: '全部CC'
-                            })
-                        })
-                    }
+                campusList(cam, token).then((res) => { //获取校区
+                    this.optionR = res.data
                 })
-            }).catch(() => {
-                this.$message.error('该用户未授权');
-                this.loading2 = false
+            }
+            if ((this.code == 'cc_m' || this.code.includes('_c')) && Object.keys(this.getmyStudentS).length == 0) {
+                if (this.code.includes('cc_c') || this.code.includes('teach_c')) {
+                    this.optionsCC.unshift({
+                        aid: '0',
+                        uname: '全部CC'
+                    })
+                    this.valueCC = '0'
+                } else {
+                    getAllCCList(token).then((res) => {
+                        this.optionsCC = res.data;
+                        this.optionsCC.unshift({
+                            aid: '0',
+                            uname: '全部CC'
+                        })
+                        this.valueCC = '0'
+                    })
+                }
+            }
+            this.fetchData();
+            let si = {
+                simple: 1,
+            }
+            getClassLibrary(token, si).then((res) => { //获取课程名称
+                this.classkind = res.data
             })
 
+        },
+        computed: {
+            ...mapGetters([
+                'getmyStudentS'
+                // ...
+            ])
         },
         // mounted() {
         // },
@@ -384,20 +420,21 @@
 
 </script>
 <style>
-    #table {
+    #table1MS {
         position: relative;
     }
 
-    #table .el-table td,
-    #table .el-table th {
+    #table1MS .el-table td,
+    #table1MS .el-table th:not(.gutter) {
         padding: 5px 5px;
         text-align: center
     }
 
-    #table .el-table th>div,
-    #table .el-table .cell {
+    #table1MS .el-table th>div,
+    #table1MS .el-table .cell {
         padding-left: 0;
         padding-right: 0;
+        font-weight: normal;
     }
 
     .block {
@@ -405,7 +442,7 @@
         margin-top: 10px;
     }
 
-    .accouMyresourece {
+    .accouMyStudents {
         width: 100%;
         position: relative;
         height: auto;
@@ -413,13 +450,13 @@
         flex-wrap: wrap;
         justify-content: space-between;
         background-color: white;
-        margin-top: 30px;
+        /* margin-top: 10px; */
         padding-top: 10px;
         margin-bottom: 5px;
         border-radius: 5px;
     }
 
-    .mydataReturn {
+    .myMSReturn {
         /*display: block;*/
         /*margin-top: 20px;*/
         margin-bottom: 15px;
@@ -429,7 +466,7 @@
             margin-right:70%;*/
     }
 
-    .studentReturnThreeNew {
+    .studentReturnThreeNewMS {
         display: inline-block;
         width: 103px;
         /*margin-right: 10px;*/
@@ -473,10 +510,10 @@
         background-color: #eef6f6;
         cursor: pointer;
     } */
-    /*.accouMyresourece .el-date-editor--daterange.el-input {
+    /*.accouMyStudents .el-date-editor--daterange.el-input {
             width: 184px;
         }*/
-    /*#table .el-table th:nth-last-child(2){
+    /*#table1MS .el-table th:nth-last-child(2){
           text-align: left
         }*/
     /* .el-dialog .el-dialog__header {
@@ -520,10 +557,11 @@
     .customerDiv {
         display: flex;
         justify-content: space-between;
-        height: 50px;
-        line-height: 50px;
+        height: 42px;
+        line-height: 42px;
         border: 1px solid rgb(223, 236, 235);
         border-bottom: none;
+        background: #fafafa
     }
     /* .tableReturn {
         height: 40px;
@@ -597,12 +635,13 @@
 
     .MSradius {
         border-radius: 50%;
+        border: 1px solid gainsboro
     }
 
     .MSname {
         color: #1fb5ad;
-        font-size: 20px;
-        font-weight: bold;
+        font-size: 18px;
+        /* font-weight: bold; */
         margin-left: 10px
     }
 

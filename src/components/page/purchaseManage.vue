@@ -165,7 +165,7 @@
     }
     
     #tableSales .el-table td,
-    #tableSales .el-table th {
+    #tableSales .el-table th:not(.gutter) {
         padding: 5px 5px;
         text-align: center
     }

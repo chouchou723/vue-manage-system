@@ -28,3 +28,30 @@ export const getSearchKey = state => {
 export const getMessNumber = state => {
     return state.messageNumber
 }
+export const getMyResourceS = state => {
+    return state.myResourceS
+}
+export const getmyNoDemandS = state => {
+    return state.myNoDemandS
+}
+export const getmyInvalidS = state => {
+    return state.myInvalidS
+}
+export const getmyReturnS = state => {
+    return state.myReturnS
+}
+export const getmyCustomerS = state => {
+    return state.myCustomerS
+}
+export const getmyStudentS = state => {
+    return state.myStudentS
+}
+export const getmyContractS = state => {
+    return state.myContractS
+}
+export const getmyTeachS = state => {
+    return state.myTeachS
+}
+export const getmyActS = state => {
+    return state.myActS
+}

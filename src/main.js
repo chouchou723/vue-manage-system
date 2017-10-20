@@ -1,15 +1,12 @@
 import Vue from 'vue';
 import App from './App';
-import router from './router';
+import {router} from './router';
 import axios from 'axios';
 import ElementUI from 'element-ui';
 // import 'element-ui/lib/theme-default/index.css';    // 默认主题
 import '../static/css/theme-green/index.css';       // 浅绿色主题
 import '../static/css/iconfont.css'
 import "babel-polyfill";
-
-// import fullCalendar from 'vue-fullcalendar';
-// Vue.component('full-calendar', fullCalendar);
 
 import store from './vuex/store'
 import Vuex from 'vuex'
@@ -24,6 +21,7 @@ Vue.use(vueEventCalendar, {locale: 'zh',color:'#1fb5ad'}) //locale can be 'zh' o
 import VuePreview from 'vue-preview'
 Vue.use(VuePreview)
 Vue.use(ElementUI);
+// console.log(Vue.vueScrollBehavior)
 Vue.use(Vuex);
 Vue.prototype.$axios = axios;
 new Vue({

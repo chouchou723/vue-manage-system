@@ -1,11 +1,11 @@
 <template>
     <div>
-        <div class="crumbs">
+        <!-- <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-my-shezhi"></i> 组织架构</el-breadcrumb-item>
                 <el-breadcrumb-item class='ss'>账号管理</el-breadcrumb-item>
             </el-breadcrumb>
-        </div>
+        </div> -->
         <div class='accou'>
             <div class="h1">
                 <h3 class='accountH2'>
@@ -55,7 +55,7 @@
                     <!-- <el-form-item label="密码" prop="pwd" :label-width="formLabelWidth">
                         <el-input type="password" v-model="aform.pwd" auto-complete="off" :style='{width:inputLabelWidth}'></el-input>
                     </el-form-item> -->
-                    <el-form-item label="所属校区" :label-width="formLabelWidth" prop="region" style='display:inline-block'>
+                    <el-form-item label="所属校区" :label-width="formLabelWidth" prop="region" style='display:inline-block' required>
                         <el-select v-model="aform.region"  filterable :style='{width:inputLabelWidth}' @change='campusGet' clearable>
                          <el-option v-for="item in cities" :key="item.id" :label="item.city_name" :value="item.id">
                             </el-option>
@@ -97,11 +97,11 @@
                 </div>
             </el-dialog>
         </div>
-        <div id="table">
-            <el-table :data="accountData" border style='width:100%'>
+        <div id="tableAM">
+            <el-table :data="accountData"  style='width:100%'>
                 <el-table-column prop="avatar" label="头像" width='70'>
                     <template scope="scope">
-                        <span><img :src="scope.row.avatar" alt="" width="47" height='47' style="border-radius:50%;margin-bottom:-7px"></span>
+                        <span><img :src="scope.row.avatar" alt="" width="47" height='47' style="border-radius:50%;margin-bottom:-7px;border: 1px solid gainsboro;"></span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="name" label="登录名">
@@ -162,6 +162,15 @@ export default {
                     callback('请选择')
                 } else if (typeof value == 'number') {
                     callback();
+                }
+            }
+            var isArray = (rule, value, callback) => {
+                if (value.length==0) {
+                    callback('请选择校区')
+                } else if (value.length!=0) {
+                    callback();
+                }else{
+                    callback('请选择校区')
                 }
             }
             // var validatePass = (rule, value, callback) => {
@@ -229,7 +238,7 @@ export default {
                     school: [],
                     did: '',
                     job_id: '',
-                    fla: ''
+                    fla: '0'
                 },
                 dialogFormVisible: false,
                 formLabelWidth: '110px',
@@ -261,6 +270,11 @@ export default {
                         required: true,
                         validator: nan,
                         trigger: 'change'
+                    }],
+                    school:[{
+                        required: true,
+                        validator: isArray,
+                        trigger: 'change'
                     }]
                 },
                 schools: [], //选好城市之后的校区
@@ -288,16 +302,20 @@ export default {
                 this.fetchData();
             },
             updateJobList() { //部门变更后,刷新职位
+                // this.aform.job_id = ''
                 let para = {
                     did: this.aform.did
                 };
                 departList(para, token).then((res) => {
-                    this.jobs = res.data[0]._child.map(item => {
-                        return {
-                            value: item.job_id,
-                            label: item.full_name
-                        };
-                    });
+                    if(res.data[0]._child){
+
+                        this.jobs = res.data[0]._child.map(item => {
+                            return {
+                                value: item.job_id,
+                                label: item.full_name
+                            };
+                        });
+                    }
                 })
             },
             createCh(formName) { //点击创建按钮
@@ -316,7 +334,7 @@ export default {
                     school: [],
                     did: '',
                     job_id: '',
-                    fla: ''
+                    fla: '0'
                 };
                 this.$refs['aform'].resetFields();
             },
@@ -335,14 +353,15 @@ export default {
                             });
                         }) //假如有部门,必须刷新职位，方能更换同部门的不同职位
                 }
-                let schoolData = data[index].school.length == 0 ? [] : data[index].school.map(item=>{return item.id})
+                let schoolData = data[index].school.length == 0 ? [] : data[index].school.map(item=>{return item.id});
+                let citiId = data[index].school.length == 0 ?'':data[index].school[0].city_id.substring(0,2)
                 this.aform = {
                     aid: data[index].aid,
                     uname: data[index].uname,
                     name: data[index].name,
                     sex: data[index].sex,
                     tel: data[index].tel,
-                    region: '',
+                    region:  citiId-0,
                     school: schoolData,
                     did: data[index].did - 0,
                     job_id: data[index].job_id - 0,
@@ -531,14 +550,14 @@ export default {
     border-color: #32a4d3;
 }
 
-#table .el-table td,
-#table .el-table th {
+#tableAM .el-table td,
+#tableAM .el-table th:not(.gutter) {
     padding: 5px 5px;
     text-align: center
 }
 
-#table .el-table th>div,
-#table .el-table .cell {
+#tableAM .el-table th>div,
+#tableAM .el-table .cell {
     padding-left: 0;
     padding-right: 0;
 }
@@ -576,7 +595,7 @@ export default {
     position: relative;
     height: 45px;
     background-color: white;
-  margin-top:30px;
+  margin-top:0px;
   padding-top:10px;
   margin-bottom: 5px;
   border-radius: 5px;
@@ -622,9 +641,13 @@ export default {
     padding: 0 20px 15px;
 }
 .AMinput{
-position:absolute;
+/* position:absolute;
 top:10px;
 right:100px;
-width:200px
+width:200px */
+display: inline-block;
+     margin-bottom: 10px;
+    margin-left: 10px;
+    width: 200px
 }
 </style>

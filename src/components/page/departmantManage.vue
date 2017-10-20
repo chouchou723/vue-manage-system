@@ -1,11 +1,11 @@
 <template>
     <div class="tableDepartment">
-        <div class="crumbs">
+        <!-- <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-my-shezhi"></i> 组织架构</el-breadcrumb-item>
                 <el-breadcrumb-item class='ss'>部门管理</el-breadcrumb-item>
             </el-breadcrumb>
-        </div>
+        </div> -->
         <div class='DMtitle'>
           <h3 class='departH2'>部门管理</h3>
             <el-button type="primary" size="mid" class='DMbutton' @click="open3">创建部门</el-button>
@@ -69,7 +69,7 @@ if(res.code==0){
                         message: '删除成功!'
                     });
 }else{
-    this.$message.error(res.data)
+    this.$message.error(res.message)
 }
                     });
                 }).catch(() => {
@@ -158,10 +158,10 @@ if(res.code==0){
                     });
                 })
             }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '已取消修改'
-                });
+                // this.$message({
+                //     type: 'info',
+                //     message: '已取消修改'
+                // });
             });
         }
     },

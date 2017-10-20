@@ -6,7 +6,8 @@
         <div class="sidebar">
             <el-menu :default-active="onRoutes" id="sidebar" class="el-menu-vertical-demo" :default-openeds='defaultOpeneds' router>
                 <div v-for="menu in menus">
-                    <div v-if="menu._child" style='border-top:1px solid rgba(255,255,255,.5)    '>
+                    <div v-if="menu._child" style='border-top:1px solid rgba(255,255,255,.5)'>
+                        <!-- 假如有二级菜单 -->
                         <div v-if="menu.location == '/calendar'">
                             <el-menu-item :index='menu.location'>
                                 <i :class="menu.icon"></i>{{menu.menu_name}}
@@ -135,7 +136,7 @@ export default {
             //     'clear'
             //     // ...
             // ]),
-            getMenu() { //动态菜单获取
+            getMenu() {//动态菜单获取
                 let para = {
                     counter: this.counter
                 };
@@ -144,6 +145,7 @@ export default {
                         this.defaultOpeneds.push(item.location);
                     })
                     this.menus = res.data;
+                    // localStorage.setItem('menuOption',JSON.stringify(this.menus))
                 });
 
 
@@ -182,6 +184,9 @@ export default {
             //     });
             // })
         },
+        // beforeDestroy() {
+        //     localStorage.removeItem('menuOption')
+        // },
         // watch:{
         //     notiData:function(val,oldVal){
         //         if(val){

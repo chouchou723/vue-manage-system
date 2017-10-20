@@ -1,12 +1,12 @@
 <template>
     <div class='classLibrary'>
-        <div class="crumbs">
+        <!-- <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-my-richeng"></i> 课程管理</el-breadcrumb-item>
                 <el-breadcrumb-item class='ss'>优惠库</el-breadcrumb-item>
             </el-breadcrumb>
-        </div>
-        <div class='accou'>
+        </div> -->
+        <div class='accouPL'>
             <div class="h1">
                 <h3 class='accountH2'>
                优惠库({{number}}个)
@@ -29,7 +29,7 @@
                 </div>
             </el-dialog>
         </div>
-        <div id="table">
+        <div id="table3PL">
             <el-table :data="accountData" border style='width:100%'>
                 <el-table-column prop="name" label="优惠类型" width='280'>
                     <template scope="scope">
@@ -225,19 +225,19 @@ export default {
     border-color: #32a4d3;
 }
 
-#table .el-table td,
-#table .el-table th {
+#table3PL .el-table td,
+#table3PL .el-table th:not(.gutter) {
     padding: 5px 5px;
     text-align: center
 }
 
-#table .el-table th>div,
-#table .el-table .cell {
+#table3PL .el-table th>div,
+#table3PL .el-table .cell {
     padding-left: 0;
     padding-right: 0;
 }
 
-#table .classDel {
+#table3PL .classDel {
     color: #e95c5c;
 }
 
@@ -275,12 +275,12 @@ export default {
     margin-top: 10px;
 }
 
-.accou {
+.accouPL {
     width: 100%;
     position: relative;
     height: 45px;
     background-color: white;
-    margin-top: 30px;
+    /* margin-top: 30px; */
     padding-top: 10px;
     margin-bottom: 5px;
     border-radius: 5px;

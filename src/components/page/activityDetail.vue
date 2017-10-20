@@ -91,7 +91,7 @@
                 </el-form-item>
                 <div style="position: absolute;top: 32px;right: 2px;width: 300px;text-align: center;">
                     <div style="position: absolute;top: 20px;width: 100%;font-size: 14px;color: rgb(72, 106, 106);"> 封面图片</div>
-                    <img :src="activity.images" alt="" width='178' height="100" style="margin-top:40px">
+                    <img :src="activityB.images" alt="" width='178' height="100" style="margin-top:40px">
                 </div>
             </el-form>
         </div>
@@ -102,7 +102,7 @@
                 <span style="font-weight:600;font-size:22px">报名列表({{number}})</span>
             </div>
             <div id="tableact">
-                <el-table :data="noActData" style="width: 100%" :default-sort="{prop: 'created', order: 'descending'}">
+                <el-table :data="noActData" style="width: 100%" >
                     <el-table-column prop="child_name" label="姓名">
                         <template scope="scope">
                             <span>{{scope.row.child_name}}</span>
@@ -245,7 +245,7 @@
 
 
     #tableact .el-table td,
-    #tableact .el-table th {
+    #tableact .el-table th:not(.gutter) {
         padding: 1px;
         text-align: center
     }

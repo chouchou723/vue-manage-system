@@ -1,12 +1,12 @@
 <template>
         <div>
-            <div class="crumbs">
+            <!-- <div class="crumbs">
                 <el-breadcrumb separator="/">
                     <el-breadcrumb-item><i class="el-icon-my-tongjifenxi"></i> 合同变更流失表</el-breadcrumb-item>
                 </el-breadcrumb>
-            </div>
+            </div> -->
             <!-- 合同变更统计 -->
-            <div style="width: 100%;float:left;background: white;margin-top:10px;position:relative;height:auto;">
+            <div style="width: 100%;float:left;background: white;position:relative;height:auto;">
                 <div class="newResourceAn" style="position:relative;margin-top:10px;height:45px;border-bottom:1px solid gainsboro">
                     <div style='margin-left:10px;width:100px;float:right;margin-right:5px' v-if='code.includes("_m")'>
                         <el-select class="circleSelect" v-model="valueCM1" size='small' clearable :placeholder="code.includes('cc')?'选择CC':'选择老师'" @change="updateListCM">
@@ -15,7 +15,7 @@
                         </el-select>
                     </div>
                     <div style='margin-left:10px;width:100px;float:right;margin-right:5px' v-if='code.includes("_c")'>
-                            <el-select v-model="valueCM5" size='small' clearable placeholder="选择校区" @change="updateListCM">
+                            <el-select class='circleSelect' v-model="valueCM5" size='small' clearable placeholder="选择校区" @change="updateListCM">
                                 <el-option v-for="item in ccs" :key="item.aid" :label="item.uname" :value="item.aid">
                                 </el-option>
                             </el-select>
@@ -25,7 +25,13 @@
                            合同变更统计
                         </h4>
                     </div>
-                    <div class='drop' style='float:left;width:111px;margin-top:4px;margin-left:4px'>
+                    <div style='margin-left:10px;width:110px;float:left'>
+                        <el-select v-model="valueCM6" size='small' clearable placeholder="最近一周" @change="updateListCM">
+                                <el-option label="最近一周" value="1"></el-option>
+                                <el-option label="最近一个月" value="2"></el-option>
+                        </el-select>
+                    </div>
+                    <!-- <div class='drop' style='float:left;width:111px;margin-top:4px;margin-left:4px'>
                         <el-dropdown @command="handleCommandCM">
                             <span class="el-dropdown-link">
         [{{titleCM}}<i class="el-icon-caret-bottom el-icon--right"></i>]
@@ -35,7 +41,7 @@
                                 <el-dropdown-item command="最近一个月">最近一个月</el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
-                    </div>
+                    </div> -->
                     <!-- <div style='margin-left:10px;width:140px;float:left'>
                         <el-select v-model="value6" size='small' clearable placeholder="选择校区" @change="updateList4">
                             <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
@@ -48,12 +54,12 @@
                             </el-option>
                         </el-select>
                     </div> -->
-                    <div style='width:140px;float:left;margin-left:10px' v-if='code.includes("teach")'>
+                    <!-- <div style='width:140px;float:left;margin-left:10px' v-if='code.includes("teach")'>
                             <el-select v-model="valueCM4" size='small' clearable placeholder="课程选择" @change="updateListCM">
                                 <el-option v-for="item in options1" :key="item.id" :label="item.names" :value="item.id">
                                 </el-option>
                             </el-select>
-                        </div> 
+                        </div>  -->
                     <div class='datec' style='float:left;margin-left:10px'>
                             <el-select v-model="valueCM3" size='small'  placeholder="切换日周月" style='width:75px'>
                                     <el-option label="按日" value="1"></el-option>
@@ -68,8 +74,8 @@
                     <span style="display:inline-block;vertical-align: middle;"><img src="../../../static/img/info.png" width='20'alt=""></span>
                     <span style="color:grey;line-height:20px;">根据发生合同变更人次绘制</span>
                 </div>
-                <IEcharts :option="line" style='height:400px;width:60%;float:left' ></IEcharts>
-                <div style="float:right;width:39%">
+                <IEcharts :option="line" style='height:400px;width:60%;position:absolute;left:0' ></IEcharts>
+                <div style="float:right;width:39%;margin-bottom:10px">
                     <div style='height:400px;width:50%;float:left;position:relative'>
                         <IEcharts :option="pie_radius"  style="height:400px;width:100%">
                         </IEcharts>
@@ -87,8 +93,8 @@
                             </div>
                         </div>
                 </div>
-                <div id="tableS"  style='width: 80%;margin:0 auto'>
-                    <el-table :data="resourceData" border show-summary style="width: 100%">
+                <div id="tableRChange1"  style='width: 80%;margin:0 auto'>
+                    <el-table :data="resourceData" border show-summary style="width: 100%;">
                         <el-table-column prop="date" label="日期">
                         </el-table-column>
                         <el-table-column prop="newResources" label="冻结量">
@@ -100,7 +106,7 @@
                     </el-table>
                     
                     <div class="block">
-                        <el-pagination layout="prev, pager, next" :total="total2" :current-page="currentPage2" :page-size="pagesize2" @current-change="handleCurrentChange2">
+                        <el-pagination layout="prev, pager, next" :total="total" :current-page="currentPage" :page-size="pagesize" @current-change="handleCurrentChange">
                         </el-pagination>
                     </div>
                 </div>
@@ -110,13 +116,13 @@
             <div style="width: 100%;float:left;background: white;margin-top:10px;position:relative;height:auto;">
                     <div class="newResourceAn" style="position:relative;margin-top:10px;height:45px;border-bottom:1px solid gainsboro">
                         <div style='margin-left:10px;width:100px;float:right;margin-right:5px' v-if='code.includes("_m")'>
-                            <el-select class="circleSelect" v-model="valueCM1" size='small' clearable :placeholder="code.includes('cc')?'选择CC':'选择老师'" @change="updateListCM">
+                            <el-select class="circleSelect" v-model="valueSA1" size='small' clearable :placeholder="code.includes('cc')?'选择CC':'选择老师'" @change="updateListSA">
                                 <el-option v-for="item in ccs" :key="item.aid" :label="item.uname" :value="item.aid">
                                 </el-option>
                             </el-select>
                         </div>
                         <div style='margin-left:10px;width:100px;float:right;margin-right:5px' v-if='code.includes("_c")'>
-                                <el-select v-model="valueCM5" size='small' clearable placeholder="选择校区" @change="updateListCM">
+                                <el-select class='circleSelect' v-model="valueSA2" size='small' clearable placeholder="选择校区" @change="updateListSA">
                                     <el-option v-for="item in ccs" :key="item.aid" :label="item.uname" :value="item.aid">
                                     </el-option>
                                 </el-select>
@@ -126,8 +132,14 @@
                                     流失统计
                             </h4>
                         </div>
-                        <div class='drop' style='float:left;width:111px;margin-top:4px;margin-left:4px'>
-                            <el-dropdown @command="handleCommandCM">
+                        <div style='margin-left:10px;width:110px;float:left'>
+                            <el-select v-model="valueSA4" size='small' clearable placeholder="最近一周" @change="updateListCM">
+                                    <el-option label="最近一周" value="1"></el-option>
+                                    <el-option label="最近一个月" value="2"></el-option>
+                            </el-select>
+                        </div>
+                        <!-- <div class='drop' style='float:left;width:111px;margin-top:4px;margin-left:4px'>
+                            <el-dropdown @command="handleCommandSA">
                                 <span class="el-dropdown-link">
             [{{titleCM}}<i class="el-icon-caret-bottom el-icon--right"></i>]
           </span>
@@ -136,7 +148,7 @@
                                     <el-dropdown-item command="最近一个月">最近一个月</el-dropdown-item>
                                 </el-dropdown-menu>
                             </el-dropdown>
-                        </div>
+                        </div> -->
                         <!-- <div style='margin-left:10px;width:140px;float:left'>
                             <el-select v-model="value6" size='small' clearable placeholder="选择校区" @change="updateList4">
                                 <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
@@ -149,19 +161,19 @@
                                 </el-option>
                             </el-select>
                         </div> -->
-                        <div style='width:140px;float:left;margin-left:10px' v-if='code.includes("teach")'>
+                        <!-- <div style='width:140px;float:left;margin-left:10px' v-if='code.includes("teach")'>
                                 <el-select v-model="valueCM4" size='small' clearable placeholder="课程选择" @change="updateListCM">
                                     <el-option v-for="item in options1" :key="item.id" :label="item.names" :value="item.id">
                                     </el-option>
                                 </el-select>
-                            </div> 
+                            </div>  -->
                         <div class='datec' style='float:left;margin-left:10px'>
-                                <el-select v-model="valueCM3" size='small'  placeholder="切换日周月" style='width:75px'>
+                                <el-select v-model="valueSA3" size='small'  placeholder="切换日周月" style='width:75px'>
                                         <el-option label="按日" value="1"></el-option>
                                         <el-option label="按周" value="2"></el-option>
                                         <el-option label="按月" value="3"></el-option>
                                     </el-select>
-                            <el-date-picker v-model="valueCM2" type="daterange" size='small' placeholder="选择日期范围" @change="updateListCM">
+                            <el-date-picker v-model="valueCM2" type="daterange" size='small' placeholder="选择日期范围" @change="updateListSA">
                             </el-date-picker>
                         </div>
                     </div>
@@ -174,9 +186,9 @@
                     </div>
                    
                    
-                    <div style='width: 50%;margin:30px auto 0 ;float:left'>
+                    <div style='width: 50%;margin:30px auto 0 ;position:absolute;left:0;'>
                             <IEcharts :option="line2" style='height:400px;width:100%;' ></IEcharts>
-                            <div id="tableS"  style='width: 90%;margin:0 auto;'>
+                            <div id="tableRChange"  style='width: 90%;margin:0 auto;'>
                                 <el-table :data="resourceData" border show-summary style="width: 100%;height:120px">
                                     <el-table-column prop="date" label="课程">
                                     </el-table-column>
@@ -191,7 +203,7 @@
                                     </el-pagination>
                                 </div>
                             </div>
-                            <div id="tableS"  style='width:90%;margin:0 auto;'>
+                            <div id="tableRChange2"  style='width:90%;margin:0 auto;'>
                                     <el-table :data="resourceData" border show-summary style="width: 100%">
                                         <el-table-column prop="date" label="日期">
                                         </el-table-column>
@@ -202,12 +214,12 @@
                                     </el-table>
                                     
                                     <div class="block">
-                                        <el-pagination layout="prev, pager, next" :total="total2" :current-page="currentPage2" :page-size="pagesize2" @current-change="handleCurrentChange2">
+                                        <el-pagination layout="prev, pager, next" :total="total3" :current-page="currentPage3" :page-size="pagesize3" @current-change="handleCurrentChange3">
                                         </el-pagination>
                                     </div>
                                 </div>
                     </div>
-                    <div style='width: 50%;margin:0 auto;float:left;position:relative'>
+                    <div style='width: 50%;margin:0 auto;float:right;position:relative'>
                             <div style="width:80%;position:absolute;top:14px;left:40px;z-index:100;font-size:18px">
                                     退费
                             </div>
@@ -216,7 +228,7 @@
                                     <span style="color:grey;line-height:20px;">根据退费人数绘制</span>
                                 </div>
                             <IEcharts :option="line3" style='height:400px;width:100%;margin-top:30px' ></IEcharts>
-                            <div id="tableS"  style='width:90%;margin:0 auto;'>
+                            <div id="tableRChange3"  style='width:90%;margin:0 auto;'>
                                     <el-table :data="resourceData" border show-summary style="width: 100%;height:120px">
                                         <el-table-column prop="date" label="课程">
                                         </el-table-column>
@@ -227,11 +239,11 @@
                                     </el-table>
                                     
                                     <div class="block">
-                                        <el-pagination layout="prev, pager, next" :total="total2" :current-page="currentPage2" :page-size="pagesize2" @current-change="handleCurrentChange2">
+                                        <el-pagination layout="prev, pager, next" :total="total4" :current-page="currentPage4" :page-size="pagesize4" @current-change="handleCurrentChange4">
                                         </el-pagination>
                                     </div>
                                 </div>
-                                <div id="tableS"  style='width: 90%;margin:0 auto;'>
+                                <div id="tableRChange4"  style='width: 90%;margin:0 auto;'>
                                         <el-table :data="resourceData" border show-summary style="width: 100%">
                                             <el-table-column prop="date" label="日期">
                                             </el-table-column>
@@ -242,7 +254,7 @@
                                         </el-table>
                                         
                                         <div class="block">
-                                            <el-pagination layout="prev, pager, next" :total="total2" :current-page="currentPage2" :page-size="pagesize2" @current-change="handleCurrentChange2">
+                                            <el-pagination layout="prev, pager, next" :total="total5" :current-page="currentPage5" :page-size="pagesize5" @current-change="handleCurrentChange5">
                                             </el-pagination>
                                         </div>
                                     </div>
@@ -279,6 +291,15 @@
                 currentPage2: 1, //页数
                 pagesize2: 15, //默认每页
                 total2: 0, //总页数
+                currentPage3: 1, //页数
+                pagesize3: 15, //默认每页
+                total3: 0, //总页数
+                currentPage4: 1, //页数
+                pagesize4: 15, //默认每页
+                total4: 0, //总页数
+                currentPage5: 1, //页数
+                pagesize5: 15, //默认每页
+                total5: 0, //总页数
                 workData: [{
                     date: '2017.6.12',
                     resource: '2',
@@ -331,7 +352,10 @@
                 }],
                 ccs: [],
                 resourceData: [],
-                SAData:[],
+                SAData: [{rank1:'第一名',rank2:'第二名',rank3:'第三名',rank4:'第四名',rank5:'第五名',rank6:'第六名',rank7:'第七名',rank8:'第八名',rank9:'第九名',rank10:'第十名'},
+                {rank1:'张一',rank2:'张聪',rank3:'汪苏泷',rank4:'第四名',rank5:'第五名',rank6:'第六名',rank7:'第七名',rank8:'第八名',rank9:'第九名',rank10:'第十名'},
+                {rank1:'21',rank2:'12',rank3:'11',rank4:'9',rank5:'8',rank6:'7',rank7:'6',rank8:'3',rank9:'2',rank10:'1'}
+            ],
                 HMData:[],            
                 options: [],
                 options1: [],
@@ -345,33 +369,50 @@
                 valueCM3: '1',
                 valueCM4: '',
                 valueCM5:'',
+                valueCM6:'',
                 periodCM:'w',            
-                valueSA1: '1',
+                valueSA1: '',
                 valueSA2: '',          
-                periodSA:'w',            
-                valueST1: '',
-                valueST2: '',
-                valueST3: '1',
-                valueST5:'',
-                periodST:'w',
+                valueSA3: '1',          
+                valueSA4: '',          
+                periodSA:'w',
                 backface:false,
                 backface1:true,
                 line: {
                     color: ["#59c2e6", "#ec6941", "#22ac38",],
-                    title: {
-                        // text: '客户管理趋势图',
-                        textStyle: {
-                            fontSize: 17
-                        },
-                        padding: [15, 5, 5, 5]
-                    },
+                    // title: {
+                    //     // text: '客户管理趋势图',
+                    //     textStyle: {
+                    //         fontSize: 17
+                    //     },
+                    //     padding: [15, 5, 5, 5]
+                    // },
                     tooltip: {
                         trigger: 'axis'
                     },
+                    dataZoom: [{
+                        startValue: '2017-05-01',
+                        textStyle:{
+                            fontSize:9
+                        }
+                    }, 
+                    {
+                        type: 'inside',
+                        
+                        // maxSpan:2
+                        // filterMode: 'filter'
+                    }],
                     xAxis: {
-                        axisTick: {
-                            alignWithLabel: true
+                        axisTick: {//刻度设置
+                            alignWithLabel: true,
+                            // interval: 0
                         },
+                        axisLabel: {
+                        // showMinLabel:true,
+                        showMaxLabel:true,                    
+                        // rotate:90,
+                        // interval: 0
+                    },
                         data: []
     
                     },
@@ -381,25 +422,36 @@
                         }
                     },
                     grid:{
-                        width:'90%',
-                        left:'5%'
+                        width: '80%'
                     },
                     series: [],
                     backgroundColor: 'white'
                 },
                 line2: {
                     color: ["#ec6941"],
-                    title: {
+                    // title: {
     
-                        textStyle: {
-                            fontSize: 17
-                        },
-                        padding: [15, 5, 5, 5]
-                    },
+                    //     textStyle: {
+                    //         fontSize: 17
+                    //     },
+                    //     padding: [15, 5, 5, 5]
+                    // },
                     tooltip: {
                         trigger: 'axis',
                         formatter: "{a} : {c} <br/>"
                     },
+                    dataZoom: [{
+                        startValue: '2017-05-01',
+                        textStyle:{
+                            fontSize:9
+                        }
+                    }, 
+                    {
+                        type: 'inside',
+                        
+                        // maxSpan:2
+                        // filterMode: 'filter'
+                    }],
                     xAxis: {
                         axisTick: {
                             alignWithLabel: true
@@ -416,16 +468,28 @@
                 },
                 line3: {
                     color: ["#ec6941"],
-                    title: {
-                        textStyle: {
-                            fontSize: 17
-                        },
-                        padding: [15, 5, 5, 5]
-                    },
+                    // title: {
+                    //     textStyle: {
+                    //         fontSize: 17
+                    //     },
+                    //     padding: [15, 5, 5, 5]
+                    // },
                     tooltip: {
                         trigger: 'axis',
                         formatter: "{a} : {c} <br/>"
                     },
+                    dataZoom: [{
+                        startValue: '2017-05-01',
+                        textStyle:{
+                            fontSize:9
+                        }
+                    }, 
+                    {
+                        type: 'inside',
+                        
+                        // maxSpan:2
+                        // filterMode: 'filter'
+                    }],
                     xAxis: {
                         axisTick: {
                             alignWithLabel: true
@@ -569,26 +633,18 @@
                     this.currentPage2 = val;
                     // this.fetchData();
                 },
-                updateListCM() {
-                    if(this.valueCM2 !=''){
-    
-                        this.periodCM = ''
-                    }
-                    this.getResoureData();
+                handleCurrentChange3: function (val) { //变更页数
+                    this.currentPage3 = val;
+                    // this.fetchData();
                 },
-                updateListSA() {
-                    if(this.valueSA4 !=''){
-                    this.periodSA = ''
-                    }
-                    this.getSAData();
+                handleCurrentChange4: function (val) { //变更页数
+                    this.currentPage4 = val;
+                    // this.fetchData();
                 },
-                updateListST() {
-                    if(this.valueST2 !=''){
-                    this.periodST = ''
-                    }
-                    this.getSTData();
+                handleCurrentChange5: function (val) { //变更页数
+                    this.currentPage5 = val;
+                    // this.fetchData();
                 },
-    
                 handleCommandCM(command) {
                     this.titleCM = command;
                     this.valueCM2=''
@@ -607,97 +663,14 @@
                     // }
                     //调服务查询表单
                 },
-                handleCommandSA(command) {
-                    this.titleSA = command;
-                    this.valueSA4 = '';
-                    if(command=='最近一周'){
-                        this.periodSA = 'w'
-                    }else{
-                        this.periodSA = 'm'
+                updateListCM() {//第一个大表格
+                    if(this.valueCM2 !=''){
+    
+                        this.periodCM = ''
                     }
-                    this.getSAData();
-                    //调服务查询表单
+                    // this.getResoureData();
                 },
-                handleCommandST(command) {
-                    this.titleST = command;
-                    this.valueST2 = '';
-                    if(command=='最近一周'){
-                        this.periodST = 'w'
-                    }else{
-                        this.periodST = 'm'
-                    }
-                    this.getSTData();
-                    //调服务查询表单
-                },
-                getResoureData() {
-                    let para = {
-                        // period:this.periodCM,
-                        // startDay: this.valueCM2[0] != null? new Date(this.valueCM2[0]).toLocaleDateString(): '',
-                        // endDay: this.valueCM2[1] != null? new Date(this.valueCM2[1]).toLocaleDateString(): '',                    
-                        // cc_id: this.valueCM1
-                    }
-                    getReport1(token, para).then(res => {
-                        this.resourceData = res.data
-                    })
-                },
-                // getCTData() {
-                //     let para = {
-                //         period:this.periodCT,
-                //         startDay: this.valueCT1[0] != null? new Date(this.valueCT1[0]).toLocaleDateString(): '',
-                //         endDay: this.valueCT1[1] != null? new Date(this.valueCT1[1]).toLocaleDateString(): '',
-                //         cc_id: this.valueCT2,
-                //         view:'picture'
-                //     }
-                //     getReport1(token, para).then(res => {
-                //         let data = res.data;
-                //         // console.log(data)
-                //         this.line.xAxis.data = data.day;
-                //     this.line.series = [{ //以后改成动态获取
-                //         name: "客户认领",
-                //         type: "line",
-                //         data: data.newResources
-                //     }, {
-                //         name: "沟通量",
-                //         type: "line",
-                //         data: data.newCall
-                //     }, {
-                //         name: "邀约量",
-                //         type: "line",
-                //         data: data.invitation
-                //     } ,{
-                //         name: "到访量",
-                //         type: "line",
-                //         data: data.visit
-                //     }, {
-                //         name: "未到访量",
-                //         type: "line",
-                //         data: data.notVisit
-                //     }, {
-                //         name: "签约量",
-                //         type: "line",
-                //         data: data.addOrder
-                //     }];
-                //     this.line.legend = {
-                //         orient: 'horizontal',
-                //         bottom: 10,
-                //         data: ["客户认领", "沟通量", "邀约量", "到访量", "未到访量","签约量"]
-                //         // backgroundColor:'white'
-                //     };
-                //     })
-                // },
-                getSAData() {
-                    let para = {
-                        // period:this.periodSA,
-                        // startDay: this.valueSA4[0] != null? new Date(this.valueSA4[0]).toLocaleDateString(): '',
-                        // endDay: this.valueSA4[1] != null? new Date(this.valueSA4[1]).toLocaleDateString(): '',
-                        // cc_id: this.valueSA1,
-                        // view:'table'
-                    }
-                    getReportSA(token, para).then(res => {
-                        this.SAData = res.data
-                    })
-                },
-                getSTData() {
+                getCM1Data() {//折线图
                     let para = {
                         // period:this.periodST,
                         // startDay: this.valueST2[0] != null? new Date(this.valueST2[0]).toLocaleDateString(): '',
@@ -738,7 +711,7 @@
                     };
                     })
                 },
-                getSRData() {
+                getCM2Data() {//饼图
                     let para = {
                         period:this.periodSR,
                         startDay: this.valueSR1[0] != null? new Date(this.valueSR1[0]).toLocaleDateString(): '',
@@ -753,46 +726,86 @@
                     this.bar.series[0].data = data.money
                     })
                 },
-                getHMData() {
+                getCM3Data() {//表格
                     let para = {
-                        period:this.periodHM,
-                        startDay: this.valueHM2[0] != null? new Date(this.valueHM2[0]).toLocaleDateString(): '',
-                        endDay: this.valueHM2[1] != null? new Date(this.valueHM2[1]).toLocaleDateString(): '',                    
-                        cc_id: this.valueCM1
+                        // period:this.periodCM,
+                        // startDay: this.valueCM2[0] != null? new Date(this.valueCM2[0]).toLocaleDateString(): '',
+                        // endDay: this.valueCM2[1] != null? new Date(this.valueCM2[1]).toLocaleDateString(): '',                    
+                        // cc_id: this.valueCM1
                     }
-                    // getHM(token, para).then(res => {
-                    //     this.HMData = res.data
-                    // })
+                    getReport1(token, para).then(res => {
+                        this.resourceData = res.data
+                    })
                 },
-                getChart1() {
-                    this.line.xAxis.data = data.data.weekList.week;
-                    this.line.series = [{ //以后改成动态获取
-                        name: "新资源",
+                
+                handleCommandSA(command) {
+                    this.titleSA = command;
+                    this.valueSA4 = '';
+                    if(command=='最近一周'){
+                        this.periodSA = 'w'
+                    }else{
+                        this.periodSA = 'm'
+                    }
+                    // this.getSAData();
+                    //调服务查询表单
+                },
+                updateListSA() {//第二个大表格
+                    if(this.valueSA4 !=''){
+                    this.periodSA = ''
+                    }
+                    // this.getSAData();
+                },
+                getSA1Data() {//折线图
+                    let para = {
+                        // period:this.periodST,
+                        // startDay: this.valueST2[0] != null? new Date(this.valueST2[0]).toLocaleDateString(): '',
+                        // endDay: this.valueST2[1] != null? new Date(this.valueST2[1]).toLocaleDateString(): '',
+                        // cc_id: this.valueST1,
+                        // view:'picture'
+                    }
+                    getReportSA(token, para).then(res => {
+                        let data = res.data;
+                        // console.log(data)
+                        this.line3.xAxis.data = data.day;
+                    this.line3.series = [{ //以后改成动态获取
+                        name: "新报名合同",
                         type: "line",
-                        data: data.data.weekList.newResources
+                        data: data.t1
                     }, {
-                        name: "沟通记录量",
+                        name: "续费合同",
                         type: "line",
-                        data: data.data.weekList.newCall
+                        data: data.t2
                     }, {
-                        name: "激活无需求",
+                        name: "再购买合同",
                         type: "line",
-                        data: data.data.weekList.activation
+                        data: data.t3
                     } ,{
-                        name: "认定无效",
+                        name: "转课补费合同",
                         type: "line",
-                        data: data.data.weekList.invalid
+                        data: data.t4
                     }, {
-                        name: "回访量",
+                        name: "全部合同",
                         type: "line",
-                        data: data.data.weekList.returnCall
+                        data: data.all
                     }];
-                    this.line.legend = {
+                    this.line3.legend = {
                         orient: 'horizontal',
                         bottom: 10,
-                        data: ["新资源", "沟通记录量", "激活无需求", "认定无效", "回访量"],
+                        data: ["新报名合同", "续费合同", "再购买合同", "转课补费合同", "全部合同"],
                         // backgroundColor:'white'
                     };
+                    })
+                },
+                getSA2Data() {//表格
+                    let para = {
+                        // period:this.periodCM,
+                        // startDay: this.valueCM2[0] != null? new Date(this.valueCM2[0]).toLocaleDateString(): '',
+                        // endDay: this.valueCM2[1] != null? new Date(this.valueCM2[1]).toLocaleDateString(): '',                    
+                        // cc_id: this.valueCM1
+                    }
+                    getReport1(token, para).then(res => {
+                        this.resourceData = res.data
+                    })
                 },
             },
             beforeCreate() {
@@ -800,6 +813,7 @@
                 token = JSON.parse(user).token;
             },
             created() {
+                document.body.scrollTop = 0
                 this.code = JSON.parse(user).job ? JSON.parse(user).job.code : '';
                 // this.getResoureData();
                 // this.getCTData();
@@ -824,7 +838,7 @@
                 // })
                 this.line.legend = {
                         orient: 'horizontal',
-                        bottom: 10,
+                        top: 30,
                         data: ["冻结量", "转班量", "转校量"],
                         // backgroundColor:'white'
                     };
@@ -873,65 +887,95 @@
     
     </script>
     <style>
+            #tableRChange .el-table th,  #tableRChange1 .el-table th,
+            #tableRChange2 .el-table th,  #tableRChange3 .el-table th,
+            #tableRChange4 .el-table th{
+           background: #f2f2f2
+       }
         .echarts {
             float: left;
             width: 100%;
             height: 400px;
             z-index: 1;
         }
-     /* #tableSA{
+     /* #tableRChange{
          height: 443px;
      } */
-     #tableSA .el-table__empty-block{
+     /* #tableRChange .el-table__empty-block{
          min-height: 120px;
-     }
-     #tableright{
+     } */
+     /* #tableright{
          border-left: none;
-     }
-        #tableSA .el-table td,
-        #tableSA .el-table th {
+     } */
+        #tableRChange .el-table td,
+        #tableRChange .el-table th:not(.gutter) {
             padding: 5px 5px;
             text-align: center
         }
     
-        #tableSA .el-table th>div,
-        #tableSA .el-table .cell {
+        #tableRChange .el-table th>div,
+        #tableRChange .el-table .cell {
             padding-left: 0;
             padding-right: 0;
+            background: #f2f2f2
         }
     
-        #tableR .el-table td,
-        #tableR .el-table th {
+        #tableRChange1 .el-table td,
+        #tableRChange1 .el-table th:not(.gutter) {
             padding: 5px 5px;
             text-align: center
         }
     
-        #tableR .el-table th>div,
-        #tableR .el-table .cell {
+        #tableRChange1 .el-table th>div,
+        #tableRChange1 .el-table .cell {
             padding-left: 0;
             padding-right: 0;
+            background: #f2f2f2
         }
-        #tableS .el-table td,
-        #tableS .el-table th {
+        #tableRChange2 .el-table td,
+        #tableRChange2 .el-table th:not(.gutter) {
             padding: 5px 5px;
             text-align: center
         }
     
-        #tableS .el-table th>div,
-        #tableS .el-table .cell {
+        #tableRChange2 .el-table th>div,
+        #tableRChange2 .el-table .cell {
             padding-left: 0;
             padding-right: 0;
+            background: #f2f2f2
+        }
+        #tableRChange3 .el-table td,
+        #tableRChange3 .el-table th:not(.gutter) {
+            padding: 5px 5px;
+            text-align: center
         }
     
+        #tableRChange3 .el-table th>div,
+        #tableRChange3 .el-table .cell {
+            padding-left: 0;
+            padding-right: 0;
+            background: #f2f2f2
+        }
+        #tableRChange4 .el-table td,
+        #tableRChange4 .el-table th:not(.gutter) {
+            padding: 5px 5px;
+            text-align: center
+        }
     
-        /* #tableR .el-table__footer .gutter {
+        #tableRChange4 .el-table th>div,
+        #tableRChange4 .el-table .cell {
+            padding-left: 0;
+            padding-right: 0;
+            background: #f2f2f2
+        }
+        /* #tableRChange1 .el-table__footer .gutter {
             display: none
         }
     
-        #tableS .el-table__footer .gutter {
+        #tableRChange2 .el-table__footer .gutter {
             display: none
         }
-        #tableSA .el-table__footer .gutter {
+        #tableRChange .el-table__footer .gutter {
             display: none
         } */
         .block {

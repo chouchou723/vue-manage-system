@@ -1,8 +1,9 @@
 <template>
-    <div class="tableUserD">
+    <div class="tableUserDCD">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-my-gerenxinxi"></i> 学员合同</el-breadcrumb-item>
+                <el-breadcrumb-item>
+                    <i class="el-icon-my-gerenxinxi"></i> 学员合同</el-breadcrumb-item>
                 <el-breadcrumb-item to="/myContracts">我的合同</el-breadcrumb-item>
                 <el-breadcrumb-item class='ss'>合同编号:{{contract.sku}}</el-breadcrumb-item>
             </el-breadcrumb>
@@ -117,6 +118,11 @@
                                 {{item}}</div>
                         </template>
                     </el-table-column>
+                    <el-table-column prop="bufei_money" label="转课补费额" width='80' v-if='contract.bufei_money!=0'>
+                        <template scope="scope">
+                            <div>{{contract.bufei_money}}</div>
+                        </template>
+                    </el-table-column>
                     <el-table-column prop="collectMoney" label="实收总额" width='70'>
                         <template scope="scope">
                             <div>{{scope.row.collectMoney}}</div>
@@ -128,11 +134,16 @@
                                 <div>{{item.first_time}} 开课</div>
                                 <div>{{item.week_num}} {{item.schooltime.substring(0,5)}} {{item.class_name}} {{item.teacher_name}}</div>
                             </div>
-                            <div v-else :class="index != (scope.row.title.length-1)?'gotoS':'gotoS1'" @click='gotoS'>还未排班</div>
+                            <div v-else :class="index != (scope.row.title.length-1)?'gotoS':'gotoS1'" >还未排班</div>
+                            <!-- <div v-else :class="index != (scope.row.title.length-1)?'gotoS':'gotoS1'" @click='gotoS'>还未排班</div> -->
                         </template>
                     </el-table-column>
                 </el-table>
                 <el-form id='contractDeatilForm1' label-width="102px" label-position='left' class="CDform">
+                    <!-- <div label="转课补费额:" v-if="contract.bufei_money!=0" style='color:#1fb5ad;font-size:15px;margin-bottom:10px'>
+                               <span style='width:98px;display:inline-block'>
+                                    转课补费额: </span>  {{contract.bufei_money}}元
+                        </div> -->
                     <el-form-item label="合同编号:" prop='name'>
                         <span>{{contract.sku}}</span>
                     </el-form-item>
@@ -145,17 +156,19 @@
                     <el-form-item label="付款方式:" prop='money'>
                         <div v-for='item in contract.money'>{{item}}</div>
                     </el-form-item>
-                    <el-form-item label="转课补费额" v-if='contract.bufei_money!=0'>
+                    <!-- <el-form-item label="转课补费额" v-if='contract.bufei_money!=0'>
                         {{contract.bufei_money}}元
-                    </el-form-item>
+                    </el-form-item> -->
                     <el-form-item label="付款总金额:" prop='online_money' style='margin-bottom:40px'>
                         <span>{{contract.datatable[0].collectMoney}}元</span>
                     </el-form-item>
                 </el-form>
-                <div class="CDupload" v-if="!code.includes('_c')">
-                    <el-upload disable action="http://pandatest.dfth.com/api/v1/order/uploadOrderImg" :headers='headers' list-type="picture-card"
-                        :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-success='handleSuccess' :on-error='handleError'
-                        :file-list="fileList2" name='orderImg' :data="upData">
+                <div class="CDupload">
+                    <div class="addphoto" v-if="!code.includes('_c')">添加纸质合同</div>
+                    <el-upload v-if="!code.includes('_c')"  action="http://pandatest.dfth.com/api/v1/order/uploadOrderImg" :headers='headers'
+                        list-type="picture-card" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-success='handleSuccess'
+                        :on-error='handleError' :before-upload="beforeAvatarUpload" :on-progress='onChange' :file-list="fileList2"
+                        name='orderImg' :data="upData">
                         <i class="el-icon-plus"></i>
                     </el-upload>
                     <el-dialog v-model="dialogVisible" size="small" top='17%'>
@@ -164,14 +177,15 @@
                 </div>
                 <div class='CDsign'>
                     <div class="CDmargin10">
-                        财务签章: <span v-if="contract.order_status =='待审核'" class="CDblue">待审核</span>
+                        财务签章:
+                        <span v-if="contract.order_status =='待审核'" class="CDblue">待审核</span>
                     </div>
                     <div>
                         签约时间: {{contract.created?contract.created.slice(0,10):''}}
                     </div>
                     <div class="CDpic">
                         <img :src="approvalSrc" alt="" width="100" v-if="contract.order_status =='审核通过'">
-                        <img :src="approvalSrc1" alt="" width="100" v-if="contract.order_status =='已回滚'">
+                        <img :src="approvalSrc1" alt="" width="100" v-if="contract.order_status =='审核失败'">
                         <img :src="approvalSrc2" alt="" width="100" v-if="contract.order_status =='审核驳回'">
 
                     </div>
@@ -211,7 +225,7 @@
             <el-form :model="actSchool" id='actSchool1' :rules='ruleActSchool' ref="actSchool" label-width='82px'>
                 <div class="CDflex">
                     <div class="CDdialogC">课程</div>
-                    <div v-for='item in tableTitle' :class="[item!='优惠类型'?'ccc':'ddd']">{{item}}</div>
+                    <div v-for='item in tableTitle' :class="[item!='优惠类型'?item=='转课补费额'?'eee':'ccc':'ddd']">{{item}}</div>
                 </div>
                 <div class='CDdialogT'>
                     <div class='CDdialogTitle'>
@@ -261,6 +275,7 @@
                             </div>
                         </div>
                     </div>
+                    <div class='totalP3zhuan' v-if="contract.bufei_money!=0">{{contract.bufei_money}}</div>
                     <div class='totalP3'>{{totalP3}}</div>
                     <!-- 总额用法 -->
                     <div class='payMethod'>
@@ -274,6 +289,9 @@
                     </div>
                 </div>
                 <div>
+                    <!-- <div label="抵扣的转课补费额" v-if='contract.bufei_money!=0' style='color:#1fb5ad;font-size:15px;margin-bottom:20px'>
+                               <span style='display:inline-block;width:128px'>抵扣的转课补费额:</span> {{contract.bufei_money}}元
+                        </div> -->
                     <el-form-item label="合同编号" prop='sku'>
                         <el-input v-model="actSchool.sku" placeholder='请输入合同编号' class="CD142"></el-input>
                     </el-form-item>
@@ -285,21 +303,16 @@
                     </el-form-item>
                     <el-form-item label="熊猫到家" prop='panda_gohome'>
                         <el-select v-model="actSchool.panda_gohome" placeholder="请选择" class="CD142">
-                            <el-option label="是" value="1"></el-option>
-                            <el-option label="否" value="0"></el-option>
+                            <el-option label="有" value="1"></el-option>
+                            <el-option label="无" value="0"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="付款方式" class="CDposition" required>
                         <div v-for="(a, index) in actSchool.pay" :class="[index !=0?'CDmale':'']">
                             <el-form-item prop="method" class="CD142float">
-                                <el-select v-model="a.method" clearable placeholder="请选择方式">
-                                    <el-option label="现金" value="1"></el-option>
-                                    <el-option label="POS机" value="2"></el-option>
-                                    <el-option label="微信" value="3"></el-option>
-                                    <el-option label="银行转账" value="4"></el-option>
-                                    <el-option label="团购" value="5"></el-option>
-                                    <el-option label="支付宝" value="6"></el-option>
-                                    <el-option label="其他" value="7"></el-option>
+                                <el-select v-model="a.method" clearable placeholder="请选择方式" @change='changeReset'>
+                                    <el-option v-for="item in payMethods" :key="item.id" :label="item.name" :value="item.id">
+                                    </el-option>
                                 </el-select>
                             </el-form-item>
                             <el-form-item prop="money" class="CDfloat">
@@ -310,9 +323,7 @@
                             <div style="clear:both"></div>
                         </div>
                     </el-form-item>
-                    <el-form-item label="转课补费额" v-if='contract.bufei_money'>
-                        {{contract.bufei_money}}元
-                    </el-form-item>
+
                     <el-form-item label="付款总额">
                         {{payTotal}}元
                         <span v-if='this.payTotal +(this.contract.bufei_money-0) != this.totalP3' class='CDred'>*付款总额与实收总额不符*</span>
@@ -377,6 +388,16 @@
                     callback();
                 }
             }
+            var numAndEng = (rule, value, callback) => {
+                var myreg = /^[a-zA-Z0-9]+$/;
+                if (value == '') {
+                    callback('请输入合同编号')
+                } else if (!myreg.test(value)) {
+                    callback('请输入有效合同编号');
+                } else {
+                    callback();
+                }
+            }
             return {
                 headers: {
                     Authorization: token.Authorization
@@ -419,7 +440,7 @@
                     coupons_money: '',
                     courseName1: []
                 }],
-                tableTitle: ['课时', '签单数', '学费', '教材费', '书本费', '优惠类型', '优惠金额', '实收总额', '操作'],
+                // tableTitle: ['课时', '签单数', '学费', '教材费', '书本费', '优惠类型', '优惠金额', '实收总额', '操作'],
                 student: {
                     name: '',
                     sex: '',
@@ -447,10 +468,12 @@
                     created: '',
                 },
                 code: '',
+                paylength: '',
                 ruleActSchool: {
                     sku: [{
                         required: true,
-                        message: '请输入合同编号',
+                        validator: numAndEng,
+                        // message: '请输入合同编号',
                         trigger: 'blur'
                     }, ],
                     // teacher_uid: [{
@@ -481,9 +504,30 @@
                     //     trigger: 'blur'
                     // }],
                 },
+                d: 0,
+                stopchange: false,
             }
         },
         methods: {
+            onChange(event, file, fileList) {
+                // console.log(file)
+                let a = document.getElementsByClassName('el-upload--picture-card')[0];
+                if (file) {
+                    a.style.display = 'none'
+                }
+            },
+            beforeAvatarUpload(file) {
+                const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
+                const isLt2M = file.size / 1024 / 1024 < 10;
+
+                if (!isJPG) {
+                    this.$message.error('上传图片只能是 JPG或者PNG 格式!');
+                }
+                if (!isLt2M) {
+                    this.$message.error('上传图片大小不能超过10MB!');
+                }
+                return isJPG && isLt2M;
+            },
             gotoS() {
                 this.$router.push('/studentDetail/' + this.$route.params.uid);
             },
@@ -491,7 +535,9 @@
                 this.$message.success('上传成功')
                 file.id = response.data.id
                 let a = document.getElementsByClassName('el-upload--picture-card')[0];
-                if (fileList.length == 2) {
+                if (fileList.length == 1) {
+                    a.style.display = 'inline-block'
+                }else{
                     a.style.display = 'none'
                 }
             },
@@ -508,7 +554,6 @@
                         this.$message.success('删除成功')
                     }
                 }).then(() => {
-
                     let a = document.getElementsByClassName('el-upload--picture-card')[0];
                     if (fileList.length < 2) {
                         a.style.display = 'inline-block'
@@ -520,6 +565,7 @@
                 this.dialogVisible = true;
             },
             editContract(data) { //修改合同
+                let that = this;
                 this.actSchool = {
                     sku: data.sku,
                     teacher_uid: data.baomingTeachName ? data.baoming_teach.aid : '',
@@ -529,6 +575,9 @@
                     }),
                     created: '' //,
                 }
+                requestAnimationFrame(function () {
+                    that.d = 2
+                }, 0);
                 this.coupons = data.datatable[0].coupons.map(item => {
                     return item.id
                 })
@@ -547,10 +596,16 @@
                     }
                 })
                 arr.map((item, index, arr) => {
+                    let that = this;
                     let a = item.kc_tid
                     this.getClassName(a, arr[index])
-                    let b = item.course_id
-                    this.getPrice(arr[index], b)
+                    requestAnimationFrame(function () {
+
+                        arr[index].course_id = data.order_item[index].course_id - 0
+                        that.getPrice(arr[index], arr[index].course_id)
+                    }, 0);
+
+                    // let b = item.course_id
                 })
                 this.contracts = [...arr]
                 this.dialogFormVisible3 = true
@@ -582,6 +637,8 @@
                                 this.$message.error(res.data)
                             }
                         })
+                    } else {
+                        this.$message.error('付款总额与实收总额不符')
                     }
                 })
             },
@@ -607,16 +664,25 @@
                     courseName1: []
                 }]
                 this.coupons = []
+                this.d = 0
                 this.$refs[formName].resetFields();
             },
             getClassName(data, i) { //获取课程名称
-                let para = {
-                    pid: data,
-                    simple: 1
+                let that = this;
+                if (!this.stopchange) {
+                    i.course_id = ''
+                    let para = {
+                        pid: data,
+                        simple: 1
+                    }
+                    getClassLibrary(token, para).then((res) => {
+
+                        i.courseName1 = res.data;
+                    })
                 }
-                getClassLibrary(token, para).then((res) => {
-                    i.courseName1 = res.data;
-                })
+                requestAnimationFrame(function () {
+                    that.stopchange = false;
+                }, 0);
             },
             getPrice(data, index) { //调详细获取价格
                 let para = {
@@ -658,12 +724,62 @@
                 })
             },
             delCon(index) { //删除某个课程
+                this.stopchange = true;
                 this.contracts.splice(index, 1)
-            }
+            },
+            changeReset(val) {
+                if (val != '') {
+
+                    this.$refs['actSchool'].validate((valid) => {})
+                }
+            },
         },
         computed: {
+            tableTitle() {
+                if (this.contract.bufei_money != 0) {
+                    return ['课时', '签单数', '学费', '教材费', '书本费', '优惠类型', '优惠金额', '转课补费额', '实收总额', '操作']
+                } else {
+                    return ['课时', '签单数', '学费', '教材费', '书本费', '优惠类型', '优惠金额', '实收总额', '操作']
+                }
+            },
+            payMethods() {
+                let m = [{
+                    name: '现金',
+                    id: '1'
+                }, {
+                    name: 'POS机',
+                    id: '2'
+                }, {
+                    name: '微信',
+                    id: '3'
+                }, {
+                    name: '银行转账',
+                    id: '4'
+                }, {
+                    name: '团购',
+                    id: '5'
+                }, {
+                    name: '支付宝',
+                    id: '6'
+                }, {
+                    name: '其他',
+                    id: '7'
+                }]
+                if (this.d > 1) {
+                    this.actSchool.pay.map((item, index) => {
+                        if (item != '') {
+                            m = m.filter(item1 => {
+                                return item1.id != item.method
+                            })
+                        }
+                    })
+                    return m
+                } else {
+                    return m
+                }
+            },
             isEqual() {
-                if (this.payTotal == this.totalP3) {
+                if ((this.payTotal + (this.contract.bufei_money - 0)) >= this.totalP3) {
                     return 1
                 } else {
                     return 0
@@ -698,25 +814,25 @@
             returnVisitDetail(token, para).then(res => { //获取用户资料
                 let data = res.data.info;
                 this.student.name = data.child_name
-            //     // console.log(data)
-            //     this.student = {
-            //         name: data.child_name,
-            //         age: data.age,
-            //         sex: data.sex,
-            //         id_number: data.id_number ? data.id_number : '无',
-            //         school: data.school_name,
-            //         channel: data.source_name,
-            //         time: data.regtime,
-            //         parent: res.data.famliys[0].uname + '(' + res.data.famliys[0].relation + ')',
-            //         parent_phone: res.data.famliys[0].mobile,
-            //         parent1: res.data.famliys[1] ? res.data.famliys[1].uname ? res.data.famliys[1].uname +
-            //             '(' + res.data.famliys[1].relation + ')' : '暂无' : '暂无',
-            //         parent1_phone: res.data.famliys[1] ? res.data.famliys[1].mobile || '暂无' : '暂无',
-            //         teacher: data.cc_name
-            //     }
+                //     // console.log(data)
+                //     this.student = {
+                //         name: data.child_name,
+                //         age: data.age,
+                //         sex: data.sex,
+                //         id_number: data.id_number ? data.id_number : '无',
+                //         school: data.school_name,
+                //         channel: data.source_name,
+                //         time: data.regtime,
+                //         parent: res.data.famliys[0].uname + '(' + res.data.famliys[0].relation + ')',
+                //         parent_phone: res.data.famliys[0].mobile,
+                //         parent1: res.data.famliys[1] ? res.data.famliys[1].uname ? res.data.famliys[1].uname +
+                //             '(' + res.data.famliys[1].relation + ')' : '暂无' : '暂无',
+                //         parent1_phone: res.data.famliys[1] ? res.data.famliys[1].mobile || '暂无' : '暂无',
+                //         teacher: data.cc_name
+                //     }
             }).catch(() => {
                 // console.log('No Data')
-            })  
+            })
         },
         mounted() {
             let pa = {
@@ -817,7 +933,7 @@
         line-height: 30px
     }
 
-    .tableUserD .el-tag--success {
+    .tableUserDCD .el-tag--success {
         background-color: #1fb5ad;
         border-color: #bcf1d4;
         color: #FFFFFF;
@@ -828,12 +944,12 @@
         width: 1256.75px;
     }
 
-    .tableUserD .el-dialog .el-dialog__header {
+    .tableUserDCD .el-dialog .el-dialog__header {
         background-color: #1fb5ad;
         padding: 20px 20px 20px;
     }
 
-    .tableUserD .el-dialog .el-dialog__title {
+    .tableUserDCD .el-dialog .el-dialog__title {
         color: white;
     }
 
@@ -854,6 +970,17 @@
         line-height: 40px;
         background: #f3f3f3;
         flex: 0 0 146px;
+        border-right: 1px solid gainsboro;
+        border-bottom: 1px solid gainsboro;
+        border-top: 1px solid gainsboro
+    }
+
+    .eee {
+        text-align: center;
+        height: 40px;
+        line-height: 40px;
+        background: #f3f3f3;
+        flex: 0 0 86px;
         border-right: 1px solid gainsboro;
         border-bottom: 1px solid gainsboro;
         border-top: 1px solid gainsboro
@@ -900,7 +1027,7 @@
     }
 
     #contractDetail .el-table td,
-    #contractDetail .el-table th {
+    #contractDetail .el-table th:not(.gutter) {
         padding: 5px 0;
         text-align: center
     }
@@ -926,10 +1053,10 @@
         color: #f29c9c
     }
 
-    .gotoS:hover,
+    /* .gotoS:hover,
     .gotoS1:hover {
         cursor: pointer;
-    }
+    } */
 
     .record {
         display: flex;
@@ -1013,7 +1140,7 @@
 
     .editPromtion {
         line-height: 40px;
-        width: 68px;
+        width: 67px;
         display: flex;
         align-items: stretch;
         flex-wrap: wrap;
@@ -1022,7 +1149,7 @@
     .editPromtionDiv {
         font-size: 14px;
         display: flex;
-        flex: 0 0 68px;
+        flex: 0 0 67px;
     }
 
     .editCouponesMoney {
@@ -1041,7 +1168,19 @@
         text-align: center;
         border-right: 1px solid gainsboro;
         border-bottom: 1px solid gainsboro;
-        flex: 0 0 65px;
+        flex: 0 0 66px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: auto
+    }
+
+    .totalP3zhuan {
+        background: #ffffff;
+        text-align: center;
+        border-right: 1px solid gainsboro;
+        border-bottom: 1px solid gainsboro;
+        flex: 0 0 86px;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -1065,7 +1204,7 @@
 
     .canToS {
         font-weight: bold;
-        color: grey;
+        color: #1fb5ad;
         margin-left: 5px;
         padding-right: 5px;
         border-right: 1px solid gainsboro
@@ -1149,8 +1288,9 @@
 
     .CDupload {
         display: inline-block;
-        margin-top: 20px;
-        margin-right: 20px
+        margin-top: 25px;
+        margin-right: 20px;
+        position: relative
     }
 
     .CDsign {
@@ -1194,7 +1334,7 @@
         height: auto;
         display: flex;
         align-items: stretch;
-        margin-bottom: 50px;
+        margin-bottom: 20px;
     }
 
     .CDdialogTitle {
@@ -1256,4 +1396,14 @@
         margin-left: 100px
     }
 
+    .addphoto {
+        position: absolute;
+        font-size: 14px;
+        top: -21px;
+        left: 33px;
+        color: rgb(72, 106, 106)
+    }
+.CDupload .el-icon-close{
+    display: none;
+}
 </style>

@@ -1,11 +1,11 @@
 <template>
-    <div class="table">
-        <div class="crumbs">
+    <div class="jobtable">
+        <!-- <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-my-shezhi"></i> 组织架构</el-breadcrumb-item>
                 <el-breadcrumb-item class='ss'>职位管理</el-breadcrumb-item>
             </el-breadcrumb>
-        </div>
+        </div> -->
         <div class='addjob'>
             <h3 class='jobH2'>职位管理</h3>
             <el-button type="primary" size="mid" class="JMbutton" @click="createCh">添加职位</el-button>
@@ -141,13 +141,16 @@
                 }
                 departList(para, token).then(res => {
                     // console.log(res)
+                    if(res.data[0]._child){
+
                     this.levels = res.data[0]._child.map(item => {
                         return {
                             value: item.job_id,
                             label: item.full_name
                         }
                     })
-                    console.log(this.levels)
+                    }
+                    // console.log(this.levels)
                 })
 
             },
@@ -159,10 +162,9 @@
                 // console.log(data)
                 if (data[index].count != 0) {
                     this.$alert('当前职位有成员,无法删除职位', '删除职位', {
-                        title: '删除职位',
                         type: 'warning',
                         customClass: 'redwarn',
-                        confirmButtonText: '确定'
+                        confirmButtonText: '确定',
                     });
                 } else {
                     this.$confirm('是否确定要删除职位?', '删除职位', {
@@ -189,13 +191,12 @@
                         });
                         // this.deleteRow(index,data);
                         
-                    })
-                    // .catch(() => {
+                    }).catch(() => {
                     //   this.$message({
                     //     type: 'info',
                     //     message: '已取消删除'
                     //   });          
-                    // });
+                    });
                 }
 
             },
@@ -241,7 +242,7 @@
                     })
                     // this.updateLevel();
 
-                })
+                }).catch(()=>{})
 
 
             },
@@ -415,12 +416,12 @@
     border-color: #1fb5ad;
 }*/
 
-    .el-dialog .el-dialog__header {
+   .jobtable .el-dialog .el-dialog__header {
         background-color: #1fb5ad;
         padding: 20px 20px 20px;
     }
 
-    .el-dialog .el-dialog__title {
+    .jobtable .el-dialog .el-dialog__title {
         color: white;
     }
     /*.mm {}

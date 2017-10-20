@@ -1,19 +1,19 @@
 <template>
     <div class="publicPool">
-        <el-breadcrumb separator="/">
+        <!-- <el-breadcrumb separator="/">
             <el-breadcrumb-item><i class="el-icon-my-yonhu"></i> 客户管理</el-breadcrumb-item>
             <el-breadcrumb-item class='ss'>客户认领</el-breadcrumb-item>
-        </el-breadcrumb>
+        </el-breadcrumb> -->
         <div class='noEff'>
             <h2 class="studentReturnnoEff">
                 客户认领({{number}}人)
             </h2>
         </div>
-        <div id="table2">
-            <el-table :data="publicData" border style="width: 100%">
+        <div id="table2PP">
+            <el-table :data="publicData"  style="width: 100%"  @sort-change='sortChange'>
                 <el-table-column prop="names" label="姓名" width='140'>
                     <template scope="scope">
-                        <span class='nicknameSpan'>{{scope.row.names}}</span>
+                        <span class='PPnicknameSpan'>{{scope.row.names}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="sex" label="性别" width='140'>
@@ -24,7 +24,7 @@
                 </el-table-column>
                 <el-table-column prop="mobile" label="手机" :formatter="formatter" width='200'>
                 </el-table-column>
-                <el-table-column prop="created" label="录入时间" sortable>
+                <el-table-column prop="created" label="录入时间" sortable='custom'>
                 </el-table-column>
                 <el-table-column label="操作" width='140' v-if='!code.includes("_c")'>
                     <template scope="scope">
@@ -67,10 +67,20 @@
                 pagesize: 15, //默认每页
                 claimConfirm: {
                     customer_id: ''
-                }
+                },
+                sortName:'',
+                sortOrder:'',
             }
         },
         methods: {
+            sortChange(column){
+                let {prop,order} = column
+                // console.log(prop)
+                this.sortName=prop;
+                this.sortOrder = order;
+                this.currentPage = 1;
+                this.fetchData()
+            },
             claim(index, data) {
                 this.claimConfirm.customer_id = data[index].id;
                 this.dialogFormVisible = true;
@@ -103,7 +113,9 @@
             },
             fetchData() {
                 let para = {
-                    page: this.currentPage
+                    page: this.currentPage,
+                    sortName:this.sortName,
+                    sortOrder:this.sortOrder
                 }
                 getPublicPoolList(token, para).then((res) => { //
                     this.number = res.data.total;
@@ -126,19 +138,19 @@
 
 </script>
 <style>
-    #table2 .el-table td,
-    #table2 .el-table th {
+    #table2PP .el-table td,
+    #table2PP .el-table th:not(.gutter) {
         padding: 1px;
         text-align: center
     }
 
-    #table2 .el-table th>div,
-    #table2 .el-table .cell {
+    #table2PP .el-table th>div,
+    #table2PP .el-table .cell {
         padding-left: 0;
         padding-right: 0;
     }
 
-    .nicknameSpan {
+    .PPnicknameSpan {
         font-weight: 600;
     }
 
@@ -158,7 +170,7 @@
         position: relative;
         height: 46px;
         background-color: white;
-        margin-top: 30px;
+        margin-top: 0;
         padding-top: 10px;
         margin-bottom: 5px;
         border-radius: 5px;

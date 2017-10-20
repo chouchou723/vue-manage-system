@@ -1,12 +1,12 @@
 <template>
     <div>
-        <div class="crumbs">
+        <!-- <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-my-tongjifenxi"></i> 合同变更流失表</el-breadcrumb-item>
             </el-breadcrumb>
-        </div>
+        </div> -->
         <!-- 合同变更统计 -->
-        <div style="width: 100%;float:left;background: white;margin-top:10px;position:relative;height:auto;">
+        <div style="width: 100%;float:left;background: white;position:relative;height:auto;">
             <div class="newResourceAn" style="position:relative;margin-top:10px;height:45px;border-bottom:1px solid gainsboro">
                 <div style='margin-left:10px;width:100px;float:right;margin-right:5px' v-if='code.includes("_m")'>
                     <el-select class='circleSelect' v-model="valueCM1" size='small' clearable :placeholder="code.includes('cc')?'选择CC':code.includes('tmk')?'选择TMK':'选择老师'" @change="updateListCM">
@@ -15,7 +15,7 @@
                     </el-select>
                 </div>
                 <div style='margin-left:10px;width:100px;float:right;margin-right:5px' v-if='code.includes("_c")'>
-                    <el-select v-model="valueCM5" size='small' clearable placeholder="选择校区" @change="updateListCM">
+                    <el-select class='circleSelect' v-model="valueCM5" size='small' clearable placeholder="选择校区" @change="updateListCM">
                         <el-option v-for="item in ccs" :key="item.aid" :label="item.uname" :value="item.aid">
                         </el-option>
                     </el-select>
@@ -26,7 +26,13 @@
                         <span v-if='code.includes("tmk")'>资源发展</span>
                     </h4>
                 </div>
-                <div class='drop' style='float:left;width:111px;margin-top:4px;margin-left:4px'>
+                <div style='margin-left:10px;width:110px;float:left'>
+                    <el-select v-model="valueCM6" size='small' clearable placeholder="最近一周" @change="updateListCM">
+                            <el-option label="最近一周" value="1"></el-option>
+                            <el-option label="最近一个月" value="2"></el-option>
+                    </el-select>
+                </div>
+                <!-- <div class='drop' style='float:left;width:111px;margin-top:4px;margin-left:4px'>
                     <el-dropdown @command="handleCommandCM">
                         <span class="el-dropdown-link">
         [{{titleCM}}<i class="el-icon-caret-bottom el-icon--right"></i>]
@@ -36,7 +42,7 @@
                             <el-dropdown-item command="最近一个月">最近一个月</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
-                </div>
+                </div> -->
                 <!-- <div style='margin-left:10px;width:140px;float:left'>
                         <el-select v-model="value6" size='small' clearable placeholder="选择校区" @change="updateList4">
                             <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
@@ -65,13 +71,13 @@
                     </el-date-picker>
                 </div>
             </div>
-            <div style="width:90%;position:absolute;top:68px;left:30px;z-index:100;font-size:12px">
+            <div style="width:90%;position:absolute;top:62px;left:30px;z-index:100;font-size:12px">
                 <span style="display:inline-block;vertical-align: middle;"><img src="../../../static/img/info.png" width='20'alt=""></span>
                 <span style="color:grey;line-height:20px;">根据发展客户的次数绘制</span>
             </div>
-            <IEcharts :option="line" style='height:400px;width:60%;float:left'></IEcharts>
+            <IEcharts :option="line" style='height:400px;width:60%;position:absolute;left:0;margin-bottom:10px;'></IEcharts>
             <div style="float:right;width:39%">
-                <div style='height:400px;width:100%;float:left;position:relative;'>
+                <div style='height:400px;width:100%;float:left;position:relative;margin-bottom:10px;'>
                     <IEcharts :option="funnel" style="height:400px;width:100%">
                     </IEcharts>
                     <div style="position:absolute;bottom:0;left:0;width:80%;height:66px;font-size:20px;text-align:center;display:flex;justify-content:center">
@@ -99,9 +105,10 @@
                             </div>
                         </div> -->
             </div>
+            <div style="clear:both"></div>
             <div style="float:left;width:32%" v-if='code.includes("cc")'>
-                <div style='height:400px;width:100%;float:left;position:relative'>
-                    <IEcharts :option="pie_radius" style="height:400px;width:100%">
+                <div style='height:350px;width:100%;float:left;position:relative'>
+                    <IEcharts :option="pie_radius" >
                     </IEcharts>
                     <div style="position:absolute;top:0;bottom:0;left:0;right:0;margin:auto;width:90px;height:95px;font-size:35px;color:#20a0ff;text-align:center">
                         <div>合同</div>
@@ -111,8 +118,8 @@
                 </div>
             </div>
             <div style="float:left;width:32%" v-if='code.includes("cc")'>
-                <div style='height:400px;width:100%;float:left;position:relative'>
-                    <IEcharts :option="pie_radius2" style="height:400px;width:100%">
+                <div style='height:350px;width:100%;float:left;position:relative'>
+                    <IEcharts :option="pie_radius2" >
                     </IEcharts>
                     <div style="position:absolute;top:0;bottom:0;left:0;right:0;margin:auto;width:90px;height:95px;font-size:35px;color:#13CE66;text-align:center">
                         <div>课程</div>
@@ -123,7 +130,7 @@
             </div>
             <div style="float:left;width:36%" v-if='code.includes("cc")'>
 
-                <div style='height:400px;width:100%;float:left;display:flex;justify-content: center;align-items: center;flex-direction: column;'>
+                <div style='height:350px;width:100%;float:left;display:flex;justify-content: center;align-items: center;flex-direction: column;'>
                     <div style='width: 100%;display: flex;justify-content: space-around;align-items: baseline;padding:5px'>
                         <span>课程名称</span>
                         <span>签单人头数</span>
@@ -136,7 +143,7 @@
                     </div>
                 </div>
             </div>
-            <div id="tableS" style='width: 90%;margin:20px auto 0 '>
+            <div id="tableSale2" style='width: 90%;margin:20px auto 0 '>
                 <el-table :data="resourceData" border show-summary style="width: 100%">
                     <el-table-column prop="date" label="日期">
                     </el-table-column>
@@ -208,12 +215,12 @@
                                 </el-select>
                             </div>  -->
                 <div class='datec' style='float:left;margin-left:10px'>
-                    <el-select v-model="valueSA1" size='small' clearable placeholder="切换日周月" style='width:75px'>
+                    <el-select v-model="valueSA1" size='small' clearable placeholder="切换日周月" style='width:75px' @change="updateListSA">
                         <el-option label="本日" value="1"></el-option>
                         <el-option label="本周" value="2"></el-option>
                         <el-option label="本月" value="3"></el-option>
                     </el-select>
-                    <el-date-picker v-model="valueSA2" type="month" size='small' placeholder="选择月份" @change="updateListCM" style='width:100px'>
+                    <el-date-picker v-model="valueSA2" type="month" size='small' placeholder="选择月份" @change="updateListSA" style='width:100px'>
                     </el-date-picker>
                 </div>
                 <!-- <div style='width:100px;float:right;margin-right:10px'>
@@ -230,7 +237,7 @@
                 <div style="margin-top:10px"> <span style="display:inline-block;vertical-align: middle;"><img src="../../../static/img/rank.png" width='20'alt=""></span>
                     <span style="color:grey;line-height:20px;">第十名</span></div>
             </div>
-            <div id="tableSA" style="width:90%;margin:0 auto;position:relative">
+            <div id="tableRSale" style="width:90%;margin:0 auto;position:relative">
                 <el-radio-group v-model="radio3" @change='getNewRank' style="position:absolute;top:-55px;left:45%" v-if="code.includes('_c')">
                     <el-radio-button :label='1'>按老师</el-radio-button>
                     <el-radio-button :label='2'>按校区</el-radio-button>
@@ -240,25 +247,25 @@
                     </el-table-column>
                 </el-table>
                 <el-table :data="SAData" border y style="width: 90%;float:left" :show-header='backface' id='tableright'>
-                    <el-table-column prop="rank1" label="日期">
+                    <el-table-column prop="rank1" >
                     </el-table-column>
-                    <el-table-column prop="rank2" label="签单量">
+                    <el-table-column prop="rank2" >
                     </el-table-column>
-                    <el-table-column prop="rank3" label="人头数">
+                    <el-table-column prop="rank3" >
                     </el-table-column>
-                    <el-table-column prop="rank4" label="日期">
+                    <el-table-column prop="rank4" >
                         </el-table-column>
-                        <el-table-column prop="rank5" label="签单量">
+                        <el-table-column prop="rank5" >
                         </el-table-column>
-                        <el-table-column prop="rank6" label="人头数">
+                        <el-table-column prop="rank6" >
                         </el-table-column>
-                        <el-table-column prop="rank7" label="日期">
+                        <el-table-column prop="rank7" >
                             </el-table-column>
-                            <el-table-column prop="rank8" label="签单量">
+                            <el-table-column prop="rank8" >
                             </el-table-column>
-                            <el-table-column prop="rank9" label="人头数">
+                            <el-table-column prop="rank9" >
                             </el-table-column>
-                            <el-table-column prop="rank10" label="日期">
+                            <el-table-column prop="rank10" >
                                 </el-table-column>
                 </el-table>
                 <div style="clear:both"></div>
@@ -400,7 +407,7 @@
             ccs: [],
             resourceData: [],
             SAData: [{rank1:'第一名',rank2:'第二名',rank3:'第三名',rank4:'第四名',rank5:'第五名',rank6:'第六名',rank7:'第七名',rank8:'第八名',rank9:'第九名',rank10:'第十名'},
-            {rank1:'第一名',rank2:'第二名',rank3:'第三名',rank4:'第四名',rank5:'第五名',rank6:'第六名',rank7:'第七名',rank8:'第八名',rank9:'第九名',rank10:'第十名'},
+            {rank1:'张一',rank2:'张聪',rank3:'汪苏泷',rank4:'第四名',rank5:'第五名',rank6:'第六名',rank7:'第七名',rank8:'第八名',rank9:'第九名',rank10:'第十名'},
             {rank1:'21',rank2:'12',rank3:'11',rank4:'9',rank5:'8',rank6:'7',rank7:'6',rank8:'3',rank9:'2',rank10:'1'}
         ],
             HMData: [],
@@ -416,32 +423,46 @@
             valueCM3: '1',
             valueCM4: '',
             valueCM5: '',
+            valueCM6: '',
             periodCM: 'w',
             valueSA1: '1',
             valueSA2: '',
-            periodSA: 'w',
-            valueST1: '',
-            valueST2: '',
-            valueST3: '1',
-            valueST5: '',
-            periodST: 'w',
             backface: false,
             backface1: true,
             line: {
-                color: ["#13CE66", "#F7BA2A", "#16b8be", "#ed42b3", "#20a0ff"],
-                title: {
-                    // text: '客户管理趋势图',
-                    textStyle: {
-                        fontSize: 17
-                    },
-                    padding: [15, 5, 5, 5]
-                },
+                color: ["#4dc0e5", "#0075aa", "#0baa32", "#b6a800", "#ed6a3a"],
+                // title: {
+                //     // text: '客户管理趋势图',
+                //     textStyle: {
+                //         fontSize: 17
+                //     },
+                //     padding: [15, 5, 5, 5]
+                // },
                 tooltip: {
                     trigger: 'axis'
                 },
+                dataZoom: [{
+                        startValue: '2017-05-01',
+                        textStyle:{
+                            fontSize:9
+                        }
+                    }, 
+                    {
+                        type: 'inside',
+                        
+                        // maxSpan:2
+                        // filterMode: 'filter'
+                    }],
                 xAxis: {
-                    axisTick: {
-                        alignWithLabel: true
+                    axisTick: {//刻度设置
+                            alignWithLabel: true,
+                            // interval: 0
+                        },
+                        axisLabel: {
+                        // showMinLabel:true,
+                        showMaxLabel:true,                    
+                        // rotate:90,
+                        // interval: 0
                     },
                     data: []
 
@@ -452,8 +473,7 @@
                     }
                 },
                 grid: {
-                    width: '90%',
-                    left: '5%'
+                    width: '80%'
                 },
                 series: [],
                 backgroundColor: 'white'
@@ -579,7 +599,6 @@
                         normal: {
                             show: true,
                             formatter: "{b}\n{c}({d}%)",
-                            padding: 110
                         }
                     },
                     labelLine: {
@@ -791,26 +810,6 @@
                 this.currentPage2 = val;
                 // this.fetchData();
             },
-            updateListCM() {
-                if (this.valueCM2 != '') {
-
-                    this.periodCM = ''
-                }
-                this.getResoureData();
-            },
-            updateListSA() {
-                if (this.valueSA4 != '') {
-                    this.periodSA = ''
-                }
-                this.getSAData();
-            },
-            updateListST() {
-                if (this.valueST2 != '') {
-                    this.periodST = ''
-                }
-                this.getSTData();
-            },
-
             handleCommandCM(command) {
                 this.titleCM = command;
                 this.valueCM2 = ''
@@ -820,49 +819,16 @@
                     this.periodCM = 'm'
                 }
                 this.getResoureData();
-                // if(this.backface){
-                //     this.backface = false;
-                //     this.backface1 = true;
-                // }else{
-                //     this.backface1 = false;
-                // this.backface = true;
-                // }
                 //调服务查询表单
             },
-            handleCommandSA(command) {
-                this.titleSA = command;
-                this.valueSA4 = '';
-                if (command == '最近一周') {
-                    this.periodSA = 'w'
-                } else {
-                    this.periodSA = 'm'
+            updateListCM() {//第一个大表格
+                if (this.valueCM2 != '') {
+
+                    this.periodCM = ''
                 }
-                this.getSAData();
-                //调服务查询表单
+                // this.getResoureData();
             },
-            handleCommandST(command) {
-                this.titleST = command;
-                this.valueST2 = '';
-                if (command == '最近一周') {
-                    this.periodST = 'w'
-                } else {
-                    this.periodST = 'm'
-                }
-                this.getSTData();
-                //调服务查询表单
-            },
-            getResoureData() {
-                let para = {
-                    // period:this.periodCM,
-                    // startDay: this.valueCM2[0] != null? new Date(this.valueCM2[0]).toLocaleDateString(): '',
-                    // endDay: this.valueCM2[1] != null? new Date(this.valueCM2[1]).toLocaleDateString(): '',                    
-                    // cc_id: this.valueCM1
-                }
-                getReport1(token, para).then(res => {
-                    this.resourceData = res.data
-                })
-            },
-            getCTData() {
+            getCM1Data() {//折线图
                 let para = {
                     period: this.periodCM,
                     startDay: this.valueCM2[0] != null ? new Date(this.valueCM2[0]).toLocaleDateString() : '',
@@ -903,60 +869,7 @@
                     };
                 })
             },
-            getSAData() {
-                let para = {
-                    // period:this.periodSA,
-                    // startDay: this.valueSA4[0] != null? new Date(this.valueSA4[0]).toLocaleDateString(): '',
-                    // endDay: this.valueSA4[1] != null? new Date(this.valueSA4[1]).toLocaleDateString(): '',
-                    // cc_id: this.valueSA1,
-                    // view:'table'
-                }
-                getReportSA(token, para).then(res => {
-                    this.SAData = res.data
-                })
-            },
-            getSTData() {
-                let para = {
-                    // period:this.periodST,
-                    // startDay: this.valueST2[0] != null? new Date(this.valueST2[0]).toLocaleDateString(): '',
-                    // endDay: this.valueST2[1] != null? new Date(this.valueST2[1]).toLocaleDateString(): '',
-                    // cc_id: this.valueST1,
-                    // view:'picture'
-                }
-                getReportSA(token, para).then(res => {
-                    let data = res.data;
-                    // console.log(data)
-                    this.line3.xAxis.data = data.day;
-                    this.line3.series = [{ //以后改成动态获取
-                        name: "新报名合同",
-                        type: "line",
-                        data: data.t1
-                    }, {
-                        name: "续费合同",
-                        type: "line",
-                        data: data.t2
-                    }, {
-                        name: "再购买合同",
-                        type: "line",
-                        data: data.t3
-                    }, {
-                        name: "转课补费合同",
-                        type: "line",
-                        data: data.t4
-                    }, {
-                        name: "全部合同",
-                        type: "line",
-                        data: data.all
-                    }];
-                    this.line3.legend = {
-                        orient: 'horizontal',
-                        bottom: 10,
-                        data: ["新报名合同", "续费合同", "再购买合同", "转课补费合同", "全部合同"],
-                        // backgroundColor:'white'
-                    };
-                })
-            },
-            getSRData() {
+            getCM2Data() {//3个饼状图可以一起
                 let para = {
                     period: this.periodSR,
                     startDay: this.valueSR1[0] != null ? new Date(this.valueSR1[0]).toLocaleDateString() : '',
@@ -971,46 +884,33 @@
                     this.bar.series[0].data = data.money
                 })
             },
-            getHMData() {
-                let para = {
-                    period: this.periodHM,
-                    startDay: this.valueHM2[0] != null ? new Date(this.valueHM2[0]).toLocaleDateString() : '',
-                    endDay: this.valueHM2[1] != null ? new Date(this.valueHM2[1]).toLocaleDateString() : '',
-                    cc_id: this.valueCM1
-                }
-                // getHM(token, para).then(res => {
-                //     this.HMData = res.data
-                // })
+            getCM3Data(){//课程名称签单人头数
+                //this.getCM2Data = 
             },
-            getChart1() {
-                this.line.xAxis.data = data.data.weekList.week;
-                this.line.series = [{ //以后改成动态获取
-                    name: "新资源",
-                    type: "line",
-                    data: data.data.weekList.newResources
-                }, {
-                    name: "沟通记录量",
-                    type: "line",
-                    data: data.data.weekList.newCall
-                }, {
-                    name: "激活无需求",
-                    type: "line",
-                    data: data.data.weekList.activation
-                }, {
-                    name: "认定无效",
-                    type: "line",
-                    data: data.data.weekList.invalid
-                }, {
-                    name: "回访量",
-                    type: "line",
-                    data: data.data.weekList.returnCall
-                }];
-                this.line.legend = {
-                    orient: 'horizontal',
-                    bottom: 10,
-                    data: ["新资源", "沟通记录量", "激活无需求", "认定无效", "回访量"],
-                    // backgroundColor:'white'
-                };
+            getCM4Data() {//最后的表格数据
+                let para = {
+                    // period:this.periodCM,
+                    // startDay: this.valueCM2[0] != null? new Date(this.valueCM2[0]).toLocaleDateString(): '',
+                    // endDay: this.valueCM2[1] != null? new Date(this.valueCM2[1]).toLocaleDateString(): '',                    
+                    // cc_id: this.valueCM1
+                }
+                getReport1(token, para).then(res => {
+                    this.resourceData = res.data
+                })
+            },
+            updateListSA() {
+                this.getSAData();
+            },
+            getSAData() {
+                let para = {
+                    // period:this.periodCM,
+                    // startDay: this.valueCM2[0] != null? new Date(this.valueCM2[0]).toLocaleDateString(): '',
+                    // endDay: this.valueCM2[1] != null? new Date(this.valueCM2[1]).toLocaleDateString(): '',                    
+                    // cc_id: this.valueCM1
+                }
+                getReport1(token, para).then(res => {
+                    this.resourceData = res.data
+                })
             },
         },
         beforeCreate() {
@@ -1018,9 +918,10 @@
             token = JSON.parse(user).token;
         },
         created() {
+            document.body.scrollTop = 0
             this.code = JSON.parse(user).job ? JSON.parse(user).job.code : '';
             // this.getResoureData();
-            this.getCTData();
+            // this.getCTData();
             // this.getSAData();
             // this.getSTData();
             // this.getSRData();
@@ -1046,30 +947,36 @@
             //     data: ["客户认领量", "沟通量", "邀约量","到访量","签单量"],
             //     // backgroundColor:'white'
             // };
-            // this.line.xAxis.data = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"]
+            this.line.xAxis.data = ["2017-05-01", "周二", "周三", "周四", "周五", "周六", "2017-05-07"]
             this.line2.xAxis.data = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"]
             this.line3.xAxis.data = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"]
-            // this.line.series = [{ //以后改成动态获取
-            //     name: "客户认领量",
-            //     type: "line",
-            //     data: [2, 5, 10, 5, 1, 5, 10]
-            // }, {
-            //     name: "沟通量",
-            //     type: "line",
-            //     data: [3, 10, 12, 3, 9, 0, 2]
-            // }, {
-            //     name: "邀约量",
-            //     type: "line",
-            //     data: [4, 8, 18, 15, 4, 2, 1]
-            // }, {
-            //     name: "到访量",
-            //     type: "line",
-            //     data: [5, 11, 9, 4,19, 10, 12]
-            // }, {
-            //     name: "签单量",
-            //     type: "line",
-            //     data: [14, 18, 8, 5, 14, 12, 11]
-            // }]
+            this.line.series = [{ //以后改成动态获取
+                name: "客户认领量",
+                type: "line",
+                data: [2, 5, 10, 5, 1, 5, 10]
+            }, {
+                name: "沟通量",
+                type: "line",
+                data: [3, 10, 12, 3, 9, 0, 2]
+            }, {
+                name: "邀约量",
+                type: "line",
+                data: [4, 8, 18, 15, 4, 2, 1]
+            }, {
+                name: "到访量",
+                type: "line",
+                data: [5, 11, 9, 4,19, 10, 12]
+            }, {
+                name: "签单量",
+                type: "line",
+                data: [14, 18, 8, 5, 14, 12, 11]
+            }]
+            this.line.legend = {
+                            orient: 'horizontal',
+                            top: 30,
+                            data: ["客户认领量", "沟通量", "邀约量", "到访量", "签单量"]
+                            // backgroundColor:'white'
+                        };
             // this.line2.series = [{ //以后改成动态获取
             //     name: "人数",
             //     type: "line",
@@ -1115,67 +1022,60 @@
 
 </script>
 <style>
+     #tableSale2 .el-table th{
+           background: #f2f2f2
+       }
     .echarts {
         float: left;
         width: 100%;
         height: 400px;
         z-index: 1;
     }
-    /* #tableSA{
+    /* #tableRSale{
          height: 443px;
      } */
 
-    #tableSA .el-table__empty-block {
+    /* #tableRSale .el-table__empty-block {
         min-height: 120px;
-    }
+    } */
 
     #tableright {
         border-left: none;
     }
 
-    #tableSA .el-table td,
-    #tableSA .el-table th {
+    #tableRSale .el-table td,
+    #tableRSale .el-table th:not(.gutter) {
         padding: 5px 5px;
         text-align: center
     }
 
-    #tableSA .el-table th>div,
-    #tableSA .el-table .cell {
+    #tableRSale .el-table th>div,
+    #tableRSale .el-table .cell {
         padding-left: 0;
         padding-right: 0;
+        
     }
 
-    #tableR .el-table td,
-    #tableR .el-table th {
+    #tableSale2 .el-table td,
+    #tableSale2 .el-table th:not(.gutter) {
         padding: 5px 5px;
         text-align: center
     }
 
-    #tableR .el-table th>div,
-    #tableR .el-table .cell {
+    #tableSale2 .el-table th>div,
+    #tableSale2 .el-table .cell {
         padding-left: 0;
         padding-right: 0;
+        background: #f2f2f2
     }
-
-    #tableS .el-table td,
-    #tableS .el-table th {
-        padding: 5px 5px;
-        text-align: center
-    }
-
-    #tableS .el-table th>div,
-    #tableS .el-table .cell {
-        padding-left: 0;
-        padding-right: 0;
-    }
-    /* #tableR .el-table__footer .gutter {
+    /* #tableRSale1 .el-table__footer .gutter {
             display: none
         }
     
-        #tableS .el-table__footer .gutter {
+        #tableSale2 .el-table__footer .gutter {
             display: none
         }
-        #tableSA .el-table__footer .gutter {
+        #tableRSale .el-table__footer .gutter {
             display: none
         } */
 
@@ -1213,20 +1113,6 @@
     .backfa1 {
         transform: rotateY(180deg);
         backface-visibility: hidden;
-    }
-
-    .circleG {
-        position: relative
-    }
-
-    .circleG::before {
-        content: ' ';
-        top: 10px;
-        left: 5px;
-        width: 12px;
-        height: 12px;
-        background: #7fee1d;
-        border-radius: 6px;
     }
 .circleSelect .el-input__inner{
     border-radius: 28px

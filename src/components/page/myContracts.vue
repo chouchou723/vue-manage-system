@@ -1,11 +1,11 @@
 <template>
     <div>
-        <div class="crumbs">
+        <!-- <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-my-gerenxinxi"></i> 学员合同</el-breadcrumb-item>
                 <el-breadcrumb-item class='ss'>我的合同</el-breadcrumb-item>
             </el-breadcrumb>
-        </div>
+        </div> -->
         <div class='accouMyresoureCon'>
             <h2 class="mydataReturn">
                 合同({{number}}份)
@@ -19,7 +19,7 @@
                 </div>
 
                 <div class='studentReturnThreeNewCon' v-if="code =='cc_m'||code.includes('_c')">
-                    <el-select v-model="valueCC" clearable placeholder="选择CC" @change="updateList">
+                    <el-select v-model="valueCC"  placeholder="选择CC" @change="updateList">
                         <el-option v-for="item in optionsCC" :key="item.aid" :label="item.uname" :value="item.aid">
                         </el-option>
                     </el-select>
@@ -73,9 +73,10 @@
                             <span @click='gotoDetail(item)' class='myContractsSpan'>
                           合同编号:  {{item.sku}}  
                         </span>
-                            <span :style="item.order_status=='待审核'?'color:blue':item.order_status=='审核通过'?'color:#18c318':item.order_status=='被退回'?'color:#e4a821':'color:red'">
+                            <span  class="MCname" :style="item.order_status=='待审核'?'color:blue;':item.order_status=='审核通过'?'color:#18c318':item.order_status=='被退回'?'color:#e4a821':'color:red'">
                            ({{item.order_status}}) 
                         </span>
+                        <span style="padding-left:5px;"  class='myContractsSpan' @click='gotoSDetail(item)'>学员:{{item.users.child_name}}</span>
                         </div>
                     </div>
                     <div class="MC5">
@@ -85,6 +86,11 @@
                 </div>
                 <div id='myContracts'>
                     <el-table :data="item.tabledata" border style="width: 100%;">
+                            <!-- <el-table-column prop="name" label="学员" width='70'>
+                                    <template scope="scope">
+                                        <div @click='gotoSDetail(item)' class='myContractsSpan'>詹皓</div>
+                                    </template>
+                                </el-table-column> -->
                         <el-table-column prop="title" label="课程">
                             <template scope="scope">
                                 <div class="MC9">
@@ -204,6 +210,9 @@
         getMyContract,
         campusList
     } from '../../api/api';
+    import {
+    mapActions,mapGetters
+} from 'vuex';
     export default {
         data() {
             return {
@@ -229,8 +238,24 @@
             }
         },
         methods: {
+            ...mapActions([
+                'setmyContractS'
+            ]),
+            gotoSDetail(row) {
+                this.$router.push('/studentDetail/' + row.uid);
+            },
             gotoDetail(row) {
                 // console.log(row)
+                let d = {
+                    school_id: this.valueR,
+                    page: this.currentPage,
+                    cc_uid: this.valueCC,
+                    status: this.value1,
+                    order_type: this.value2, //合同类型
+                    start_created: this.value3,
+                    panda_gohome: this.value4,
+                }
+                this.setmyContractS(d)
                 this.$router.push('/contractDetail/' + row.order_id + '/' + row.uid);
             },
             updateList() {
@@ -241,19 +266,46 @@
             updateListCC() {
                 this.currentPage = 1;
                 this.valueCC = '';
-                let para = {
-                    school_id: this.valueR
-                }
-                getAllCCList(token, para).then((res) => {
-                    this.optionsCC = res.data;
-                    this.optionsCC.unshift({
-                        aid: 0,
-                        uname: '全部CC'
+                this.optionsCC = [{aid:0,uname:'全部CC'}];
+                if(this.valueR!=''){
+
+                    let para = {
+                        school_id: this.valueR
+                    }
+                    getAllCCList(token, para).then((res) => {
+                        this.optionsCC = res.data;
+                        this.optionsCC.unshift({
+                            aid: '0',
+                            uname: '全部CC'
+                        })
+                    }).then(()=>{
+                        this.valueCC = '0'
                     })
-                })
+                }else{
+                    this.valueCC ='0';
+                }
                 this.fetchData();
             },
             fetchData() {
+                if(Object.keys(this.getmyContractS).length!=0){
+                    this.valueR =  this.getmyContractS.school_id;
+                    this.currentPage =  this.getmyContractS.page;
+                    this.valueCC =  this.getmyContractS.cc_uid;
+                    this.value1 =  this.getmyContractS.status;
+                    this.value2 =  this.getmyContractS.order_type;
+                    this.value3 = this.getmyContractS.start_created;
+                    this.value4 =  this.getmyContractS.panda_gohome;
+                    let para = {
+                        school_id: this.valueR
+                    }
+                    getAllCCList(token, para).then((res) => {
+                        this.optionsCC = res.data;
+                        this.optionsCC.unshift({
+                            aid: '0',
+                            uname: '全部CC'
+                        })
+                    })
+                }
                 let para = {
                     school_id: this.valueR,
                     page: this.currentPage,
@@ -276,7 +328,8 @@
                     this.students = a;
                     this.total = parseInt(c);
                 }).then(() => {
-                    this.loading2 = false
+                    this.loading2 = false;
+                    this.setmyContractS({})
                 }).catch(() => {
                     this.$message.error('该用户未授权');
                     this.loading2 = false
@@ -294,6 +347,24 @@
         },
         created() {
             this.code = JSON.parse(user).job ? JSON.parse(user).job.code : '';
+            if ((this.code == 'cc_m' || this.code.includes('_c'))&&Object.keys(this.getmyContractS).length==0) {
+                if(this.code.includes('cc_c')||this.code.includes('teach_c')){//销售经理 和 教务经理 默认进来全部CC
+                    this.optionsCC.unshift({
+                        aid: '0',
+                        uname: '全部CC'
+                    })
+                    this.valueCC='0'
+                }else{
+                    getAllCCList(token).then((res) => {
+                        this.optionsCC = res.data;
+                        this.optionsCC.unshift({
+                            aid: '0',
+                            uname: '全部CC'
+                        })
+                        this.valueCC='0'
+                    })
+                }
+            }
             this.fetchData();
             if (this.code.includes('_c')) {
                 let cam = {
@@ -303,16 +374,15 @@
                     this.optionR = res.data
                 })
             }
-            if (this.code == 'cc_m' || this.code.includes('_c')) {
-                getAllCCList(token).then((res) => {
-                    this.optionsCC = res.data;
-                    this.optionsCC.unshift({
-                        aid: '0',
-                        uname: '全部CC'
-                    })
-                })
-            }
+            
+            
         },
+        computed: {
+        ...mapGetters([
+            'getmyContractS'
+            // ...
+        ])
+    },
         // mounted() {
 
         // },
@@ -334,7 +404,7 @@
     }
 
     #myContracttable .el-table td,
-    #myContracttable .el-table th {
+    #myContracttable .el-table th:not(.gutter) {
         padding: 5px 0;
         text-align: center
     }
@@ -343,6 +413,7 @@
     #myContracttable .el-table .cell {
         padding-left: 0;
         padding-right: 0;
+        font-weight: normal;
     }
 
     #myContracts {
@@ -368,7 +439,7 @@
         flex-wrap: wrap;
         justify-content: space-between;
         background-color: white;
-        margin-top: 30px;
+        /* margin-top: 10px; */
         padding-top: 10px;
         margin-bottom: 5px;
         border-radius: 5px;
@@ -397,13 +468,14 @@
         margin-left: 10px
     }
 
-    .mycontractSelect .el-date-editor.el-input {
+    /* .mycontractSelect .el-date-editor.el-input {
         width: 180px;
         font-size: 12px;
-    }
+    } */
 
     .myContractsSpan {
-        font-weight: bold
+        /* font-weight: bold; */
+        color:#1fb5ad
     }
 
     .myContractsSpan:hover {
@@ -431,10 +503,11 @@
     .MC2 {
         display: flex;
         justify-content: space-between;
-        height: 50px;
-        line-height: 50px;
+        height: 42px;
+        line-height: 42px;
         border: 1px solid rgb(223, 236, 235);
-        border-bottom: none
+        border-bottom: none;
+        background: #fafafa;
     }
 
     .MC3 {
@@ -444,8 +517,9 @@
     }
 
     .MC4 {
-        font-size: 20px;
-        margin-left: 10px
+        font-size: 18px;
+        margin-left: 10px;
+        
     }
 
     .MC5 {
@@ -507,5 +581,8 @@
     .MCgreen {
         color: #18c318
     }
-
+    .MCname{
+        border-right: 1px solid gainsboro;
+        padding-right: 2px;
+    }
 </style>

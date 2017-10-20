@@ -1,10 +1,10 @@
 <template>
     <div>
-        <div class="crumbs">
+        <!-- <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-my-tongjifenxi"></i> 报表统计</el-breadcrumb-item>
             </el-breadcrumb>
-        </div>
+        </div> -->
         <!-- 客户管理 -->
         <div style="width: 100%;float:left;background: white;margin-top:10px;position:relative;height:500px;transform-style:preserve-3d;">
             <div class="newResourceAn" style="position:relative;margin-top:10px;height:45px;border-bottom:1px solid gainsboro">
@@ -1313,7 +1313,7 @@
      height: 443px;
  }
     #tableSA .el-table td,
-    #tableSA .el-table th {
+    #tableSA .el-table th:not(.gutter) {
         padding: 5px 5px;
         text-align: center
     }
@@ -1325,7 +1325,7 @@
     }
 
     #tableR .el-table td,
-    #tableR .el-table th {
+    #tableR .el-table th:not(.gutter) {
         padding: 5px 5px;
         text-align: center
     }
@@ -1336,7 +1336,7 @@
         padding-right: 0;
     }
     #tableS .el-table td,
-    #tableS .el-table th {
+    #tableS .el-table th:not(.gutter) {
         padding: 5px 5px;
         text-align: center
     }

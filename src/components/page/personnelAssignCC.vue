@@ -1,15 +1,15 @@
 <template>
     <div class="crumbs">
-        <el-breadcrumb separator="/">
+        <!-- <el-breadcrumb separator="/">
             <el-breadcrumb-item><i class="el-icon-my-weituoguanxiguanli"></i> 业务交接</el-breadcrumb-item>
-        </el-breadcrumb>
+        </el-breadcrumb> -->
         <div class='noEff'>
             <h2 class="studentReturnnoEff">
 
                 业务交接({{number}}人)
             </h2>
             <div class='studentReturnNoneed'>
-                <el-select v-model="valueT" clearable placeholder="选择CC" @change="updateList">
+                <el-select v-model="valueT"  placeholder="选择CC" @change="updateList">
                     <el-option v-for="item in optionsCC" :key="item.aid" :label="item.uname" :value="item.aid">
                     </el-option>
                 </el-select>
@@ -25,10 +25,10 @@
                     style='margin-right:10px'> </el-input>
             </div>
             <div style="float:right;margin-right:10px">
-                <el-button type="success" @click="openResource" :disabled="this.multipleSelection==''">调配人员</el-button>
+                <el-button type="success" @click="openResource" :disabled="this.multipleSelection==''">接收人</el-button>
             </div>
         </div>
-        <el-dialog title="接收人员" :visible.sync="dialogFormVisible" :close-on-click-modal="no" top='33%' size='tiny' show-close custom-class='personAssign'>
+        <el-dialog title="接收人" :visible.sync="dialogFormVisible" :close-on-click-modal="no" top='33%' size='tiny' show-close custom-class='personAssign'>
             <div style='margin-bottom:20px;font-weight:bold'>请选择要接管的课程顾问:</div>
             <el-form :model="resourceAssign" id='actSchool1'>
                 <el-form-item prop='school'>
@@ -49,13 +49,13 @@
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
             </div>
         </el-dialog>
-        <div id="table2">
-            <el-table :data="noEffData" border style="width: 100%" :default-sort="{prop: 'created', order: 'descending'}" @selection-change="handleSelectionChange">
+        <div id="table2PAC">
+            <el-table :data="noEffData"  style="width: 100%"  @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55">
                 </el-table-column>
                 <el-table-column prop="names" label="姓名">
                     <template scope="scope">
-                        <span @click="switchDetail(scope.row)" class='nicknameSpan'>{{scope.row.names}}</span>
+                        <span >{{scope.row.names}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="sex" label="性别">
@@ -70,7 +70,7 @@
         </div>
         <div class="block">
             <span class="demonstration"></span>
-            <el-pagination layout="prev, pager, next" :total="total" @current-change="handleCurrentChange">
+            <el-pagination layout="prev, pager, next" :total="total" :current-page="currentPage" :page-size="pagesize" @current-change="handleCurrentChange">
             </el-pagination>
         </div>
     </div>
@@ -123,9 +123,7 @@
                     school_id:this.resourceAssign.school
                 }
                 getAllCCList(token,para).then((res) => {
-                this.listCC = res.data.filter(item=>{
-                    return item.uname != JSON.parse(user).uname
-                });
+                this.listCC = res.data
             })
             
             },
@@ -167,6 +165,7 @@
                     return item.id
                 })
                 let para = {
+                    type:this.valueR,
                     uids: a,
                     new_teach_id: this.resourceAssign.receiveCC
                 }
@@ -189,12 +188,11 @@
         },
         created() {
             this.code = JSON.parse(user).job ? JSON.parse(user).job.code : '';
+            this.valueT = JSON.parse(user).aid
             let uname = JSON.parse(user).uname
             this.fetchData();
             getAllCCList(token).then((res) => {
-                this.optionsCC = res.data.filter(item=>{
-                    return item.uname !=uname
-                });
+                this.optionsCC = res.data
             })
             let si = {
                 simple: 1
@@ -213,14 +211,14 @@
 
 </script>
 <style>
-    #table2 .el-table td,
-    #table2 .el-table th {
+    #table2PAC .el-table td,
+    #table2PAC .el-table th:not(.gutter) {
         padding: 1px;
         text-align: center
     }
 
-    #table2 .el-table th>div,
-    #table2 .el-table .cell {
+    #table2PAC .el-table th>div,
+    #table2PAC .el-table .cell {
         padding-left: 0;
         padding-right: 0;
     }
@@ -264,7 +262,7 @@
         position: relative;
         height: 46px;
         background-color: white;
-        margin-top: 30px;
+        margin-top:0;
         padding-top: 10px;
         margin-bottom: 5px;
         border-radius: 5px;

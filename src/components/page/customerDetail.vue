@@ -1,5 +1,5 @@
 <template>
-    <div class="tableUserD">
+    <div class="tableUserCD">
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-my-yonhu"></i> 客户管理</el-breadcrumb-item>
@@ -7,61 +7,136 @@
                 <el-breadcrumb-item class='ss'>{{student.names}}</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
-        <!-- 用户资料 -->
-        <div class="CDEtitle">
-            <div class="CDEtitle1">
-                <el-button v-if="this.$route.params.status=='已到访'&&!code.includes('_c')" type="primary" size="mid" class='signC' @click='signContact'>
-                    <img :src="signSrc" alt="" width='25' class='CDEtitleimg'>
-                    <span class="CDEtitleSign">签合同</span></el-button>
-            </div>
-            <div class='UserDetailTitle'>
-                <span class="CDEinfo">用户资料</span>
-                <div class="CDEinfo1">
-                    <div class='CDEinfo2'>
-                        <el-button v-if="!code.includes('_c')" type="primary" size="mid" class='setToNo' @click='recognizeResource'>
-                            <img :src="attSrc" alt="" width='20' class="CDEinfoimg">
-                            <span class='CDEinfoN'>设置为无需求</span></el-button>
-                    </div>
-                    <div class='addU' @click='addU' v-if="!code.includes('_c')"></div>
-                </div>
-            </div>
-            <el-form id='customerDeatilForm' label-width="102px" label-position='left' class="CDEform">
-                <el-form-item label="姓名:" prop='names'>
-                    <span>{{student.names}}</span>
-                </el-form-item>
-                <el-form-item label="性别:" prop='sex'>
-                    <span>{{student.sex}}</span>
-                </el-form-item>
-                <el-form-item label="年龄:" prop='age'>
-                    <span>{{student.age}}</span>
-                </el-form-item>
-                <el-form-item label="家长:" prop='parent'>
-                    <span>{{student.parent}}</span>
-                </el-form-item>
-                <el-form-item label="第二家长:" prop='parent'>
-                    <span>{{student.parent1}}</span>
-                </el-form-item>
-                <el-form-item label="手机:" prop='parent'>
-                    <span>{{student.parent_phone}}</span>
-                </el-form-item>
-                <el-form-item label="第二手机:" prop='parent'>
-                    <span>{{student.parent1_phone}}</span>
-                </el-form-item>
-                <el-form-item label="渠道来源:" prop='channel' style="position:relative">
-                    <span>{{student.channel}}</span>
-                    <div v-if='student.sour_id==4'>介绍人:{{student.referral_name||' 无 '}} 老师:{{student.teach_name||' 无 '}}</div>
-                </el-form-item>
-                <el-form-item label="录入时间:" prop='created'>
-                    <span>{{student.created}}</span>
-                </el-form-item>
-                <el-form-item label="校区:" prop='school'>
-                    <span>{{student.school_name}}</span>
-                </el-form-item>
-                <el-form-item label="课程顾问(CC):" prop='teacher'>
-                    <span>{{userName}}</span>
-                </el-form-item>
-            </el-form>
+        <div style="display:flex">
+<!-- 用户资料 -->
+<div class="CDEtitle">
+        <div class="CDEtitle1">
+            <el-button v-if="this.Pstatus=='已到访'&&!code.includes('_c')" type="primary" size="mid" class='signC' @click='signContact'>
+                <img :src="signSrc" alt="" width='25' class='CDEtitleimg'>
+                <span class="CDEtitleSign">签合同</span>
+            </el-button>
         </div>
+        <div class='UserDetailTitle'>
+            <span class="CDEinfo">用户资料</span>
+            <div class="CDEinfo1">
+                <div class='CDEinfo2'>
+                    <el-button v-if="!code.includes('_c')" type="primary" size="mid" class='setToNo' @click='recognizeResource'>
+                        <img :src="attSrc" alt="" width='20' class="CDEinfoimg">
+                        <span class='CDEinfoN'>设置为无需求</span></el-button>
+                </div>
+                <div class='addU' @click='addU' v-if="!code.includes('_c')"></div>
+            </div>
+        </div>
+        <el-form id='customerDeatilForm' label-width="102px" label-position='left' class="CDEform">
+            <el-form-item label="姓名:" prop='names'>
+                <span>{{student.names}}</span>
+            </el-form-item>
+            <el-form-item label="性别:" prop='sex'>
+                <span>{{student.sex}}</span>
+            </el-form-item>
+            <el-form-item label="年龄:" prop='age'>
+                <span>{{student.age}}</span>
+            </el-form-item>
+            <el-form-item label="家长:" prop='parent'>
+                <span>{{student.parent}}</span>
+            </el-form-item>
+            <el-form-item label="第二家长:" prop='parent' v-if='student.parent1.split("(")[0]!=""'>
+                <span>{{student.parent1}}</span>
+            </el-form-item>
+            <el-form-item label="手机:" prop='parent'>
+                <span>{{student.parent_phone}}</span>
+            </el-form-item>
+            <el-form-item label="第二手机:" prop='parent' v-if='student.parent1_phone!=""'>
+                <span>{{student.parent1_phone}}</span>
+            </el-form-item>
+            <el-form-item label="渠道来源:" prop='channel' style="position:relative">
+                <span>{{student.channel}}</span>
+                <div v-if='student.sour_id==4'>介绍人:{{student.referral_name||' 无 '}} 老师:{{student.teach_name||' 无 '}}</div>
+            </el-form-item>
+            <el-form-item label="录入时间:" prop='created'>
+                <span>{{student.created}}</span>
+            </el-form-item>
+            <el-form-item label="所在地区:" prop='fullAddress'>
+                    <span>{{student.fullAddress}}</span>
+                </el-form-item>
+            <el-form-item label="校区:" prop='school'>
+                <span>{{student.school_name}}</span>
+            </el-form-item>
+            <el-form-item label="CC:" prop='teacher'>
+                <span>{{student.cc_name}}</span>
+            </el-form-item>
+        </el-form>
+    </div>
+ <!-- 沟通记录 -->
+ <div class="CDEcom">
+        <div class='communityTitle'>
+            <span class="CDEcom1">沟通记录({{number}})</span>
+            <div class="CDEcom2">
+                <div class='addR' @click='addComm' v-if="!code.includes('_c')"></div>
+            </div>
+        </div>
+        <div class="CDEcom3">
+            <el-row v-for='item in items' class='CDEcom4'>
+                <el-col :span="4" class='CDEcomright'>
+                    <img :src="item.add_call_user.avatar?item.add_call_user.avatar:''" width='50' height='50' alt="" class="CDEcomimg"></el-col>
+                <el-col :span="20">
+                    <div class="CDEh30">
+                        <div class="CDEh1">{{item.add_call_user.uname}}</div>
+                        <div class="CDEh2">{{item.create_at.substring(5,16)}}</div>
+                    </div>
+                    <div>
+                        <div class="CDEh3">{{item.remark}}</div>
+                    </div>
+                    <div>
+                        <div class="CDEh4">
+                            <el-tag type='success' v-for='t in item.tags' class='tagTag'>{{t}}</el-tag>
+                        </div>
+                    </div>
+                    <div style="clear:both"></div>
+                    <div>
+                        <div style="float:left;font-size:14px;color:#1fb5ad;margin-bottom:5px;" v-if="item.remind_time">下次跟进时间:{{item.remind_time}}</div>
+                        <div class='editSpan' @click='editReturn(item.id,item)' v-if="new Date().getTime()-new Date(item.create_at).getTime()<7200000&&userid==item.tmk_uid "></div>
+
+                    </div>
+                </el-col>
+            </el-row>
+        </div>
+        <div class="block" v-if="this.total!=0">
+            <el-pagination layout="prev, pager, next" :total="total" :current-page="currentPage" :page-size="pagesize" @current-change="handleCurrentChange">
+            </el-pagination>
+        </div>
+    </div>
+  <!-- 邀约记录 -->
+  <div class='CDEint'>
+        <div class='inviteTitle'>
+            <span class="CDEcom1">邀约记录({{number1}})</span>
+        </div>
+        <div class="CDEcom2">
+            <div class='addR' @click='addInvite' v-if="!code.includes('_c')"></div>
+        </div>
+        <div class='CDEinth'>
+            <el-row v-for='item in items1' class="CDEint1">
+                <div class="CDEint2">邀约日期: {{item.alert_time.substring(0,16)}}</div>
+                <div class='inviteRecord'>邀约课程: <span class='CDErgrey'>{{item.course}}</span> </div>
+                <div class='inviteRecord'>上课老师: <span class='CDErgrey'>{{item.teach_name.uname}}</span></div>
+                <div class='inviteRecord'>记录时间: <span class='CDErgrey'>{{item.created.substring(0,16)}}</span></div>
+                <div class='inviteRecord'>
+                    <div class="CDEint3">
+                        <div>到访设置: <span :style="item.fla == '已到访'?'color:#e9bd23':item.fla == '未到访'?'color:#e24545':'color:grey'">{{item.fla}}</span>
+                        </div>
+                        <div class='editVisit' v-if='item.update_count<1&&!code.includes("_c")' @click='confirmVisit(item.id,item)'></div>
+                        <div class='editVisitI' @click='editInvite(item.id,item,$event)' v-if="new Date().getTime()-new Date(item.created).getTime()<7200000&&userid==item.tmk_uid&&!code.includes('_c')&&item.update_count<1"></div>
+                    </div>
+                </div>
+            </el-row>
+        </div>
+        <div class="block" v-if="this.total1!=0">
+            <el-pagination layout="prev, pager, next" :total="total1" :current-page="currentPage1" :page-size="pagesize1" @current-change="handleCurrentChange1">
+            </el-pagination>
+        </div>
+    </div>
+        </div>
+        
         <!-- 修改客户 -->
         <el-dialog title="修改客户" :visible.sync="dialogFormVisibleAdd" :close-on-click-modal="no" top='9.7%' id='CDEDialog' @close="resetD('form')">
             <el-form :model="form" :rules='rule' ref="form" label-width="80px">
@@ -105,26 +180,31 @@
                             <el-option label="爸爸" value="爸爸"></el-option>
                             <el-option label="爷爷" value="爷爷"></el-option>
                             <el-option label="奶奶" value="奶奶"></el-option>
+                            <el-option label="外公" value="外公"></el-option>
+                            <el-option label="外婆" value="外婆"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item prop="phone" class="CDEfloat">
-                        <el-input v-model="form.phone" placeholder='请输入手机号'></el-input>
+                        <el-input v-model="form.phone" placeholder='请输入手机号' :maxlength='maxlength'></el-input>
                     </el-form-item>
                 </el-form-item>
                 <el-form-item label="">
                     <el-form-item prop="parent1" class="CDE142float">
                         <el-input v-model="form.parent1" placeholder='请输入家长姓名'></el-input>
                     </el-form-item>
+                    <div style='position:absolute;color:#ff4949;bottom:-26px;font-size:12px' v-if="secondRule">第二家长信息如若填写,必须填写完全,不然将不予保存</div>
                     <el-form-item prop="con1" class="CDE142float">
                         <el-select v-model="form.con1" placeholder="请选择关系">
                             <el-option label="妈妈" value="妈妈"></el-option>
                             <el-option label="爸爸" value="爸爸"></el-option>
                             <el-option label="爷爷" value="爷爷"></el-option>
                             <el-option label="奶奶" value="奶奶"></el-option>
+                            <el-option label="外公" value="外公"></el-option>
+                            <el-option label="外婆" value="外婆"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item prop="phone1" class="CDEfloat">
-                        <el-input v-model="form.phone1" placeholder='请输入手机号'></el-input>
+                        <el-input v-model="form.phone1" placeholder='请输入手机号' :maxlength='maxlength'></el-input>
                     </el-form-item>
                     <el-col :span="2">
                         <span class='CDEgrey'> (选填)</span>
@@ -175,12 +255,12 @@
                     </el-form-item>
                     <span v-if='nostudent' style="width:200px;color:red;float:left"> {{warning}}</span>
                 </el-form-item> -->
-                <el-form-item label="更换CC" prop='cc_id' v-if="code =='cc_m'">
+                <!-- <el-form-item label="更换CC" prop='cc_id' v-if="code =='cc_m'">
                     <el-select v-model="form.cc_id" placeholder="请选择CC" class="CDE142">
                         <el-option v-for="item in allCC" :key="item.aid" :label="item.uname" :value="item.aid">
                         </el-option>
                     </el-select>
-                </el-form-item>
+                </el-form-item> -->
                 <el-form-item>
                     <el-button type="primary" @click="onSubmit('form')">确定</el-button>
                     <el-button @click="dialogFormVisibleAdd = false">取消</el-button>
@@ -213,7 +293,7 @@
                     <el-input v-model="signform.id_number" placeholder='请输入身份证号' class="CDE202"></el-input>
                 </el-form-item>
                 <el-form-item label="出生日期" prop='birthday'>
-                    <el-date-picker v-model="signform.birthday" type="date" placeholder="选择日期" class='CDE142'>
+                    <el-date-picker v-model="signform.birthday" type="date" placeholder="选择日期" class='CDE142' :picker-options="pickerOptions1">
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item label="登录密码" prop='pass'>
@@ -230,26 +310,31 @@
                             <el-option label="爸爸" value="爸爸"></el-option>
                             <el-option label="爷爷" value="爷爷"></el-option>
                             <el-option label="奶奶" value="奶奶"></el-option>
+                            <el-option label="外公" value="外公"></el-option>
+                            <el-option label="外婆" value="外婆"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item prop="phone" class='CDEfloat'>
-                        <el-input v-model="signform.phone" placeholder='请输入手机号'></el-input>
+                        <el-input v-model="signform.phone" placeholder='请输入手机号' ref="parentPhone" :maxlength='maxlength'></el-input>
                     </el-form-item>
                 </el-form-item>
                 <el-form-item label="">
                     <el-form-item prop="parent1" class='CDE142float'>
                         <el-input v-model="signform.parent1" placeholder='请输入家长姓名'></el-input>
                     </el-form-item>
+                    <div style='position:absolute;color:#ff4949;bottom:-26px;font-size:12px' v-if="secondRule1">第二家长信息如若填写,必须填写完全,不然将不予保存</div>
                     <el-form-item prop="con1" class='CDE142float'>
                         <el-select v-model="signform.con1" placeholder="请选择关系">
                             <el-option label="妈妈" value="妈妈"></el-option>
                             <el-option label="爸爸" value="爸爸"></el-option>
                             <el-option label="爷爷" value="爷爷"></el-option>
                             <el-option label="奶奶" value="奶奶"></el-option>
+                            <el-option label="外公" value="外公"></el-option>
+                            <el-option label="外婆" value="外婆"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item prop="phone1" class='CDEfloat'>
-                        <el-input v-model="signform.phone1" placeholder='请输入手机号'></el-input>
+                        <el-input v-model="signform.phone1" placeholder='请输入手机号' :maxlength='maxlength'></el-input>
                     </el-form-item>
                     <el-col :span="2">
                         <span class="CDEgrey"> (选填)</span>
@@ -286,8 +371,8 @@
                     </el-form-item>
                     <span v-if='nostudent' style="width:200px;color:red;float:left"> {{warning}}</span> -->
                 </el-form-item>
-                <el-form-item label="课程顾问" prop='cc' class="CDEm5">
-                    <p>{{userName}}</p>
+                <el-form-item label="CC" prop='cc' class="CDEm5">
+                    <p>{{signform.cc_name}}</p>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -295,9 +380,9 @@
                 <el-button type="primary" @click="nextToSign('signform')">下一步</el-button>
             </div>
         </el-dialog>
-        <!-- 签合同第二步 -->
+        <!-- 签合同第二步 @close="resetAll('actSchool')"-->
         <el-dialog title="填写合同内容" :visible.sync="dialogFormVisible3" :close-on-click-modal="no" top='7%' show-close class='signContactDialog'
-            @close="resetAll('actSchool')">
+            >
             <el-form :model="actSchool" id='actSchool1' :rules='ruleActSchool' ref="actSchool">
                 <div class="CDEflex">
                     <div class="CDEflex1">课程</div>
@@ -370,7 +455,7 @@
                         <div v-for='(i,index) in contracts' class='CDEflex11'>
                             <div class='CDEflex12'>
                                 <el-button type="text" size="small" @click="addCon(index)" :style="{color: index==0?'#1fb5ad':'red'}" v-if='index==0'>添加课程</el-button>
-                                <el-button type="text" size="small" @click="delCon(index)" :style="{color: index==0?'#1fb5ad':'red'}" v-if='index!=0'>删除</el-button>
+                                <el-button type="text" size="small" @click="delCon(index,contracts)" :style="{color: index==0?'#1fb5ad':'red'}" v-if='index!=0'>删除</el-button>
                             </div>
                         </div>
                     </div>
@@ -394,14 +479,9 @@
                     <el-form-item label="付款方式" style='position:relative' required>
                         <div v-for="(a, index) in actSchool.pay" :class="[index !=0?'male':'']">
                             <el-form-item prop="method" class='CDE142float'>
-                                <el-select v-model="a.method" clearable placeholder="请选择方式">
-                                    <el-option label="现金" value="1"></el-option>
-                                    <el-option label="POS机" value="2"></el-option>
-                                    <el-option label="微信" value="3"></el-option>
-                                    <el-option label="银行转账" value="4"></el-option>
-                                    <el-option label="团购" value="5"></el-option>
-                                    <el-option label="支付宝" value="6"></el-option>
-                                    <el-option label="其他" value="7"></el-option>
+                                <el-select v-model="a.method"  placeholder="请选择方式" @change='changeReset'>
+                                    <el-option v-for="item in payMethods" :key="item.id" :label="item.name" :value="item.id">
+                                    </el-option>
                                 </el-select>
                             </el-form-item>
                             <el-form-item prop="money" class='CDEfloat'>
@@ -458,49 +538,16 @@
                 <br>
             </div>
         </el-dialog>
-        <!-- 沟通记录 -->
-        <div class="CDEcom">
-            <div class='communityTitle'>
-                <span class="CDEcom1">沟通记录({{number}})</span>
-                <div class="CDEcom2">
-                    <div class='addR' @click='addComm' v-if="!code.includes('_c')"></div>
-                </div>
-            </div>
-            <div class="CDEcom3">
-                <el-row v-for='item in items' class='CDEcom4'>
-                    <el-col :span="4" class='CDEcomright'>
-                        <img :src="item.add_call_user.avatar?item.add_call_user.avatar:''" width='50' height='50' alt="" class="CDEcomimg"></el-col>
-                    <el-col :span="20">
-                        <div class="CDEh30">
-                            <div class="CDEh1">{{item.add_call_user.uname}}</div>
-                            <div class="CDEh2">{{item.create_at.substring(5,16)}}</div>
-                        </div>
-                        <div>
-                            <div class="CDEh3">{{item.remark}}</div>
-                        </div>
-                        <div>
-                            <div class="CDEh4">
-                                <el-tag type='success' v-for='t in item.tags' class='tagTag'>{{t}}</el-tag>
-                            </div>
-                            <div class='editSpan' @click='editReturn(item.id,item)' v-if="new Date().getTime()-new Date(item.create_at).getTime()<7200000&&userid==item.tmk_uid "></div>
-                        </div>
-                    </el-col>
-                </el-row>
-            </div>
-            <div class="block" v-if="this.total!=0">
-                <el-pagination layout="prev, pager, next" :total="total" :current-page="currentPage" :page-size="pagesize" @current-change="handleCurrentChange">
-                </el-pagination>
-            </div>
-        </div>
+       
         <!-- 添加沟通记录 -->
         <el-dialog :title="communityTitle" :visible.sync="dialogFormVisible" :close-on-click-modal="no" size='tiny' show-close class='CDDialog'
             @close="resetD('commuForm')">
             <el-form :model="commuForm" id='detailForm' :rules='rulecommuForm' ref="commuForm">
                 <el-form-item label="" prop="remark">
-                    <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 4}" placeholder="请输入内容" v-model="commuForm.remark">
+                    <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 4}" placeholder="请输入内容(100字以内)" v-model="commuForm.remark">
                     </el-input>
                 </el-form-item>
-                <el-form-item label="记录标签：" class="CDEm10" prop="tags">
+                <el-form-item label="记录标签(选填)：" class="CDEm10" prop="tags">
                     <br>
                     <el-checkbox-group v-model="commuForm.tags">
                         <el-checkbox v-for="box in boxes" :label="box.key" :value='box.key'>
@@ -509,8 +556,9 @@
                     </el-checkbox-group>
                 </el-form-item>
                 <el-form-item label="跟进时间:" prop="remind_time">
-                    <el-date-picker v-model="commuForm.remind_time" type="datetime" placeholder="选择日期时间">
+                    <el-date-picker v-model="commuForm.remind_time" type="datetime" placeholder="选择日期时间" :picker-options="pickerOptions0" :editable=no>
                     </el-date-picker>
+                    <span>(选填)</span>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -518,41 +566,13 @@
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
             </div>
         </el-dialog>
-        <!-- 邀约记录 -->
-        <div class='CDEint'>
-            <div class='inviteTitle'>
-                <span class="CDEcom1">邀约记录({{number1}})</span>
-            </div>
-            <div class="CDEcom2">
-                <div class='addR' @click='addInvite' v-if="!code.includes('_c')"></div>
-            </div>
-            <div class='CDEinth'>
-                <el-row v-for='item in items1' class="CDEint1">
-                    <div class="CDEint2">邀约日期: {{item.alert_time.substring(0,16)}}</div>
-                    <div class='inviteRecord'>邀约课程: <span class='CDErgrey'>{{item.course}}</span> </div>
-                    <div class='inviteRecord'>上课老师: <span class='CDErgrey'>{{item.teach_name.uname}}</span></div>
-                    <div class='inviteRecord'>记录时间: <span class='CDErgrey'>{{item.created.substring(0,16)}}</span></div>
-                    <div class='inviteRecord'>
-                        <div class="CDEint3">
-                            <div>到访设置: <span :style="item.fla == '已到访'?'color:#e9bd23':item.fla == '未到访'?'color:#e24545':'color:grey'">{{item.fla}}</span>
-                            </div>
-                            <div class='editVisit' v-if='item.update_count<1' @click='confirmVisit(item.id,item)'></div>
-                            <div class='editVisitI' @click='editInvite(item.id,item,$event)' v-if="new Date().getTime()-new Date(item.created).getTime()<7200000&&userid==item.tmk_uid&&!code.includes('_c')"></div>
-                        </div>
-                    </div>
-                </el-row>
-            </div>
-            <div class="block" v-if="this.total1!=0">
-                <el-pagination layout="prev, pager, next" :total="total1" :current-page="currentPage1" :page-size="pagesize1" @current-change="handleCurrentChange1">
-                </el-pagination>
-            </div>
-        </div>
+      
         <!-- 添加邀约记录 -->
         <el-dialog :title="inviteTitle" :visible.sync="dialogFormVisibleInvite" :close-on-click-modal="no" size='tiny' show-close
             class='CDDialog' @close="resetD('inviteForm')">
             <el-form :model="inviteForm" id='detailForm' :rules='ruleinviteForm' ref="inviteForm" label-width='82px'>
                 <el-form-item label="邀约时间:" prop="alert_time">
-                    <el-date-picker v-model="inviteForm.alert_time" type="datetime" placeholder="选择日期时间">
+                    <el-date-picker v-model="inviteForm.alert_time" type="datetime" placeholder="选择日期时间" :picker-options="pickerOptions0" :editable=no>
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item label="上课老师:" style='margin-top:10px' prop="teacher_id">
@@ -611,6 +631,36 @@
     } from '../../api/api';
     export default {
         data() {
+            var isSpace = (rule, value, callback) => {
+                var myreg = /^\S{1,100}$/;
+                if (value.trim() == '') {
+                    callback('内容不得为空')
+                } else if (!myreg.test(value)) {
+                    callback('内容不得超过100字');
+                } else {
+                    callback();
+                }
+            }
+            var isName = (rule, value, callback) => {
+                var myreg = /^[\u4e00-\u9fa5a-zA-Z]+$/;
+                if (value == '') {
+                    callback('请输入学生姓名')
+                } else if (!myreg.test(value)) {
+                    callback('请输入有效的学生姓名');
+                } else {
+                    callback();
+                }
+            }
+            var numAndEng = (rule, value, callback) => {
+                var myreg = /^[a-zA-Z0-9]+$/;
+                if (value == '') {
+                    callback('请输入合同编号')
+                } else if (!myreg.test(value)) {
+                    callback('请输入有效合同编号');
+                } else {
+                    callback();
+                }
+            }
             var nan = (rule, value, callback) => {
                 if (value === '') {
                     callback('请选择')
@@ -642,7 +692,7 @@
                 var myreg =
                     /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}$)/;
                 if (value == '') {
-                    callback('请输入身份证号')
+                    callback()
                 } else if (!myreg.test(value)) {
                     callback('请输入有效的身份证号');
                 } else {
@@ -680,6 +730,17 @@
             //     }
             // }
             return {
+                maxlength:11,
+                pickerOptions0: {
+                    disabledDate(time) {
+                        return time.getTime() < Date.now() - 8.64e7;
+                    }
+                },
+                pickerOptions1: {
+                    disabledDate(time) {
+                        return time.getTime() > Date.now() ;
+                    }
+                },
                 attSrc: '../../../static/img/attention.png',
                 signSrc: '../../../static/img/recognize.png',
                 couponsList: [],
@@ -731,7 +792,7 @@
                 dialogFormVisibleInvite: false,
                 dialogFormVisibleSign: false,
                 // warning: '*系统中没有该成员',
-                userName: '',
+                // userName: '',
                 userid: '',
                 loading: false,
                 student: {
@@ -744,6 +805,7 @@
                     parent1_phone: '',
                     channel: '',
                     school_name: '',
+                    fullAddrese:'',
                     created: '',
                     teacher: '',
                     sour_id: ''
@@ -837,7 +899,8 @@
                 rulecommuForm: {
                     remark: [{
                         required: true,
-                        message: '请输入内容',
+                        // message: '请输入内容',
+                        validator: isSpace,
                         trigger: 'blur'
                     }]
                 },
@@ -863,7 +926,8 @@
                 ruleActSchool: {
                     sku: [{
                         required: true,
-                        message: '请输入合同编号',
+                        validator: numAndEng,
+                        // message: '请输入合同编号',
                         trigger: 'blur'
                     }, ],
                     teacher_uid: [{
@@ -899,7 +963,8 @@
                 Confirmrule: {
                     names: [{
                         required: true,
-                        message: '请输入姓名',
+                        validator: isName,
+                        // message: '请输入姓名',
                         trigger: 'blur'
                     }, ],
                     sex: [{
@@ -909,7 +974,7 @@
                     }],
                     id_number: [{
                         // required: true,
-                        // validator: isId,实际要改回来
+                        validator: isId,
                         trigger: 'blur'
                     }],
                     birthday: [{
@@ -959,17 +1024,18 @@
                         type: 'date',
                         trigger: 'blur'
                     }],
-                    syllabus_id: [{
-                        // required: true,
-                        message: '请选择时间及开课班级',
-                        validator: nan,
-                        trigger: 'change'
-                    }],
+                    // syllabus_id: [{
+                    //     // required: true,
+                    //     message: '请选择时间及开课班级',
+                    //     validator: nan,
+                    //     trigger: 'change'
+                    // }],
                 },
                 rule: {
                     names: [{
                         required: true,
-                        message: '请输入姓名',
+                        validator: isName,
+                        // message: '请输入姓名',
                         trigger: 'blur'
                     }, ],
                     sex: [{
@@ -1017,71 +1083,99 @@
                     }],
                 },
                 confirmVisitDialog: false,
-                isVisitId: ''
+                isVisitId: '',
+                stopchange:false,
 
             }
         },
         methods: {
             getClassName(data, i) { //获取课程名称
-                let para = {
-                    pid: data,
-                    simple: 1
+                let that =this;
+                if(!this.stopchange){
+
+                    i.course_id = ''
+                    let para = {
+                        pid: data,
+                        simple: 1
+                    }
+                    getClassLibrary(token, para).then((res) => {
+                        i.courseName1 = res.data;
+                    })
                 }
-                getClassLibrary(token, para).then((res) => {
-                    i.courseName1 = res.data;
-                })
+                setTimeout(function() {
+                    that.stopchange = false;
+                }, 1);
             },
             submitTheContract(formName) { //排班好,最终提交合同
-                let a = '';
+                let a = [];
                 let b = '';
                 this.tabClass.map((item, index) => {
                     if (item.isR == 'yes') {
-                        a = index
-                        b = item.number
+                        a.push(index)
                     }
                     this.art[index].course_id = item.course_id
                 })
                 let c = [...this.art]
                 c.splice(this.tabClass.length, this.art.length);
-                if (a !== '') {
-                    let n = 'art' + a;
-                    this.$refs[n][0].validate((valid) => {
-                        if (valid) {
-                            let para = {}
-                            para.customer_id = this.$route.params.uid
-                            para.users = { ...this.backData
-                            }
-                            para.users.birthday = new Date(para.users.birthday).toLocaleDateString()
-                            if (para.users.parent1 || para.users.con1 || para.users.phone1) {
-                                para.users.family = para.users.parent + '|' + para.users.con + '|' + para.users
-                                    .phone + ',' + para.users.parent1 + '|' + para.users.con1 + '|' + para.users
-                                    .phone1
-                            } else {
-                                para.users.family = para.users.parent + '|' + para.users.con + '|' + para.users
-                                    .phone
-                            }
-                            para.order = { ...this.backactSchool
-                            }
-                            para.order.created = new Date(para.order.created).toLocaleDateString()
-                            para.order.kecheng = [...this.backContract]
-                            para.order.coupons = this.coupons
-                            para.scheduling = c
+                let count = []
+                if (a.length!=0) {
+                    a.map((item)=>{
 
-                            para.order = JSON.stringify(para.order)
-                            para.users = JSON.stringify(para.users)
-                            para.scheduling = JSON.stringify(para.scheduling)
-                            signContract(para, token).then((res) => {
-                                if (res.code == 0) {
-                                    this.$message.success('添加成功');
-                                    this.$router.push('/studentDetail/' + res.data.uid); //可能要改成去到学员详细页
-                                } else {
-                                    this.$message.error(res.data)
+                        let n = 'art' + item;
+                        this.$refs[n][0].validate((valid) => {
+                            if (valid&&c[item].syllabus_id) {
+                                count.push(item);
+                                if(count.length==a.length){
+                                let para = {}
+                                para.customer_id = this.$route.params.uid
+                                para.users = { ...this.backData
                                 }
-                            })
-                        } else {
-                            this.activeName = b;
-                        }
+                                para.users.birthday = new Date(para.users.birthday).toLocaleDateString()
+                                if (para.users.parent1 || para.users.con1 || para.users.phone1) {
+                                    para.users.family = para.users.parent + '|' + para.users.con + '|' + para.users
+                                        .phone + ',' + para.users.parent1 + '|' + para.users.con1 + '|' + para.users
+                                        .phone1
+                                } else {
+                                    para.users.family = para.users.parent + '|' + para.users.con + '|' + para.users
+                                        .phone
+                                }
+                                para.order = { ...this.backactSchool
+                                }
+                                para.order.created = new Date(para.order.created).toLocaleDateString()
+                                para.order.kecheng = [...this.backContract]
+                                para.order.coupons = this.coupons
+                                para.scheduling = c
+    
+                                para.order = JSON.stringify(para.order)
+                                para.users = JSON.stringify(para.users)
+                                para.scheduling = JSON.stringify(para.scheduling)
+                                signContract(para, token).then((res) => {
+                                    if (res.code == 0) {
+                                        this.$message.success('添加成功');
+                                        this.$router.push('/studentDetail/' + res.data.uid); //可能要改成去到学员详细页
+                                    } else {
+                                        this.$message.error(res.data)
+                                    }
+                                })
+
+                                }
+                            }
+                        })
                     })
+                    if(c.length!=a.length){
+                        console.log(count)
+                        console.log(a)
+                        
+                        let o = new Set(count);//[]
+                        let p = new Set(a);//[0,1,2]
+                        let r = new Set([...p].filter(x => !o.has(x)));//1,2
+                        console.log([...r][0])
+                        this.activeName = [...r][0]+1+'';
+                                if(this.art[[...r][0]].time){
+
+                        this.$message.info('请选择排课班级')
+                        }
+                    }
                 } else {
                     let para = {}
                     para.customer_id = this.$route.params.uid
@@ -1146,6 +1240,7 @@
 
             },
             nextToSign(formName) { //1 to 2
+                let that = this;
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         this.backData = { ...this.signform
@@ -1157,6 +1252,9 @@
                         }
                         this.dialogFormVisibleSign = false;
                         this.dialogFormVisible3 = true;
+                        setTimeout(function() {
+                            that.$refs['actSchool'].resetFields();
+                        }, 1);
                     }
 
                 })
@@ -1195,6 +1293,9 @@
                 this.tabClass = []
                 this.backClass = [...this.art] //备份第三步数据
                 this.contracts = [...this.backContract];
+                // this.backContract.map((item,index)=>{
+                //     this.contracts[index].course_id = item.course_id
+                // })
                 this.actSchool = { ...this.backactSchool
                 }; //还原第二步数据
                 this.dialogFormVisible3 = true;
@@ -1220,7 +1321,7 @@
             deletePay() { //删除支付方式
                 this.actSchool.pay.pop();
             },
-            resetAll(formName) { //重置第二步
+            resetAll() { //重置第二步
                 this.contracts = [{
                     kc_tid: '',
                     course_id: '',
@@ -1243,8 +1344,14 @@
                     }],
                     created: '',
                 }
-                this.$refs[formName].resetFields();
+                // this.$refs['actSchool'].resetFields();
 
+            },
+            changeReset(val){
+                if(val!=''){
+
+                this.$refs['actSchool'].validate((valid) => {})
+                }
             },
             resetClass(formName) { //重置第三步
                 this.art = [{
@@ -1312,7 +1419,8 @@
                     courseName1: []
                 })
             },
-            delCon(index) { //删除某个课程
+            delCon(index,data) { //删除某个课程
+                this.stopchange = true;
                 this.contracts.splice(index, 1)
             },
             getNowFormatDate(date) { //时间格式转换
@@ -1345,25 +1453,35 @@
                     status: num
                 }
                 confirm_visit(para, token).then(res => {
-                    this.confirmVisitDialog = false;
-                    let p = {
-                        page: '1',
-                        customer_id: this.$route.params.uid
-                    }
-                    getInviteList(token, p).then(res => {
-                        this.number1 = res.data.total;
-                        this.items1 = res.data.data;
-                        let c = res.data.last_page * this.pagesize1;
-                        this.total1 = parseInt(c);
-                    })
+                    if (res.code == 0) {
+                        this.confirmVisitDialog = false;
+                        let p = {
+                            page: '1',
+                            customer_id: this.$route.params.uid
+                        }
+                        getInviteList(token, p).then(res => {
+                            this.number1 = res.data.total;
+                            this.items1 = res.data.data;
+                            let c = res.data.last_page * this.pagesize1;
+                            this.total1 = parseInt(c);
+                        })
 
-                }).then(() => {
-                    if (num == 1) {
-
-                        this.$router.push('/customerDetail' + '/' + this.$route.params.uid + '/' + '已到访');
                     } else {
-                        this.$router.push('/customerDetail' + '/' + this.$route.params.uid + '/' + '未到访');
+                        this.$message.error(res.message)
                     }
+                    return res
+                }).then((res) => {
+                    if (res.code == 0) {
+                        if (num == 1) {
+
+                            this.$router.push({ name: 'customerDetailList', params: { uid: this.$route.params.uid,status: '已到访'}});
+                        } else {
+                            this.$router.push({ name: 'customerDetailList', params: { uid: this.$route.params.uid,status: '未到访'}});
+                        }
+
+                    }
+                }).catch(()=>{
+                    this.$message.error('该用户未授权')
                 })
 
             },
@@ -1422,7 +1540,8 @@
                                         this.total1 = parseInt(c);
                                     })
                                     this.currentPage1 = 1;
-                                    this.dialogFormVisibleInvite = false
+                                    this.$router.push({ name: 'customerDetailList', params: { uid: this.$route.params.uid,status: '未到访'}});
+                                    this.dialogFormVisibleInvite = false;
                                 } else {
                                     this.$message.error(res.data)
                                 }
@@ -1508,7 +1627,7 @@
                                 this.dialogFormVisibleAdd = false;
 
                             } else {
-                                this.$message.error(res.data);
+                                this.$message.error(res.message);
                                 this.form.phone = '';
                                 this.$refs.parentPhone.$refs.input.focus();
                                 this.$refs.parentPhone.$refs.input.blur();
@@ -1524,18 +1643,22 @@
                                     age: data.age,
                                     sex: data.sex == 1 ? '男' : '女',
                                     school_name: data.school_name,
+                                    cc_name: data.cc_name,
                                     channel: data.source_name,
+                                    fullAddress: data.fullAddress,
                                     created: data.created,
                                     parent: data.customer_famliy[0].uname ? data.customer_famliy[
                                             0].uname + '(' + data.customer_famliy[0].relation +
                                         ')' : '',
 
                                     parent1: data.customer_famliy[1] ? data.customer_famliy[
+                                            1].uname?data.customer_famliy[
                                             1].uname + '(' + data.customer_famliy[1].relation +
-                                        ')' : '暂无',
+                                        ')' :'': '',
                                     parent_phone: data.customer_famliy[0].mobile,
                                     parent1_phone: data.customer_famliy[1] ? data.customer_famliy[
-                                        1].mobile : '暂无',
+                                        1].mobile?data.customer_famliy[
+                                        1].mobile:'' : '',
                                     sour_id: data.sour_id,
                                     referral_name: data.referral ? data.referral.referral_name :
                                         '',
@@ -1605,7 +1728,8 @@
             //         this.schools = [];
             //     }
             // },
-            signContact() { //点击签合同
+            signContact() { //点击签合同第一步
+                this.resetAll();
                 this.coupons = [];
                 this.backData = ''
                 this.backContract = ''
@@ -1623,13 +1747,14 @@
                         id_number: '',
                         birthday: '',
                         parent: data.customer_famliy[0].uname,
-                        parent1: data.customer_famliy[1] ? data.customer_famliy[1].uname : '',
+                        parent1: data.customer_famliy[1] ? data.customer_famliy[1].uname? data.customer_famliy[1].uname:'' : '',
                         con: data.customer_famliy[0].relation,
-                        con1: data.customer_famliy[1] ? data.customer_famliy[1].relation : '',
+                        con1: data.customer_famliy[1] ? data.customer_famliy[1].relation?data.customer_famliy[1].relation:'' : '',
                         phone: data.customer_famliy[0].mobile,
-                        phone1: data.customer_famliy[1] ? data.customer_famliy[1].mobile : '',
+                        phone1: data.customer_famliy[1] ? data.customer_famliy[1].mobile?data.customer_famliy[1].mobile:'' : '',
                         family: '',
                         school_name: data.school_name,
+                        cc_name: data.cc_name,
                         source_name: data.source_name,
                         tmk_uid: data.tmk_uid,
                     }
@@ -1832,6 +1957,60 @@
 
         },
         computed: {
+            secondRule(){
+                if(this.form.parent1&&this.form.phone1&&this.form.con1){
+                        return false;
+                    }else if(this.form.parent1||this.form.phone1||this.form.con1){
+    
+                       return true;
+                    }else{
+                        return false;
+                    }
+            },
+            secondRule1(){
+                if(this.signform.parent1&&this.signform.phone1&&this.signform.con1){
+                        return false;
+                    }else if(this.signform.parent1||this.signform.phone1||this.signform.con1){
+    
+                       return true;
+                    }else{
+                        return false;
+                    }
+            },
+            Pstatus(){
+                return this.$route.params.status
+            },
+            payMethods() {
+                let m = [{
+                    name: '现金',
+                    id: '1'
+                }, {
+                    name: 'POS机',
+                    id: '2'
+                }, {
+                    name: '微信',
+                    id: '3'
+                }, {
+                    name: '银行转账',
+                    id: '4'
+                }, {
+                    name: '团购',
+                    id: '5'
+                }, {
+                    name: '支付宝',
+                    id: '6'
+                }, {
+                    name: '其他',
+                    id: '7'
+                }]
+                let l =  this.actSchool.pay.length
+                    this.actSchool.pay.map((item, index) => {
+                        m = m.filter(i => {
+                            return i.id != item.method
+                        })
+                    })
+                    return m
+            },
             isEqual() {
                 if (this.payTotal == this.totalP3) {
                     return 1
@@ -1889,7 +2068,7 @@
             token = JSON.parse(user).token;
         },
         created() {
-            this.userName = JSON.parse(user).uname;
+            // this.userName = JSON.parse(user).uname;
             this.userid = JSON.parse(user).aid;
             // this.school_name = JSON.parse(user).school_name;
             this.code = JSON.parse(user).job ? JSON.parse(user).job.code : '';
@@ -1900,25 +2079,31 @@
                 // console.log(res)
                 let data = res.data.info
                 this.student = {
-                    names: data.names,
-                    age: data.age,
-                    sex: data.sex == 1 ? '男' : '女',
-                    school_name: data.school_name,
-                    channel: data.source_name,
-                    created: data.created,
-                    parent: data.customer_famliy[0].uname ? data.customer_famliy[0].uname + '(' + data.customer_famliy[
-                        0].relation + ')' : '',
-                    parent1: data.customer_famliy[1] ? data.customer_famliy[1].uname + '(' + data.customer_famliy[
-                        1].relation + ')' : '暂无',
-                    parent_phone: data.customer_famliy[0].mobile,
-                    parent1_phone: data.customer_famliy[1] ? data.customer_famliy[0].mobile : '暂无',
-                    sour_id: data.sour_id,
-                    referral_name: data.referral ? data.referral.referral_name : '',
-                    teach_name: data.referral ? data.referral.teach_name : ''
-                    // parent1: res.data.famliy[1] ? res.data.famliy[1].uname + '(' + res.data.famliy[1].relation + ')' : '',
-                    // parent1_phone: res.data.famliy[1] ? res.data.famliy[1].mobile : '',
+                                    names: data.names,
+                                    age: data.age,
+                                    sex: data.sex == 1 ? '男' : '女',
+                                    school_name: data.school_name,
+                                    cc_name: data.cc_name,
+                                    channel: data.source_name,
+                                    fullAddress: data.fullAddress,
+                                    created: data.created,
+                                    parent: data.customer_famliy[0].uname ? data.customer_famliy[
+                                            0].uname + '(' + data.customer_famliy[0].relation +
+                                        ')' : '',
 
-                }
+                                    parent1: data.customer_famliy[1] ? data.customer_famliy[
+                                            1].uname?data.customer_famliy[
+                                            1].uname + '(' + data.customer_famliy[1].relation +
+                                        ')' :'': '',
+                                    parent_phone: data.customer_famliy[0].mobile,
+                                    parent1_phone: data.customer_famliy[1] ? data.customer_famliy[
+                                        1].mobile?data.customer_famliy[
+                                        1].mobile:'' : '',
+                                    sour_id: data.sour_id,
+                                    referral_name: data.referral ? data.referral.referral_name :
+                                        '',
+                                    teach_name: data.referral ? data.referral.teach_name : ''
+                                }
             }).then(() => {
                 let p = {
                     page: this.currentPage,
@@ -2004,12 +2189,12 @@
         border-bottom: 1px solid #e8e8e8;
     }
 
-    .tableUserD .addUserTitle {
+    .tableUserCD .addUserTitle {
         padding: 10px;
         position: relative;
     }
 
-    .tableUserD .inviteTitle {
+    .tableUserCD .inviteTitle {
         margin-left: 5px;
         position: relative;
         background: url(../../../static/img/invite.png) left center/30px no-repeat;
@@ -2029,7 +2214,7 @@
         line-height: 30px
     }
 
-    .tableUserD .el-tag--success {
+    .tableUserCD .el-tag--success {
         background-color: #1fb5ad;
         border-color: #bcf1d4;
         color: #FFFFFF;
@@ -2055,7 +2240,7 @@
         right: 0;
     }
 
-    .tableUserD .editSpan {
+    .tableUserCD .editSpan {
         height: 30px;
         width: 30px;
         background: url(../../../static/img/edit.png) right/30px 30px no-repeat;
@@ -2064,11 +2249,11 @@
         float: right;
     }
 
-    .tableUserD .editSpan:hover {
+    .tableUserCD .editSpan:hover {
         background-image: url(../../../static/img/edit_h.png);
     }
 
-    .tableUserD .editVisit {
+    .tableUserCD .editVisit {
         position: absolute;
         left: 110px;
         top: 0;
@@ -2078,25 +2263,25 @@
         cursor: pointer;
     }
 
-    .tableUserD .editVisit:hover {
+    .tableUserCD .editVisit:hover {
         background-image: url(../../../static/img/visitEdit_h.png);
     }
 
-    .tableUserD .editVisitI {
+    .tableUserCD .editVisitI {
         position: absolute;
         right: 0;
-        top: 0;
+        top: -5px;
         height: 30px;
         width: 30px;
         background: url(../../../static/img/edit.png) right/30px 30px no-repeat;
         cursor: pointer;
     }
 
-    .tableUserD .editVisitI:hover {
+    .tableUserCD .editVisitI:hover {
         background-image: url(../../../static/img/edit_h.png);
     }
 
-    .tableUserD .addU {
+    .tableUserCD .addU {
         width: 30px;
         height: 30px;
         background-image: url(../../../static/img/editU.png);
@@ -2106,11 +2291,11 @@
         margin-right: 5px;
     }
 
-    .tableUserD .addU:hover {
+    .tableUserCD .addU:hover {
         background-image: url(../../../static/img/editU_h.png);
     }
 
-    .tableUserD .addR {
+    .tableUserCD .addR {
         width: 30px;
         height: 30px;
         background-image: url(../../../static/img/addR.png);
@@ -2118,14 +2303,14 @@
         cursor: pointer;
     }
 
-    .tableUserD .addR:hover {
+    .tableUserCD .addR:hover {
         background-image: url(../../../static/img/addR_h.png);
     }
 
-    .tableUserD .block {
+    .tableUserCD .block {
         text-align: center;
         position: absolute;
-        bottom: -34px;
+        bottom: 0;
         width: 100%;
     }
 
@@ -2153,12 +2338,12 @@
         width: 986.75px;
     }
 
-    .tableUserD .el-dialog .el-dialog__header {
+    .tableUserCD .el-dialog .el-dialog__header {
         background-color: #1fb5ad;
         padding: 20px 20px 20px;
     }
 
-    .tableUserD .el-dialog .el-dialog__title {
+    .tableUserCD .el-dialog .el-dialog__title {
         color: white;
     }
 
@@ -2261,7 +2446,7 @@
         float: left;
         width: 30%;
         background-color: white;
-        height: 476px;
+        /* height: 476px; */
         border-radius: 5px;
         margin-right: 1%;
         position: relative
@@ -2275,8 +2460,7 @@
     }
 
     .CDEtitleimg {
-        margin-top: -7px;
-        margin-left: -46px
+        position:absolute;left:0px;top:5px
     }
 
     .CDEtitleSign {
@@ -2305,14 +2489,13 @@
     }
 
     .CDEinfoimg {
-        margin-top: 4px;
-        margin-left: -77px;
-        display: inline-block;
+        position:absolute;left:0px;top:5px
     }
 
     .CDEinfoN {
         position: absolute;
         right: 5px;
+        top:0;
         font-size: 12px
     }
 
@@ -2518,8 +2701,9 @@
         background-color: white;
         border-radius: 5px;
         margin-right: 1%;
-        height: 476px;
-        position: relative
+        /* height: 466px; */
+        position: relative;
+        padding-bottom:10px;
     }
 
     .CDEcom1 {
@@ -2536,7 +2720,8 @@
     .CDEcom3 {
         min-height: 300px;
         width: 90%;
-        margin: 0 auto
+        margin: 0 auto;
+        padding-bottom:30px;
     }
 
     .CDEcom4 {
@@ -2552,7 +2737,8 @@
     .CDEcomimg {
         border-radius: 50%;
         margin-top: 10px;
-        margin-right: 12%
+        margin-right: 12%;
+        border:1px solid gainsboro;
     }
 
     .CDEh30 {
@@ -2580,7 +2766,7 @@
 
     .CDEh4 {
         float: left;
-        margin-bottom: 8px;
+        /* margin-bottom: 8px; */
         margin-top: 3px;
     }
 
@@ -2593,12 +2779,13 @@
         width: 34%;
         background-color: white;
         border-radius: 5px;
-        height: 476px;
+        min-height: 435px;
         position: relative
     }
 
     .CDEinth {
-        min-height: 298px
+        min-height: 298px;
+        padding-bottom:30px;
     }
 
     .CDEint1 {

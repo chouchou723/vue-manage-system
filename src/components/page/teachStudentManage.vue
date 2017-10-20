@@ -1,12 +1,12 @@
 <template>
     <div>
         <!-- <div class='bigs' v-if='isDisplay=="1"' @click='closebig'></div> -->
-        <div class="crumbs">
+        <!-- <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-my-kaoqinliuchengtongji"></i> 学员管理</el-breadcrumb-item>
             </el-breadcrumb>
-        </div>
-        <div class='accouMyresourece'>
+        </div> -->
+        <div class='teachSM'>
             <div>
                 <!-- <el-checkbox v-model="checked" style='margin-left:5px' @click.native='allCheck(customerData)'></el-checkbox> -->
                 <h2 class="myTeachReturn">
@@ -96,20 +96,26 @@
                
             </div>
             <div style="display:flex;flex-wrap:wrap">
-                <div class='studentReturnThreeNew' v-if="code.includes('_c')||code.includes('_m')">
-                        <el-select v-model="value1" clearable placeholder="选择老师" @change="updateList">
+                    <div class='studentReturnThreeNewTSM' v-if="code.includes('_c')">
+                            <el-select v-model="valueR" clearable placeholder="选择校区" @change="updateListCC">
+                                <el-option v-for="item in optionR" :key="item.id" :label="item.title" :value="item.id">
+                                </el-option>
+                            </el-select>
+                        </div>
+                <div class='studentReturnThreeNewTSM' v-if="code.includes('_c')||code.includes('_m')">
+                        <el-select v-model="value1"  placeholder="选择老师" @change="updateList">
                                 <el-option v-for="item in teacherList" :key="item.aid" :label="item.uname" :value="item.aid">
                                 </el-option>
                             </el-select>
                 </div>
 
-                <div class='studentReturnThreeNew'>
+                <div class='studentReturnThreeNewTSM'>
                         <el-select v-model="value2" clearable filterable placeholder="课程名称" @change="updateList">
                                 <el-option v-for="item in classkind" :key="item.kcid" :label="item.title" :value="item.kcid">
                                 </el-option>
                             </el-select>
                 </div>
-                <div class='studentReturnThreeNew'>
+                <div class='studentReturnThreeNewTSM'>
                     <el-select v-model="value3" clearable placeholder="剩余课时" @change="updateList">
                         <el-option label="6节以下" value="1"></el-option>
                         <el-option label="6节至12节" value="2"></el-option>
@@ -117,7 +123,7 @@
                         <el-option label="24节以上" value="4"></el-option>
                     </el-select>
                 </div>
-                <div class='studentReturnThreeNew'>
+                <div class='studentReturnThreeNewTSM'>
                     <el-select v-model="value4" clearable placeholder="使用状态" @change="updateList">
                         <el-option label="正常" value="1"></el-option>
                         <el-option label="冻结" value="2"></el-option>
@@ -125,8 +131,8 @@
                         <el-option label="已结束" value="4"></el-option>
                     </el-select>
                 </div>
-                <div class='studentReturnThreeNew'>
-                        <el-select v-model="value5" clearable placeholder="选择月份" @change="updateList">
+                <div class='studentReturnThreeNewTSM'>
+                        <el-select v-model="value5" clearable placeholder="生日月份" @change="updateList">
                                 <el-option label="1月" value="01"></el-option>
                                 <el-option label="2月" value="02"></el-option>
                                 <el-option label="3月" value="03"></el-option>
@@ -153,15 +159,15 @@
             </div>
             
         </div>
-        <div id="table" v-loading="loading2">
+        <div id="tableTSM" v-loading="loading2">
             <div v-for="(item,index) in customerData" class='customerDataDiv'>
-                <div class='customerDiv'>
+                <div class='TeachcustomerDiv'>
                     <div style="display:flex">
 
                         <!-- <el-checkbox v-model="arr15[index].check" style='margin-left:5px' @click.native='checkV(arr15[index],item)'></el-checkbox> -->
                         <div @click='gotoDetail(item)' class='myStudentsSpan'>
-                            <img :src="item.img" width='40' height='40' alt="" style='border-radius:50%;'>
-                            <div style="color:#1fb5ad;font-size:20px;font-weight:bold;margin-left:10px">{{item.child_name}}</div>
+                            <img :src="item.img" width='38' height='38' alt="" style='border-radius:50%;'>
+                            <div style="color:#1fb5ad;font-size:18px;margin-left:10px">{{item.child_name}}</div>
                         </div>
                     </div>
                     <div style="margin-right:10px;color:grey">
@@ -294,6 +300,9 @@
         sendPresent,
         getTeacherList
     } from '../../api/api';
+    import {
+    mapActions,mapGetters
+} from 'vuex';
     export default {
 
         data() {
@@ -368,15 +377,20 @@
                 value4: '', //对应select的值
                 value5: '', //状态
                 value6: '',
-                value7: '', //
+                valueR:'',
+                // value7: '', //
                 input2: '',
                 code: '',
                 remedialT: '',
                 // v: [],
+                optionR:[],
                 multipleSelection: []
             }
         },
         methods: {
+            ...mapActions([
+                'setmyTeachS'
+            ]),
             // submitTheArrange(formName) {//补课提前上课提交
             //     this.$refs['arrange1'].validate((valid) => {
             //         if (valid) {
@@ -618,8 +632,26 @@
                     console.log('cancel')
                 })
             },
-            gotoDetail(row) {
-                this.$router.push('/teachstudentDetail/' + row.uid);
+            updateListCC() {
+                this.currentPage = 1;
+                this.value1 = '';
+                this.optionR = [{aid:0,uname:'全部老师'}];
+                if(this.valueR!=''){
+
+                   let para = {
+                    school_id: this.valueS
+                }
+                    getTeacherList(token,para).then((res) => { //获取老师
+                    this.teacherList = res.data;
+                    this.teacherList.unshift({
+                            aid: '0',
+                            uname: '全部老师'
+                        })
+                })
+                }else{
+                    this.value1 ='0';
+                }
+                this.fetchData();
             },
             updateList() {//select更新数据
                 this.currentPage = 1;
@@ -659,20 +691,45 @@
                 this.value4 = '';
                 this.value5 = '';
                 // this.value6 = '';
-                this.value7 = '';
+                // this.value7 = '';
                 this.currentPage = 1;
                 this.fetchData();
                 
             },
-            fetchData() {
-                let para = {
+            gotoDetail(row) {
+                let d = {
                     page: this.currentPage,
+                    school_id:this.valueR,
                     teach_id: this.value1, //老师
                     kcid: this.value2, //课程
                     course_curr_num: this.value3, //剩余课时
                     status: this.value4, //使用状态
                     birth_month: this.value5, //生日
-                    syllabus_id: this.value7, //具体班级
+                    // syllabus_id: this.value7, //具体班级
+                }
+                this.setmyTeachS(d)
+                this.$router.push('/teachstudentDetail/' + row.uid);
+            },
+            fetchData() {
+                if(Object.keys(this.getmyTeachS).length!=0){
+                    this.valueR = this.getmyTeachS.school_id;
+                    this.currentPage =  this.getmyTeachS.page;
+                    this.value1 =  this.getmyTeachS.teach_id;
+                    this.value2 =  this.getmyTeachS.kcid;
+                    this.value3 =  this.getmyTeachS.course_curr_num;
+                    this.value4 =  this.getmyTeachS.status;
+                    this.value5 = this.getmyTeachS.birth_month;
+                    // this.value7 =  this.getmyTeachS.syllabus_id;
+                }
+                let para = {
+                    page: this.currentPage,
+                    school_id:this.valueR,
+                    teach_id: this.value1, //老师
+                    kcid: this.value2, //课程
+                    course_curr_num: this.value3, //剩余课时
+                    status: this.value4, //使用状态
+                    birth_month: this.value5, //生日
+                    // syllabus_id: this.value7, //具体班级
                     input: this.input2
                 }
                 getTeachStudentList(token, para).then((res) => { //替换服务
@@ -683,7 +740,8 @@
                     this.customerData = a;
                     this.total = parseInt(c);
                 }).then(() => {
-                    this.loading2 = false
+                    this.loading2 = false;
+                    this.setmyTeachS({})
                 }).catch(() => {
                     this.$message.error('该用户未授权');
                     this.loading2 = false
@@ -702,9 +760,25 @@
             this.code = JSON.parse(user).job ? JSON.parse(user).job.code : '';
             // this.aid = JSON.parse(user)? JSON.parse(user).aid : '';
             this.fetchData();
+            if(this.code.includes('teach_m')){
+
             getTeacherList(token).then((res) => { //获取老师
                     this.teacherList = res.data;
+                    this.teacherList.unshift({
+                            aid: '0',
+                            uname: '全部老师'
+                        })
+                }).then(()=>{
+                    this.value1 = '0'
                 })
+            }
+            if(this.code.includes('_c')){
+                    this.teacherList.unshift({
+                            aid: '0',
+                            uname: '全部老师'
+                        })
+                        this.value1 = '0';
+            }
                 let si = {
                         simple: 1,
                     }
@@ -714,6 +788,10 @@
 
         },
         computed: {
+            ...mapGetters([
+            'getmyTeachS'
+            // ...
+        ])
             // scrollTop(){
             //     let a = document.getElementsByClassName('content')[0].scrollTop;
             //     return a ;
@@ -756,42 +834,43 @@
         transition: opacity 0.5s ease-in-out;
     } */
 
-    #table {
+    #tableTSM {
         position: relative;
     }
 
-    #table .el-table td,
-    #table .el-table th {
+    #tableTSM .el-table td,
+    #tableTSM .el-table th:not(.gutter) {
         padding: 5px 5px;
         text-align: center
     }
 
-    #table .el-table th>div,
-    #table .el-table .cell {
+    #tableTSM .el-table th>div,
+    #tableTSM .el-table .cell {
         padding-left: 0;
         padding-right: 0;
+        font-weight: normal;
     }
 
-    /* #tablere .el-table td,
-    #tablere .el-table th {
+    /* #tableTSMre .el-table td,
+    #tableTSMre .el-table th {
         padding: 5px 5px;
         text-align: center
     }
 
-    #tablere .el-table th>div,
-    #tablere .el-table .cell {
+    #tableTSMre .el-table th>div,
+    #tableTSMre .el-table .cell {
         padding-left: 0;
         padding-right: 0;
     } */
 /* 
-    #tableS .el-table td,
-    #tableS .el-table th {
+    #tableTSMS .el-table td,
+    #tableTSMS .el-table th {
         padding: 5px 5px;
         text-align: center
     }
 
-    #tableS .el-table th>div,
-    #tableS .el-table .cell {
+    #tableTSMS .el-table th>div,
+    #tableTSMS .el-table .cell {
         padding-left: 0;
         padding-right: 0;
     } */
@@ -801,7 +880,7 @@
         margin-top: 10px;
     }
 
-    .accouMyresourece {
+    .teachSM {
         width: 100%;
         position: relative;
         height: auto;
@@ -809,7 +888,7 @@
         flex-wrap: wrap;
         justify-content: flex-start;
         background-color: white;
-        margin-top: 30px;
+        /* margin-top: 30px; */
         padding-top: 10px;
         margin-bottom: 5px;
         border-radius: 5px;
@@ -868,7 +947,7 @@
         margin-left: 0
     } */
     
-    .studentReturnThreeNew {
+    .studentReturnThreeNewTSM {
         display: inline-block;
         width: 103px;
         margin-right: 10px;
@@ -903,17 +982,20 @@
 
 
     .customerDataDiv {
-        background: white;
-        margin-bottom: 20px;
+        /* background: white; */
+        margin-bottom: 10px;
     }
 
-    .customerDiv {
+    .TeachcustomerDiv {
         display: flex;
         justify-content: space-between;
-        height: 50px;
-        line-height: 50px;
+        height: 42px;
+        line-height: 42px;
         border: 1px solid rgb(223, 236, 235);
         border-bottom: none;
+        background: #fafafa;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;        
     }
 
     /* .tableReturn {

@@ -1,5 +1,5 @@
 <template>
-    <div class="tableUserD">
+    <div class="tableUserDSD">
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-my-gerenxinxi"></i> 学员合同</el-breadcrumb-item>
@@ -18,29 +18,29 @@
                     <div class='addU' @click='addU' v-if="!code.includes('_c')"></div>
                 </div>
             </div>
-            <el-form id='customerDeatilForm' label-width="102px" label-position='left' >
+            <el-form id='customerDeatilForm' label-width="102px" label-position='left'>
                 <el-form-item label="姓名:" prop='name'>
                     <span>{{student.name}}</span>
                 </el-form-item>
                 <el-form-item label="性别:" prop='sex'>
                     <span>{{student.sex}}</span>
                 </el-form-item>
-                <el-form-item label="身份证号:" prop='id_number'>
-                    <span>{{student.id_number}}</span>
-                </el-form-item>
                 <el-form-item label="年龄:" prop='age'>
                     <span>{{student.age}}</span>
+                </el-form-item>
+                <el-form-item label="身份证号:" prop='id_number'>
+                    <span>{{student.id_number}}</span>
                 </el-form-item>
                 <el-form-item label="家长:" prop='parent'>
                     <span>{{student.parent}}</span>
                 </el-form-item>
-                <el-form-item label="第二家长:" prop='parent1'>
+                <el-form-item label="第二家长:" prop='parent1' v-if='student.parent1.split("(")[0]!=""'>
                     <span>{{student.parent1}}</span>
                 </el-form-item>
                 <el-form-item label="手机:" prop='parent_phone'>
                     <span>{{student.parent_phone}}</span>
                 </el-form-item>
-                <el-form-item label="第二手机:" prop='parent1_phone'>
+                <el-form-item label="第二手机:" prop='parent1_phone' v-if='student.parent1_phone!=""'>
                     <span>{{student.parent1_phone}}</span>
                 </el-form-item>
                 <el-form-item label="渠道来源:" prop='channel'>
@@ -50,10 +50,13 @@
                 <el-form-item label="录入时间:" prop='time'>
                     <span>{{student.time}}</span>
                 </el-form-item>
+                <el-form-item label="所在地区:" prop='fullAddress'>
+                        <span>{{student.fullAddress}}</span>
+                    </el-form-item>
                 <el-form-item label="校区:" prop='school'>
                     <span>{{student.school}}</span>
                 </el-form-item>
-                <el-form-item label="课程顾问(CC):" prop='teacher'>
+                <el-form-item label="CC:" prop='teacher'>
                     <span>{{student.teacher}}</span>
                 </el-form-item>
             </el-form>
@@ -107,12 +110,11 @@
             </div>
         </div>
         <!-- 第一步选择合同 -->
-        <el-dialog title="合同选择" :visible.sync="dialogFormVisibleFirst" :close-on-click-modal="no" top='33%' size='tiny' show-close
-           >
+        <el-dialog title="合同选择" :visible.sync="dialogFormVisibleFirst" :close-on-click-modal="no" top='33%' size='tiny' show-close>
             <el-form :model="firstform" :rules='firstformrule' ref="firstform" label-width="80px">
                 <el-form-item prop='contract' label='合同号'>
                     <el-select v-model="firstform.contract" placeholder="请选择合同" style="width:185px">
-                        <el-option v-for="(item,index) in students" :key="item.order_id" :label="item.sku" :value="index">
+                        <el-option v-for="(item,index) in this.fronzeContra" :key="item.order_id" :label="item.sku" :value="index">
                         </el-option>
                     </el-select>
                 </el-form-item>
@@ -126,12 +128,11 @@
             </div>
         </el-dialog>
         <!-- 续费 -->
-        <el-dialog title="续接课程选择" :visible.sync="dialogFormVisibleContinue" :close-on-click-modal="no" top='23%' show-close 
-           >
+        <el-dialog title="续接课程选择" :visible.sync="dialogFormVisibleContinue" :close-on-click-modal="no" top='23%' show-close>
             <el-form :model="continueform" :rules='continueformrule' ref="continueform" label-width="80px" label-position='left'>
                 <el-form-item prop='contract' label='合同号'>
                     <el-select v-model="continueform.contract" clearable placeholder="选择合同" filterable @change='getContClass'>
-                        <el-option v-for="(item,index) in students" :key="item.order_id" :label="item.sku" :value="index">
+                        <el-option v-for="(item,index) in this.continueClassCon" :key="item.order_id" :label="item.sku" :value="index">
                         </el-option>
                     </el-select>
                 </el-form-item>
@@ -144,14 +145,14 @@
                     </el-select>
                 </el-form-item>
             </el-form>
-            <div slot="footer" class="dialog-footer" >
+            <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormVisibleContinue=false">取消</el-button>
                 <el-button type="primary" @click="nextToSignContract()">下一步</el-button>
                 <br>
             </div>
         </el-dialog>
         <!-- 转课补费 -->
-        <el-dialog title="课程剩余金额" :visible.sync="dialogFormVisiblechangtobuy" :close-on-click-modal="no" top='7%' show-close >
+        <el-dialog title="课程剩余金额" :visible.sync="dialogFormVisiblechangtobuy" :close-on-click-modal="no" top='7%' show-close>
             <div id="tablelesson">
                 <el-table :data="lessonData" border style="width: 100%" @selection-change="handleSelectionChange" ref="multipleTable">
                     <el-table-column type="selection" width='100'>
@@ -166,18 +167,17 @@
                     </el-table-column>
                 </el-table>
             </div>
-            <div slot="footer" class="dialog-footer" >
+            <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormVisiblechangtobuy=false">取消</el-button>
                 <el-button type="primary" @click="nextToContract()">下一步</el-button>
                 <br>
             </div>
         </el-dialog>
         <!-- 转班/升 -->
-        <el-dialog title="转班" :visible.sync="dialogFormVisibletransferOrUp" :close-on-click-modal="no" top='13%' size='small' show-close
-            >
+        <el-dialog title="转班" :visible.sync="dialogFormVisibletransferOrUp" :close-on-click-modal="no" top='13%' size='small' show-close>
             <el-form :model="transferOrUpform" :rules='transferOrUpformrule' ref="transferOrUpform" label-width="100px">
                 <el-form-item prop='class' :label="'转出课程'">
-                    <el-select v-model="transferOrUpform.class" placeholder="请选择课程" filterable @change='getTransClass(transferOrUpform.class)' >
+                    <el-select v-model="transferOrUpform.class" placeholder="请选择课程" filterable @change='getTransClass(transferOrUpform.class)'>
                         <el-option v-for="(item,index) in transOut" :key="index" :label="item.title" :value="index">
                         </el-option>
                     </el-select>
@@ -193,10 +193,10 @@
                          <el-option v-for="item in receiveSchool" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                     </el-select> -->
-                    <el-date-picker v-model="transferOrUpform.time" type="date" placeholder="选择日期"  @change='getClassRoom(transferOrUpform.time,transferOrUpform)'>
+                    <el-date-picker v-model="transferOrUpform.time" type="date" placeholder="选择日期" @change='getClassRoom(transferOrUpform.time,transferOrUpform)'>
                     </el-date-picker>
                 </el-form-item>
-                <el-form-item prop='class' class='selectClass SDselect' v-if="selectionClass !=''" >
+                <el-form-item prop='class' class='selectClass SDselect' v-if="selectionClass !=''">
                     <el-radio-group v-model="transferOrUpform.syllabus_id">
                         <el-radio :label="item.id" class="SDtu" v-for='item in selectionClass'>
                             <span class="SDm30">{{item.week==1?'周一':item.week==2?'周二':item.week==3?'周三':item.week==4?'周四':item.week==5?'周五':item.week==6?'周六':'周日'}}  {{item.class_time.substring(0,5)}}</span>
@@ -206,7 +206,7 @@
                     </el-radio-group>
                 </el-form-item>
             </el-form>
-            <div slot="footer" class="dialog-footer SDtuc" >
+            <div slot="footer" class="dialog-footer SDtuc">
                 <el-button type="primary" class="SDm30" @click='transferToClass'>确定</el-button>
                 <el-button @click="dialogFormVisibletransferOrUp = false">取消</el-button>
                 <br>
@@ -231,14 +231,14 @@
                     </el-select>
                 </el-form-item>
             </el-form>
-            <div slot="footer" class="dialog-footer SDtuc" >
-                <el-button type="primary" class="SDm30"  @click='transferSchoolToCC'>确定</el-button>
+            <div slot="footer" class="dialog-footer SDtuc">
+                <el-button type="primary" class="SDm30" @click='transferSchoolToCC'>确定</el-button>
                 <el-button @click="dialogFormVisibleTransferSchool = false">取消</el-button>
             </div>
         </el-dialog>
         <!-- 冻结 -->
         <el-dialog title="冻结" :visible.sync="dialogFormVisibleFroze" :close-on-click-modal="no" top='33%' size='tiny' show-close
-             class='frozeDialog' >
+            class='frozeDialog'>
             <el-form :model="frozeform" :rules='frozeformrule' ref="frozeform" label-width="80px">
                 <!-- <el-form-item prop='class' label='冻结课程'>
                     <el-select v-model="frozeform.class" placeholder="请选择课程" style="width:185px">
@@ -247,11 +247,11 @@
                     </el-select>
                 </el-form-item> -->
                 <el-form-item prop='Ftime' label='冻结时间'>
-                    <el-date-picker v-model="frozeform.Ftime" type="daterange" placeholder="起止时间">
+                    <el-date-picker v-model="frozeform.Ftime" type="daterange" placeholder="起止时间" :picker-options="pickerOptions0">
                     </el-date-picker>
                 </el-form-item>
             </el-form>
-            <div slot="footer" class="dialog-footer SDtuc" >
+            <div slot="footer" class="dialog-footer SDtuc">
                 <el-button type="info" class="SDm30" @click='forzenSubmit'>确定</el-button>
                 <el-button @click="dialogFormVisibleFroze = false">取消</el-button>
                 <br>
@@ -274,11 +274,11 @@
                         <el-table-column prop="consuming_hour" label="正常消耗课时">
                         </el-table-column>
                         <el-table-column prop="sale_scale" label="消耗比率">
-                            </el-table-column>
-                            <el-table-column prop="refundment_scale" label="退费比率">
-                            </el-table-column>
-                            <el-table-column prop="base_total" label="退费金额">
-                            </el-table-column>
+                        </el-table-column>
+                        <el-table-column prop="refundment_scale" label="退费比率">
+                        </el-table-column>
+                        <el-table-column prop="base_total" label="退费金额">
+                        </el-table-column>
                     </el-table>
                     <div class="SDt2">
                         <div class='refundTitle'>
@@ -301,7 +301,7 @@
                 </div>
             </div>
             <!-- <div style="color:#f74242;margin-top:10px">*凡是在本协议中注明为考证类课程、寒暑假班、冬夏令营、赠送课程、享受特殊优惠价格课程,一律不得退费</div> -->
-            <el-collapse accordion id='refunicon' >
+            <el-collapse accordion id='refunicon'>
                 <el-collapse-item>
                     <template slot="title">
                         <span class="SDre1">退学退费规定</span>
@@ -349,7 +349,7 @@
                     <div class='table4Div'>
                         <div class="SDtable">
                             <div class="SDtable1">
-                                <span  @click='goToContract(item.order_id)' class='skuJump'>
+                                <span @click='goToContract(item.order_id)' class='skuJump'>
                           合同编号:  {{item.sku}}  
                         </span>
                                 <span :style="item.order_status=='待审核'?'color:blue':item.order_status=='审核通过'?'color:#18c318':item.order_status=='被退回'?'color:#e4a821':'color:red'">
@@ -359,7 +359,7 @@
                         </div>
                         <div class="SDtable2">
                             <span class="SDtable3">合同类型: {{item.order_type}}</span>
-                            <span class='table4Teacher'>试听老师: {{item.baoming_teach}}</span>
+                            <span class='table4Teacher'>试听老师: {{item.baoming_teach=='无老师'?'无':item.baoming_teach}}</span>
                             <span class="SDtable3">签约时间: {{item.created}}</span></div>
                     </div>
                     <div class="SDtable4">
@@ -374,6 +374,7 @@
                                 <template scope="scope">
                                     <span v-if="scope.row.classTime">{{scope.row.classTime}}</span>
                                     <!-- <img class='imgEdit' src="../../../static/img/editClass.png" width='16' alt="" @click='arrangeClass(scope.row)'> -->
+                                    <span v-else-if="!scope.row.classTime&&scope.row.course_curr_num!=0&&code.includes('_c')" class='arrangeClass22' >还未排班</span>
                                     <span v-else-if="!scope.row.classTime&&scope.row.course_curr_num!=0" class='arrangeClass' @click='arrangeClass(item,scope.row)'>立即排班</span>
                                     <span v-else-if='!scope.row.classTime&&scope.row.course_curr_num==0'>无</span>
                                 </template>
@@ -435,7 +436,7 @@
                     <el-input v-model="signform.id_number" placeholder='请输入身份证号' style="width:193px"></el-input>
                 </el-form-item>
                 <el-form-item label="出生日期" prop='birthday'>
-                    <el-date-picker v-model="signform.birthday" type="date" placeholder="选择日期" class="SDw142">
+                    <el-date-picker v-model="signform.birthday" type="date" placeholder="选择日期" class="SDw142" :picker-options="pickerOptions1">
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item label="登录密码" prop='pass'>
@@ -451,28 +452,33 @@
                             <el-option label="爸爸" value="爸爸"></el-option>
                             <el-option label="爷爷" value="爷爷"></el-option>
                             <el-option label="奶奶" value="奶奶"></el-option>
+                            <el-option label="外公" value="外公"></el-option>
+                            <el-option label="外婆" value="外婆"></el-option>
                             <!--  <el-option :label="connect" value="1"></el-option>
       <el-option :label="connect1" value="0"></el-option> -->
                         </el-select>
                     </el-form-item>
                     <el-form-item prop="phone" class='SDfloat'>
-                        <el-input v-model="signform.phone" placeholder='请输入手机号'></el-input>
+                        <el-input v-model="signform.phone" placeholder='请输入手机号' :maxlength='maxlength'></el-input>
                     </el-form-item>
                 </el-form-item>
                 <el-form-item label="">
                     <el-form-item prop="parent1" class="SD142float">
                         <el-input v-model="signform.parent1" placeholder='请输入家长姓名'></el-input>
                     </el-form-item>
+                    <div style='position:absolute;color:#ff4949;bottom:-26px;font-size:12px' v-if="secondRule">第二家长信息如若填写,必须填写完全,不然将不予保存</div>
                     <el-form-item prop="con1" class="SD142float">
-                        <el-select v-model="signform.con1" placeholder="请选择关系">
+                        <el-select v-model="signform.con1" clearable placeholder="请选择关系">
                             <el-option label="妈妈" value="妈妈"></el-option>
                             <el-option label="爸爸" value="爸爸"></el-option>
                             <el-option label="爷爷" value="爷爷"></el-option>
                             <el-option label="奶奶" value="奶奶"></el-option>
+                            <el-option label="外公" value="外公"></el-option>
+                            <el-option label="外婆" value="外婆"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item prop="phone1" class="SDfloat">
-                        <el-input v-model="signform.phone1" placeholder='请输入手机号'></el-input>
+                        <el-input v-model="signform.phone1" placeholder='请输入手机号' :maxlength='maxlength'></el-input>
                     </el-form-item>
                     <el-col :span="2">
                         <span class="SDaltergrey"> (选填)</span>
@@ -509,8 +515,8 @@
                     </el-form-item>
                     <span v-if='nostudent' style="width:200px;color:red;float:left"> {{warning}}</span> -->
                 </el-form-item>
-                <el-form-item label="课程顾问" prop='cc' class="SDmb5">
-                    <p>{{userName}}</p>
+                <el-form-item label="CC" prop='cc' class="SDmb5">
+                    <p>{{student.cc_name}}</p>
                 </el-form-item>
                 <!-- <el-form-item label="电话销售" prop='tmk' style='margin-bottom:5px'>
                     <p>{{userName}}</p>
@@ -522,12 +528,12 @@
             </div>
         </el-dialog>
         <!-- 填写合同 -->
-        <el-dialog title="填写合同内容" :visible.sync="dialogFormVisible3" :close-on-click-modal="no" top='7%' show-close
-            class='signContactDialog' @close="resetAll('actSchool')">
+        <el-dialog title="填写合同内容" :visible.sync="dialogFormVisible3" :close-on-click-modal="no" top='7%' show-close class='signContactDialog'
+            @close="resetAll('actSchool')">
             <el-form :model="actSchool" id='actSchool1' :rules='ruleActSchool' ref="actSchool">
                 <div class="SDstitle">
                     <div class="SDstitle1">课程</div>
-                    <div v-for='item in tableTitle' :class="[item!='优惠类型'?'ccc':'ddd']">{{item}}</div>
+                    <div v-for='item in this.tableTitle' :class="[item!='优惠类型'?item=='转课补费额'?'eee':'ccc':'ddd']">{{item}}</div>
                 </div>
                 <div class="signContractA">
                     <div class='signContractTitle'>
@@ -590,6 +596,7 @@
                             </div>
                         </div>
                     </div> -->
+                    <div class="signContactzhuan" v-if='this.step=="changtobuy"'>{{multipleSelection.toFixed(2)}}</div>
                     <div class="signContactPay">{{totalP3}}</div>
                     <!-- 总额用法 -->
                     <div class="signContactPayDiv">
@@ -601,7 +608,10 @@
                         </div>
                     </div>
                 </div>
-                <div >
+                <div>
+                        <!-- <div label="抵扣的转课补费额:" v-if="step=='changtobuy'" style='color:#1fb5ad;font-size:15px'>
+                             <span style='color:#1fb5ad;font-size:15px;margin-bottom:20px;display:inline-block'>抵扣的转课补费额:</span>   {{multipleSelection.toFixed(2)}}元
+                        </div> -->
                     <el-form-item label="合同编号" prop='sku'>
                         <el-input v-model="actSchool.sku" placeholder='请输入合同编号' class="SDw142"></el-input>
                     </el-form-item>
@@ -620,14 +630,9 @@
                     <el-form-item label="付款方式" class="SDpr" required>
                         <div v-for="(a, index) in actSchool.pay" :class="[index !=0?'male':'']">
                             <el-form-item prop="method" class='SD142float'>
-                                <el-select v-model="a.method" placeholder="请选择方式">
-                                    <el-option label="现金" value="1"></el-option>
-                                    <el-option label="POS机" value="2"></el-option>
-                                    <el-option label="微信" value="3"></el-option>
-                                    <el-option label="银行转账" value="4"></el-option>
-                                    <el-option label="团购" value="5"></el-option>
-                                    <el-option label="支付宝" value="6"></el-option>
-                                    <el-option label="其他" value="7"></el-option>
+                                <el-select v-model="a.method" placeholder="请选择方式" @change='changeReset'>
+                                    <el-option v-for="item in payMethods" :key="item.id" :label="item.name" :value="item.id">
+                                    </el-option>
                                 </el-select>
                             </el-form-item>
                             <el-form-item prop="money" class="SDfloat">
@@ -638,9 +643,7 @@
                             <div style="clear:both"></div>
                         </div>
                     </el-form-item>
-                    <el-form-item label="转课补费额" v-if="step=='changtobuy'">
-                        {{multipleSelection.toFixed(2)}}元
-                    </el-form-item>
+                   
                     <el-form-item label="付款总额" prop='money'>
                         {{payTotal.toFixed(2)}}元
                         <span v-if='this.payTotal+(this.multipleSelection-0) != this.totalP3' class="SDnred">*付款总额与实收总额不符*</span>
@@ -651,7 +654,7 @@
                     </el-form-item> -->
                 </div>
             </el-form>
-            <div slot="footer" class="dialog-footer" >
+            <div slot="footer" class="dialog-footer">
                 <el-button v-if="step=='rebuy'" @click="dialogFormVisible3=false">取消</el-button>
                 <el-button v-else @click="backTolast">上一步</el-button>
                 <el-button type="primary" @click="submitCon('actSchool')">提交</el-button>
@@ -659,8 +662,7 @@
             </div>
         </el-dialog>
         <!-- 选择性排班 -->
-        <el-dialog title="合同课程排班" :visible.sync="dialogFormVisibleLast" :close-on-click-modal="no" top='7%' show-close 
-            @close="resetClass('art')">
+        <el-dialog title="合同课程排班" :visible.sync="dialogFormVisibleLast" :close-on-click-modal="no" top='7%' show-close @close="resetClass('art')">
             <el-tabs v-model="activeName">
                 <el-tab-pane v-for='(item,index) in tabClass' :name='item.number'>
                     <span slot="label"><i class="el-icon-star-on" v-if="item.isR=='yes'"></i> {{item.name}}</span>
@@ -669,7 +671,7 @@
                             <el-date-picker v-model="art[index].time" type="date" @change='getClassRoomByTime(art[index].time,index,item)'>
                             </el-date-picker>
                         </el-form-item>
-                        <el-form-item prop='syllabus_id' class='selectClass SDselect' >
+                        <el-form-item prop='syllabus_id' class='selectClass SDselect'>
                             <el-radio-group v-model="art[index].syllabus_id" @change='radioChange'>
                                 <el-radio :label="item.id" class="SDtu" v-for='item in selectionClass1[index]'>
                                     <span class="SDm30">{{item.week==1?'周一':item.week==2?'周二':item.week==3?'周三':item.week==4?'周四':item.week==5?'周五':item.week==6?'周六':'周日'}}  {{item.class_time.substring(0,5)}}
@@ -682,15 +684,14 @@
                     </el-form>
                 </el-tab-pane>
             </el-tabs>
-            <div slot="footer" class="dialog-footer" >
+            <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormVisibleLast=false">取消</el-button>
                 <el-button type="primary" @click="submitTheContract('art')">提交</el-button>
                 <br>
             </div>
         </el-dialog>
         <!-- 立即排班按钮 -->
-        <el-dialog :title="arrangeTitle" :visible.sync="dialogFormVisibleArrange" :close-on-click-modal="no" top='7%' show-close
-           >
+        <el-dialog :title="arrangeTitle" :visible.sync="dialogFormVisibleArrange" :close-on-click-modal="no" top='7%' show-close>
             <el-form :model="arrange" ref="arrange" :rules='arrangeRules' label-width="80px">
                 <el-form-item label="开课日期" prop='time'>
                     <el-date-picker v-model="arrange.time" type="date" @change='getClassRoomArrange(arrange.time)'>
@@ -707,14 +708,14 @@
                     </el-radio-group>
                 </el-form-item>
             </el-form>
-            <div slot="footer" class="dialog-footer" >
+            <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormVisibleArrange=false">取消</el-button>
                 <el-button type="primary" @click="submitTheArrange()">提交</el-button>
                 <br>
             </div>
         </el-dialog>
         <!-- 回访记录 -->
-        <div  id='communityTitle'>
+        <div id='communityTitle'>
             <div class='communityTitle'>
                 <!--  <i class=el-icon-my-tongxunlu style="font-size:31px"></i> -->
                 <span class="SDct1">回访记录({{number}})</span>
@@ -723,7 +724,7 @@
                 </div>
             </div>
             <div class="SDct3">
-                <el-row v-for='item in items' class='listUser' >
+                <el-row v-for='item in items' class='listUser'>
                     <el-col :span="1" class="SDct5">
                         <img :src="item.tmk.avatar" width='50' height='50' alt="" class="SDct4"></el-col>
                     <el-col :span="22">
@@ -749,14 +750,14 @@
             </div>
         </div>
         <!-- 添加回访记录 -->
-        <el-dialog :title="communityTitle" :visible.sync="dialogFormVisible" :close-on-click-modal="no" size='tiny' show-close 
-            class='CDDialog' @close="resetD('returnform')">
+        <el-dialog :title="communityTitle" :visible.sync="dialogFormVisible" :close-on-click-modal="no" size='tiny' show-close class='CDDialog'
+            @close="resetD('returnform')">
             <el-form :model="returnform" id='detailForm' :rules='rulereturnform' ref="returnform">
                 <el-form-item label="" prop='contents'>
-                    <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="returnform.contents">
+                    <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容(100字以内)" v-model="returnform.contents">
                     </el-input>
                 </el-form-item>
-                <el-form-item label="回访标签：" class="SDmt10">
+                <el-form-item label="回访标签(选填)：" class="SDmt10">
                     <br>
                     <el-checkbox-group v-model="returnform.tags">
                         <el-checkbox v-for="box in boxes" :label="box.key" :value='box.key'>
@@ -818,7 +819,16 @@
                     callback();
                 }
             }
-         
+            var isName = (rule, value, callback) => {
+                var myreg = /^[\u4e00-\u9fa5a-zA-Z]+$/;
+                if (value == '') {
+                    callback('请输入学生姓名')
+                } else if (!myreg.test(value)) {
+                    callback('请输入有效的学生姓名');
+                } else {
+                    callback();
+                }
+            }
             // var isValue = (rule, value, callback) => {
             //     if (value === '') {
             //         callback('请选择')
@@ -857,7 +867,7 @@
                 var myreg =
                     /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}$)/;
                 if (value == '') {
-                    callback('请输入身份证号')
+                    callback()
                 } else if (!myreg.test(value)) {
                     callback('请输入有效的身份证号');
                 } else {
@@ -874,6 +884,26 @@
                     callback();
                 }
             }
+            var numAndEng = (rule, value, callback) => {
+                var myreg = /^[a-zA-Z0-9]+$/;
+                if (value == '') {
+                    callback('请输入合同编号')
+                } else if (!myreg.test(value)) {
+                    callback('请输入有效合同编号');
+                } else {
+                    callback();
+                }
+            }
+            var isSpace = (rule, value, callback) => {
+                var myreg = /^\S{1,100}$/;
+                if (value.trim() == '') {
+                    callback('内容不得为空')
+                } else if (!myreg.test(value)) {
+                    callback('内容不得超过100字');
+                } else {
+                    callback();
+                }
+            }
             //  var isMoney = (rule, value, callback) => {
             //     let a= 0
             //     this.actSchool.area_id.map(item=>{
@@ -886,6 +916,12 @@
             //     }
             // }
             return {
+                maxlength:11,
+                pickerOptions1: {
+                    disabledDate(time) {
+                        return time.getTime() > Date.now() ;
+                    }
+                },
                 continueClass1: [],
                 listCC: [],
                 contClass: [],
@@ -967,7 +1003,8 @@
                     coupons_money: '',
                     courseName1: []
                 }],
-                tableTitle: ['课时', '签单数', '学费', '教材费', '书本费', '优惠类型', '优惠金额', '实收总额', '操作'],
+                // tableTitle: ['课时', '签单数', '学费', '教材费', '书本费', '优惠类型', '优惠金额', '转课补费额','实收总额', '操作'],
+                // tableTitle1: ['课时', '签单数', '学费', '教材费', '书本费', '优惠类型', '优惠金额','实收总额', '操作'],
                 inviteForm: {
                     value1: '',
                     teacher: '',
@@ -988,6 +1025,7 @@
                     parent1: '',
                     parent1_phone: '',
                     channel: '',
+                    fullAddress:'',
                     school: '',
                     time: '',
                     teacher: ''
@@ -1007,7 +1045,8 @@
                 rulereturnform: {
                     contents: [{
                         required: true,
-                        message: '请输入内容',
+                        validator: isSpace,
+                        // message: '请输入内容',
                         trigger: 'blur'
                     }],
                 },
@@ -1047,7 +1086,8 @@
                 ruleActSchool: {
                     sku: [{
                         required: true,
-                        message: '请输入合同编号',
+                        validator: numAndEng,
+                        // message: '请输入合同编号',
                         trigger: 'blur'
                     }, ],
                     // teacher_uid: [{
@@ -1082,7 +1122,8 @@
                 Confirmrule: {
                     names: [{
                         required: true,
-                        message: '请输入姓名',
+                        // message: '请输入姓名',
+                        validator: isName,                        
                         trigger: 'blur'
                     }, ],
                     sex: [{
@@ -1091,8 +1132,8 @@
                         trigger: 'change'
                     }],
                     id_number: [{
-                        required: true,
-                        // validator: isId,
+                        // required: true,
+                        validator: isId,
                         trigger: 'blur'
                     }],
                     birthday: [{
@@ -1279,11 +1320,17 @@
                 arrangeOrderId: '',
                 selectArr: [],
                 contractNumber: 0,
-                transClass: []
+                transClass: [],
+                stopchange: false,
+                pickerOptions0: {
+                    disabledDate(time) {
+                        return time.getTime() < Date.now() - 8.64e7;
+                    }
+                },
             }
         },
         methods: {
-            getTransClass(i) {//转升班
+            getTransClass(i) { //转升班
                 this.transferOrUpform.school = '';
                 // console.log(i)
                 if (i !== '') {
@@ -1356,7 +1403,7 @@
             },
             transferToClass() { //转班提交
                 this.$refs['transferOrUpform'].validate((valid) => {
-                    if (valid) {
+                    if (valid && this.transferOrUpform.syllabus_id) {
                         let para = {
                             // order_id: this.students[this.classIndex].order_id,
 
@@ -1392,6 +1439,8 @@
                             }
                             // console.log(res)
                         })
+                    } else {
+                        this.$message.info('还有项目未填写');
                     }
                 })
 
@@ -1447,7 +1496,7 @@
             },
             submitTheArrange(formName) { //立即排班提交
                 this.$refs['arrange'].validate((valid) => {
-                    if (valid&&this.arrange.syllabus_id) {
+                    if (valid && this.arrange.syllabus_id) {
                         let para = {}
                         let a = this.arrange
                         para.assigns = [{
@@ -1478,11 +1527,11 @@
                                     // console.log(res)
                                 }).then(() => {
                                     let p = {
-                    uid: this.$route.params.uid
-                }
-                getTeacherList(token, p).then((res) => { //获取老师
-                    this.teachersName = res.data;
-                })
+                                        uid: this.$route.params.uid
+                                    }
+                                    getTeacherList(token, p).then((res) => { //获取老师
+                                        this.teachersName = res.data;
+                                    })
                                     this.dialogFormVisibleArrange = false;
                                 })
                             } else {
@@ -1490,9 +1539,9 @@
                             }
                         })
                     } else {
-                        if(this.arrange.time){
+                        if (this.arrange.time) {
 
-                        this.$message.info('请选择排课班级')
+                            this.$message.info('请选择排课班级')
                         }
                         // this.activeName = b;
                     }
@@ -1500,15 +1549,21 @@
 
             },
             getClassName(data, i) { //获取课程名称
-                i.course_id = ''
-                let para = {
-                    pid: data,
-                    simple: 1
-                }
-                getClassLibrary(token, para).then((res) => {
+                let that = this;
+                if (!this.stopchange) {
+                    i.course_id = ''
+                    let para = {
+                        pid: data,
+                        simple: 1
+                    }
+                    getClassLibrary(token, para).then((res) => {
 
-                    i.courseName1 = res.data;
-                })
+                        i.courseName1 = res.data;
+                    })
+                }
+                setTimeout(function () {
+                    that.stopchange = false;
+                }, 1);
             },
             nextToSignContract() { //续费到下一步
                 // console.log(this.$refs)
@@ -1678,7 +1733,8 @@
                 let para = {
                     page: 1,
                     course_id: this.valueR,
-                    teacher_uid: this.value1
+                    teacher_uid: this.value1,
+                    uid: this.$route.params.uid
                 }
                 getMyStudentSign(token, para).then(res => {
                     this.tableData = res.data.data;
@@ -1691,7 +1747,8 @@
                 let para = {
                     page: 1,
                     course_id: this.valueR,
-                    teacher_uid: this.value1
+                    teacher_uid: this.value1,
+                    uid: this.$route.params.uid
                 }
                 getMyStudentSign(token, para).then(res => {
                     this.tableData = res.data.data;
@@ -1699,6 +1756,12 @@
                     this.total1 = parseInt(c);
                 })
 
+            },
+            changeReset(val) {
+                if (val != '') {
+
+                    this.$refs['actSchool'].validate((valid) => {})
+                }
             },
             continueClass() { //续费
                 this.continueform.contract = ''
@@ -1753,12 +1816,11 @@
                 this.dialogFormVisibleFirst = true;
             },
             submitTheContract(formName) { //排班提交
-                let a = '';
+                let a = [];
                 let b = '';
                 this.tabClass.map((item, index) => {
                     if (item.isR == 'yes') {
-                        a = index
-                        b = item.number
+                        a.push(index)
                     }
                     this.art[index].order_item_id = item.order_item_id
                     // if(this.art[index].syllabus_id){
@@ -1768,98 +1830,112 @@
                 })
                 let c = [...this.art]
                 c.splice(this.tabClass.length, this.art.length);
-                if (a !== '') {
-                let n = 'art' + a;
-                this.$refs[n][0].validate((valid) => {
-                    if (valid&&c[a].syllabus_id) {
-                        let para = {}
-                        para.assigns = c
-                        para.assigns = JSON.stringify(para.assigns)
-                        // console.log(para) //提交服务
-                        assignClass(para, token).then(res => {
-                            if (res.code == 0) {
-                                this.$message.success('排班成功');
-                                let para = {
-                                    uid: this.$route.params.uid
-                                }
-                                getMyStudentLessonDetail(token, para).then(res => { //合同课程
-                                    if (res.data.length != 0) {
+                let count = []
+                if (a.length != 0) {
+                    a.map((item) => {
 
-                                        this.contractNumber = res.data.length
-                                        this.students = res.data
+                        let n = 'art' + item;
+                        this.$refs[n][0].validate((valid) => {
+                            if (valid && c[item].syllabus_id) {
+                                count.push(item);
+                                if (count.length == a.length) {}
+                                let para = {}
+                                para.assigns = c
+                                para.assigns = JSON.stringify(para.assigns)
+                                // console.log(para) //提交服务
+                                assignClass(para, token).then(res => {
+                                    if (res.code == 0) {
+                                        this.$message.success('排班成功');
+                                        let para = {
+                                            uid: this.$route.params.uid
+                                        }
+                                        getMyStudentLessonDetail(token, para).then(res => { //合同课程
+                                            if (res.data.length != 0) {
+
+                                                this.contractNumber = res.data.length
+                                                this.students = res.data
+                                            } else {
+                                                this.students = [{
+                                                    dataTable: [],
+                                                    sku: ''
+                                                }]
+                                            }
+                                            // console.log(res)
+                                        }).then(() => {
+                                            let p = {
+                                                uid: this.$route.params.uid
+                                            }
+                                            getTeacherList(token, p).then((res) => { //获取老师
+                                                this.teachersName = res.data;
+                                            })
+                                            this.dialogFormVisibleLast = false;
+                                        })
                                     } else {
-                                        this.students = [{
-                                            dataTable: [],
-                                            sku: ''
-                                        }]
+                                        this.$message.error(res.data)
                                     }
-                                    // console.log(res)
-                                }).then(() => {
-                                    let p = {
-                    uid: this.$route.params.uid
-                }
-                getTeacherList(token, p).then((res) => { //获取老师
-                    this.teachersName = res.data;
-                })
-                                    this.dialogFormVisibleLast = false;
                                 })
-                            } else {
-                                this.$message.error(res.data)
                             }
                         })
-                    } else {
-                        if(this.art[a].time){
+                    })
+                    if (c.length != a.length) {
+                        console.log(count)
+                        console.log(a)
 
-                        this.$message.info('请选择排课班级')
+                        let o = new Set(count); //[]
+                        let p = new Set(a); //[0,1,2]
+                        let r = new Set([...p].filter(x => !o.has(x))); //1,2
+                        console.log([...r][0])
+                        this.activeName = [...r][0] + 1 + '';
+                        if (this.art[[...r][0]].time) {
+
+                            this.$message.info('请选择排课班级')
                         }
-                        this.activeName = b;
                     }
-                })
-            }else{
-                let re = c.some(item=>{
-                    return item.syllabus_id
-                })
-                if(re){
+                } else {
+                    // let re = c.some(item=>{
+                    //     return item.syllabus_id
+                    // })
+                    // if(re){
                     let para = {}
-                        para.assigns = c
-                        para.assigns = JSON.stringify(para.assigns)
-                        // console.log(para) //提交服务
-                        assignClass(para, token).then(res => {
-                            if (res.code == 0) {
-                                this.$message.success('排班成功');
-                                let para = {
+                    para.assigns = c
+                    para.assigns = JSON.stringify(para.assigns)
+                    // console.log(para) //提交服务
+                    assignClass(para, token).then(res => {
+                        if (res.code == 0) {
+                            this.$message.success('排班成功');
+                            let para = {
+                                uid: this.$route.params.uid
+                            }
+                            getMyStudentLessonDetail(token, para).then(res => { //合同课程
+                                if (res.data.length != 0) {
+
+                                    this.contractNumber = res.data.length
+                                    this.students = res.data
+                                } else {
+                                    this.students = [{
+                                        dataTable: [],
+                                        sku: ''
+                                    }]
+                                }
+                                // console.log(res)
+                            }).then(() => {
+                                let p = {
                                     uid: this.$route.params.uid
                                 }
-                                getMyStudentLessonDetail(token, para).then(res => { //合同课程
-                                    if (res.data.length != 0) {
-
-                                        this.contractNumber = res.data.length
-                                        this.students = res.data
-                                    } else {
-                                        this.students = [{
-                                            dataTable: [],
-                                            sku: ''
-                                        }]
-                                    }
-                                    // console.log(res)
-                                }).then(() => {
-                                    let p = {
-                    uid: this.$route.params.uid
-                }
-                getTeacherList(token, p).then((res) => { //获取老师
-                    this.teachersName = res.data;
-                })
-                                    this.dialogFormVisibleLast = false;
+                                getTeacherList(token, p).then((res) => { //获取老师
+                                    this.teachersName = res.data;
                                 })
-                            } else {
-                                this.$message.error(res.data)
-                            }
-                        })
-                }else{
-                    this.$message.info('未选择排课班级')
+                                this.dialogFormVisibleLast = false;
+                            })
+                        } else {
+                            this.$message.error(res.data)
+                        }
+                    })
+                    // }else{
+                    //     this.$message.info('未选择排课班级')
+                    // }
+
                 }
-                
-            }
 
             },
 
@@ -1901,22 +1977,24 @@
                                     name: data.child_name,
                                     age: data.age,
                                     sex: data.sex,
-                                    birthday:data.birthday,
+                                    birthday: data.birthday,
                                     id_number: data.id_number ? data.id_number : '无',
                                     school: data.school_name,
                                     channel: data.source_name,
+                                    cc_name:data.cc_name,
+                                    fullAddress: data.fullAddress,
                                     time: data.regtime,
                                     parent: res.data.famliys[0].uname + '(' + res.data.famliys[
                                         0].relation + ')',
                                     parent_phone: res.data.famliys[0].mobile,
-                                    parent1: res.data.famliys[1] ? res.data.famliys[1].uname +
-                                        '(' + res.data.famliys[1].relation + ')' : '暂无',
-                                    parent1_phone: res.data.famliys[1] ? res.data.famliys[1]
-                                        .mobile : '暂无',
+                                    parent1: res.data.famliys[1] ? res.data.famliys[1].uname?res.data.famliys[1].uname +
+                                        '(' + res.data.famliys[1].relation + ')' :'': '',
+                                    parent1_phone: res.data.famliys[1] ? res.data.famliys[1].mobile?res.data.famliys[1].mobile:'': '',
                                     teacher: data.cc_name,
                                     sour_id: data.sour_id,
-                                    referral_name: data.referral?data.referral.referral_name:'',
-                                    teach_name:  data.referral?data.referral.teach_name:''
+                                    referral_name: data.referral ? data.referral.referral_name :
+                                        '',
+                                    teach_name: data.referral ? data.referral.teach_name : ''
 
                                 }
                             })
@@ -2005,6 +2083,8 @@
                                 this.$message.error(res.data)
                             }
                         })
+                    }else{
+                        this.$message.error('付款总额与实收总额不符')
                     }
                 })
 
@@ -2054,7 +2134,8 @@
                     created: '',
 
                 }
-                this.coupons = []
+                this.coupons = [];
+                this.multipleSelection = 0
                 this.$refs[formName].resetFields();
 
             },
@@ -2119,6 +2200,7 @@
             },
             delCon(index) {
                 //删除某个课程
+                this.stopchange = true;
                 this.contracts.splice(index, 1)
             },
             getNowFormatDate(date) {
@@ -2263,7 +2345,7 @@
                         names: data.info.child_name,
                         sex: data.info.sex === '男' ? '1' : '2',
                         age: data.info.age + '',
-                        id_number: data.info.id_number,
+                        id_number: data.info.id_number?data.info.id_number:'',
                         birthday: new Date(data.info.birthday),
                         parent: data.famliys[0].uname,
                         parent1: data.famliys[1] ? data.famliys[1].uname || '' : '',
@@ -2294,7 +2376,7 @@
                 this.currentPage1 = val;
                 let p = {
                     page: this.currentPage1,
-                    customer_id: this.$route.params.uid
+                    uid: this.$route.params.uid
                 }
                 getMyStudentSign(token, p).then(res => {
                     this.tableData = res.data.data;
@@ -2304,6 +2386,85 @@
             },
         },
         computed: {
+            tableTitle(){
+                if(this.step == 'changtobuy'){
+                    return  ['课时', '签单数', '学费', '教材费', '书本费', '优惠类型', '优惠金额', '转课补费额','实收总额', '操作']
+                }else{
+                    return  ['课时', '签单数', '学费', '教材费', '书本费', '优惠类型', '优惠金额','实收总额', '操作']
+                }
+            },
+            fronzeContra(){
+                if(this.step == 'transferClass'){
+                    return this.students;
+                }else{
+
+                    let b = []
+                    this.students.map(item=>{
+                        let a = item.dataTable.some(i=>{
+                           return i.status=='正常'&&i.kc_tid==1&&i.classTime!=''
+                        })
+                        if(a){
+                            b.push(item)
+    
+                        }
+                    })
+                    return b
+                }
+            },
+            continueClassCon(){
+                let b = []
+                this.students.map(item=>{
+                    let a = item.dataTable.some(i=>{
+                       return i.kc_tid==1
+                    })
+                    if(a){
+                        b.push(item)
+
+                    }
+                })
+                return b
+            },
+            secondRule(){
+                if(this.signform.parent1&&this.signform.phone1&&this.signform.con1){
+                        return false;
+                    }else if(this.signform.parent1||this.signform.phone1||this.signform.con1){
+    
+                       return true;
+                    }else{
+                        return false;
+                    }
+            },
+            payMethods() {
+                let m = [{
+                    name: '现金',
+                    id: '1'
+                }, {
+                    name: 'POS机',
+                    id: '2'
+                }, {
+                    name: '微信',
+                    id: '3'
+                }, {
+                    name: '银行转账',
+                    id: '4'
+                }, {
+                    name: '团购',
+                    id: '5'
+                }, {
+                    name: '支付宝',
+                    id: '6'
+                }, {
+                    name: '其他',
+                    id: '7'
+                }]
+                let l = this.actSchool.pay.length
+                this.actSchool.pay.map((item, index) => {
+                    m = m.filter(i => {
+                        return i.id != item.method
+                    })
+                })
+                return m
+            },
             transOut() {
                 let a = this.students[this.classIndex].dataTable.filter(item => {
                     return item.course_curr_num != 0
@@ -2359,6 +2520,7 @@
             token = JSON.parse(user).token;
         },
         created() {
+            document.body.scrollTop = 0
             this.userName = JSON.parse(user).uname;
             this.code = JSON.parse(user).job ? JSON.parse(user).job.code : '';
             let para = {
@@ -2373,22 +2535,24 @@
                     sex: data.sex,
                     school: data.school_name,
                     channel: data.source_name,
+                    cc_name:data.cc_name,
+                    fullAddress: data.fullAddress,
                     time: data.regtime,
                     parent: res.data.famliys[0].uname + '(' + res.data.famliys[0].relation + ')',
                     parent_phone: res.data.famliys[0].mobile,
                     parent1: res.data.famliys[1] ? res.data.famliys[1].uname ? res.data.famliys[1].uname +
-                        '(' + res.data.famliys[1].relation + ')' : '暂无' : '暂无',
-                    parent1_phone: res.data.famliys[1] ? res.data.famliys[1].mobile || '暂无' : '暂无',
+                        '(' + res.data.famliys[1].relation + ')' : '' : '',
+                    parent1_phone: res.data.famliys[1] ? res.data.famliys[1].mobile || '' : '',
                     teacher: data.cc_name,
                     sour_id: data.sour_id,
-                    referral_name: data.referral?data.referral.referral_name:'',
-                    teach_name: data.referral?data.referral.teach_name:''
+                    referral_name: data.referral ? data.referral.referral_name : '',
+                    teach_name: data.referral ? data.referral.teach_name : ''
 
                 }
             }).catch(() => {
                 // console.log('No Data')
             })
-            getMyStudentSign(token, para).then(res => {
+            getMyStudentSign(token, para).then(res => {//获取考勤记录
                 this.tableData = res.data.data;
                 let c = res.data.last_page * this.pagesize1;
                 this.total1 = parseInt(c);
@@ -2427,7 +2591,7 @@
                     simple: 1,
                     uid: this.$route.params.uid
                 }
-                getClassLibrary(token, si).then(res => { //考勤记录 全部课程
+                getClassLibrary(token, si).then(res => { //考勤记录的全部课程
                     this.allClass = res.data
                 })
                 getPromotionList(token, si).then((res) => { //获取优惠列表
@@ -2440,7 +2604,12 @@
                 getTeacherList(token, p).then((res) => { //获取老师
                     this.teachersName = res.data;
                 })
-                campusList(si, token).then((res) => { //获取校区
+                let sii = {
+                    simple: 1,
+                    uid: this.$route.params.uid,
+                    type: 'all'
+                }
+                campusList(sii, token).then((res) => { //获取校区
                     let a = res.data;
                     this.receiveSchool = a.map(item => {
                         return {
@@ -2506,9 +2675,13 @@
         padding: 10px 10px 10px 30px;
         border-bottom: 1px solid #e8e8e8;
     }
-#customerDeatilForm{
-border-top:1px solid #e8e8e8 ;padding-left:10px;position:relative;
-}
+
+    #customerDeatilForm {
+        border-top: 1px solid #e8e8e8;
+        padding-left: 10px;
+        position: relative;
+    }
+
     #customerDeatilForm .el-form-item {
         margin-bottom: 5px
     }
@@ -2521,16 +2694,18 @@ border-top:1px solid #e8e8e8 ;padding-left:10px;position:relative;
         line-height: 30px
     }
 
-    .tableUserD .listUser {
+    .tableUserDSD .listUser {
         /*min-height: 100px;*/
         /*height: auto;*/
-        border-bottom: 1px solid #e8e8e8;position:relative;min-height:75px
+        border-bottom: 1px solid #e8e8e8;
+        position: relative;
+        min-height: 75px
         /*border-bottom:1px solid grey;*/
     }
 
- 
 
-    .tableUserD .el-tag--success {
+
+    .tableUserDSD .el-tag--success {
         background-color: #1fb5ad;
         border-color: #bcf1d4;
         color: #FFFFFF;
@@ -2557,18 +2732,18 @@ border-top:1px solid #e8e8e8 ;padding-left:10px;position:relative;
     }
 
 
-    .tableUserD .editSpan {
+    .tableUserDSD .editSpan {
         height: 30px;
         background: url(../../../static/img/edit.png) right/30px 30px no-repeat;
         cursor: pointer;
         margin-top: 10px;
     }
 
-    .tableUserD .editSpan:hover {
+    .tableUserDSD .editSpan:hover {
         background-image: url(../../../static/img/edit_h.png);
     }
 
-    .tableUserD .addU {
+    .tableUserDSD .addU {
         width: 30px;
         height: 30px;
         background-image: url(../../../static/img/editU.png);
@@ -2578,11 +2753,11 @@ border-top:1px solid #e8e8e8 ;padding-left:10px;position:relative;
         margin-right: 5px;
     }
 
-    .tableUserD .addU:hover {
+    .tableUserDSD .addU:hover {
         background-image: url(../../../static/img/editU_h.png);
     }
 
-    .tableUserD .addR {
+    .tableUserDSD .addR {
         width: 30px;
         height: 30px;
         background-image: url(../../../static/img/addR.png);
@@ -2590,21 +2765,28 @@ border-top:1px solid #e8e8e8 ;padding-left:10px;position:relative;
         cursor: pointer;
     }
 
-    .tableUserD .addR:hover {
+    .tableUserDSD .addR:hover {
         background-image: url(../../../static/img/addR_h.png);
     }
 
-    .tableUserD .block {
+    .tableUserDSD .block {
         text-align: center;
         position: absolute;
         bottom: 10px;
         width: 100%;
     }
-#communityTitle{
-float:left;width:100%;background-color:white;border-radius:5px;margin-right:12px;height:476px;position:relative
-}
+
+    #communityTitle {
+        float: left;
+        width: 100%;
+        background-color: white;
+        border-radius: 5px;
+        margin-right: 12px;
+        position: relative
+    }
+
     #communityTitle .block {
-        bottom: -33px;
+        bottom: 0;
     }
 
     #detailForm .el-form-item .el-form-item__content .el-checkbox {
@@ -2628,25 +2810,25 @@ float:left;width:100%;background-color:white;border-radius:5px;margin-right:12px
     }
 
     .signContactDialog .el-dialog--small {
-        width: 986.75px;
+        width: 1086.75px;
     }
 
-    .tableUserD .el-dialog .el-dialog__header {
+    .tableUserDSD .el-dialog .el-dialog__header {
         background-color: #1fb5ad;
         padding: 20px 20px 20px;
     }
 
-    .tableUserD .refundDialog .el-dialog .el-dialog__header {
+    .tableUserDSD .refundDialog .el-dialog .el-dialog__header {
         background-color: #f74242;
         padding: 20px 20px 20px;
     }
 
-    .tableUserD .frozeDialog .el-dialog .el-dialog__header {
+    .tableUserDSD .frozeDialog .el-dialog .el-dialog__header {
         background-color: #50bfff;
         padding: 20px 20px 20px;
     }
 
-    .tableUserD .el-dialog .el-dialog__title {
+    .tableUserDSD .el-dialog .el-dialog__title {
         color: white;
     }
 
@@ -2683,7 +2865,16 @@ float:left;width:100%;background-color:white;border-radius:5px;margin-right:12px
         border-bottom: 1px solid gainsboro;
         border-top: 1px solid gainsboro
     }
-
+    .eee {
+        text-align: center;
+        height: 40px;
+        line-height: 40px;
+        background: #f3f3f3;
+        flex: 0 0 86px;
+        border-right: 1px solid gainsboro;
+        border-bottom: 1px solid gainsboro;
+        border-top: 1px solid gainsboro
+    }
     .ddd {
         text-align: center;
         height: 40px;
@@ -2732,7 +2923,7 @@ float:left;width:100%;background-color:white;border-radius:5px;margin-right:12px
     }
 
     #table1 .el-table td,
-    #table1 .el-table th {
+    #table1 .el-table th:not(.gutter) {
         padding: 1px;
         text-align: center
     }
@@ -2744,7 +2935,7 @@ float:left;width:100%;background-color:white;border-radius:5px;margin-right:12px
     }
 
     #table2 .el-table td,
-    #table2 .el-table th {
+    #table2 .el-table th:not(.gutter) {
         padding: 1px;
         text-align: center
     }
@@ -2756,7 +2947,7 @@ float:left;width:100%;background-color:white;border-radius:5px;margin-right:12px
     }
 
     #table3 .el-table td,
-    #table3 .el-table th {
+    #table3 .el-table th:not(.gutter) {
         padding: 1px;
         text-align: center
     }
@@ -2768,7 +2959,7 @@ float:left;width:100%;background-color:white;border-radius:5px;margin-right:12px
     }
 
     #table4 .el-table td,
-    #table4 .el-table th {
+    #table4 .el-table th:not(.gutter) {
         padding: 1px;
         text-align: center
     }
@@ -2780,7 +2971,7 @@ float:left;width:100%;background-color:white;border-radius:5px;margin-right:12px
     }
 
     #tablelesson .el-table td,
-    #tablelesson .el-table th {
+    #tablelesson .el-table th:not(.gutter) {
         padding: 1px;
         text-align: center
     }
@@ -2800,9 +2991,11 @@ float:left;width:100%;background-color:white;border-radius:5px;margin-right:12px
     }
 
     .arrangeClass {
-        color: #13ce66;
+        color: #1fb5ad;
     }
-
+    .arrangeClass22 {
+        color: #dba31c;
+    }
     .arrangeClass:hover {
         cursor: pointer;
     }
@@ -2891,7 +3084,8 @@ float:left;width:100%;background-color:white;border-radius:5px;margin-right:12px
         height: 50px;
         line-height: 50px;
         border: 1px solid rgb(223, 236, 235);
-        border-bottom: none
+        border-bottom: none;
+        background: #fafafa;
     }
 
     .table4Teacher {
@@ -2982,7 +3176,7 @@ float:left;width:100%;background-color:white;border-radius:5px;margin-right:12px
 
     .signContactMoney {
         line-height: 40px;
-        width: 68px;
+        width: 67px;
         display: flex;
         align-items: stretch;
         flex-wrap: wrap
@@ -2991,7 +3185,7 @@ float:left;width:100%;background-color:white;border-radius:5px;margin-right:12px
     .signContactMoneyDiv {
         font-size: 14px;
         display: flex;
-        flex: 0 0 68px
+        flex: 0 0 67px
     }
 
     .signContactCouponsDiv {
@@ -3010,13 +3204,23 @@ float:left;width:100%;background-color:white;border-radius:5px;margin-right:12px
         text-align: center;
         border-right: 1px solid gainsboro;
         border-bottom: 1px solid gainsboro;
-        flex: 0 0 65px;
+        flex: 0 0 66px;
         display: flex;
         flex-direction: column;
         justify-content: center;
         height: auto
     }
-
+    .signContactzhuan {
+        background: #ffffff;
+        text-align: center;
+        border-right: 1px solid gainsboro;
+        border-bottom: 1px solid gainsboro;
+        flex: 0 0 86px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: auto
+    }
     .signContactPayDiv {
         line-height: 40px;
         background: white;
@@ -3057,166 +3261,296 @@ float:left;width:100%;background-color:white;border-radius:5px;margin-right:12px
         height: auto;
         display: flex;
         align-items: stretch;
-        margin-bottom: 50px;
+        margin-bottom: 20px;
     }
-.skuJump{
-font-weight:bold;
-}
+
+    .skuJump {
+        font-weight: bold;
+        color:#1fb5ad
+    }
+
     .skuJump:hover {
         cursor: pointer
     }
-#refunicon{
-margin-top:10px;width:1158px
-}
+
+    #refunicon {
+        margin-top: 10px;
+        width: 1158px
+    }
+
     #refunicon .el-icon-arrow-right:before {
         content: "\E61C";
         font-size: 16px;
     }
-.SDtitle{
-float:left;width:30%;background-color:white;height:500px;border-radius:5px;margin-right:1%;position:relative
-}
-.SDtitle1{
-font-weight:600;font-size:22px
-}
-.SDtitle2{
-position:absolute;top:10px;right:10px;width:200px;text-align: right;
-}
-.SDtitle3{
-position:absolute;right:50px;top:0
-}
-.SDtitleimg{
-position:absolute;top:60px;right:15px
-}
-.SDtitleimg img{
-border-radius:50%
-}
-.SDsign{
-float:left;width:69%;background-color:white;height:500px;border-radius:5px;position:relative
-}
-.SDsign600{
-font-weight:600;font-size:22px
-}
-.SDselect{
-min-height:100px;height:atuo;overflow:auto
-}
-.SDtu{
-margin-right:30%;margin-bottom:10px;margin-top:10px
-}
-.SDm30{
-margin-right:30px
-}
-.SDtuc{
-text-align:center
-}
-.SDt1{
-display:flex;justify-content:flex-start;
-}
-.SDt2{
-width:545px;display:flex;flex-direction:column
-}
-.SDre1{
-font-weight:bold;font-size:16px;
-}
-.SDre2{
-text-indent:2em;
-}
-.SDrer{
-    text-indent:2em;color:#f74242
-}
-.SDcon{
-float:left;width:100%;background-color:white;height:auto;border-radius:5px;position:relative;margin-top:20px;margin-bottom:20px
-}
-.SDcon1{
-font-weight:600;font-size:22px
-}
-.SDconfloat{
-float:right
-}
-.SDtable{
-display:flex;align-items:center;margin-left:10px
-}
-.SDtable1{
-font-size:16px;margin-left:10px
-}
-.SDtable2{
-margin-right:10px;color:grey;font-size:16px
-}
-.SDtable3{
-margin-right:5px
-}
-.SDtable4{
-display:flex;justify-content:space-between;
-}
-.SDct1{
-font-weight:600;font-size:22px
-}
-.SDct2{
-position:absolute;top:10px;right:15px
-}
-.SDct3{
-min-height:300px;width:96%;margin:0 auto
-}
-.SDct4{
-border-radius:50%;margin-top:15px;margin-right:12%
-}
-.SDct5{
-margin-right:20px
-}
-.SDct6{
-height:30px
-}
-.SDct7{
-margin-top:15px;float:left
-}
-.SDct8{
-font-size:13px;color:grey;margin-top:15px;text-align:right;float:right
-}
-.SDct9{
-font-size:14px;color:grey;margin-top:10px
-}
-.SDct10{
-float:left;margin-bottom:8px
-}
-.SDstitle{
-display:flex;
-}
-.SDstitle1{
-text-align:center;height:40px;line-height:40px;background:#f3f3f3;border:1px solid gainsboro;flex:0 0 260px
-}
-.SDw142{
-width:142px
-}
-.SD142float{
-width:142px;margin-right:30px;float:left
-}
-.SDfloat{
-width:142px;float:left
-}
-.SDaltergrey{
-margin-left:10px;width:200px;color:grey
-}
-.SDmb5{
-margin-bottom:5p
-}
-.SDw103{
-width:103px
-}
-.SDw123{
-    width:123px
-}
-.SDml10{
-margin-left:10px
-}
-.SD131{
-width:131px;margin-left:7px
-}
-.SDpr{
-position:relative
-}
-.SDnred{
-color:red;margin-left:100px
-}
-.SDmt10{
-margin-top:10px
-}
+
+    .SDtitle {
+        float: left;
+        width: 30%;
+        background-color: white;
+        height: 528px;
+        border-radius: 5px;
+        margin-right: 1%;
+        position: relative
+    }
+
+    .SDtitle1 {
+        font-weight: 600;
+        font-size: 22px
+    }
+
+    .SDtitle2 {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 200px;
+        text-align: right;
+    }
+
+    .SDtitle3 {
+        position: absolute;
+        right: 50px;
+        top: 0
+    }
+
+    .SDtitleimg {
+        position: absolute;
+        top: 60px;
+        right: 15px
+    }
+
+    .SDtitleimg img {
+        border-radius: 50%
+    }
+
+    .SDsign {
+        float: left;
+        width: 69%;
+        background-color: white;
+        height: 528px;
+        border-radius: 5px;
+        position: relative
+    }
+
+    .SDsign600 {
+        font-weight: 600;
+        font-size: 22px
+    }
+
+    .SDselect {
+        min-height: 100px;
+        height: atuo;
+        overflow: auto
+    }
+
+    .SDtu {
+        margin-right: 30%;
+        margin-bottom: 10px;
+        margin-top: 10px
+    }
+
+    .SDm30 {
+        margin-right: 30px
+    }
+
+    .SDtuc {
+        text-align: center
+    }
+
+    .SDt1 {
+        display: flex;
+        justify-content: flex-start;
+    }
+
+    .SDt2 {
+        width: 545px;
+        display: flex;
+        flex-direction: column
+    }
+
+    .SDre1 {
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    .SDre2 {
+        text-indent: 2em;
+    }
+
+    .SDrer {
+        text-indent: 2em;
+        color: #f74242
+    }
+
+    .SDcon {
+        float: left;
+        width: 100%;
+        background-color: white;
+        height: auto;
+        border-radius: 5px;
+        position: relative;
+        margin-top: 20px;
+        margin-bottom: 20px
+    }
+
+    .SDcon1 {
+        font-weight: 600;
+        font-size: 22px;
+       
+    }
+
+    .SDconfloat {
+        float: right
+    }
+
+    .SDtable {
+        display: flex;
+        align-items: center;
+        margin-left: 10px
+    }
+
+    .SDtable1 {
+        font-size: 16px;
+        margin-left: 10px
+    }
+
+    .SDtable2 {
+        margin-right: 10px;
+        color: grey;
+        font-size: 16px
+    }
+
+    .SDtable3 {
+        margin-right: 5px
+    }
+
+    .SDtable4 {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .SDct1 {
+        font-weight: 600;
+        font-size: 22px
+    }
+
+    .SDct2 {
+        position: absolute;
+        top: 10px;
+        right: 15px
+    }
+
+    .SDct3 {
+        min-height: 300px;
+        width: 96%;
+        margin: 0 auto;
+        padding-bottom: 35px;
+    }
+
+    .SDct4 {
+        border-radius: 50%;
+        margin-top: 15px;
+        margin-right: 12%;
+        border:1px solid gainsboro;
+    }
+
+    .SDct5 {
+        margin-right: 20px
+    }
+
+    .SDct6 {
+        height: 30px
+    }
+
+    .SDct7 {
+        margin-top: 15px;
+        float: left
+    }
+
+    .SDct8 {
+        font-size: 13px;
+        color: grey;
+        margin-top: 15px;
+        text-align: right;
+        float: right
+    }
+
+    .SDct9 {
+        font-size: 14px;
+        color: grey;
+        margin-top: 10px
+    }
+
+    .SDct10 {
+        float: left;
+        margin-bottom: 8px
+    }
+
+    .SDstitle {
+        display: flex;
+    }
+
+    .SDstitle1 {
+        text-align: center;
+        height: 40px;
+        line-height: 40px;
+        background: #f3f3f3;
+        border: 1px solid gainsboro;
+        flex: 0 0 260px
+    }
+
+    .SDw142 {
+        width: 142px
+    }
+
+    .SD142float {
+        width: 142px;
+        margin-right: 30px;
+        float: left
+    }
+
+    .SDfloat {
+        width: 142px;
+        float: left
+    }
+
+    .SDaltergrey {
+        margin-left: 10px;
+        width: 200px;
+        color: grey
+    }
+
+    .SDmb5 {
+        margin-bottom: 5p
+    }
+
+    .SDw103 {
+        width: 103px
+    }
+
+    .SDw123 {
+        width: 123px
+    }
+
+    .SDml10 {
+        margin-left: 10px
+    }
+
+    .SD131 {
+        width: 131px;
+        margin-left: 7px
+    }
+
+    .SDpr {
+        position: relative
+    }
+
+    .SDnred {
+        color: red;
+        margin-left: 100px
+    }
+
+    .SDmt10 {
+        margin-top: 10px
+    }
+
 </style>

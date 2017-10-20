@@ -1,11 +1,11 @@
 <template>
-<div class="table">
-<div class="crumbs">
+<div id="tableMM">
+<!-- <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-my-shezhi"></i> 组织架构</el-breadcrumb-item>
                  <el-breadcrumb-item class='ss'>菜单管理</el-breadcrumb-item>
             </el-breadcrumb>
-  </div>
+  </div> -->
         <div  class='addMenuTitle' >
         <h3 class='menuH2'>菜单管理</h3>
          <el-button type="primary" size="mid" class='menubuttonAdd' @click="addMenu('aform')">添加菜单</el-button>
@@ -71,6 +71,7 @@
 
   </el-dialog>
 <el-tree
+id='MMtree'
   :data="data2"
   :props="defaultProps"
   @node-click = "cc"
@@ -287,8 +288,8 @@ import { rangeList,create_menuList,put_menuList,delete_menuList,get_level,detail
 },
       renderContent(h, { node, data, store }) {
         return (
-          <span>
-            <span>
+          <span >
+            <span >
               <span>{node.label}</span>
             </span>
             <span style="float: right; margin-right: 20px">
@@ -355,7 +356,7 @@ this.data2 = res.data
   position:relative;
   height:40px;
   background-color: white;
-  margin-top:30px;
+  margin-top:0px;
   padding-top:10px;
   margin-bottom: 5px;
   border-radius: 5px;
@@ -398,5 +399,8 @@ width:180px
 }
 .MM60{
 margin-top:60px
+}
+#MMtree .el-tree-node{
+  white-space: normal;
 }
 </style>
