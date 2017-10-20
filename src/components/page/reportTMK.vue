@@ -84,7 +84,7 @@
                 </div>
                 <IEcharts :option="line" style='height:400px;width:100%;float:left'></IEcharts>
                 <div id="tableRTMK2" style='width: 90%;margin:0 auto'>
-                    <el-table :data="resourceData" border show-summary style="width: 100%">
+                    <el-table :data="resourceCMData" border show-summary style="width: 100%">
                         <el-table-column prop="date" label="日期">
                         </el-table-column>
                         <el-table-column prop="newResources" label="新资源">
@@ -342,6 +342,7 @@
                 pagesize3: 7, //默认每页
                 total3: 0, //总页数
                 ccs: [],
+                resourceCMData:[],
                 resourceData: [],
                 SAData: [{rank1:'第一名',rank2:'第二名',rank3:'第三名',rank4:'第四名',rank5:'第五名',rank6:'第六名',rank7:'第七名',rank8:'第八名',rank9:'第九名',rank10:'第十名'},
                 {rank1:'张一',rank2:'张聪',rank3:'汪苏泷',rank4:'第四名',rank5:'第五名',rank6:'第六名',rank7:'第七名',rank8:'第八名',rank9:'第九名',rank10:'第十名'},
@@ -509,8 +510,8 @@
     
                         this.valueCM2 = ''
                     }
-                    this.getCM1Data();
-                    // this.getCM2Data();                    
+                    // this.getCM1Data();
+                    this.getCM2Data();                    
                 },
                 getCM1Data() {//折线图
                     let para = {
@@ -569,7 +570,7 @@
                     let a = res.data;
                     let c = res.last_page * this.pagesize;
                     this.total = parseInt(c);
-                    this.resourceData = a;
+                    this.resourceCMData = a;
                     })
                 },
                 // handleCommandCM(command) {//最近一周切换
