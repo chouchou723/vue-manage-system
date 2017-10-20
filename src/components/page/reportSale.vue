@@ -1066,7 +1066,10 @@
     #tableSale2 .el-table .cell {
         padding-left: 0;
         padding-right: 0;
+    }
+    #tableSale2 .el-table th>div{
         background: #f2f2f2
+
     }
     /* #tableRSale1 .el-table__footer .gutter {
             display: none

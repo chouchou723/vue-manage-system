@@ -917,7 +917,6 @@
         #tableRChange .el-table .cell {
             padding-left: 0;
             padding-right: 0;
-            background: #f2f2f2
         }
     
         #tableRChange1 .el-table td,
@@ -930,7 +929,6 @@
         #tableRChange1 .el-table .cell {
             padding-left: 0;
             padding-right: 0;
-            background: #f2f2f2
         }
         #tableRChange2 .el-table td,
         #tableRChange2 .el-table th:not(.gutter) {
@@ -942,7 +940,6 @@
         #tableRChange2 .el-table .cell {
             padding-left: 0;
             padding-right: 0;
-            background: #f2f2f2
         }
         #tableRChange3 .el-table td,
         #tableRChange3 .el-table th:not(.gutter) {
@@ -954,7 +951,6 @@
         #tableRChange3 .el-table .cell {
             padding-left: 0;
             padding-right: 0;
-            background: #f2f2f2
         }
         #tableRChange4 .el-table td,
         #tableRChange4 .el-table th:not(.gutter) {
@@ -966,6 +962,9 @@
         #tableRChange4 .el-table .cell {
             padding-left: 0;
             padding-right: 0;
+        }
+        #tableRChange .el-table th>div,  #tableRChange4 .el-table th>div, #tableRChange3 .el-table th>div, #tableRChange2 .el-table th>div,
+        #tableRChange1 .el-table th>div{
             background: #f2f2f2
         }
         /* #tableRChange1 .el-table__footer .gutter {

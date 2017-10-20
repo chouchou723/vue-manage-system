@@ -781,7 +781,6 @@
         #tableRTMK .el-table .cell {
             padding-left: 0;
             padding-right: 0;
-            background: #f2f2f2
         }
     
         #tableRTMK1 .el-table td,
@@ -806,8 +805,12 @@
         #tableRTMK2 .el-table .cell {
             padding-left: 0;
             padding-right: 0;
-            background: #f2f2f2
         }
+        #tableRTMK .el-table th>div,#tableRTMK2 .el-table th>div{
+
+        background: #f2f2f2
+        }
+        
         /* #tableRTMK1 .el-table__footer .gutter {
                 display: none
             }
