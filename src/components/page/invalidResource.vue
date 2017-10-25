@@ -215,7 +215,7 @@
 
 </script>
 <style>
-    #table3IR .el-table td,
+    /* #table3IR .el-table td,
     #table3IR .el-table th:not(.gutter) {
         padding: 1px;
         text-align: center
@@ -225,7 +225,7 @@
     #table3IR .el-table .cell {
         padding-left: 0;
         padding-right: 0;
-    }
+    } */
 
     .nicknameSpanI:hover {
         cursor: pointer;

@@ -166,7 +166,7 @@ export default {
 }
 </script>
 <style>
-#table3AA .el-table td,
+/* #table3AA .el-table td,
 #table3AA .el-table th:not(.gutter) {
     padding: 1px;
     text-align: center
@@ -176,7 +176,7 @@ export default {
 #table3AA .el-table .cell {
     padding-left: 0;
     padding-right: 0;
-}
+} */
 
 .nicknameSpanAA:hover {
     cursor: pointer;

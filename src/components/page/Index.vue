@@ -15,7 +15,7 @@
                     </h3>
                 </div>
                 <div style='margin-left:10px;width:100px;position:absolute;top:12px;left:150px' v-if='code=="tmk_m"'>
-                    <el-select v-model="value1" size='small' clearable placeholder="选择TMK" @change="updateList">
+                    <el-select v-model="value1" size='small'  placeholder="选择TMK" @change="updateList">
                         <el-option v-for="item in tmks" :key="item.key" :label="item.label" :value="item.key">
                         </el-option>
                     </el-select>
@@ -256,13 +256,13 @@
                         日数据对比统计
                     </h3>
                     <div style='width:100px;margin-right:10px' v-if="code.includes('cc_c')">
-                            <el-select v-model="valueR" size='small' clearable placeholder="选择校区" @change="updateListGetCC">
+                            <el-select v-model="valueR" size='small'  placeholder="选择校区" @change="updateListGetCC">
                                     <el-option v-for="item in optionR" :key="item.id" :label="item.title" :value="item.id">
                                         </el-option>
                             </el-select>
                         </div>
                     <div style='width:100px;' v-if="code =='cc_m'||code.includes('cc_c')">
-                            <el-select v-model="valueCC" size='small' clearable placeholder="选择CC" @change="updateListCC">
+                            <el-select v-model="valueCC" size='small'  placeholder="选择CC" @change="updateListCC">
                                 <el-option v-for="item in ccs" :key="item.aid" :label="item.uname" :value="item.aid">
                                 </el-option>
                             </el-select>
@@ -459,13 +459,13 @@
                     </h3>
                 </div>
                 <div style='width:100px;position:absolute;top:10px;right:120px' v-if="code.includes('teach_c')">
-                    <el-select v-model="valueTeachR" size='small' clearable placeholder="选择校区" @change="updateListGetTeach">
+                    <el-select v-model="valueTeachR" size='small'  placeholder="选择校区" @change="updateListGetTeach">
                             <el-option v-for="item in optionR" :key="item.id" :label="item.title" :value="item.id">
                                 </el-option>
                     </el-select>
                 </div>
                 <div style='margin-left:10px;width:100px;position:absolute;top:10px;right:10px' v-if="code.includes('teach_c')||code.includes('teach_m')">
-                    <el-select v-model="valueTeach" size='small' clearable placeholder="选择老师" @change="updateList">
+                    <el-select v-model="valueTeach" size='small'  placeholder="选择老师" @change="updateList">
                         <el-option v-for="item in teachersName" :key="item.aid" :label="item.uname" :value="item.aid">
                         </el-option>
                     </el-select>
@@ -572,13 +572,13 @@
                     </h3>
                 </div>
                 <div style='width:100px;position:absolute;top:10px;right:120px' v-if="code.includes('teach_c')">
-                    <el-select v-model="valueTeachR1" size='small' clearable placeholder="选择校区" @change="updateListGetTeach1">
+                    <el-select v-model="valueTeachR1" size='small'  placeholder="选择校区" @change="updateListGetTeach1">
                             <el-option v-for="item in optionR" :key="item.id" :label="item.title" :value="item.id">
                                 </el-option>
                     </el-select>
                 </div>
                 <div style='margin-left:10px;width:100px;position:absolute;top:10px;right:10px' v-if="code.includes('teach_c')||code.includes('teach_m')">
-                    <el-select v-model="valueTeach1" size='small' clearable placeholder="选择老师" @change="updateList">
+                    <el-select v-model="valueTeach1" size='small'  placeholder="选择老师" @change="updateList">
                         <el-option v-for="item in teachersName1" :key="item.aid" :label="item.uname" :value="item.aid">
                         </el-option>
                     </el-select>
@@ -804,13 +804,13 @@
                     </h3>
                 </div>
                 <div style='width:100px;float:left;margin-top:14px;margin-left:10px;' v-if="code.includes('teach_c')">
-                    <el-select v-model="valueTeachR2" size='small' clearable placeholder="选择校区" @change="updateListGetTeach2">
+                    <el-select v-model="valueTeachR2" size='small'  placeholder="选择校区" @change="updateListGetTeach2">
                             <el-option v-for="item in optionR" :key="item.id" :label="item.title" :value="item.id">
                                 </el-option>
                     </el-select>
                 </div>
                 <div style='width:100px;float:left;margin-top:14px;margin-left:10px;' v-if="code.includes('_c')||code.includes('_m')">
-                    <el-select v-model="valueTeach2" size='small' clearable placeholder="选择老师" @change="updateListClass" >
+                    <el-select v-model="valueTeach2" size='small'  placeholder="选择老师" @change="updateListClass" >
                         <el-option v-for="item in teachersName2" :key="item.aid" :label="item.uname" :value="item.aid">
                         </el-option>
                     </el-select>
@@ -907,7 +907,7 @@
             line: {
                 color: ["#F7BA2A", "#16b8be", "#ed42b3"],
                 title: {
-                    text: '客户发展趋势图',
+                    text: '资源发展趋势图',
                     padding: [15, 5, 5, 5]
                 },
                 tooltip: {
@@ -997,11 +997,14 @@
                 }
                 getAllCCList(token,para).then((res) => {
                     this.optionsCC = res.data;
+                    // console.log(res.data)
+                    this.valueCC=res.data[0].aid;
                     this.optionsCC.unshift({
                         aid: 0,
                         uname: '全部CC'
                     })
-                })
+                }).then(()=>{
+
                 let para1 = {
                     school_id:this.valueR,
                     cc_id: this.valueCC
@@ -1009,6 +1012,7 @@
                 getCCindex(token,para1).then(res => {
                     this.changeNumberCC(res)
                     this.changeChartCC(res)
+                })
                 })
             },
             changeNumber(data) { //TMK
@@ -1106,7 +1110,11 @@
                 }
                 getTeacherList(token,para).then((res) => { //获取老师
                     this.teachersName = res.data;
-
+                    this.valueTeach= res.data[0].aid;
+                    this.teachersName.unshift({
+                        aid: '0',
+                        uname: '全部老师'
+                    })
                 })
                 // let para1 = {
                 //     school_id:this.valueR,
@@ -1124,7 +1132,12 @@
                 }
                 getTeacherList(token,para).then((res) => { //获取老师
                     this.teachersName1 = res.data;
-
+                    
+                    this.valueTeach1= res.data[0].aid;
+                    this.teachersName1.unshift({
+                        aid: '0',
+                        uname: '全部老师'
+                    })
                 })
                 // let para1 = {
                 //     school_id:this.valueR,
@@ -1142,7 +1155,11 @@
                 }
                 getTeacherList(token,para).then((res) => { //获取老师
                     this.teachersName2 = res.data;
-
+                    this.valueTeach2= res.data[0].aid
+                    this.teachersName2.unshift({
+                        aid: '0',
+                        uname: '全部老师'
+                    })
                 })
                 // let para1 = {
                 //     school_id:this.valueR,
@@ -1181,12 +1198,22 @@
                     this.changeChart(res)
                 })
             }
-            if (this.code.includes('cc')) {
+            if (this.code.includes('cc')||this.code.includes('cc_m')) {
                 getCCindex(token).then(res => {
                     this.changeNumberCC(res)
                     this.changeChartCC(res)
                 })
             }
+            // else if(this.code.includes('cc_c')){
+            //     let para1 = {
+            //         school_id:'',
+            //         cc_id: 0
+            //     }
+            //     getCCindex(token,para1).then(res => {
+            //         this.changeNumberCC(res)
+            //         this.changeChartCC(res)
+            //     })
+            // }
             if (this.code.includes('cc') || this.code.includes('tmk')) { //获取任务提醒
                 let para = {
                     date: new Date().toLocaleDateString()
@@ -1209,7 +1236,11 @@
                         simple:1
                     }
                     campusList(cam, token).then((res) => { //获取校区
-                    this.optionR = res.data
+                    this.optionR = res.data;
+                    this.valueTeachR2 = res.data[0].id
+                    this.valueTeachR1 = res.data[0].id
+                    this.valueTeachR = res.data[0].id
+                    this.valueR = res.data[0].id
                 })
                 }
             this.contGet = setInterval(this.getM, 600000)
@@ -1223,28 +1254,38 @@
             })
             if (this.code == 'tmk_m') {
                 getTMK(token).then((res) => {
-                    this.tmks = res.data.filter(item=>{
-                        return item.label !=JSON.parse(user).uname
-                    });
+                    this.tmks = res.data
                     this.tmks.unshift({
                         key: '0',
                         label: '全部TMK'
                     })
+                }).then(()=>{
+                    this.value1 = this.aid+'';
                 })
             }
             if (this.code == 'cc_m'||this.code.includes('cc_c')) {
-                getAllCCList(token).then((res) => {
-                    this.ccs = res.data.filter(item=>{
-                        return item.uname !=JSON.parse(user).uname
-                    });
+                // if(this.code.includes('_c')){//经理以上初始都只有全部cc
+                //     this.ccs.unshift({
+                //         aid: '0',
+                //         uname: '全部CC'
+                //     })
+                //     this.valueCC ='0';
+                // }else{
+                getAllCCList(token).then((res) => {//主管包括自己
+                    this.ccs = res.data
                     this.ccs.unshift({
                         aid: '0',
                         uname: '全部CC'
                     })
-                    // this.valueCC = '0'
+                }).then(()=>{
+                    this.valueCC = this.aid;
+                    
                 })
+                // }
             }
             if(this.code.includes('teach')){
+                if(!this.code.includes('_c')){
+
                 getTeachIndex(token).then(res=>{
                     this.teachIndex = res.data
                 })
@@ -1255,12 +1296,13 @@
                 getDateClass(token,para).then(res=>{
                     this.ssData = res.data
                 })
+                }else{
+
+                }
             }
-            if(this.code=='teach_c'||this.code=='teach_m'){
+            if(this.code=='teach_m'){
                 getTeacherList(token).then((res) => { //获取老师
-                    let a = res.data.filter(item=>{
-                        return item.uname !=JSON.parse(user).uname
-                    });;
+                    let a = res.data
                     a.unshift({
                         aid: '0',
                         uname: '全部老师'
@@ -1268,8 +1310,28 @@
                     this.teachersName = a;
                     this.teachersName1 = a;
                     this.teachersName2 = a;
+                }).then(()=>{
+                    this.valueTeach = this.aid;
+                    this.valueTeach1 = this.aid;
+                    this.valueTeach2 = this.aid;
                 })
             }
+            // if(this.code=='teach_c'){
+            //     getTeacherList(token).then((res) => { //获取老师
+            //         let a = res.data
+            //         a.unshift({
+            //             aid: '0',
+            //             uname: '全部老师'
+            //         })
+            //         this.teachersName = a;
+            //         this.teachersName1 = a;
+            //         this.teachersName2 = a;
+            //     }).then(()=>{
+            //         // this.valueTeach = this.aid;
+            //         // this.valueTeach1 = this.aid;
+            //         // this.valueTeach2 = this.aid;
+            //     })
+            // }
         },
         beforeDestroy() {
             clearInterval(this.contGet)
@@ -1361,7 +1423,7 @@
         font-size: 1.17em;
         color: black;
     }
-    .datec .el-date-editor--daterange.el-input {
+    .dateIndex .el-date-editor--daterange.el-input {
         width: 187px
     }
     .echarts .drop .el-dropdown {

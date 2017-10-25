@@ -44,7 +44,12 @@
         <el-table v-for="depart in departs" :data="depart._child" border style="width: 100%;" ref='table'>
             <el-table-column prop="full_name" :label="depart.full_name +'   (' + depart.count + '人)'" id='level'>
                 <template scope="scope">
-                    <span>{{scope.row.full_name}}&nbsp&nbsp&nbsp({{scope.row.count}}人)</span>
+                    <span v-if='scope.row.pid==0' style='padding-left:40px;'>{{scope.row.full_name}}&nbsp&nbsp&nbsp({{scope.row.count}}人)</span>
+                    <span  v-if='scope.row.pid!==0&&scope.row.pid==depart._child[0].job_id' style='padding-left:60px;'>{{scope.row.full_name}}&nbsp&nbsp&nbsp({{scope.row.count}}人)</span>
+                    <span v-else style='padding-left:80px;'><span v-if='scope.row.pid!==0'>{{scope.row.full_name}}&nbsp&nbsp&nbsp({{scope.row.count}}人)</span></span>
+
+                    <!-- <span  v-if='scope.row.pid!==0&&scope.row.pid==depart._child[0].job_id' style='padding-left:15px;'>{{scope.row.full_name}}&nbsp&nbsp&nbsp({{scope.row.count}}人)</span>
+                    <span  v-if="scope.row.pid!==0&&scope.row.pid!=depart._child[0].job_id&&depart._child.every(item=>{return scope.row.job_id!=item.pid})" style='padding-left:30px;'>{{scope.row.full_name}}&nbsp&nbsp&nbsp({{scope.row.count}}人)</span> -->
                 </template>
             </el-table-column>
             <el-table-column width='140px' label="操作">
@@ -77,11 +82,22 @@
                     callback();
                 }
             }
+            var isJob = (rule, value, callback) => {
+                var myreg = /^[\u4e00-\u9fa5a-zA-Z0-9]+$/;
+                if (value == '') {
+                    callback('请输入职位名称')
+                } else if (!myreg.test(value)) {
+                    callback('请输入有效的职位名称');
+                } else {
+                    callback();
+                }
+            }
             return {
                 rules2: {
                     full_name: [{
                         required: true,
-                        message: '请输入职位名称',
+                        validator: isJob,
+                        // message: '请输入职位名称',
                         trigger: 'blur'
                     }],
                     did: [{
@@ -122,7 +138,7 @@
         methods: {
             resetD(formName) { //重置表单
                 this.in = '';
-                this.levels = [];
+               
                 this.form = {
                     full_name: '',
                     did: '',
@@ -134,24 +150,33 @@
                     status: '1'
                 }
                 this.$refs[formName].resetFields();
+                this.levels = [];
             },
             updateLevel() {
-                let para = {
-                    did: this.form.did
-                }
-                departList(para, token).then(res => {
-                    // console.log(res)
-                    if(res.data[0]._child){
+                if(this.form.did!=''){
 
-                    this.levels = res.data[0]._child.map(item => {
-                        return {
-                            value: item.job_id,
-                            label: item.full_name
-                        }
-                    })
+                    let para = {
+                        did: this.form.did
                     }
-                    // console.log(this.levels)
-                })
+                    departList(para, token).then(res => {
+                        // console.log(res)
+                        if(res.data[0]._child){
+    
+                        this.levels = res.data[0]._child.map(item => {
+                            return {
+                                value: item.job_id,
+                                label: item.full_name
+                            }
+                        })
+                       
+                        }
+                        // console.log(this.levels)
+                    }).then(()=>{
+                    this.levels.unshift({value:0,label:'无'})
+                    })
+                }else{
+                   
+                }
 
             },
             createCh() { //点击创建按钮
@@ -287,7 +312,7 @@
                     })
                     this.$message({
                             type: 'success',
-                            message: '修改成功!'
+                            message: '添加成功!'
                         });
                 this.dialogFormVisible = false;                        
                         }else{
@@ -449,5 +474,12 @@
     .JMred {
         color: red
     }
-
+    .jobtable .el-table th:first-child{
+        text-align: left;
+        padding:5px 5px 5px 20px;
+    }
+    .jobtable .el-table td:first-child{
+        text-align: left;
+        /* padding:5px 5px 5px 25px; */
+    }
 </style>

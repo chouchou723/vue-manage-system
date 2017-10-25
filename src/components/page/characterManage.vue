@@ -12,8 +12,8 @@
         </div>
         <div>
             <el-dialog :title="alter" :visible.sync="dialogFormVisible" :close-on-click-modal="no" top='10%' show-close  class='charDialog' @close='resetTree'>
-                <el-form :model="form">
-                    <el-form-item label="角色名称" :label-width="formLabelWidth">
+                <el-form :model="form" ref="form" :rules="rules2">
+                    <el-form-item label="角色名称" :label-width="formLabelWidth" prop="name">
                         <el-input v-model="form.name" auto-complete="off" placeholder='请输入角色名称' class='CM200'></el-input>
                     </el-form-item>
                 </el-form>
@@ -50,17 +50,35 @@ import {
 export default {
     
     data() {
+        var isJob = (rule, value, callback) => {
+                var myreg = /^[\u4e00-\u9fa5a-zA-Z0-9]+$/;
+                if (value == '') {
+                    callback('请输入角色名称')
+                } else if (!myreg.test(value)) {
+                    callback('请输入有效的角色名称');
+                } else {
+                    callback();
+                }
+            }
         return {
             loading2:true,
             charData: [],
             dialogFormVisible: false,
-            formLabelWidth: '70px',
+            formLabelWidth: '80px',
             in : '',
             no: false,
             form: {
                 roleid: '',
                 name: ''
             },
+            rules2: {
+                name: [{
+                        required: true,
+                        validator: isJob,
+                        // message: '请输入职位名称',
+                        trigger: 'blur'
+                    }],
+                },
             data2: [],
             defaultProps: {
                 children: '_child',
@@ -132,37 +150,44 @@ export default {
             let a = s.join(',');
             let b = this.form.name;
             let c = this.in;
-            if (a && b && c === '') {
+            this.$refs['form'].validate((valid) => {
+                if(valid){
 
-                let para = {
-                        name: b,
-                        module_id: a
-                    } //number要替换
-                create_character(para, token).then((res) => {
-                    if(res.code==0){
-                        this.$message.success('创建成功')
-                    character(token).then((res) => {
-                        this.charData = res.data;
-                    })
-                this.dialogFormVisible = false;
+                    if (a && b && c === '') {
+        
+                        let para = {
+                                name: b,
+                                module_id: a
+                            } //number要替换
+                        create_character(para, token).then((res) => {
+                            if(res.code==0){
+                                this.$message.success('创建成功')
+                            character(token).then((res) => {
+                                this.charData = res.data;
+                            })
+                        this.dialogFormVisible = false;
+                            }
+                        });
+                    } else if (a && b && c !== '') {
+                        let para = {
+                                role_id: this.form.roleid,
+                                name: b,
+                                module_id: a
+                            } 
+                        put_character(para, token).then((res) => {
+                            if(res.code==0){
+                                this.$message.success('修改成功')                        
+                            character(token).then((res) => {
+                                this.charData = res.data;
+                            })
+                        this.dialogFormVisible = false;
+                            }
+                        });
+                    }else{
+                        this.$message.info('请勾选角色权限')
                     }
-                });
-            } else if (a && b && c !== '') {
-                let para = {
-                        role_id: this.form.roleid,
-                        name: b,
-                        module_id: a
-                    } 
-                put_character(para, token).then((res) => {
-                    if(res.code==0){
-                        this.$message.success('修改成功')                        
-                    character(token).then((res) => {
-                        this.charData = res.data;
-                    })
-                this.dialogFormVisible = false;
-                    }
-                });
-            }
+                }
+            })
 
         }
     },
@@ -252,4 +277,8 @@ width:200px
 .CMtree{
 height:550px;overflow:auto
 }
+.tableCharacter .el-table th:first-child, .tableCharacter .el-table td:first-child{
+        text-align: left;
+        padding:5px 5px 5px 20px;
+    }
 </style>

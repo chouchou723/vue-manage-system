@@ -83,17 +83,26 @@ export const getIndexData = (token,params) => {
     axios.defaults.headers.common['Authorization'] = token.Authorization;
     return axios.get(`${base}/api/v1/customer/forms`, { params: params }).then(res => res.data);
 };
-//获取资源统计表数据
+//获取资源统计表折线图数据
 export const gettmkFormsPiclData = (token,params) => {
     axios.defaults.headers.common['Authorization'] = token.Authorization;
     return axios.get(`${base}/api/v1/reportForms/tmkFormsPic`, { params: params }).then(res => res.data);
 };
-//获取资源发展表数据
+//获取资源统计表表格数据
 export const gettmkFormsTableData = (token,params) => {
     axios.defaults.headers.common['Authorization'] = token.Authorization;
     return axios.get(`${base}/api/v1/reportForms/tmkFormsTable`, { params: params }).then(res => res.data);
 };
-
+//获取资源统计表饼图数据
+export const gettmkFormsSource = (token,params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/reportForms/tmkFormsSource`, { params: params }).then(res => res.data);
+};
+//获取资源发展表折线图数据
+export const gettmkFormsDevelop = (token,params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/reportForms/tmkFormsDevelop`, { params: params }).then(res => res.data);
+};
 
 //获取部门
 export const department = (token) => {

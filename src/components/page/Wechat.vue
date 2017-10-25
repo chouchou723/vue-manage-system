@@ -56,7 +56,7 @@
 <script>
 var user, token, wechat;
 import {
-    qCode
+    qCode,getUserinfo
 } from '../../api/api';
 export default {
     data() {
@@ -76,15 +76,27 @@ export default {
                     if (res.code == 0) {
 
                         this.active = 3;
-                    } 
+                        this.$message.success('更换绑定成功')
+                    }
                     return res
                 }).then(res=>{
                      if(res.code == 0){
-                                localStorage.removeItem('user');
-                                this.$router.go();
-                                this.$router.push('/login');
-                            // this.$router.push('/Index');
-                            }else {
+                        getUserinfo(token).then(u => {
+                            let {
+                                data
+                            } = u;
+                            data.token = token;
+                            localStorage.removeItem('user');
+                            localStorage.setItem('user', JSON.stringify(data));
+                        }).then(()=>{
+                            setTimeout(function() {
+                                window.location.reload();
+                }, 1000);
+                           
+                        })
+                                // this.$router.go();
+                                // this.$router.push('/login');
+                    }else {
                         this.$message({
                             type: 'error',
                             message: res.message
@@ -100,7 +112,24 @@ export default {
                     if (res.code == 0) {
 
                         this.active = 2;
-                    } else {
+                        this.$message.success('绑定成功')
+                    }
+                    return res
+                }).then(res=>{
+                     if(res.code == 0){
+                        getUserinfo(token).then(u => {
+                            let {
+                                data
+                            } = u;
+                            data.token = token;
+                            localStorage.removeItem('user');
+                            localStorage.setItem('user', JSON.stringify(data));
+                        }).then(()=>{
+                            setTimeout(function() {
+                                window.location.reload();
+                }, 1000);
+                        })
+                    }else {
                         this.$message({
                             type: 'error',
                             message: res.message

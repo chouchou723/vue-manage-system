@@ -225,7 +225,7 @@ export default {
     border-color: #32a4d3;
 }
 
-#table3PL .el-table td,
+/* #table3PL .el-table td,
 #table3PL .el-table th:not(.gutter) {
     padding: 5px 5px;
     text-align: center
@@ -235,7 +235,7 @@ export default {
 #table3PL .el-table .cell {
     padding-left: 0;
     padding-right: 0;
-}
+} */
 
 #table3PL .classDel {
     color: #e95c5c;

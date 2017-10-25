@@ -337,7 +337,7 @@ export default {
 #tableRV{
     position: relative;
 }
-#tableRV .el-table td,
+/* #tableRV .el-table td,
 #tableRV .el-table th:not(.gutter) {
     padding: 5px 5px;
     text-align: center
@@ -347,7 +347,7 @@ export default {
 #tableRV .el-table .cell {
     padding-left: 0;
     padding-right: 0;
-}
+} */
 /* 
 .redwarn .el-message-box__header {
     background-color: #e95c5c;
