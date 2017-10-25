@@ -934,7 +934,7 @@
 
 </script>
 <style>
-    #table2AT .el-table td,
+    /* #table2AT .el-table td,
     #table2AT .el-table th:not(.gutter) {
         padding: 1px;
         text-align: center
@@ -944,7 +944,7 @@
     #table2AT .el-table .cell {
         padding-left: 0;
         padding-right: 0;
-    }
+    } */
 
 
     .nicknameSpanAT {

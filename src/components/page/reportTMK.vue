@@ -6,10 +6,11 @@
                 </el-breadcrumb>
             </div> -->
             <!-- 合同变更统计 -->
-            <div style="width: 63%;float:left;background: white;position:relative;height:auto;border-top-left-radius:5px;">
-                <div class="newResourceAn" style="position:relative;margin-top:10px;height:70px;border-bottom:1px solid gainsboro">
+            <div style='display:flex'>
+            <div style="width: 62.5%;margin-right:0.5%;float:left;background: white;position:relative;height:auto;border-radius:5px;">
+                <div class="newResourceAn" style="position:relative;padding-top:10px;height:70px;border-bottom:1px solid gainsboro;background:#fafafa">
                     <div style='margin-left:10px;width:100px;float:right;margin-right:5px' v-if='code.includes("_m")'>
-                        <el-select class='circleSelect' v-model="valueCM1" size='small' clearable :placeholder="code.includes('cc')?'选择CC':code.includes('tmk')?'选择TMK':'选择老师'" @change="updateListCM">
+                        <el-select class='circleSelect' v-model="valueCM1" size='small' clearable :placeholder="code.includes('cc')?'选择CC':code.includes('tmk')?'选择TMK':'选择老师'" @change="updateListCM(4)">
                             <el-option v-for="item in ccs" :key="item.key" :label="item.label" :value="item.key">
                             </el-option>
                         </el-select>
@@ -25,12 +26,7 @@
                             <span>工作量</span>
                         </h4>
                     </div>
-                    <div style='margin-left:10px;width:110px;float:left'>
-                            <el-select v-model="valueCM6" size='small' clearable placeholder="最近一周" @change="updateListCM">
-                                    <el-option label="最近一周" value="lastweek"></el-option>
-                                    <el-option label="最近一个月" value="lastmonth"></el-option>
-                            </el-select>
-                        </div>
+                   
                     <!-- <div class='drop' style='float:left;width:111px;margin-top:4px;margin-left:4px'>
                         <el-dropdown @command="handleCommandCM">
                             <span class="el-dropdown-link">
@@ -55,24 +51,31 @@
                             </el-select>
                         </div> -->
                         <div style="clear:both"></div>
-                   
-                    <div class='datec' style='float:left;margin-left:10px'>
-                        <el-select v-model="valueCM3" size='small' placeholder="切换日周月" style='width:75px'>
-                            <el-option label="按日" value="1"></el-option>
-                            <el-option label="按周" value="2"></el-option>
-                            <el-option label="按月" value="3"></el-option>
-                        </el-select>
-                        <el-date-picker v-model="valueCM2" type="daterange" size='small' placeholder="选择日期范围" @change="updateListCM">
+                        <div style='margin-left:10px;width:110px;float:left'>
+                                <el-select v-model="valueCM6" size='small'  placeholder="最近一周" @change="updateListCM(1)">
+                                        <el-option label="最近一周" value="lastweek"></el-option>
+                                        <el-option label="最近一个月" value="lastmonth"></el-option>
+                                </el-select>
+                            </div>
+                            <div style='margin-left:10px;width:75px;float:left'>
+                                <el-select v-model="valueCM3" size='small' placeholder="切换日周月" style='width:75px'  @change="updateListCM(3)">
+                                    <el-option label="按日" value="day"></el-option>
+                                    <el-option label="按周" value="week"></el-option>
+                                    <el-option label="按月" value="month"></el-option>
+                                </el-select>
+                            </div>
+                    <div class='dateReportT' style='float:left;'>  
+                        <el-date-picker v-model="valueCM2" type="daterange" size='small' :clearable='backface' placeholder="选择日期范围" @change="updateListCM(2)">
                         </el-date-picker>
                     </div>
                     <div style='width:140px;float:left;margin-left:10px'>
-                            <el-select v-model="valueCM4" size='small' clearable placeholder="选择校区" @change="updateListCM">
+                            <el-select v-model="valueCM4" size='small' clearable placeholder="选择校区" @change="updateListCM(4)">
                                 <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
                                 </el-option>
                             </el-select>
                         </div>
                         <div style='width:140px;float:left;margin-left:10px'>
-                                <el-select v-model="valueCM5" size='small' clearable placeholder="选择渠道" @change="updateListCM" style='width:115px'>
+                                <el-select v-model="valueCM5" size='small' clearable placeholder="选择渠道" @change="updateListCM(4)" style='width:115px'>
                                     <el-option v-for="item in options1" :key="item.id" :label="item.names" :value="item.id">
                                     </el-option>
                                 </el-select>
@@ -82,20 +85,20 @@
                     <span style="display:inline-block;vertical-align: middle;"><img src="../../../static/img/info.png" width='20'alt=""></span>
                     <span style="color:grey;line-height:20px;">根据发展客户的次数绘制</span>
                 </div>
-                <IEcharts :option="line" style='height:400px;width:100%;float:left'></IEcharts>
+                <IEcharts :option="line" style='height:460px;width:100%;float:left'></IEcharts>
                 <div id="tableRTMK2" style='width: 90%;margin:0 auto'>
-                    <el-table :data="resourceData" border show-summary style="width: 100%">
-                        <el-table-column prop="date" label="日期">
+                    <el-table :data="resourceCMData" border  style="width: 100%">
+                        <el-table-column prop="day" label="日期">
                         </el-table-column>
                         <el-table-column prop="newResources" label="新资源">
                         </el-table-column>
                         <el-table-column prop="newCall" label="沟通量">
                         </el-table-column>
-                        <el-table-column prop="invitation" label="资源激活">
+                        <el-table-column prop="activation" label="资源激活">
                         </el-table-column>
-                        <el-table-column prop="newResources" label="无效认证">
+                        <el-table-column prop="invalid" label="无效认证">
                         </el-table-column>
-                        <el-table-column prop="newCall" label="学员回访">
+                        <el-table-column prop="returnCall" label="学员回访">
                         </el-table-column>
                     </el-table>
     
@@ -107,8 +110,8 @@
     
             </div>
             <!-- 新资源渠道 -->
-            <div style="width: 37%;float:left;background: white;position:relative;height:auto;border-top-right-radius:5px;">
-                    <div class="newResourceAn" style="position:relative;margin-top:10px;height:70px;border-bottom:1px solid gainsboro">
+            <div style="width: 37%;float:left;background: white;position:relative;height:auto;border-radius:5px;">
+                    <div class="newResourceAn" style="position:relative;padding-top:10px;height:70px;border-bottom:1px solid gainsboro;background:#fafafa">
                         <div style='margin-left:10px;width:100px;float:right;margin-right:5px' v-if='code.includes("_m")'>
                             <el-select class='circleSelect' v-model="valueRE4" size='small' clearable :placeholder="code.includes('cc')?'选择CC':code.includes('tmk')?'选择TMK':'选择老师'" @change="updateListRE">
                                 <el-option v-for="item in ccs" :key="item.key" :label="item.label" :value="item.key">
@@ -150,17 +153,16 @@
                                 </el-select>
                             </div> -->
                             <div style="clear:both"></div>
-                        <div style='width:100px;float:left;margin-left:10px'>
-                            <el-date-picker v-model="valueRE1" type="week" size='small' placeholder="周选择" @change="updateListRE" style='width:100px'>
+                        <div style='float:left;margin-left:10px'>
+                            <el-date-picker v-model="valueRE1" type="week" size='small' :clearable='backface' placeholder="周选择" :picker-options="dateRangeOptions1" @change="updateListRE(1)" style='width:100px'>
                                 </el-date-picker>
                         </div>
-                        <div class='datec' style='float:left;margin-left:10px'>
-                          
-                            <el-date-picker v-model="valueRE2" type="month" size='small' placeholder="月选择" @change="updateListRE" style='width:100px'>
+                        <div  style='float:left;margin-left:10px'>
+                            <el-date-picker v-model="valueRE2" type="month" size='small' :clearable='backface' placeholder="月选择" @change="updateListRE(2)" style='width:100px'>
                             </el-date-picker>
                         </div>
                         <div style='width:140px;float:left;margin-left:10px'>
-                                <el-select v-model="valueRE3" size='small' clearable placeholder="选择校区" @change="updateListRE">
+                                <el-select v-model="valueRE3" size='small' clearable placeholder="选择校区" @change="updateListRE(3)">
                                     <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
                                     </el-option>
                                 </el-select>
@@ -170,18 +172,18 @@
                         <span style="display:inline-block;vertical-align: middle;"><img src="../../../static/img/info.png" width='20'alt=""></span>
                         <span style="color:grey;line-height:20px;">根据新资源的来源渠道绘制</span>
                     </div>
-                    <div style='height:400px;width:100%;float:left;position:relative'>
-                            <IEcharts :option="pie_radius" style="height:400px;width:100%">
+                    <div style='height:460px;width:100%;float:left;position:relative'>
+                            <IEcharts :option="pie_radius" style="height:460px;width:100%">
                             </IEcharts>
         
                         </div>
                     <div id="tableRTMK" style='width: 90%;margin:0 auto'>
                         <el-table :data="resourceData" border show-summary style="width: 100%">
-                            <el-table-column prop="date" label="日期">
+                            <el-table-column prop="names" label="排名">
                             </el-table-column>
-                            <el-table-column prop="newResources" label="人数">
+                            <el-table-column prop="value" label="人数">
                             </el-table-column>
-                            <el-table-column prop="newCall" label="占比">
+                            <el-table-column prop="ratio" label="占比">
                             </el-table-column>
                         </el-table>
         
@@ -192,9 +194,10 @@
                     </div>
         
                 </div>
+                </div>
     <!-- 课耗排行榜 -->
-    <div style="width: 100%;float:left;background: white;margin-top:10px;height:auto" v-if='code.includes("_c")'>
-        <div class="newResourceAn" style="position:relative;margin-top:10px;height:45px;border-bottom:1px solid gainsboro">
+    <div style="width: 100%;float:left;background: white;margin-top:10px;height:auto;border-radius:5px" v-if='code.includes("_c")'>
+        <div class="newResourceAn" style="position:relative;padding-top:10px;height:45px;border-bottom:1px solid gainsboro;background:#fafafa">
 
             <div style='float:left;'>
                 <h4 style='margin-bottom:20px;padding-top:5px;padding-left:10px'>
@@ -230,7 +233,7 @@
                                 </el-option>
                             </el-select>
                         </div>  -->
-            <div class='datec' style='float:left;margin-left:10px'>
+            <div class='dateReportT' style='float:left;margin-left:10px'>
                 <el-select v-model="valueSA1" size='small' clearable placeholder="切换日周月" style='width:75px' @change="updateListSA">
                     <el-option label="本日" value="1"></el-option>
                     <el-option label="本周" value="2"></el-option>
@@ -248,10 +251,10 @@
         </div>
         <div style="width:90%;font-size:12px;height:50px;margin:10px auto">
             <span style="display:inline-block;vertical-align: middle;"><img src="../../../static/img/info.png" width='20'alt=""></span>
-            <span style="color:grey;line-height:20px;" v-if='code.includes("cc")'>根据签单人头数排列</span>
-            <span style="color:grey;line-height:20px;" v-if='code.includes("tmk")'>根据到访人数排列</span>
+            <!-- <span style="color:grey;line-height:20px;" v-if='code.includes("cc")'>根据签单人头数排列</span> -->
+            <span style="color:grey;line-height:20px;">根据到访人数排列</span>
             <div style="margin-top:10px"> <span style="display:inline-block;vertical-align: middle;"><img src="../../../static/img/rank.png" width='20'alt=""></span>
-                <span style="color:grey;line-height:20px;">第十名</span></div>
+                <span style="color:grey;line-height:20px;">我的排名:第十名</span></div>
         </div>
         <div id="tableRTMK1" style="width:90%;margin:0 auto;position:relative">
             <el-radio-group v-model="radio3" @change='getNewRank' style="position:absolute;top:-55px;left:45%" v-if="code.includes('_c')">
@@ -300,6 +303,7 @@
         import {
             gettmkFormsPiclData,
             gettmkFormsTableData,
+            gettmkFormsSource,
             campusList,
             getTMK,
             sourceList
@@ -330,18 +334,27 @@
                 }, {
                     title: '到访量'
                 }],
+                dateRangeOptions1: {
+                    firstDayOfWeek: 1,
+                },
                 code: '',
                 radio3: '2',
                 currentPage: 1, //页数
-                pagesize: 7, //默认每页
+                pagesize: 15, //默认每页
                 total: 0, //总页数
                 currentPage2: 1, //页数
-                pagesize2: 7, //默认每页
+                pagesize2: 15, //默认每页
                 total2: 0, //总页数
                 currentPage3: 1, //页数
-                pagesize3: 7, //默认每页
+                pagesize3: 15, //默认每页
                 total3: 0, //总页数
                 ccs: [],
+                resourceCMData:[{day:'2017-10-01',newResources:10,newCall:5,activation:1,invalid:5,returnCall:7},
+                {day:'2017-10-02',newResources:10,newCall:5,activation:1,invalid:5,returnCall:7},
+                {day:'2017-10-03',newResources:10,newCall:5,activation:1,invalid:5,returnCall:7},
+                {day:'2017-10-04',newResources:10,newCall:5,activation:1,invalid:5,returnCall:7},
+                {day:'2017-10-05',newResources:10,newCall:5,activation:1,invalid:5,returnCall:7},
+                {day:'2017-10-06',newResources:10,newCall:5,activation:1,invalid:5,returnCall:7},],
                 resourceData: [],
                 SAData: [{rank1:'第一名',rank2:'第二名',rank3:'第三名',rank4:'第四名',rank5:'第五名',rank6:'第六名',rank7:'第七名',rank8:'第八名',rank9:'第九名',rank10:'第十名'},
                 {rank1:'张一',rank2:'张聪',rank3:'汪苏泷',rank4:'第四名',rank5:'第五名',rank6:'第六名',rank7:'第七名',rank8:'第八名',rank9:'第九名',rank10:'第十名'},
@@ -351,13 +364,13 @@
                 options1: [],//渠道
                 titleCM: '最近一周',
                 valueCM1: '',
-                valueCM2: '',
-                valueCM3: '1',
+                valueCM2: [],
+                valueCM3: 'day',
                 valueCM4: '',
                 valueCM5: '',
                 valueCM6:'lastweek',//最近一周
                 periodCM: 'w',
-                valueRE1:'',
+                valueRE1:new Date(),
                 valueRE2:'',
                 valueRE3:'',
                 valueRE4:'',
@@ -373,18 +386,18 @@
                     //     },
                     //     padding: [15, 5, 5, 5]
                     // },
-                    dataZoom: [{
-                        startValue: '2017-05-01',
-                        textStyle:{
-                            fontSize:9
-                        }
-                    }, 
-                    {
-                        type: 'inside',
+                    // dataZoom: [{
+                    //     // startValue: '2017-05-01',
+                    //     textStyle:{
+                    //         fontSize:9
+                    //     }
+                    // }, 
+                    // {
+                    //     type: 'inside',
                         
-                        // maxSpan:2
-                        // filterMode: 'filter'
-                    }],
+                    //     // maxSpan:2
+                    //     // filterMode: 'filter'
+                    // }],
                     tooltip: {
                         trigger: 'axis'
                     },
@@ -415,36 +428,43 @@
                     backgroundColor: 'white'
                 },
                 pie_radius: {
-                    color: ["#30b44a", "#da7cbb", "#80b8df", "#1fd9a1","#f27a52",  "#decf00"],
+                    color: ["#30b44a", "#da7cbb", "#80b8df", "#1fd9a1","#f27a52",  "#decf00",
+                    "#CD2626", "#4169E1", "#00FA9A", "#008B8B","#8968CD",  "#858585"],
                     tooltip: {
                         trigger: 'item',
                         formatter: "{b} : {c} ({d}%)"
                     },
-                    legend: {
-                        width:'250px',
-                        orient: 'horizontal',
-                        bottom: 10,
-                        data:[{name:'线上TIN',textStyle:{
-                            width:'50px'
-                        }
-                    },{name:'线下OUT',textStyle:{
-                        width:'50px'
-                        }
-                    },{name:'顺访WI',textStyle:{
-                            width:'50px'
-                        }
-                    },{name:'续费',textStyle:{
-                            padding:[0,20,0,0]
-                        }
-                    },{name:'转介绍',textStyle:{
-                        padding:[0,14,0,0]
-                        }
-                    },{name:'其他',textStyle:{
-                            width:'150px'
-                        }
-                    },]
-                        // data: ["线上TIN", "线下OUT", "顺访WI","续费","转介绍","其他"]
+                    title: {
+                        // text: '客户管理趋势图',
+                        // textStyle: {
+                        //     fontSize: 17
+                        // },
+                        padding: [5, 5, 5, 5]
                     },
+                    legend: {},
+                    //     width:'250px',
+                    //     orient: 'horizontal',
+                    //     bottom: 10,
+                    //     data:[{name:'线上TIN',textStyle:{
+                    //         width:'50px'
+                    //     }
+                    // },{name:'线下OUT',textStyle:{
+                    //     width:'50px'
+                    //     }
+                    // },{name:'顺访WI',textStyle:{
+                    //         width:'50px'
+                    //     }
+                    // },{name:'续费',textStyle:{
+                    //         padding:[0,20,0,0]
+                    //     }
+                    // },{name:'转介绍',textStyle:{
+                    //     padding:[0,14,0,0]
+                    //     }
+                    // },{name:'其他',textStyle:{
+                    //         width:'150px'
+                    //     }
+                    // },]
+                    // },
                     // graphic: [{
                     //     type: 'image',
                     //     id: 'logo',
@@ -473,7 +493,8 @@
                         },
                         labelLine: {
                             normal: {
-                                length2: 5
+                                length:15,
+                                length2: 18
                             }
                         },
                         itemStyle: {
@@ -500,17 +521,25 @@
                     this.currentPage3 = val;
                     // this.fetchData();
                 },
-                updateListCM() {//第一张表格
-                    if (this.valueCM2 != '') {
-    
-                        this.valueCM6 = ''
+                updateListCM(i) {//第一张表格
+                    if(i==1&&this.valueCM6!=''){
+                        this.valueCM2=[];
+                        this.valueCM3='day'
+                        this.getCM1Data();
+                    this.getCM2Data(); 
+                    }else if(i==3&&this.valueCM2.length!=0){
+                        this.valueCM6 = '';
+                        this.getCM1Data();
+                    this.getCM2Data(); 
+                    }else if(i==2&&this.valueCM2.length!=0){
+                        this.valueCM6 = '';
+                        this.getCM1Data();
+                    this.getCM2Data(); 
+                    }else if(i==4){
+                        this.getCM1Data();
+                    this.getCM2Data(); 
                     }
-                    if (this.valueCM6 != '') {
-    
-                        this.valueCM2 = ''
-                    }
-                    this.getCM1Data();
-                    // this.getCM2Data();                    
+                                      
                 },
                 getCM1Data() {//折线图
                     let para = {
@@ -535,22 +564,22 @@
                             type: "line",
                             data: data.newCall
                         }, {
-                            name: "邀约量",
+                            name: "资源激活",
                             type: "line",
-                            data: data.invitation
+                            data: data.activation
                         }, {
-                            name: "到访量",
+                            name: "无效认定",
                             type: "line",
-                            data: data.visit
+                            data: data.invalid
                         }, {
-                            name: "签单量",
+                            name: "学员回访",
                             type: "line",
-                            data: data.addOrder
+                            data: data.returnCall
                         }];
                         this.line.legend = {
                             orient: 'horizontal',
                             bottom: 10,
-                            data: ["客户认领量", "沟通量", "邀约量", "到访量", "签单量"]
+                            data: ["新资源", "沟通量", "资源激活","无效认定","学员回访"],
                             // backgroundColor:'white'
                         };
                     })
@@ -566,10 +595,10 @@
                         source_id:this.valueCM5,
                     }
                     gettmkFormsTableData(token, para).then(res => {
-                    let a = res.data;
-                    let c = res.last_page * this.pagesize;
+                    let a = res.data.data;
+                    let c = res.data.last_page * this.pagesize;
                     this.total = parseInt(c);
-                    this.resourceData = a;
+                    this.resourceCMData = a;
                     })
                 },
                 // handleCommandCM(command) {//最近一周切换
@@ -583,35 +612,81 @@
                 //     // this.getSAData();
                 //     //调服务查询表单
                 // },
-                updateListRE() {//第二张表格
-                    
-                    // this.getREData();
-                },
-                getRE1Data() {//饼状图
-                    let para = {
-                        startDay: this.valueRE1,
-                        endDay: this.valueSR2,
-                        cc_id: this.valueSR3,
-                        view: 'rank'
+                updateListRE(i) {//第二张表格
+                    if (i==1&&this.valueRE1) {
+                        // console.log(1)
+                        this.valueRE2 = '';
+                        this.getRE1Data(i);
+                    }else if (i==2&&this.valueRE2 != '') {
+                        
+                        this.valueRE1 = '';
+                        this.getRE1Data(i);
+                    }else if(i==3){
+                        if(this.valueRE1){
+                            console.log(1)
+                            this.getRE1Data(1);
+                        }else{
+                            this.getRE1Data(2);                            
+                        }
                     }
-                    getReportSA(token, para).then(res => {
+                   
+                },
+                getRE1Data(i) {//饼状图
+                    let para = {
+                        start_date: i==1?new Date(this.valueRE1).toLocaleDateString():i==2?new Date(this.valueRE2).toLocaleDateString():new Date().toLocaleDateString(),//周or月
+                        short_date:i==2?'lastmonth':'lastweek',
+                        school_id: this.valueRE3,//校区
+                        tmk_uid:this.valueRE4,//tmk
+                    }
+                    gettmkFormsSource(token, para).then(res => {
                         let data = res.data;
                         // console.log(data)
-                        this.bar.xAxis.data = data.teach;
-                        this.bar.series[0].data = data.money
+                        let dd = data.map(item=>{
+                            return {value:item.value,name:item.names}
+                        })
+                        let arr = data.map(item=>{
+                            return item.names
+                        })
+                        this.pie_radius.series[0].data = dd;
+                        this.pie_radius.legend= {
+                        width:'80%',
+                        orient: 'horizontal',
+                        bottom: 0,
+                    //     data:[{name:'线上TIN',textStyle:{
+                    //         width:'50px'
+                    //     }
+                    // },{name:'线下OUT',textStyle:{
+                    //     width:'50px'
+                    //     }
+                    // },{name:'顺访WI',textStyle:{
+                    //         width:'50px'
+                    //     }
+                    // },{name:'续费',textStyle:{
+                    //         padding:[0,20,0,0]
+                    //     }
+                    // },{name:'转介绍',textStyle:{
+                    //     padding:[0,14,0,0]
+                    //     }
+                    // },{name:'其他',textStyle:{
+                    //         width:'150px'
+                    //     }
+                    // },]
+                        data: arr
+                    },
+                        this.resourceData = data;
                     })
                 },
-                getRE2Data() {//表格
-                    let para = {
-                        // period:this.periodCM,
-                        // startDay: this.valueCM2[0] != null? new Date(this.valueCM2[0]).toLocaleDateString(): '',
-                        // endDay: this.valueCM2[1] != null? new Date(this.valueCM2[1]).toLocaleDateString(): '',                    
-                        // cc_id: this.valueCM1
-                    }
-                    getReport1(token, para).then(res => {
-                        this.resourceData = res.data
-                    })
-                },
+                // getRE2Data() {//表格
+                //     let para = {
+                //         // period:this.periodCM,
+                //         // startDay: this.valueCM2[0] != null? new Date(this.valueCM2[0]).toLocaleDateString(): '',
+                //         // endDay: this.valueCM2[1] != null? new Date(this.valueCM2[1]).toLocaleDateString(): '',                    
+                //         // cc_id: this.valueCM1
+                //     }
+                //     getReport1(token, para).then(res => {
+                //         this.resourceData = res.data
+                //     })
+                // },
                 updateListSA() {//第三张表格
                     
                     // this.getSAData();
@@ -638,8 +713,11 @@
             created() {
                 document.body.scrollTop = 0
                 this.code = JSON.parse(user).job ? JSON.parse(user).job.code : '';
-                // this.getResoureData();
-                // this.getCTData();
+                this.aid = JSON.parse(user).aid ? JSON.parse(user).aid : ''; //获取aid
+
+                this.getCM1Data();
+                this.getCM2Data();
+                this.getRE1Data(0);
                 let cam = {
             simple: '1'
         };
@@ -675,73 +753,70 @@
                 //     this.options1 = res.data
     
                 // })
-                this.line.legend = {
-                    orient: 'horizontal',
-                    top: 30,
-                    data: ["新资源", "沟通量", "资源激活","无效认定","学员回访"],
-                    // backgroundColor:'white'
-                };
-                this.line.xAxis.data = ["2017-05-01", "2017-05-02", "2017-05-03", "2017-05-04", "2017-05-05", "2017-05-06", "2017-05-07",
-                "2017-05-08", "2017-05-09", "2017-05-10", "2017-05-11", "2017-05-12", "2017-05-13", "2017-05-14",
-                "2017-05-15", "2017-05-16", "2017-05-17", "2017-05-18", "2017-05-19", "2017-05-20", "2017-05-21",
-                "2017-05-22", "2017-05-23", "2017-05-24", "2017-05-25", "2017-05-26", "2017-05-27", "2017-05-28",
-                "2017-05-29", "2017-05-30", "2017-05-31", 
-                "2017-06-01", "2017-06-02", "2017-06-03", "2017-06-04", "2017-06-05", "2017-06-06", "2017-06-07",
-                "2017-06-08", "2017-06-09", "2017-06-10", "2017-06-11", "2017-06-12", "2017-06-13", "2017-06-14",
-                "2017-06-15", "2017-06-16", "2017-06-17", "2017-06-18", "2017-06-19", "2017-06-20", "2017-06-21",
-                "2017-06-22", "2017-06-23", "2017-06-24", "2017-06-25", "2017-06-26", "2017-06-27", "2017-06-28",
-                "2017-06-29", "2017-06-30",  ]
+                
+                // this.line.xAxis.data = ["2017-05-01", "2017-05-02", "2017-05-03", "2017-05-04", "2017-05-05", "2017-05-06", "2017-05-07",
+                // "2017-05-08", "2017-05-09", "2017-05-10", "2017-05-11", "2017-05-12", "2017-05-13", "2017-05-14",
+                // "2017-05-15", "2017-05-16", "2017-05-17", "2017-05-18", "2017-05-19", "2017-05-20", "2017-05-21",
+                // "2017-05-22", "2017-05-23", "2017-05-24", "2017-05-25", "2017-05-26", "2017-05-27", "2017-05-28",
+                // "2017-05-29", "2017-05-30", "2017-05-31", 
+                // "2017-06-01", "2017-06-02", "2017-06-03", "2017-06-04", "2017-06-05", "2017-06-06", "2017-06-07",
+                // "2017-06-08", "2017-06-09", "2017-06-10", "2017-06-11", "2017-06-12", "2017-06-13", "2017-06-14",
+                // "2017-06-15", "2017-06-16", "2017-06-17", "2017-06-18", "2017-06-19", "2017-06-20", "2017-06-21",
+                // "2017-06-22", "2017-06-23", "2017-06-24", "2017-06-25", "2017-06-26", "2017-06-27", "2017-06-28",
+                // "2017-06-29", "2017-06-30",  ]
                 // this.line.xAxis.axisLabel={
                 //     showMinLabel:true,
                 //     //     showMaxLabel:true,
                 // }
-                this.line.series = [{ //以后改成动态获取
-                    name: "新资源",
-                    type: "line",
-                    data: [2, 5, 10, 5, 1, 5, 10,2, 5, 10, 5, 1, 5, 10,2, 5, 10, 5, 1, 5, 10,2, 5, 10, 5, 1, 5, 10,2, 5, 10, 5, 1, 5, 10,2, 5, 10, 5, 1, 5, 10]
-                }, {
-                    name: "沟通量",
-                    type: "line",
-                    data: [3, 10, 12, 3, 9, 0, 2,3, 10, 12, 3, 9, 0, 2,3, 10, 12, 3, 9, 0, 2,3, 10, 12, 3, 9, 0, 2,3, 10, 12, 3, 9, 0, 2,3, 10, 12, 3, 9, 0, 2]
-                }, {
-                    name: "资源激活",
-                    type: "line",
-                    data: [4, 8, 18, 15, 4, 2, 1,4, 8, 18, 15, 4, 2, 1,4, 8, 18, 15, 4, 2, 1,4, 8, 18, 15, 4, 2, 1,4, 8, 18, 15, 4, 2, 1,4, 8, 18, 15, 4, 2, 1,]
-                }, {
-                    name: "无效认定",
-                    type: "line",
-                    data: [5, 11, 9, 4,19, 10, 12]
-                }, {
-                    name: "学员回访",
-                    type: "line",
-                    data: [14, 18, 8, 5, 14, 12, 11]
-                }]
+                // this.line.series = [{ //以后改成动态获取
+                //     name: "新资源",
+                //     type: "line",
+                //     data: [2, 5, 10, 5, 1, 5, 10,2, 5, 10, 5, 1, 5, 10,2, 5, 10, 5, 1, 5, 10,2, 5, 10, 5, 1, 5, 10,2, 5, 10, 5, 1, 5, 10,2, 5, 10, 5, 1, 5, 10]
+                // }, {
+                //     name: "沟通量",
+                //     type: "line",
+                //     data: [3, 10, 12, 3, 9, 0, 2,3, 10, 12, 3, 9, 0, 2,3, 10, 12, 3, 9, 0, 2,3, 10, 12, 3, 9, 0, 2,3, 10, 12, 3, 9, 0, 2,3, 10, 12, 3, 9, 0, 2]
+                // }, {
+                //     name: "资源激活",
+                //     type: "line",
+                //     data: [4, 8, 18, 15, 4, 2, 1,4, 8, 18, 15, 4, 2, 1,4, 8, 18, 15, 4, 2, 1,4, 8, 18, 15, 4, 2, 1,4, 8, 18, 15, 4, 2, 1,4, 8, 18, 15, 4, 2, 1,]
+                // }, {
+                //     name: "无效认定",
+                //     type: "line",
+                //     data: [5, 11, 9, 4,19, 10, 12]
+                // }, {
+                //     name: "学员回访",
+                //     type: "line",
+                //     data: [14, 18, 8, 5, 14, 12, 11]
+                // }]
                 if (this.code == 'tmk_m'||this.code=='cc_c') {
                     getTMK(token).then((res) => {
                         this.ccs = res.data
                         this.ccs.unshift({key:'0',label:'全部TMK'})
+                    }).then(()=>{
+                        this.valueCM1 = this.aid+'';
                     })
                 }
-                this.pie_radius.series[0].data = [
-                    {
-                    value: 20,
-                    name: '线上TIN'
-                }, {
-                    value: 30,
-                    name: '线下OUT'
-                }, {
-                    value: 30,
-                    name: '顺访WI'
-                }, {
-                    value: 20,
-                    name: '续费'
-                }, {
-                    value: 30,
-                    name: '转介绍'
-                }, {
-                    value: 30,
-                    name: '其他'
-                }]
+                // this.pie_radius.series[0].data = [
+                //     {
+                //     value: 0,
+                //     name: '线上TIN'
+                // }, {
+                //     value: 0,
+                //     name: '线下OUT'
+                // }, {
+                //     value: 0,
+                //     name: '顺访WI'
+                // }, {
+                //     value: 0,
+                //     name: '续费'
+                // }, {
+                //     value: 0,
+                //     name: '转介绍'
+                // }, {
+                //     value: 30,
+                //     name: '其他'
+                // }]
     
     
             }
@@ -751,7 +826,10 @@
     <style>
        #tableRTMK2 .el-table th, #tableRTMK .el-table th{
            background: #f2f2f2
-       }
+       } 
+       #tableRTMK .el-table th>div,#tableRTMK2 .el-table th>div{
+        background: #f2f2f2
+        } 
         .echarts {
             float: left;
             width: 100%;
@@ -770,7 +848,7 @@
             border-left: none;
         }
     
-        #tableRTMK .el-table td,
+        /* #tableRTMK .el-table td:not(.gutter),
         #tableRTMK .el-table th:not(.gutter) {
             padding: 5px 5px;
             text-align: center
@@ -780,10 +858,9 @@
         #tableRTMK .el-table .cell {
             padding-left: 0;
             padding-right: 0;
-            background: #f2f2f2
         }
     
-        #tableRTMK1 .el-table td,
+        #tableRTMK1 .el-table td:not(.gutter),
         #tableRTMK1 .el-table th:not(.gutter) {
             padding: 5px 5px;
             text-align: center
@@ -795,7 +872,7 @@
             padding-right: 0;
         }
     
-        #tableRTMK2 .el-table td,
+        #tableRTMK2 .el-table td:not(.gutter),
         #tableRTMK2 .el-table th:not(.gutter) {
             padding: 5px 5px;
             text-align: center
@@ -805,8 +882,9 @@
         #tableRTMK2 .el-table .cell {
             padding-left: 0;
             padding-right: 0;
-            background: #f2f2f2
         }
+        */
+        
         /* #tableRTMK1 .el-table__footer .gutter {
                 display: none
             }
@@ -828,8 +906,8 @@
             color: black;
         }
     
-        .datec .el-date-editor--daterange.el-input {
-            width: 187px
+        .dateReportT .el-date-editor--daterange.el-input {
+            width: 191px
         }
     
         #reportCCdate .el-date-editor--daterange.el-input {

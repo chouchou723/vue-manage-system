@@ -171,7 +171,7 @@
             </div>
         </el-dialog>
         <!-- 老师点名 -->
-        <el-dialog :title="classTitle" :visible.sync="dialogFormVisibleClassSignup" :close-on-click-modal="no" top='20%' size='small'>
+        <el-dialog :title="classTitle" :visible.sync="dialogFormVisibleClassSignup" :close-on-click-modal="no" top='10%' size='small'>
 
             <div class="CTover">
                 <div class="CTover1">
@@ -205,7 +205,7 @@
             <div slot="footer" class="dialog-footer CTsign5" v-if='signStatusNo.students.length!=0'>
                 <el-button type="primary" @click="submitTheSubstitute()" v-if='signStatusNo.courseType=="normal"'>完成</el-button>
                 <!-- <el-button type="primary" @click="setAllGreen(signStatus1)" v-if='signStatusNo.courseType=="short"'>全部出勤</el-button> -->
-                <el-button @click="dialogFormVisibleClassSignup=false">取消</el-button>
+                <el-button @click="dialogFormVisibleClassSignup=false" v-if='signStatusNo.courseType=="normal"'>取消</el-button>
                 <br>
             </div>
         </el-dialog>
@@ -1139,6 +1139,8 @@
             this.code = JSON.parse(user).job ? JSON.parse(user).job.code : '';
             this.aid = JSON.parse(user).aid;
             this.fetchData()
+            if(this.code.includes('_c')){
+
             let cam = {
                 simple: 1
             }
@@ -1148,6 +1150,7 @@
                 this.receiveSchool2 = res.data
                 this.receiveSchool2.unshift({id:0,title:'全部校区'})
             })
+            }
 
             getClassRoom(token).then((res) => { //获取教室
                 this.classRoom = res.data;

@@ -457,7 +457,7 @@ router.beforeEach((to, from, next) => {
    if(!user&&to.path!=="/login"){
         next('/login')
     }else if(user&&to.path!=="/login"){
-        let token = JSON.parse(user).token;
+        let token = JSON.parse(user).token?JSON.parse(user).token:'';
         let para = {
             path: to.path
         };
@@ -477,6 +477,8 @@ router.beforeEach((to, from, next) => {
                     next('/login')
                 }, 1000);
             }
+        }).catch(()=>{
+            Vue.prototype.$message.error('对不起,您无权限访问此页面')
         })
     }else{
         localStorage.removeItem('user');

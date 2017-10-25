@@ -31,19 +31,19 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="课时" :label-width="formLabelWidth" prop="year_num">
-                        <el-input v-model="aform.year_num" auto-complete="off" placeholder='请输入课时'class='CL200'></el-input>
+                        <el-input v-model.number="aform.year_num" auto-complete="off" placeholder='请输入课时'class='CL200'></el-input>
                     </el-form-item>
                     <el-form-item label="签单数" :label-width="formLabelWidth" prop="head_count">
-                        <el-input v-model="aform.head_count" auto-complete="off" placeholder='请输入签单数' class='CL200'></el-input>
+                        <el-input v-model.number="aform.head_count" auto-complete="off" placeholder='请输入签单数' class='CL200'></el-input>
                     </el-form-item>
                     <el-form-item label="学费" :label-width="formLabelWidth" prop="tuition_price">
-                        <el-input v-model="aform.tuition_price" auto-complete="off" placeholder='请输入学费' class='CL200'></el-input>
+                        <el-input v-model.number="aform.tuition_price" auto-complete="off" placeholder='请输入学费' class='CL200'></el-input>
                     </el-form-item>
                     <el-form-item label="教材费" :label-width="formLabelWidth" prop="teaching_price">
-                        <el-input v-model="aform.teaching_price" auto-complete="off" placeholder='请输入教材费' class='CL200'></el-input>
+                        <el-input v-model.number="aform.teaching_price" auto-complete="off" placeholder='请输入教材费' class='CL200'></el-input>
                     </el-form-item>
                     <el-form-item label="书本费" :label-width="formLabelWidth" prop="book_price">
-                        <el-input v-model="aform.book_price" auto-complete="off" placeholder='请输入书本费' class='CL200'></el-input>
+                        <el-input v-model.number="aform.book_price" auto-complete="off" placeholder='请输入书本费' class='CL200'></el-input>
                     </el-form-item>
                     <el-form-item label="有效期" :label-width="formLabelWidth" prop="order_date">
                         <el-select v-model="aform.order_date" class='CL200'>
@@ -116,6 +116,16 @@ export default {
                     callback('请选择课程类型')
                 }
             }
+            // var isPName = (rule, value, callback) => {
+            //     var myreg = /^[\u4e00-\u9fa5a-zA-Z()]+$/;
+            //     if (value == '') {
+            //         callback('请输入课程名称')
+            //     } else if (!myreg.test(value)) {
+            //         callback('请输入有效的课程名称');
+            //     } else {
+            //         callback();
+            //     }
+            // }
             return {
                 period: [{
                     label: '1个月',
@@ -187,6 +197,7 @@ export default {
                 rules2: {
                     title: [{
                         required: true,
+                        // validator: isPName,                        
                         message: '请输入课程名称',
                         trigger: 'blur'
                     }],
@@ -197,26 +208,32 @@ export default {
                     }],
                     year_num: [{
                         required: true,
+                        type:'number',
+                        // validator: isNan,                        
                         message: '请输入课时',
                         trigger: 'blur'
                     }],
                     head_count: [{
                         required: true,
+                        type:'number',
                         message: '请输入签单数',
                         trigger: 'blur'
                     }],
                     tuition_price: [{
                         required: true,
+                        type:'number',
                         message: '请输入学费',
                         trigger: 'blur'
                     }],
                     teaching_price: [{
                         required: true,
+                        type:'number',
                         message: '请输入教材费',
                         trigger: 'blur'
                     }],
                     book_price: [{
                         required: true,
+                        type:'number',
                         message: '请输入书本费',
                         trigger: 'blur'
                     }],
@@ -396,7 +413,7 @@ export default {
     border-color: #32a4d3;
 }
 
-#tableCL .el-table td,
+/* #tableCL .el-table td,
 #tableCL .el-table th:not(.gutter) {
     padding: 5px 5px;
     text-align: center
@@ -406,7 +423,7 @@ export default {
 #tableCL .el-table .cell {
     padding-left: 0;
     padding-right: 0;
-}
+} */
 
 #tableCL .classDel {
     color: #e95c5c;

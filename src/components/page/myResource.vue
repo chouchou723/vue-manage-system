@@ -316,7 +316,7 @@ export default {
   width:164px;
  
 } */
-#table1MR .el-table td,
+/* #table1MR .el-table td,
 #table1MR .el-table th:not(.gutter) {
     padding: 1px;
     text-align: center
@@ -326,7 +326,7 @@ export default {
 #table1MR .el-table .cell {
     padding-left: 0;
     padding-right: 0;
-}
+} */
 
 .nicknameSpanT:hover {
     cursor: pointer;

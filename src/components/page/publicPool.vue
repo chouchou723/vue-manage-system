@@ -138,7 +138,7 @@
 
 </script>
 <style>
-    #table2PP .el-table td,
+    /* #table2PP .el-table td,
     #table2PP .el-table th:not(.gutter) {
         padding: 1px;
         text-align: center
@@ -148,7 +148,7 @@
     #table2PP .el-table .cell {
         padding-left: 0;
         padding-right: 0;
-    }
+    } */
 
     .PPnicknameSpan {
         font-weight: 600;

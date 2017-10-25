@@ -424,7 +424,7 @@
         position: relative;
     }
 
-    #table1MS .el-table td,
+    /* #table1MS .el-table td,
     #table1MS .el-table th:not(.gutter) {
         padding: 5px 5px;
         text-align: center
@@ -435,8 +435,11 @@
         padding-left: 0;
         padding-right: 0;
         font-weight: normal;
+    } */
+    #table1MS .el-table th>div,
+    #table1MS .el-table .cell {
+        font-weight: normal;
     }
-
     .block {
         text-align: center;
         margin-top: 10px;

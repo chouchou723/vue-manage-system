@@ -234,7 +234,7 @@
 
 </script>
 <style>
-    #table2NDR .el-table td,
+    /* #table2NDR .el-table td,
     #table2NDR .el-table th:not(.gutter) {
         padding: 1px;
         text-align: center
@@ -244,7 +244,7 @@
     #table2NDR .el-table .cell {
         padding-left: 0;
         padding-right: 0;
-    }
+    } */
 
     .resourceSchoolDD .el-dialog__header {
         background-color: #1fb5ad;

@@ -184,9 +184,9 @@
                     <el-form-item prop="parent1" style="width:142px;margin-right:20px;float:left">
                         <el-input v-model="form.parent1" placeholder='请输入家长姓名'></el-input>
                     </el-form-item>
-                    <div style='position:absolute;color:#ff4949;bottom:-26px;font-size:12px' v-if="secondRule">第二家长信息如若填写,必须填写完全,不然将不予保存</div>
+                    <!-- <div style='position:absolute;color:#ff4949;bottom:-26px;font-size:12px;left:184px;' v-if="secondRule">第二家长信息如若填写,必须填写完全,不然将不予保存</div> -->
                     <el-form-item prop="con1" style="width:142px;margin-right:20px;float:left">
-                        <el-select v-model="form.con1" placeholder="请选择关系">
+                        <el-select v-model="form.con1" clearable placeholder="请选择关系">
                             <el-option label="妈妈" value="妈妈"></el-option>
                             <el-option label="爸爸" value="爸爸"></el-option>
                             <el-option label="爷爷" value="爷爷"></el-option>
@@ -360,6 +360,26 @@
                     callback();
                 }
             }
+            var isPName = (rule, value, callback) => {
+                var myreg = /^[\u4e00-\u9fa5a-zA-Z]+$/;
+                if (value == '') {
+                    callback('请输入家长姓名')
+                } else if (!myreg.test(value)) {
+                    callback('请输入有效的家长姓名');
+                } else {
+                    callback();
+                }
+            }
+            var isPName1 = (rule, value, callback) => {
+                var myreg = /^[\u4e00-\u9fa5a-zA-Z]+$/;
+                if (value == '') {
+                    callback()
+                } else if (!myreg.test(value)) {
+                    callback('请输入有效的家长姓名');
+                } else {
+                    callback();
+                }
+            }
             var nan = (rule, value, callback) => {
                 if (value === '') {
                     callback('请选择')
@@ -521,6 +541,12 @@
                     }],
                     parent: [{
                         required: true,
+                        validator: isPName,                        
+                        trigger: 'blur'
+                    }],
+                    parent1: [{
+                        required: true,
+                        validator: isPName1,                        
                         trigger: 'blur'
                     }],
                     con: [{
@@ -1039,16 +1065,16 @@
             isWarning() {
                 return this.form.sour_id == 4 && this.form.referral_uid == ""
             },
-            secondRule() {
-                if (this.form.parent1 && this.form.phone1 && this.form.con1) {
-                    return false;
-                } else if (this.form.parent1 || this.form.phone1 || this.form.con1) {
+            // secondRule() {
+            //     if (this.form.parent1 && this.form.phone1 && this.form.con1) {
+            //         return false;
+            //     } else if (this.form.parent1 || this.form.phone1 || this.form.con1) {
 
-                    return true;
-                } else {
-                    return false;
-                }
-            },
+            //         return true;
+            //     } else {
+            //         return false;
+            //     }
+            // },
             Ustatus() {
                 return this.$route.params.status
             },

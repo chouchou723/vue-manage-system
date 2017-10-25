@@ -403,7 +403,7 @@
         position: relative;
     }
 
-    #myContracttable .el-table td,
+    /* #myContracttable .el-table td,
     #myContracttable .el-table th:not(.gutter) {
         padding: 5px 0;
         text-align: center
@@ -414,8 +414,11 @@
         padding-left: 0;
         padding-right: 0;
         font-weight: normal;
+    } */
+    #myContracttable .el-table th>div,
+    #myContracttable .el-table .cell {
+        font-weight: normal;
     }
-
     #myContracts {
         display: flex;
         justify-content: space-between;

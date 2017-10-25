@@ -466,7 +466,7 @@
                     <el-form-item prop="parent1" class="SD142float">
                         <el-input v-model="signform.parent1" placeholder='请输入家长姓名'></el-input>
                     </el-form-item>
-                    <div style='position:absolute;color:#ff4949;bottom:-26px;font-size:12px' v-if="secondRule">第二家长信息如若填写,必须填写完全,不然将不予保存</div>
+                    <!-- <div style='position:absolute;color:#ff4949;bottom:-26px;font-size:12px;left:184px' v-if="secondRule">第二家长信息如若填写,必须填写完全,不然将不予保存</div> -->
                     <el-form-item prop="con1" class="SD142float">
                         <el-select v-model="signform.con1" clearable placeholder="请选择关系">
                             <el-option label="妈妈" value="妈妈"></el-option>
@@ -829,6 +829,26 @@
                     callback();
                 }
             }
+            var isPName = (rule, value, callback) => {
+                var myreg = /^[\u4e00-\u9fa5a-zA-Z]+$/;
+                if (value == '') {
+                    callback('请输入家长姓名')
+                } else if (!myreg.test(value)) {
+                    callback('请输入有效的家长姓名');
+                } else {
+                    callback();
+                }
+            }
+            var isPName1 = (rule, value, callback) => {
+                var myreg = /^[\u4e00-\u9fa5a-zA-Z]+$/;
+                if (value == '') {
+                    callback()
+                } else if (!myreg.test(value)) {
+                    callback('请输入有效的家长姓名');
+                } else {
+                    callback();
+                }
+            }
             // var isValue = (rule, value, callback) => {
             //     if (value === '') {
             //         callback('请选择')
@@ -1144,7 +1164,13 @@
                     }],
                     parent: [{
                         required: true,
-                        message: '请输入家长姓名',
+                        // message: '请输入家长姓名',
+                        validator: isPName,
+                        trigger: 'blur'
+                    }],
+                    parent1: [{
+                        // message: '请输入家长姓名',
+                        validator: isPName1,
                         trigger: 'blur'
                     }],
                     con: [{
@@ -2424,16 +2450,16 @@
                 })
                 return b
             },
-            secondRule(){
-                if(this.signform.parent1&&this.signform.phone1&&this.signform.con1){
-                        return false;
-                    }else if(this.signform.parent1||this.signform.phone1||this.signform.con1){
+            // secondRule(){
+            //     if(this.signform.parent1&&this.signform.phone1&&this.signform.con1){
+            //             return false;
+            //         }else if(this.signform.parent1||this.signform.phone1||this.signform.con1){
     
-                       return true;
-                    }else{
-                        return false;
-                    }
-            },
+            //            return true;
+            //         }else{
+            //             return false;
+            //         }
+            // },
             payMethods() {
                 let m = [{
                     name: '现金',

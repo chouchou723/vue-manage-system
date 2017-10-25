@@ -42,6 +42,11 @@ export default {
                     type: 'warning',
                     customClass: 'redwarn',
                     confirmButtonText: '确定'
+                }).catch(() => {
+                    // this.$message({
+                    //     type: 'info',
+                    //     message: '已取消删除'
+                    // });
                 });
             } else {
                 this.$confirm('是否确定要删除部门?', '删除部门', {
@@ -73,10 +78,10 @@ if(res.code==0){
 }
                     });
                 }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消删除'
-                    });
+                    // this.$message({
+                    //     type: 'info',
+                    //     message: '已取消删除'
+                    // });
                 });
             }
         },
@@ -90,7 +95,7 @@ if(res.code==0){
         })
         this.$message({
                         type: 'success',
-                        message: '添加成功!'
+                        message: '创建成功!'
                     });
 
                 }else{
@@ -103,8 +108,8 @@ if(res.code==0){
                 customClass: 'green',
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
-                // inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
-                // inputErrorMessage: '邮箱格式不正确'
+                inputPattern: /^[\u4e00-\u9fa5a-zA-Z]+$/,
+                inputErrorMessage: '请输入有效的部门名称'
             }).then((value) => {
                 this.$message({
                     type: 'success',
@@ -114,7 +119,12 @@ if(res.code==0){
                     full_name: value.value
                 };
                 this.createde(branch);
-            })
+            }).catch(() => {
+                    // this.$message({
+                    //     type: 'info',
+                    //     message: '已取消删除'
+                    // });
+                });
             // .catch(() => {
             //     this.$message({
             //       type: 'info',
@@ -133,13 +143,13 @@ if(res.code==0){
                     customClass: 'green',
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
-                    // inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
-                    // inputErrorMessage: '邮箱格式不正确'
+                    inputPattern: /^[\u4e00-\u9fa5a-zA-Z]+$/,
+                    inputErrorMessage: '请输入有效的部门名称'
                 }).then((value) => {
-                    this.$message({
-                        type: 'success',
-                        message: '部门名称是: ' + value.value
-                    });
+                    // this.$message({
+                    //     type: 'success',
+                    //     message: '部门名称是: ' + value.value
+                    // });
                     data[index].full_name = value.value;
                     put_department(data[index], token).then((res)=>{
                         if(res.code==0){
@@ -224,4 +234,8 @@ position:absolute;right:10px;top:16%
 .DMred{
     color:red
 }
+.tableDepartment .el-table th:first-child, .tableDepartment .el-table td:first-child{
+        text-align: left;
+        padding:5px 5px 5px 20px;
+    }
 </style>

@@ -409,7 +409,7 @@
         position: relative;
     }
 
-    #tableMC .el-table td,
+    /* #tableMC .el-table td,
     #tableMC .el-table th:not(.gutter) {
         padding: 5px 5px;
         text-align: center
@@ -419,7 +419,7 @@
     #tableMC .el-table .cell {
         padding-left: 0;
         padding-right: 0;
-    }
+    } */
 
     .block {
         text-align: center;

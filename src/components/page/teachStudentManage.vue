@@ -834,7 +834,7 @@
         transition: opacity 0.5s ease-in-out;
     } */
 
-    #tableTSM {
+    /* #tableTSM {
         position: relative;
     }
 
@@ -849,8 +849,11 @@
         padding-left: 0;
         padding-right: 0;
         font-weight: normal;
+    } */
+    #tableTSM .el-table th>div,
+    #tableTSM .el-table .cell {
+        font-weight: normal;
     }
-
     /* #tableTSMre .el-table td,
     #tableTSMre .el-table th {
         padding: 5px 5px;

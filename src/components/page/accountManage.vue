@@ -104,12 +104,12 @@
                         <span><img :src="scope.row.avatar" alt="" width="47" height='47' style="border-radius:50%;margin-bottom:-7px;border: 1px solid gainsboro;"></span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="name" label="登录名">
+                <el-table-column prop="name" label="登录名" >
                     <template scope="scope">
                         <span style='font-weight:600'>{{scope.row.name}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="uname" label="姓名" width='80'>
+                <el-table-column prop="uname" label="姓名" width='90'>
                 </el-table-column>
                 <el-table-column prop="tel" label="手机" width='120'>
                 </el-table-column>
@@ -171,6 +171,16 @@ export default {
                     callback();
                 }else{
                     callback('请选择校区')
+                }
+            }
+            var isName = (rule, value, callback) => {
+                var myreg = /^[\u4e00-\u9fa5a-zA-Z]+$/;
+                if (value == '') {
+                    callback('请输入姓名')
+                } else if (!myreg.test(value)) {
+                    callback('请输入有效的姓名');
+                } else {
+                    callback();
                 }
             }
             // var validatePass = (rule, value, callback) => {
@@ -254,7 +264,10 @@ export default {
                         trigger: 'blur,change'
                     }],
                     uname:[
-                    {required:true,message: '请输入姓名',trigger: 'blur'}],
+                    {required:true,
+                        // message: '请输入姓名',
+                        validator: isName,
+                        trigger: 'blur'}],
                     sex:[
                     {required:true,message: '请选择性别',trigger: 'blur'}],
                     tel:[
