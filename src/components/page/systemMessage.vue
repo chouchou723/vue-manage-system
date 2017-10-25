@@ -204,7 +204,7 @@
                     // console.log(res)
                     if (res.code == 0) {
                             this.$message.success('操作成功');
-                            if(data.type=='转校'){
+                            if(data.type=='转校'&&agree==1){
 
                                 this.$router.push('/studentDetail/' + data.action.uid);
                             }

@@ -183,7 +183,7 @@
                     <div class="CTsign1">{{s.child_name}}</div>
                     <div class="CTsign2">{{s.course_curr_num}}</div>
                     <div class="CTsign3">
-                        <el-switch v-model="s.strue" on-text='出勤' off-text='旷课' @click.native.prevent='signUpS(s)' on-color="#13ce66" off-color="#ff4949"
+                        <el-switch v-model="s.strue" on-text='出勤' off-text='旷课'  @click.native.prevent='signUpS(s,signStatusNo)' on-color="#13ce66" off-color="#ff4949"
                             v-if='s.checkin_types!=2'>
                         </el-switch>
                         <span v-if='s.checkin_types==2' class="CTsign4">请假</span>
@@ -705,9 +705,12 @@
             //     })
             //     this.signName = data;
             // },
-            signUpS(data) { //点按钮出勤
-                // console.log(data)
-                // document.getElementsByClassName('el-dropdown-menu')[0].style.left = '737px'
+            signUpS(data,course) { //点按钮出勤
+            // console.log(course)
+            if(course.courseType=='short'){
+
+            }else{
+
                 this.signName = data;
                 if (this.signName.checkin_types == 1) {
                     this.signName.checkin_types = 3
@@ -716,6 +719,9 @@
                     this.signName.checkin_types = 1;
                     this.signName.strue = true;
                 }
+            }
+                // console.log(data)
+                // document.getElementsByClassName('el-dropdown-menu')[0].style.left = '737px'
             },
             // handleCommand1(command ) {
             //     if (command == 1) {

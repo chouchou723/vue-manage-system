@@ -518,7 +518,7 @@
                             <el-date-picker v-model="art[index].time" type="date" @change='getClassRoom(art[index].time,index,item)'>
                             </el-date-picker>
                         </el-form-item>
-                        <el-form-item prop='syllabus_id' class='selectClass'>
+                        <el-form-item prop='syllabus_id' class='CDselectClass'>
                             <el-radio-group v-model="art[index].syllabus_id" @change='radioChange'>
                                 <el-radio :label="item.id" class='selectClass1' v-for='item in selectionClass[index]'>
                                     <span class="selectClass2">{{item.week==1?'周一':item.week==2?'周二':item.week==3?'周三':item.week==4?'周四':item.week==5?'周五':item.week==6?'周六':'周日'}}  {{item.class_time.substring(0,5)}}
@@ -1673,7 +1673,7 @@
                                 this.student = {
                                     names: data.names,
                                     age: data.age,
-                                    sex: data.sex == 1 ? '男' : '女',
+                                    sex: data.sex ,
                                     school_name: data.school_name,
                                     cc_name: data.cc_name,
                                     channel: data.source_name,
@@ -2113,7 +2113,7 @@
                 this.student = {
                                     names: data.names,
                                     age: data.age,
-                                    sex: data.sex == 1 ? '男' : '女',
+                                    sex: data.sex ,
                                     school_name: data.school_name,
                                     cc_name: data.cc_name,
                                     channel: data.source_name,
@@ -2455,12 +2455,12 @@
         width: 80%;
     }
 
-    .selectClass {
+    .CDselectClass {
         height: 300px;
         overflow: auto
     }
 
-    .selectClass .el-radio+.el-radio {
+    .CDselectClass .el-radio+.el-radio {
         margin-left: 0;
     }
 

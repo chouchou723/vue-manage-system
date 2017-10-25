@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class='ReturnV'>
         <!-- <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-my-tongxunlu"></i>学员回访</el-breadcrumb-item>
@@ -436,11 +436,11 @@ export default {
     border-radius: 25px;
 }
 
-.el-tag--success:hover {
+.ReturnV .el-tag--success:hover {
     cursor: pointer;
 }
 
-.el-tag--danger {
+.ReturnV .el-tag--danger {
     border-radius: 25px;
 }
 

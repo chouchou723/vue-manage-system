@@ -193,7 +193,7 @@
                          <el-option v-for="item in receiveSchool" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                     </el-select> -->
-                    <el-date-picker v-model="transferOrUpform.time" type="date" placeholder="选择日期" @change='getClassRoom(transferOrUpform.time,transferOrUpform)'>
+                    <el-date-picker v-model="transferOrUpform.time" type="date" placeholder="选择日期" :picker-options="pickerOptions0"  @change='getClassRoom(transferOrUpform.time,transferOrUpform)'>
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item prop='class' class='selectClass SDselect' v-if="selectionClass !=''">
@@ -2277,10 +2277,10 @@
             },
 
             editReturn(index, item) { //点击修改回访记录
-                // console.log(item)
+                console.log(item)
                 this.returnform.tags = [];
                 this.returnform.id = item.id;
-                if (item.tags != '') {
+                if (item.tags-0!==0) {
                     let para = {
                         type: 'cc'
                     }
@@ -2763,6 +2763,8 @@
         background: url(../../../static/img/edit.png) right/30px 30px no-repeat;
         cursor: pointer;
         margin-top: 10px;
+        width:30px;
+        float:right;
     }
 
     .tableUserDSD .editSpan:hover {
