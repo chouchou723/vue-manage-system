@@ -798,7 +798,8 @@
         getRemainMoney,
         transferSchool,
         transferClass,
-        frozenClass
+        frozenClass,
+        searchResource
     } from '../../api/api';
 
     export default {
@@ -870,7 +871,7 @@
                 } else if (!myreg.test(value)) {
                     callback('请输入有效手机号');
                 } else {
-                    callback();
+                    callback()
                 }
             }
             var isPhone1 = (rule, value, callback) => {
@@ -879,9 +880,21 @@
                     callback()
                 } else if (!myreg.test(value)) {
                     callback('请输入有效手机号');
-                } else {
-                    callback();
-                }
+                }else if(this.signform.phone==value){
+callback('不要输入重复的手机号');
+}else {
+let para = {
+search: value
+}
+searchResource(para, token).then(res => {
+if(res.data.length!=0){
+callback('此手机号码已存在');
+}else{
+callback();
+
+}
+})
+}
             }
             var isId = (rule, value, callback) => {
                 var myreg =
@@ -2277,16 +2290,18 @@
             },
 
             editReturn(index, item) { //点击修改回访记录
-                console.log(item)
+                console.log(Object.is(item.tags,null))
                 this.returnform.tags = [];
                 this.returnform.id = item.id;
-                if (item.tags-0!==0) {
+                
                     let para = {
                         type: 'cc'
                     }
                     tagList(token, para).then(res => {
                         this.boxes = res.data;
+                        if (!Object.is(item.tags,null)) {
                         this.returnform.tags = Object.keys(item.tags)
+                        }
                         // this.boxes.map(v => {
                         //     for (let key in item.tags) {
                         //         if (v.key == key) {
@@ -2297,7 +2312,7 @@
                     }).then(() => {
                         this.dialogFormVisible = true
                     })
-                }
+                
 
                 this.in = 1;
                 this.returnform.contents = item.contents;
@@ -2420,7 +2435,7 @@
                 }
             },
             fronzeContra(){
-                if(this.step == 'transferClass'){
+                if(this.step == 'transferClass'||this.step=='refund'){
                     return this.students;
                 }else{
 

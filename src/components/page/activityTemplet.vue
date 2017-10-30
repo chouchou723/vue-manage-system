@@ -97,7 +97,7 @@
                 <el-form-item label="最大报名人数" prop='stock'>
                     <el-input v-model="form.stock" placeholder='最大报名人数' style="width:172px"></el-input>
                 </el-form-item>
-                <el-form-item label="适合年龄段" prop='age' required>
+                <el-form-item label="适合年龄段" prop='minage' required>
                     <el-col :span="3" style='margin-right:10px'>
                             <el-form-item  prop='minage'>
                         <el-select v-model="form.minage" placeholder="请选择最小年龄" style="width:70px">
@@ -209,7 +209,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="报名截至时间" prop='sign_time' >
-                   <el-date-picker v-model="formBirthday.sign_time" format="yyyy-MM-dd HH:mm" type="datetime" placeholder="报名截至时间" style="width:172px">
+                   <el-date-picker v-model="formBirthday.sign_time" format="yyyy-MM-dd HH:mm" type="datetime" :picker-options="pickerOptions0" placeholder="报名截至时间" style="width:172px">
                     </el-date-picker>
                 
                 </el-form-item>
@@ -326,7 +326,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="报名截至时间" prop='sign_time' >
-                <el-date-picker v-model="formLaunch.sign_time" format="yyyy-MM-dd HH:mm" type="datetime" placeholder="报名截至时间" style="width:217px">
+                <el-date-picker v-model="formLaunch.sign_time" format="yyyy-MM-dd HH:mm" type="datetime" placeholder="报名截至时间" :picker-options="pickerOptions0" style="width:217px">
                 </el-date-picker>     
             </el-form-item>
                     <el-form-item label="活动地点" prop='address'>

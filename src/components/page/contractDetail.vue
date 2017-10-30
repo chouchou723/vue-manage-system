@@ -344,7 +344,7 @@
 
     </div>
 </template>
-<script>
+<script>    
     var token, user
     import myUpload from 'vue-image-crop-upload/upload-2.vue';
     import {
@@ -732,7 +732,7 @@
 
                     this.$refs['actSchool'].validate((valid) => {})
                 }
-            },
+            }
         },
         computed: {
             tableTitle() {
@@ -833,6 +833,7 @@
             }).catch(() => {
                 // console.log('No Data')
             })
+            
         },
         mounted() {
             let pa = {

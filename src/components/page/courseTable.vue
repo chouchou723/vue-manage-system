@@ -133,7 +133,7 @@
                             <span class="CTclass14" v-if="i.type==5">已停课
                             </span>
                             <span class="CTclass13" v-if="i.check_status=='yes'">已签到</span>
-                            <span class="CTclass14" v-if="i.check_status=='overdue'">签到超时</span>
+                            <span class="CTclass14" v-if="i.check_status=='overdue'&&i.studentCount!==0">签到超时</span>
                             <!-- <img :src="src" width='20' alt="" class='classImg' @click='editClass(i,index)'> -->
                         </div>
                     </div>

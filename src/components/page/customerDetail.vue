@@ -34,8 +34,9 @@
             <el-form-item label="性别:" prop='sex'>
                 <span>{{student.sex}}</span>
             </el-form-item>
-            <el-form-item label="年龄:" prop='age'>
-                <span>{{student.age}}</span>
+            <el-form-item label="生日:" prop='age'>
+                <span>{{student.born}}</span>
+                <span>({{student.age}}岁)</span>
             </el-form-item>
             <el-form-item label="家长:" prop='parent'>
                 <span>{{student.parent}}</span>
@@ -494,7 +495,8 @@
                     </el-form-item>
                     <el-form-item label="付款总额">
                         {{payTotal}}元
-                        <span v-if='this.payTotal != this.totalP3' class='CDEnred'>*付款总额与实收总额不符*</span>
+                        <span v-bind:class='{CDEnred:ok,cmk:isActive}' id="CDEnred">*付款总额与实收总额不符*</span>
+                        <!--<span v-if='this.payTotal != this.totalP3' class='{CDEnred:ok,cmk:yes}' id="CDEnred">*付款总额与实收总额不符*</span>-->
                     </el-form-item>
                     <!-- <el-form-item label="签约时间" prop='created'>
                         <el-date-picker v-model="actSchool.created" type="date">
@@ -544,7 +546,7 @@
             @close="resetD('commuForm')">
             <el-form :model="commuForm" id='detailForm' :rules='rulecommuForm' ref="commuForm">
                 <el-form-item label="" prop="remark">
-                    <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 4}" placeholder="请输入内容(100字以内)" v-model="commuForm.remark">
+                    <el-input maxlength=100 type="textarea" :autosize="{ minRows: 3, maxRows: 4}" placeholder="请输入内容(100字以内)" v-model="commuForm.remark">
                     </el-input>
                 </el-form-item>
                 <el-form-item label="记录标签(选填)：" class="CDEm10" prop="tags">
@@ -605,6 +607,7 @@
     </div>
 </template>
 <script>
+
     var token, user
     import {
         getMyCustomerTag,
@@ -627,8 +630,10 @@
         getPromotionList,
         signContract,
         getClassTable,
-        getDateClass
+        getDateClass,
+        searchResource
     } from '../../api/api';
+
     export default {
         data() {
             var isSpace = (rule, value, callback) => {
@@ -695,7 +700,7 @@
                 } else if (!myreg.test(value)) {
                     callback('请输入有效手机号');
                 } else {
-                    callback();
+                    callback()
                 }
             }
             var isPhone1 = (rule, value, callback) => {
@@ -704,8 +709,42 @@
                     callback()
                 } else if (!myreg.test(value)) {
                     callback('请输入有效手机号');
-                } else {
-                    callback();
+                }else if(this.form.phone==value){
+                callback('不要输入重复的手机号');
+                }else {
+                let para = {
+                search: value
+                }
+                searchResource(para, token).then(res => {
+                if(res.data.length!=0){
+                callback('此手机号码已存在');
+                }else{
+                callback();
+
+                }
+                })
+                }
+            }
+            var isPhone2 = (rule, value, callback) => {
+                var myreg = /^(((1[0-9]{1}))+\d{9})$/;
+                if (value == '') {
+                    callback()
+                } else if (!myreg.test(value)) {
+                    callback('请输入有效手机号');
+                }else if(this.signform.phone==value){
+                callback('不要输入重复的手机号');
+                }else {
+                let para = {
+                search: value
+                }
+                searchResource(para, token).then(res => {
+                if(res.data.length!=0){
+                callback('此手机号码已存在');
+                }else{
+                callback();
+
+                }
+                })
                 }
             }
             var isId = (rule, value, callback) => {
@@ -750,6 +789,8 @@
             //     }
             // }
             return {
+                ok:true,
+                isActive:true,
                 maxlength:11,
                 pickerOptions0: {
                     disabledDate(time) {
@@ -817,6 +858,7 @@
                 loading: false,
                 student: {
                     names: '',
+                    born:'',
                     sex: '',
                     age: '',
                     parent: '',
@@ -1025,7 +1067,7 @@
                         trigger: 'blur'
                     }],
                     phone1: [{
-                        validator: isPhone1,
+                        validator: isPhone2,
                         trigger: 'blur'
                     }],
                     city_id: [{
@@ -1669,9 +1711,10 @@
                                 customer_id: this.$route.params.uid
                             }
                             getMyCustomerDetail(token, para).then(res => { //获取用户资料
-                                let data = res.data.info
+                                let data = res.data.info;
                                 this.student = {
                                     names: data.names,
+                                    born: data.birthday,
                                     age: data.age,
                                     sex: data.sex ,
                                     school_name: data.school_name,
@@ -1696,6 +1739,7 @@
                                         '',
                                     teach_name: data.referral ? data.referral.teach_name : ''
                                 }
+                                console.log(11111)
                             })
                         })
                     } else {
@@ -2046,7 +2090,7 @@
             isEqual() {
                 if (this.payTotal == this.totalP3) {
                     return 1
-                } else {
+                } else {    
                     return 0
                 }
             },
@@ -2072,7 +2116,6 @@
                 return a
             },
             totalP3() { //实收总额
-
                 return this.totalP - this.totalP2
 
             },
@@ -2112,6 +2155,7 @@
                 let data = res.data.info
                 this.student = {
                                     names: data.names,
+                                    born:data.birthday,
                                     age: data.age,
                                     sex: data.sex ,
                                     school_name: data.school_name,
@@ -2188,23 +2232,28 @@
                     // this.allCC.unshift({aid:0,uname:'自己'})
                 })
             }
-
-
-
-        },
-        // watch:{
-        //     '$route' (to,form){
-        //         console.log(to)
-        //          console.log(from)
-        //     }
-        // }
+        },        
+        watch:{
+            'payTotal':function (val) {
+                if(this.payTotal==this.totalP3){
+                    this.isActive=true;
+                    console.log(this.isActive);
+                }else{
+                    this.isActive=false;
+                }
+            }
+            // '$route' (to,form){
+            //     console.log(to)
+            //      console.log(from)
+            // }
+        }
     }
 
 </script>
 <style>
-    /*.readd {
-    pointer-events: none
-}*/
+        /*.readd {
+        pointer-events: none
+    }*/
 
     .UserDetailTitle {
         position: relative;
@@ -2724,8 +2773,13 @@
 
     .CDEnred {
         color: red;
-        margin-left: 100px
+        margin-left: 35px;
     }
+
+    .cmk {
+        display:none;
+    }
+
 
     .CDEcom {
         float: left;

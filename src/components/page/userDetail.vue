@@ -336,7 +336,8 @@
         sourceList,
         repeatStudentList,
         getUserInviteList,
-        TMKput_customer
+        TMKput_customer,
+        searchResource
     } from '../../api/api';
     export default {
         data() {
@@ -410,9 +411,21 @@
                     callback()
                 } else if (!myreg.test(value)) {
                     callback('请输入有效手机号');
-                } else {
-                    callback();
-                }
+                }else if(this.form.phone==value){
+callback('不要输入重复的手机号');
+}else {
+let para = {
+search: value
+}
+searchResource(para, token).then(res => {
+if(res.data.length!=0){
+callback('此手机号码已存在');
+}else{
+callback();
+
+}
+})
+}
             }
             return {
                 maxlength:11,

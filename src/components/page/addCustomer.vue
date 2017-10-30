@@ -157,7 +157,8 @@
         campusList,
         sourceList,
         create_myCustomer,
-        repeatStudentList
+        repeatStudentList,
+        searchResource
     } from '../../api/api';
     export default {
         data() {
@@ -212,7 +213,7 @@
                 } else if (!myreg.test(value)) {
                     callback('请输入有效手机号');
                 } else {
-                    callback();
+                    callback()
                 }
             }
             var isPhone1 = (rule, value, callback) => {
@@ -221,9 +222,21 @@
                     callback()
                 } else if (!myreg.test(value)) {
                     callback('请输入有效手机号');
-                } else {
-                    callback();
-                }
+                }else if(this.form.phone==value){
+callback('不要输入重复的手机号');
+}else {
+let para = {
+search: value
+}
+searchResource(para, token).then(res => {
+if(res.data.length!=0){
+callback('此手机号码已存在');
+}else{
+callback();
+
+}
+})
+}
             }
             return {
                 maxlength:11,
@@ -433,7 +446,7 @@
                                 this.$refs.form.resetFields();
                             } else {
                                 this.$message.error(res.data);
-                                this.form.phone = '';
+                                // this.form.phone = '';
                                 this.$refs.parentPhone.$refs.input.focus();
                                 this.$refs.parentPhone.$refs.input.blur();
                                 // this.form.sour_id = this.form.sour_id.split(',')

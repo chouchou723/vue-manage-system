@@ -46,8 +46,8 @@
             </div>
             <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item v-for='item in notifyMessage' style='width:300px;' v-loading="loading" @click.native="goSystem" v-if='notifyMessage.length!=0'>
-                    <div style="text-align:left;font-size:10px;font-weight:600">{{item.type}}通知</div>
-                    <div style="text-align:left;font-size:10px;color:#666666;line-height:20px" v-if='item.type=="转校"'> 学生:{{ item.content.child}}的转校申请,请您确认</div>
+                    <div style="text-align:left;font-size:14px;font-weight:600">{{item.type}}通知</div>
+                    <div style="text-align:left;font-size:14px;color:#666666;line-height:20px" v-if='item.type=="转校"'> 学生:{{ item.content.child}}的转校申请,请您确认</div>
                 </el-dropdown-item>
                 <el-dropdown-item style='width:300px' @click.native="goSystem" v-if='notifyMessage.length==0'>
                     暂无未读消息
@@ -116,6 +116,7 @@
                 if (command == 'loginout') {
                     // this.$router.go();
                     this.$router.push('/login');
+                    localStorage.clear();
             // localStorage.removeItem('user')
                     
                 }

@@ -9,13 +9,13 @@
             <div style="width: 100%;float:left;background: white;position:relative;height:auto;border-radius:5px">
                 <div class="newResourceAn" style="position:relative;padding-top:10px;height:45px;border-bottom:1px solid gainsboro;background:#fafafa">
                     <div style='margin-left:10px;width:100px;float:right;margin-right:5px' v-if='code.includes("_m")'>
-                        <el-select class="circleSelect" v-model="valueCM1" size='small'  placeholder="选择老师" @change="updateListCM">
+                        <el-select class="circleSelect" v-model="valueCM1" size='small'  placeholder="选择老师" @change="updateListCM(4)">
                             <el-option v-for="item in teacherList" :key="item.aid" :label="item.uname" :value="item.aid">
                             </el-option>
                         </el-select>
                     </div>
                     <div style='margin-left:10px;width:100px;float:right;margin-right:5px' v-if='code.includes("_c")'>
-                            <el-select class="circleSelect" v-model="valueCM5" size='small'  placeholder="选择校区" @change="updateListCM">
+                            <el-select class="circleSelect" v-model="valueCM5" size='small'  placeholder="选择校区" @change="updateListCM(4)">
                                 <el-option v-for="item in schoolList" :key="item.id" :label="item.title" :value="item.id">
                                 </el-option>
                             </el-select>
@@ -321,7 +321,8 @@
             campusList,
             getAllCCList,
             sourceList,
-            getTeacherList
+            getTeacherList,
+            getteachFormsPic
         } from '../../api/api';
         export default {
             components: {
@@ -673,7 +674,7 @@
                     if(i==1&&this.valueCM6!=''){
                         this.valueCM2=[];
                         this.valueCM3='day'
-                        // this.getCM1Data();
+                        this.getCM1Data();
                     // this.getCM2Data(); 
                     }else if(i==3&&this.valueCM2.length!=0){
                         this.valueCM6 = '';
@@ -683,54 +684,49 @@
                         this.valueCM6 = '';
                         // this.getCM1Data();
                     // this.getCM2Data(); 
-                    }else{
-                        console.log(1)//其他情况下
+                    }else if(i==4){
+                        this.getCM1Data();
+                    this.getCM2Data(); 
                     }
                     // this.getResoureData();
                 },
                 getCM1Data() {//折线图
                     let para = {
-                        period:this.periodCT,
-                        startDay: this.valueCT1[0] != null? new Date(this.valueCT1[0]).toLocaleDateString(): '',
-                        endDay: this.valueCT1[1] != null? new Date(this.valueCT1[1]).toLocaleDateString(): '',
-                        cc_id: this.valueCT2,
-                        view:'picture'
+                        teach_uid:this.valueCM1,
+                        start_date:this.valueCM2[0] != null? new Date(this.valueCM2[0]).toLocaleDateString(): '',
+                        end_date:this.valueCM2[1] != null? new Date(this.valueCM2[1]).toLocaleDateString(): '',
+                        short_date:this.valueCM6,
+                        course_id:this.valueCM4,
+                        column:this.valueCM3,
+                        school_id:this.valueCM5,
                     }
-                    getReport1(token, para).then(res => {
+                    getteachFormsPic(token, para).then(res => {
                         let data = res.data;
-                        // console.log(data)
+                        console.log(data)
                         this.line.xAxis.data = data.day;
-                    this.line.series = [{ //以后改成动态获取
-                        name: "客户认领",
-                        type: "line",
-                        data: data.newResources
-                    }, {
-                        name: "沟通量",
-                        type: "line",
-                        data: data.newCall
-                    }, {
-                        name: "邀约量",
-                        type: "line",
-                        data: data.invitation
-                    } ,{
-                        name: "到访量",
-                        type: "line",
-                        data: data.visit
-                    }, {
-                        name: "未到访量",
-                        type: "line",
-                        data: data.notVisit
-                    }, {
-                        name: "签约量",
-                        type: "line",
-                        data: data.addOrder
-                    }];
-                    this.line.legend = {
-                        orient: 'horizontal',
-                        bottom: 10,
-                        data: ["客户认领", "沟通量", "邀约量", "到访量", "未到访量","签约量"]
-                        // backgroundColor:'white'
-                    };
+                this.line.series = [{ //以后改成动态获取
+                    name: "学员人数",
+                    type: "line",
+                    data: [2, 5, 10, 5, 1, 5, 10]
+                }, {
+                    name: "出勤量",
+                    type: "line",
+                    data: data.chuqi
+                }, {
+                    name: "请假量",
+                    type: "line",
+                    data: data.aingjia
+                }, {
+                    name: "旷课量",
+                    type: "line",
+                    data: data.kuangke
+                }]
+                this.line.legend = {
+                            orient: 'horizontal',
+                            bottom: 10,
+                            data: ["学员人数", "出勤量", "请假量", "旷课量",]
+                            // backgroundColor:'white'
+                        };
                     })
                 },
                 getCM2Data() {//表格

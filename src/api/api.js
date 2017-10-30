@@ -104,6 +104,12 @@ export const gettmkFormsDevelop = (token,params) => {
     return axios.get(`${base}/api/v1/reportForms/tmkFormsDevelop`, { params: params }).then(res => res.data);
 };
 
+//获取教务报表折线图数据
+export const getteachFormsPic = (token,params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/reportForms/teachFormsPic`, { params: params }).then(res => res.data);
+};
+
 //获取部门
 export const department = (token) => {
     axios.defaults.headers.common['Authorization'] = token.Authorization;
@@ -169,8 +175,11 @@ export const campusList = (params, token) => {
     return axios.get(`${base}/api/v1/school/list`, { params: params }).then(res => res.data);
 };
 
-
-
+// 帐号停用筛选
+// export const list_account = (token) => {
+//     axios.defaults.headers.common['Authorization'] = token.Authorization;
+//     return axios.get(`${base}/api/v1/account/list`).then(res => res.data);
+// };
 
 //获取角色
 export const character = (token) => {

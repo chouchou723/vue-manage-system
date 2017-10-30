@@ -29,6 +29,12 @@
                         </el-option>
                     </el-select>
                 </div>
+                <div class='threeSelect'>
+                    <el-select v-model="value3" clearable placeholder="选择帐号类型" @change="updateList">
+                        <el-option v-for="item in options3" :key="item.status" :label="item.status" :value="item.status">
+                        </el-option>
+                    </el-select>
+                </div>
                 <div class='AMinput'>
                     <el-input placeholder="请输入手机号或姓名" icon="search" v-model="input2" :on-icon-click="handleIconClick" @keyup.enter.native="handleIconClick">
                     </el-input>
@@ -152,6 +158,7 @@ import {
     departList,
     put_account,
     create_account,
+    // list_account,
     // delete_account,
     department
 } from '../../api/api';
@@ -235,9 +242,11 @@ export default {
                 options: '', //表单上方的校区select
                 options1: '', //表单上方的部门select
                 options2: '', //表单上方的职位select
+                options3: '', //表单上方的帐号类型select
                 value: '', //对应校区select的值
                 value1: '', //对应部门select的值
                 value2: '', //对应职位select的值
+                value3: '',
                 aform: {
                     uname: '',
                     name: '',
@@ -494,6 +503,7 @@ export default {
                     school_id: this.value,
                     did: this.value1,
                     job_id: this.value2,
+                    status: this.value3,
                     input: this.input2
                 }
                 account(para, token).then((res) => {
@@ -502,6 +512,7 @@ export default {
                     let c = res.last_page * this.pagesize;
                     this.total = parseInt(c);
                     this.accountData = a;
+                    let arr = [];
                 })
 
             },

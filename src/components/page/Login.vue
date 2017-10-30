@@ -418,7 +418,6 @@ export default {
                             }else{
                                 self.$router.push('/Index');
                             }
-                            // this.fullscreenLoading = false;
                         })
                         }else{
                             this.fullscreenLoading = false;
@@ -440,6 +439,9 @@ export default {
                         this.ruleForm.password = '';
                         this.change();
                     });
+                    var str = JSON.stringify(loginParams);
+                    localStorage.setItem("loginStr",str);
+                    console.log(str);
 
                 } else {
                     this.change();
@@ -507,6 +509,59 @@ export default {
             this._codeNumber3 = Math.floor(Math.random() * 9) + 1;
             this._codeNumber4 = Math.floor(Math.random() * 9) + 1;
             randomNumber();
+        },
+        isLogin(){
+            requestLogin().then(res => {
+                var lstr1= localStorage.getItem('loginStr');
+                var lstr2 = JSON.parse(lstr1);      
+                if(localStorage.hasOwnProperty('loginStr')){
+                    const self = this;
+                    this.fullscreenLoading = true;
+                    requestLogin(lstr2).then(data => {
+                        if(data.message =='登录成功'){
+                        let {
+                            access_token,
+                            status,
+                            token_type
+                        } = data;
+                        var token = {
+                            'Authorization': token_type + ' ' + access_token
+                        }
+                        getUserinfo(token).then(u => {
+                            let {
+                                data
+                            } = u;
+                            data.token = token;
+                            localStorage.setItem('user', JSON.stringify(data));
+                            if(data.job && data.job.code == 'hr'){
+                                 self.$router.push('/api/v1/admin');
+                            }else if(!data.wechat){
+                            self.$router.push('/wechat');
+                            }else{
+                                self.$router.push('/Index');
+                            }
+                        })
+                        }else{
+                            this.fullscreenLoading = false;
+                            this.ruleForm.code = '';
+                        this.ruleForm.password = '';
+                        this.change();
+                        }
+                    }).catch((error) => {
+                        this.fullscreenLoading = false;
+                        if (error.response) {
+                            this.$message({
+                                type: 'error',
+                                message: error.response.data.message
+                            });
+                            console.log(error.response);
+                        }
+                        this.ruleForm.code = '';
+                        this.ruleForm.password = '';
+                        this.change();
+                    });
+                }
+            })
         }
     },
     mounted() {
@@ -527,6 +582,7 @@ export default {
             d = Math.floor(d / 16);
             return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
         });
+        this.isLogin();
 
     }
 }

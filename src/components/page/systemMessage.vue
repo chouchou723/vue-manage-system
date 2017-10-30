@@ -11,7 +11,7 @@
             </h2>
         </div>
         <div class="systemwrapper">
-            <div style="position:relative;width:450px;height:900px;float:left;margin-top:10px;margin-left:25px;border:1px solid gainboro;border-radius:5px;box-shadow:0px -9px 20px gainsboro"
+            <div style="position:relative;width:450px;height:900px;float:left;margin-top:10px;margin-left:25px;border:1px solid gainboro;border-radius:5px;box-shadow:0px -5px 10px gainsboro"
                 v-loading='loading'>
                 <!-- <div style='width:80%;margin:10px auto'>
                     <el-input placeholder="请输入关键字" icon="search" v-model="input2" :on-icon-click="handleIconClick">
@@ -40,7 +40,7 @@
                 <div style="margin-left:5px" v-if='content.type=="代课申请失败"'>
                        您的代课申请请求未通过
                     </div>
-                    <div style="margin-left:5px" v-if='content.type=="代课申请成功"'>
+                    <div style="margin-left:5px;" v-if='content.type=="代课申请成功"'>
                         您的代课申请请求已通过
                      </div>
                 </div>
@@ -50,7 +50,7 @@
                     </el-pagination>
                 </div>
             </div>
-            <div v-if="display" style="flex:auto;height:837px;float:right;margin-top:66px;margin-right:2%;background:#f3f3f3;border-radius:5px;box-shadow:9px 12px 10px gainsboro">
+            <div v-if="display" style="flex:auto;height:837px;float:right;margin-right:2%;background:#f3f3f3;box-shadow:2px 2px 10px gainsboro">
                 <div class='detailContent'>
 
                     <div style="height:30px;margin-left:20px;padding-bottom:10px;border-bottom:1px solid gainsboro">
