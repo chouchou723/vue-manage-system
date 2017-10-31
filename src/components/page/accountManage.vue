@@ -31,8 +31,8 @@
                 </div>
                 <div class='threeSelect'>
                     <el-select v-model="value3" clearable placeholder="选择帐号类型" @change="updateList">
-                        <el-option v-for="item in options3" :key="item.status" :label="item.status" :value="item.status">
-                        </el-option>
+                        <el-option label="正常" value="0"></el-option>
+                        <el-option label="停用" value="1"></el-option>
                     </el-select>
                 </div>
                 <div class='AMinput'>
@@ -158,6 +158,7 @@ import {
     departList,
     put_account,
     create_account,
+    accountType,
     // list_account,
     // delete_account,
     department
@@ -553,8 +554,8 @@ export default {
                     this.options2 = res.data.job
                 })
             }).then(() => {
-                cityList(token).then((res) => { //获取城市
-                    this.cities = res.data
+                accountType(token).then((res) => {
+                    console.log(res.data);
                 })
             })
         },

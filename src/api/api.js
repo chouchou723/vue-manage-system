@@ -115,6 +115,13 @@ export const department = (token) => {
     axios.defaults.headers.common['Authorization'] = token.Authorization;
     return axios.get(`${base}/api/v1/department/list`).then(res => res.data);
 };
+
+//获取账户类型
+export const accountType = (token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/account/list`).then(res => res.data);
+};
+
 //创建部门
 export const create_department = (params, token) => {
     axios.defaults.headers.common['Authorization'] = token.Authorization;
