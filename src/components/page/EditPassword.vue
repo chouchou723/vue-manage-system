@@ -133,14 +133,18 @@
                                     message: '修改成功',
                                     type: 'success'
                                 });
+                               
                             }
                             return res
                         }).then(res => {
                             if (res.code == 0) {
                                 localStorage.removeItem('user');
-                                this.$router.go();
-                                this.$router.push('/login');
-                                // this.$router.push('/Index');
+                                this.$message.success('修改成功');
+                                let _this = this;
+                                setTimeout(function(){
+                                    _this.$router.go();
+                                    _this.$router.push('/login')
+                                },2000);
                             } else {
                                 this.$message.error(res.message);
                                 this.ruleForm2.code = '';
@@ -193,7 +197,7 @@
     }
 
 </script>
-<style scoped>
+<style>
     .editPass {
         width: 100%;
         position: relative;
@@ -231,6 +235,10 @@
 
     .edit100 {
         width: 100%
+    }
+
+    .el-input .el-input__inner:nth(1) {
+        cursor:default;
     }
 
 </style>
