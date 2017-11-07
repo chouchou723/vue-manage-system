@@ -22,9 +22,9 @@
                     </el-steps>
                     <el-col style='text-align:center'>
                         <div style="position:relative;height:310px">
-                            <img class="pre-img" :src="settingsrc" alt="" width="125px" height="125px" style="float:left;border:2px solid grey;border-radius:50%;margin-left:-60px;margin-top:50px" v-if='active==1'>
+                            <img class="pre-img" :src="settingsrc" alt="" width="125px" height="125px" style="float:left;border:2px solid grey;border-radius:50%;margin-left:-50px;margin-top:50px" v-if='active==1'>
                             <span v-if='active==1' style='width:256px;margin-left:-128px;position:absolute;left:0;bottom:-30px'></span>
-                            <el-button v-if='active==1' type="primary" style='width:128px;margin-left:-64px;position:absolute;left:0;bottom:70px' @click='changeWechat'>更换绑定</el-button>
+                            <el-button v-if='active==1' type="primary" style='width:128px;margin-left:-50px;position:absolute;left:0;bottom:70px' @click='changeWechat'>更换绑定</el-button>
                             <img class="pre-img" src="../../../static/img/we_04.png" alt="" width="256px" height="270px" style="float:left;margin-left:186px;margin-top:50px" v-if='active==2'>
                             <el-input v-model="code" auto-complete="off" placeholder='请输入验证码' style='width:200px;position:absolute;left:0;margin-left:216px;margin-top:330px' v-if='active==2'></el-input>
                             <el-button type="primary" style="position:absolute;left:0;margin-left:278px;margin-top:380px" @click='newStep' v-if='active==2'>确 认</el-button>
@@ -210,4 +210,6 @@ export default {
     margin-bottom:15px;
     margin-left:10px;
 }
+
+
 </style>

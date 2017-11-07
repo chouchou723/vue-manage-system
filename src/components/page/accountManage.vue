@@ -554,8 +554,8 @@ export default {
                     this.options2 = res.data.job
                 })
             }).then(() => {
-                accountType(token).then((res) => {
-                    console.log(res.data);
+                cityList(token).then((res) => { //获取城市
+                    this.cities = res.data
                 })
             })
         },
