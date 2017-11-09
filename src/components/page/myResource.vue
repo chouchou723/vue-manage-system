@@ -8,7 +8,7 @@
             
             <h2 class="mydataReturn">
                我的资源({{number}}人)
-               <el-button type="primary" size="mid" class='myresourceButton' @click="goToAdd" v-if="!code.includes('_c')">添加资源</el-button>
+               <!-- <el-button type="primary" size="mid" class='myresourceButton' @click="goToAdd" v-if="!code.includes('_c')">添加资源</el-button> -->
       </h2>
         <div class="MRtitle">
             
@@ -246,7 +246,7 @@ export default {
 
         },
         beforeCreate() {
-            user = localStorage.getItem('user');
+            user = sessionStorage.getItem('user');
             token = JSON.parse(user).token;
         },
 

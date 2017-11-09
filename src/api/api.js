@@ -98,6 +98,12 @@ export const gettmkFormsSource = (token,params) => {
     axios.defaults.headers.common['Authorization'] = token.Authorization;
     return axios.get(`${base}/api/v1/reportForms/tmkFormsSource`, { params: params }).then(res => res.data);
 };
+//获取资源统计表销售经理查看TMK排行榜
+export const gettmkRankList = (token,params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/reportForms/tmkRankList`, { params: params }).then(res => res.data);
+};
+
 //获取资源发展表折线图数据
 export const gettmkFormsDevelop = (token,params) => {
     axios.defaults.headers.common['Authorization'] = token.Authorization;
@@ -108,6 +114,18 @@ export const gettmkFormsDevelop = (token,params) => {
 export const getteachFormsPic = (token,params) => {
     axios.defaults.headers.common['Authorization'] = token.Authorization;
     return axios.get(`${base}/api/v1/reportForms/teachFormsPic`, { params: params }).then(res => res.data);
+};
+
+//获取教务报表表格数据
+export const getteachFormsList = (token,params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/reportForms/teachFormsList`, { params: params }).then(res => res.data);
+};
+
+//获取教务报表排行榜数据
+export const getteachFormsRank = (token,params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/reportForms/teachFormsRank`, { params: params }).then(res => res.data);
 };
 
 //获取部门
@@ -878,6 +896,12 @@ export const getClassBonus = (token, params) => {
 export const getTeachIndex = (token, params) => {
     axios.defaults.headers.common['Authorization'] = token.Authorization;
     return axios.get(`${base}/api/v1/teacher/forms`, { params: params }).then(res => res.data);
+};
+
+//教务业务交接获取学员
+export const getTeachmyStudent = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/teacher/myStudent`, { params: params }).then(res => res.data);
 };
 // //code字段说明
 //     tmk_m:  tmk主管

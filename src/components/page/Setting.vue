@@ -27,8 +27,7 @@
             </div>
             <!-- </el-upload> -->
             <!-- </el-form> -->
-            <my-upload field="file" @crop-upload-success="cropUploadSuccess" @crop-upload-fail="cropUploadFail" v-model="show" :width="40"
-                :height="40" url="http://pandatest.dfth.com/api/v1/userinfo/uploadAvatar" :headers="headers" img-format="jpg"></my-upload>
+            <my-upload field="file" @crop-upload-success="cropUploadSuccess" @crop-upload-fail="cropUploadFail" v-model="show" url="http://pandatest.dfth.com/api/v1/userinfo/uploadAvatar" :headers="headers" img-format="jpg"></my-upload>
         </div>
     </div>
 </template>
@@ -75,11 +74,12 @@
                 //                             type: 'success'
                 //                         })
                 // this.imageUrl = jsonData.data
-                // console.log(jsonData)
+                // console.log(field)
                 let a = JSON.parse(user);
                 a.avatar = jsonData.data;
-                localStorage.setItem('user', JSON.stringify(a));
-                window.location.reload();
+                sessionStorage.setItem('user', JSON.stringify(a));
+                setTimeout(function(){window.location.reload();},1000)
+                
                 // this.$router.go();
             },
             cropUploadFail(status, field) {
@@ -93,7 +93,7 @@
             //   this.imageUrl = URL.createObjectURL(file.raw)
             // let a =  JSON.parse(user);
             // a.avatar = res.data;
-            // localStorage.setItem('user', JSON.stringify(a));
+            // sessionStorage.setItem('user', JSON.stringify(a));
             //     // console.log( a)
 
 
@@ -113,7 +113,7 @@
             // }
         },
         beforeCreate() {
-            user = localStorage.getItem('user');
+            user = sessionStorage.getItem('user');
             token = JSON.parse(user).token;
         },
         created() {

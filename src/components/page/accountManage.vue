@@ -18,7 +18,7 @@
                     </el-select>
                 </div>
                 <div class='twoSelect'>
-                    <el-select v-model="value1" clearable placeholder="选择部门" @change="updateList">
+                    <el-select v-model="value1" clearable placeholder="选择部门" @change="updateList" >
                         <el-option v-for="item in options1" :key="item.value" :label="item.label" :value="item.value">
                         </el-option>
                     </el-select>
@@ -30,7 +30,7 @@
                     </el-select>
                 </div>
                 <div class='threeSelect'>
-                    <el-select v-model="value3" clearable placeholder="选择帐号类型" @change="updateList">
+                    <el-select v-model="value3"  placeholder="选择帐号类型" @change="updateList">
                         <el-option label="正常" value="0"></el-option>
                         <el-option label="停用" value="1"></el-option>
                     </el-select>
@@ -247,7 +247,7 @@ export default {
                 value: '', //对应校区select的值
                 value1: '', //对应部门select的值
                 value2: '', //对应职位select的值
-                value3: '',
+                value3: '0',
                 aform: {
                     uname: '',
                     name: '',
@@ -523,7 +523,7 @@ export default {
             },
         },
         beforeCreate() {
-            let user = localStorage.getItem('user');
+            let user = sessionStorage.getItem('user');
             token = JSON.parse(user).token;
         },
         created() { //创建组件时
@@ -642,14 +642,14 @@ export default {
    display: inline-block;
      margin-bottom: 10px;
     margin-left: 10px;
-    width: 140px
+    width: 110px
 }
 
 .threeSelect {
     display: inline-block;
      margin-bottom: 10px;
     margin-left: 10px;
-    width: 140px
+    width: 110px
 }
 
 .buttonAdd {

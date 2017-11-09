@@ -26,7 +26,7 @@
                 <div class="login-btn">
                     <el-button type="success" @click="submitForm('ruleForm')" v-loading.fullscreen.lock="fullscreenLoading">登录</el-button>
                 </div>
-                <p style="font-size:14px;line-height:30px;text-align:center"><a id='forget' href="javascript:;" @click='goToForget'>忘记密码？</a></p>
+                <p style="font-size:14px;line-height:30px;text-align:center"><a id='forget' href="javascript:;" @click='goToForget' style='padding-left:9px'>忘记密码？</a></p>
                 <div class="wechatlogin">
                     <img style='margin-left:10px' src="../../../static/img/login_02.png" alt="">
                 </div>
@@ -410,7 +410,7 @@ export default {
                                 data
                             } = u;
                             data.token = token;
-                            localStorage.setItem('user', JSON.stringify(data));
+                            sessionStorage.setItem('user', JSON.stringify(data));
                             if(data.job && data.job.code == 'hr'){
                                  self.$router.push('/api/v1/admin');
                             }else if(!data.wechat){
@@ -439,9 +439,9 @@ export default {
                         this.ruleForm.password = '';
                         this.change();
                     });
-                    var str = JSON.stringify(loginParams);
-                    localStorage.setItem("loginStr",str);
-                    console.log(str);
+                    // var str = JSON.stringify(loginParams);
+                    // sessionStorage.setItem("loginStr",str);
+                    // console.log(str);
 
                 } else {
                     this.change();
@@ -476,7 +476,7 @@ export default {
                             data
                         } = u;
                         data.token = token;
-                        localStorage.setItem('user', JSON.stringify(data));
+                        sessionStorage.setItem('user', JSON.stringify(data));
                          if(data.job && data.job.code == 'hr'){
                                  this.$router.push('/api/v1/admin');
                             }else{
@@ -510,59 +510,59 @@ export default {
             this._codeNumber4 = Math.floor(Math.random() * 9) + 1;
             randomNumber();
         },
-        isLogin(){
-            requestLogin().then(res => {
-                var lstr1= localStorage.getItem('loginStr');
-                var lstr2 = JSON.parse(lstr1);      
-                if(localStorage.hasOwnProperty('loginStr')){
-                    const self = this;
-                    this.fullscreenLoading = true;
-                    requestLogin(lstr2).then(data => {
-                        if(data.message =='登录成功'){
-                        let {
-                            access_token,
-                            status,
-                            token_type
-                        } = data;
-                        var token = {
-                            'Authorization': token_type + ' ' + access_token
-                        }
-                        getUserinfo(token).then(u => {
-                            let {
-                                data
-                            } = u;
-                            data.token = token;
-                            localStorage.setItem('user', JSON.stringify(data));
-                            if(data.job && data.job.code == 'hr'){
-                                 self.$router.push('/api/v1/admin');
-                            }else if(!data.wechat){
-                            self.$router.push('/wechat');
-                            }else{
-                                self.$router.push('/Index');
-                            }
-                        })
-                        }else{
-                            this.fullscreenLoading = false;
-                            this.ruleForm.code = '';
-                        this.ruleForm.password = '';
-                        this.change();
-                        }
-                    }).catch((error) => {
-                        this.fullscreenLoading = false;
-                        if (error.response) {
-                            this.$message({
-                                type: 'error',
-                                message: error.response.data.message
-                            });
-                            console.log(error.response);
-                        }
-                        this.ruleForm.code = '';
-                        this.ruleForm.password = '';
-                        this.change();
-                    });
-                }
-            })
-        }
+        // isLogin(){
+        //     requestLogin().then(res => {
+        //         var lstr1= sessionStorage.getItem('loginStr');
+        //         var lstr2 = JSON.parse(lstr1);      
+        //         if(sessionStorage.hasOwnProperty('loginStr')){
+        //             const self = this;
+        //             this.fullscreenLoading = true;
+        //             requestLogin(lstr2).then(data => {
+        //                 if(data.message =='登录成功'){
+        //                 let {
+        //                     access_token,
+        //                     status,
+        //                     token_type
+        //                 } = data;
+        //                 var token = {
+        //                     'Authorization': token_type + ' ' + access_token
+        //                 }
+        //                 getUserinfo(token).then(u => {
+        //                     let {
+        //                         data
+        //                     } = u;
+        //                     data.token = token;
+        //                     sessionStorage.setItem('user', JSON.stringify(data));
+        //                     if(data.job && data.job.code == 'hr'){
+        //                          self.$router.push('/api/v1/admin');
+        //                     }else if(!data.wechat){
+        //                     self.$router.push('/wechat');
+        //                     }else{
+        //                         self.$router.push('/Index');
+        //                     }
+        //                 })
+        //                 }else{
+        //                     this.fullscreenLoading = false;
+        //                     this.ruleForm.code = '';
+        //                 this.ruleForm.password = '';
+        //                 this.change();
+        //                 }
+        //             }).catch((error) => {
+        //                 this.fullscreenLoading = false;
+        //                 if (error.response) {
+        //                     this.$message({
+        //                         type: 'error',
+        //                         message: error.response.data.message
+        //                     });
+        //                     console.log(error.response);
+        //                 }
+        //                 this.ruleForm.code = '';
+        //                 this.ruleForm.password = '';
+        //                 this.change();
+        //             });
+        //         }
+        //     })
+        // }
     },
     mounted() {
         this.change();    
@@ -571,10 +571,10 @@ export default {
         clearInterval(inter)
     },
     created() {
-        // let userc = localStorage.getItem('user');
+        // let userc = sessionStorage.getItem('user');
         // if(userc){
 
-        //     localStorage.removeItem('user')
+        //     sessionStorage.removeItem('user')
         // }
         var d = new Date().getTime();
         this.uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -582,7 +582,7 @@ export default {
             d = Math.floor(d / 16);
             return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
         });
-        this.isLogin();
+        // this.isLogin();
 
     }
 }
@@ -667,7 +667,7 @@ width:100%
 .maillogin {
     position: absolute;
     left: 50%;
-    margin-left: -186px;
+    margin-left: -184px;
     top: 110%;
 }
 
@@ -696,7 +696,7 @@ width:100%
 .maillog {
     position: absolute;
     left: 50%;
-    margin-left: -30px;
+    margin-left: -27px;
     top: 118%;
 }
 

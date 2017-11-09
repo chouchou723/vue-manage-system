@@ -260,7 +260,7 @@
             @close="resetClass('suspendClass')">
             <el-form :model="suspendClass" ref="suspendClass" :rules='suspendClassRules' label-width="120px">
                 <el-form-item prop='school' label='选择校区' v-if="selectClass.length==0">
-                    <el-select v-model="suspendClass.school" clearable placeholder="选择校区" filterable @change='getTeacher1'>
+                    <el-select v-model="suspendClass.school"  placeholder="选择校区" filterable @change='getTeacher1'>
                         <el-option v-for="item in receiveSchool2" :key="item.id" :label="item.title" :value="item.id">
                         </el-option>
                     </el-select>
@@ -289,7 +289,7 @@
             @close="resetClass('substitute')">
             <el-form :model="substitute" ref="substitute" :rules='substituteRules' label-width="120px">
                 <el-form-item prop='school' label='选择校区'>
-                    <el-select v-model="substitute.school" clearable placeholder="选择校区" filterable @change='getTeacher'>
+                    <el-select v-model="substitute.school"  placeholder="选择校区" filterable @change='getTeacher'>
                         <el-option v-for="item in receiveSchool1" :key="item.id" :label="item.title" :value="item.id">
                         </el-option>
                     </el-select>
@@ -739,21 +739,29 @@
             //     }
             // },
             getTeacher() {
-                let para = {
-                    school_id: this.substitute.school
+                this.substitute.teacher = ''
+                if(this.substitute.school){
+
+                    let para = {
+                        school_id: this.substitute.school
+                    }
+                    getTeacherList(token, para).then((res) => { //获取老师
+                        this.listTeacher1 = res.data;
+                    })
                 }
-                getTeacherList(token, para).then((res) => { //获取老师
-                    this.listTeacher1 = res.data;
-                })
             },
             getTeacher1() {
-                let para = {
-                    school_id: this.suspendClass.school
+                this.suspendClass.teacher_id=''
+                if(this.suspendClass.school){
+
+                    let para = {
+                        school_id: this.suspendClass.school
+                    }
+                    getTeacherList(token, para).then((res) => { //获取老师
+                        this.listTeacher = res.data;
+                        this.listTeacher.unshift({uname:'全部老师',aid:0})
+                    })
                 }
-                getTeacherList(token, para).then((res) => { //获取老师
-                    this.listTeacher = res.data;
-                    this.listTeacher.unshift({uname:'全部老师',aid:0})
-                })
             },
             nextToStep() {
                 if (this.openStatus == 'change') {
@@ -808,6 +816,7 @@
                 this.openStatus = 'substitute'
                 this.isDisplay = '1';
                 this.isdisable2 = true;
+               
             },
             openStop() {
                 // this.isDisplay = '1';
@@ -823,6 +832,7 @@
                     }
 
                     this.$refs[form].resetFields();
+                    this.listTeacher1=[]
                 } else {
                     this.suspendClass = {
                         school: '',
@@ -831,7 +841,7 @@
                         teacher_id: ''
                     }
                     this.$refs[form].resetFields();
-
+                    this.listTeacher=[]
                 }
 
             },
@@ -1137,7 +1147,7 @@
             }
         },
         beforeCreate() {
-            user = localStorage.getItem('user');
+            user = sessionStorage.getItem('user');
             token = JSON.parse(user).token;
         },
         created() { //创建组件时

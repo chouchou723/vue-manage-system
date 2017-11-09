@@ -26,7 +26,7 @@
             <div style='margin-bottom:20px;font-weight:bold'>请选择要接管的老师:</div>
             <el-form :model="resourceAssign" id='actSchool1'>
                 <el-form-item prop='school'>
-                    <el-select v-model="resourceAssign.school" clearable placeholder="选择校区" filterable @change='getCC'>
+                    <el-select v-model="resourceAssign.school"  placeholder="选择校区" filterable @change='getCC'>
                         <el-option v-for="item in receiveSchool" :key="item.value" :label="item.label" :value="item.value">
                         </el-option>
                     </el-select>
@@ -47,24 +47,26 @@
             <el-table :data="noEffData"  style="width: 100%" @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55">
                 </el-table-column>
-                <el-table-column prop="names" label="姓名">
+                <el-table-column prop="child_name" label="姓名">
                     <template scope="scope">
-                        <span>{{scope.row.names}}</span>
+                        <span>{{scope.row.child_name}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="sex" label="性别">
                 </el-table-column>
-                <el-table-column prop="age" label="年龄">
+                <el-table-column prop="birthday" label="生日">
                 </el-table-column>
-                <el-table-column prop="patriarch" label="CC">
+                <el-table-column prop="kecheng" label="课程">
+                    </el-table-column>
+                <el-table-column prop="ccName" label="CC">
                 </el-table-column>
-                <el-table-column prop="school" label="校区">
-                </el-table-column>
+                <!-- <el-table-column prop="school" label="校区">
+                </el-table-column> -->
             </el-table>
         </div>
         <div class="block">
             <span class="demonstration"></span>
-            <el-pagination layout="prev, pager, next" :total="total" :current-page="currentPage" :page-size="pagesize" @current-change="handleCurrentChange">
+            <el-pagination layout="sizes,prev, pager, next" :total="total" :page-sizes="[150,300,500]" @size-change="handleSizeChange" :current-page="currentPage" :page-size="pagesize" @current-change="handleCurrentChange">
             </el-pagination>
         </div>
     </div>
@@ -75,7 +77,8 @@
         getMyCustomerList,
         dispatchResource,
         campusList,
-        getTeacherList
+        getTeacherList,
+        getTeachmyStudent
     } from '../../api/api';
     export default {
         data() {
@@ -99,7 +102,7 @@
                 valueR: '1',
                 input2: '',
                 currentPage: 1, //页数
-                pagesize: 15, //默认每页
+                pagesize: 150, //默认每页
             }
         },
         methods: {
@@ -112,16 +115,20 @@
                 }
             },
             getCC(){
-                let para = {
-                    school_id:this.resourceAssign.school
+                this.resourceAssign.receiveCC = ''
+                if(this.resourceAssign.school){
+
+                    let para = {
+                        school_id:this.resourceAssign.school
+                    }
+                    getTeacherList(token,para).then((res) => {
+                    this.listCC = res.data;
+                })
                 }
-                getAllCCList(token,para).then((res) => {
-                this.listCC = res.data;
-            })
             },
             openResource() { //打开人员分配
                 this.resourceAssign.school = ''
-
+                this.listCC = []
                 this.dialogFormVisible = true
             },
             handleSelectionChange(val) { //选中数据
@@ -129,6 +136,10 @@
             },
             handleCurrentChange: function (val) { //换页
                 this.currentPage = val;
+                this.fetchData();
+            },
+            handleSizeChange :function (val) { //换页
+                this.pagesize = val;
                 this.fetchData();
             },
             // switchDetail(row) { //点击名字
@@ -148,14 +159,15 @@
             },
             fetchData() {
                 let para = {
-                    group_id: 0,
-                    cc_id: this.valueT, //TMK
+                    // group_id: 0,
+                    cc_uid: this.valueT, //TMK
                     page: this.currentPage,
                     input:this.input2,
-                    kind:this.valueR
+                    // kind:this.valueR,
+                    pagesize:this.pagesize
                 }
 
-                getMyCustomerList(token,para).then((res) => { //替换以后的人员查询
+                getTeachmyStudent(token,para).then((res) => { //替换以后的人员查询
                     this.number = res.data.total;
                     let a = res.data.data;
                     let c = res.data.last_page * this.pagesize;
@@ -185,7 +197,7 @@
         },
 
         beforeCreate() {
-            user = localStorage.getItem('user');
+            user = sessionStorage.getItem('user');
             token = JSON.parse(user).token;
         },
         created() {

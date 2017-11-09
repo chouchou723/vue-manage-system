@@ -145,14 +145,14 @@ export default {
                         this.defaultOpeneds.push(item.location);
                     })
                     this.menus = res.data;
-                    // localStorage.setItem('menuOption',JSON.stringify(this.menus))
+                    // sessionStorage.setItem('menuOption',JSON.stringify(this.menus))
                 });
 
 
             }
         },
         beforeCreate() {
-            let user = localStorage.getItem('user');
+            let user = sessionStorage.getItem('user');
             token = JSON.parse(user).token;
         },
         created() {
@@ -185,7 +185,7 @@ export default {
             // })
         },
         // beforeDestroy() {
-        //     localStorage.removeItem('menuOption')
+        //     sessionStorage.removeItem('menuOption')
         // },
         // watch:{
         //     notiData:function(val,oldVal){

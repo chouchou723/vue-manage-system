@@ -138,7 +138,7 @@
                             return res
                         }).then(res => {
                             if (res.code == 0) {
-                                localStorage.removeItem('user');
+                                sessionStorage.removeItem('user');
                                 this.$message.success('修改成功');
                                 let _this = this;
                                 setTimeout(function(){
@@ -179,7 +179,7 @@
             },
         },
         beforeCreate() {
-            user = localStorage.getItem('user');
+            user = sessionStorage.getItem('user');
             token = JSON.parse(user).token;
         },
         created() {

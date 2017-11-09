@@ -9,7 +9,7 @@
         <div class='accouMyresoureceMC'>
             <h2 class="myMCReturn">
                 我的客户({{number}}人)
-                <el-button type="primary" size="mid" class='myresourceButton' @click="goToAdd" v-if='!code.includes("_c")'>添加客户</el-button>
+                <!-- <el-button type="primary" size="mid" class='myresourceButton' @click="goToAdd" v-if='!code.includes("_c")'>添加客户</el-button> -->
             </h2>
             <div class="MCUtitle">
                 <div class='studentReturnThreeNew' v-if="code.includes('_c')">
@@ -334,7 +334,7 @@
             // }
         },
         beforeCreate() {
-            user = localStorage.getItem('user');
+            user = sessionStorage.getItem('user');
             token = JSON.parse(user).token;
         },
         created() {

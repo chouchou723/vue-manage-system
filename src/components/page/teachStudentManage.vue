@@ -193,7 +193,7 @@
                         </el-table-column>
                         <el-table-column prop="status" label="使用状态" column-key='status' width='67'>
                             <template scope="scope">
-                                <span :style="scope.row.status=='正常'? 'color:black' : scope.row.status=='未排班'?'color:#dba31c':'color:#50bfff'">{{scope.row.status}}</span>
+                                <span :style="scope.row.status=='正常'? 'color:black' : scope.row.status=='未排班'?'color:#dba31c':scope.row.status=='冻结'?'color:#50bfff':'color:#e21a59'">{{scope.row.status}}</span>
                             </template>
                         </el-table-column>
                         <el-table-column label="36次课耗相框发放" width='163'>
@@ -753,7 +753,7 @@
             }
         },
         beforeCreate() {
-            user = localStorage.getItem('user');
+            user = sessionStorage.getItem('user');
             token = JSON.parse(user).token;
         },
         created() {

@@ -28,6 +28,9 @@
                 <el-form-item label="年龄:" prop='age'>
                     <span>{{student.age}}</span>
                 </el-form-item>
+                <el-form-item label="出生日期:" prop='birthday'>
+                        <span>{{student.birthday}}</span>
+                    </el-form-item>
                 <el-form-item label="身份证号:" prop='id_number'>
                     <span>{{student.id_number}}</span>
                 </el-form-item>
@@ -50,9 +53,9 @@
                 <el-form-item label="录入时间:" prop='time'>
                     <span>{{student.time}}</span>
                 </el-form-item>
-                <el-form-item label="所在地区:" prop='fullAddress'>
+                <!-- <el-form-item label="所在地区:" prop='fullAddress'>
                         <span>{{student.fullAddress}}</span>
-                    </el-form-item>
+                    </el-form-item> -->
                 <el-form-item label="校区:" prop='school'>
                     <span>{{student.school}}</span>
                 </el-form-item>
@@ -219,7 +222,7 @@
             @close="resetD('transferSchoolform')">
             <el-form :model="transferSchoolform" :rules='transferSchoolformrule' ref="transferSchoolform" label-width="80px">
                 <el-form-item prop='school' label='接收校区'>
-                    <el-select v-model="transferSchoolform.school" clearable placeholder="选择校区" filterable @change='getCC'>
+                    <el-select v-model="transferSchoolform.school"  placeholder="选择校区" filterable @change='getCC'>
                         <el-option v-for="item in receiveSchool" :key="item.value" :label="item.label" :value="item.value">
                         </el-option>
                     </el-select>
@@ -386,7 +389,7 @@
                             </el-table-column>
                             <el-table-column prop="status" label="课程状态" column-key='status' width='80'>
                                 <template scope="scope">
-                                    <span :style="scope.row.status=='正常'? 'color:black' : scope.row.status=='冻结'? 'color:#50bfff':'color:#dba31c'">{{scope.row.status}}</span>
+                                    <span :style="scope.row.status=='正常'? 'color:black' : scope.row.status=='冻结'? 'color:#50bfff':scope.row.status=='未排班'? 'color:#dba31c':'color:#e21a59'">{{scope.row.status}}</span>
                                 </template>
                             </el-table-column>
                         </el-table>
@@ -540,7 +543,7 @@
                         <div v-for='i in contracts' class='signContractDiv'>
                             <div class="signContactDivTitle">
                                 <div>
-                                    <el-select v-model="i.kc_tid" clearable placeholder="课程类型" size='small' class='SDw103' @change='getClassName(i.kc_tid,i)'>
+                                    <el-select v-model="i.kc_tid"  placeholder="课程类型" size='small' class='SDw103' @change='getClassName(i.kc_tid,i)'>
                                         <el-option v-for="item in classkind" :key="item.kc_tid" :label="item.kc_tname" :value="item.kc_tid">
                                         </el-option>
                                     </el-select>
@@ -668,7 +671,7 @@
                     <span slot="label"><i class="el-icon-star-on" v-if="item.isR=='yes'"></i> {{item.name}}</span>
                     <el-form :model="art[index]" :ref="artName[index]" :rules='artRules' label-width="80px">
                         <el-form-item label="开课日期" prop='time'>
-                            <el-date-picker v-model="art[index].time" type="date" @change='getClassRoomByTime(art[index].time,index,item)'>
+                            <el-date-picker v-model="art[index].time" type="date" :picker-options="pickerOptions0" @change='getClassRoomByTime(art[index].time,index,item)'>
                             </el-date-picker>
                         </el-form-item>
                         <el-form-item prop='syllabus_id' class='selectClass SDselect'>
@@ -694,7 +697,7 @@
         <el-dialog :title="arrangeTitle" :visible.sync="dialogFormVisibleArrange" :close-on-click-modal="no" top='7%' show-close>
             <el-form :model="arrange" ref="arrange" :rules='arrangeRules' label-width="80px">
                 <el-form-item label="开课日期" prop='time'>
-                    <el-date-picker v-model="arrange.time" type="date" @change='getClassRoomArrange(arrange.time)'>
+                    <el-date-picker v-model="arrange.time" type="date" :picker-options="pickerOptions0" @change='getClassRoomArrange(arrange.time)'>
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item prop='syllabus_id' class='selectClass SDselect'>
@@ -887,7 +890,7 @@ let para = {
 search: value
 }
 searchResource(para, token).then(res => {
-if(res.data.length!=0){
+if(res.data.data.length!=0){
 callback('此手机号码已存在');
 }else{
 callback();
@@ -953,6 +956,11 @@ callback();
                 pickerOptions1: {
                     disabledDate(time) {
                         return time.getTime() > Date.now() ;
+                    }
+                },
+                pickerOptions0: {
+                    disabledDate(time) {
+                        return time.getTime() < Date.now() - 8.64e7;
                     }
                 },
                 continueClass1: [],
@@ -1361,11 +1369,7 @@ callback();
                 contractNumber: 0,
                 transClass: [],
                 stopchange: false,
-                pickerOptions0: {
-                    disabledDate(time) {
-                        return time.getTime() < Date.now() - 8.64e7;
-                    }
-                },
+                
             }
         },
         methods: {
@@ -1388,14 +1392,18 @@ callback();
                 this.$router.push('/contractDetail/' + id + '/' + this.$route.params.uid);
             },
             getCC() {
-                let para = {
-                    school_id: this.transferSchoolform.school
+                this.transferSchoolform.receiveCC = ''
+                if(this.transferSchoolform.school){
+
+                    let para = {
+                        school_id: this.transferSchoolform.school
+                    }
+                    getAllCCList(token, para).then((res) => {
+                        this.listCC = res.data.filter(item => {
+                            return item.uname != JSON.parse(user).uname
+                        });
+                    })
                 }
-                getAllCCList(token, para).then((res) => {
-                    this.listCC = res.data.filter(item => {
-                        return item.uname != JSON.parse(user).uname
-                    });
-                })
             },
             forzenSubmit() { //冻结提交
                 this.$refs['frozeform'].validate((valid) => {
@@ -1589,7 +1597,7 @@ callback();
             },
             getClassName(data, i) { //获取课程名称
                 let that = this;
-                if (!this.stopchange) {
+                if (!this.stopchange&&data) {
                     i.course_id = ''
                     let para = {
                         pid: data,
@@ -1842,6 +1850,7 @@ callback();
                 this.step = 'transferSchool';
                 this.transferSchoolform.school = '';
                 this.transferSchoolform.receiveCC = '';
+                this.listCC=[]
                 this.dialogFormVisibleTransferSchool = true;
             },
             frozzen() { //冻结
@@ -2557,7 +2566,7 @@ callback();
 
         },
         beforeCreate() {
-            user = localStorage.getItem('user');
+            user = sessionStorage.getItem('user');
             token = JSON.parse(user).token;
         },
         created() {
@@ -2574,6 +2583,7 @@ callback();
                     age: data.age,
                     id_number: data.id_number ? data.id_number : '无',
                     sex: data.sex,
+                    birthday: data.birthday,
                     school: data.school_name,
                     channel: data.source_name,
                     cc_name:data.cc_name,

@@ -333,7 +333,7 @@
             // ]),
         },
         beforeCreate() {
-            user = localStorage.getItem('user');
+            user = sessionStorage.getItem('user');
             token = JSON.parse(user).token;
 
         },
@@ -487,7 +487,7 @@
         float: left;
         width: 33%;
         background-color: white;
-        min-height: 476px;
+        /* min-height: 476px; */
         border-radius: 5px;
         margin-right: 30px
     }

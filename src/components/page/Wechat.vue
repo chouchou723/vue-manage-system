@@ -15,7 +15,7 @@
         <el-row style='background-color:white;padding:20px 0 150px'>
             <el-col :span="12" :offset="6">
                 <el-form label-width="100px" class="demo-ruleForm" v-if='changewechat'>
-                    <el-steps :space="300" :active="active">
+                    <el-steps :space="300" :active="active" align-center>
                         <el-step title="更换绑定"></el-step>
                         <el-step title="扫描二维码 关注公众号"></el-step>
                         <el-step title="微信绑定成功" style='width:100px'></el-step>
@@ -35,7 +35,7 @@
             </el-col>
             <el-col :span="12" :offset="6">
                 <el-form label-width="100px" class="demo-ruleForm" v-if='!changewechat'>
-                    <el-steps :space="600" :active="active">
+                    <el-steps :space="600" :active="active" align-center>
                         <el-step title="扫描二维码 关注公众号"></el-step>
                         <el-step title="微信绑定成功" style='width:100px'></el-step>
                     </el-steps>
@@ -86,8 +86,8 @@ export default {
                                 data
                             } = u;
                             data.token = token;
-                            localStorage.removeItem('user');
-                            localStorage.setItem('user', JSON.stringify(data));
+                            sessionStorage.removeItem('user');
+                            sessionStorage.setItem('user', JSON.stringify(data));
                         }).then(()=>{
                             setTimeout(function() {
                                 // window.location.reload();
@@ -122,8 +122,8 @@ export default {
                                 data
                             } = u;
                             data.token = token;
-                            localStorage.removeItem('user');
-                            localStorage.setItem('user', JSON.stringify(data));
+                            sessionStorage.removeItem('user');
+                            sessionStorage.setItem('user', JSON.stringify(data));
                         }).then(()=>{
                             setTimeout(function() {
                                 // window.location.reload();
@@ -177,16 +177,16 @@ export default {
                 return wechat
             },
             settingsrc() {
-                // let user = localStorage.getItem('user');
+                // let user = sessionStorage.getItem('user');
                 return JSON.parse(user).avatar;
             },
             wechatName() {
-                // let user = localStorage.getItem('user');
+                // let user = sessionStorage.getItem('user');
                 return JSON.parse(user).wx_openid;
             }
         },
         beforeCreate() {
-            user = localStorage.getItem('user');
+            user = sessionStorage.getItem('user');
             token = JSON.parse(user).token;
             wechat = JSON.parse(user).wechat;
         }

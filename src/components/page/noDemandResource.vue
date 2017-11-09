@@ -55,7 +55,7 @@
                 </el-table-column>
                 <el-table-column prop="tmk_name" label="TMK" width='80'>
                 </el-table-column>
-                <el-table-column prop="created" label="最终处理时间" sortable='custom'>
+                <el-table-column prop="created" label="认定时间" sortable='custom'>
                 </el-table-column>
             </el-table>
         </div>
@@ -122,10 +122,10 @@
                         key: '0',
                         label: '无TMK'
                     })
-                    this.optionsTMK.unshift({
-                        key: '-1',
-                        label: '自己'
-                    })
+                    // this.optionsTMK.unshift({
+                    //     key: '-1',
+                    //     label: '自己'
+                    // })
                 })
                 this.dialogFormVisible = true
             },
@@ -208,7 +208,7 @@
         },
 
         beforeCreate() {
-            user = localStorage.getItem('user');
+            user = sessionStorage.getItem('user');
             token = JSON.parse(user).token;
         },
         created() {

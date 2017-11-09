@@ -394,7 +394,7 @@
                         <div v-for='i in contracts' class='CDEflex4'>
                             <div class="CDEflex5">
                                 <div>
-                                    <el-select v-model="i.kc_tid" clearable placeholder="课程类型" size='small' class="CDE103" @change='getClassName(i.kc_tid,i)'>
+                                    <el-select v-model="i.kc_tid"  placeholder="课程类型" size='small' class="CDE103" @change='getClassName(i.kc_tid,i)'>
                                         <el-option v-for="item in classkind" :key="item.kc_tid" :label="item.kc_tname" :value="item.kc_tid">
                                         </el-option>
                                     </el-select>
@@ -517,7 +517,7 @@
                     <span slot="label"><i class="el-icon-star-on" v-if="item.isR=='yes'"></i> {{item.name}}</span>
                     <el-form :model="art[index]" :ref="artName[index]" :rules='artRules' label-width="80px">
                         <el-form-item label="开课日期" prop='time'>
-                            <el-date-picker v-model="art[index].time" type="date" @change='getClassRoom(art[index].time,index,item)'>
+                            <el-date-picker v-model="art[index].time" type="date" :picker-options="pickerOptions0" @change='getClassRoom(art[index].time,index,item)'>
                             </el-date-picker>
                         </el-form-item>
                         <el-form-item prop='syllabus_id' class='CDselectClass'>
@@ -716,7 +716,7 @@
                 search: value
                 }
                 searchResource(para, token).then(res => {
-                if(res.data.length!=0){
+                if(res.data.data.length!=0){
                 callback('此手机号码已存在');
                 }else{
                 callback();
@@ -738,7 +738,7 @@
                 search: value
                 }
                 searchResource(para, token).then(res => {
-                if(res.data.length!=0){
+                if(res.data.data.length!=0){
                 callback('此手机号码已存在');
                 }else{
                 callback();
@@ -1165,7 +1165,7 @@
         methods: {
             getClassName(data, i) { //获取课程名称
                 let that =this;
-                if(!this.stopchange){
+                if(!this.stopchange&&data){
 
                     i.course_id = ''
                     let para = {
@@ -1806,6 +1806,7 @@
             // },
             signContact() { //点击签合同第一步
                 this.resetAll();
+                let that =this;
                 this.coupons = [];
                 this.backData = ''
                 this.backContract = ''
@@ -1815,7 +1816,7 @@
                 let para = {
                     customer_id: this.$route.params.uid
                 }
-                getMyCustomerDetail(token, para).then(res => { //获取用户资料
+                getMyCustomerDetail(token, para).then(res => {//获取用户资料
                     let data = res.data.info;
                     this.signform = {
                         names: data.names,
@@ -1835,6 +1836,9 @@
                         tmk_uid: data.tmk_uid,
                     }
                 })
+                // setTimeout(function() {
+                //     that.contracts[0].courseName1 = []
+                // }, 1);
             },
 
             recognizeResource() { //点击设置为无需求
@@ -1945,6 +1949,8 @@
 
             },
             getRegion() { //获取城市，就近校区
+                this.form.area_id = '';
+                this.form.address = ''
                 let para = {
                     pid: this.form.city_id
                 }
@@ -1992,7 +1998,18 @@
                         cc_id: data.cc_uid - 0,
                     }
                 }).then(() => {
-                    this.getRegion(); //根据城市获取区
+                    let para = {
+                    pid: this.form.city_id
+                }
+                // let para1 = {
+                //     city_id: this.form.city_id,
+                //     simple: '1'
+                // }
+                cityList(token, para).then((res) => {
+                    // console.log(res)
+                    this.regions = res.data
+                })
+                     //根据城市获取区
                     // sourceList(token).then(res => {
                     //     this.source = res.data
                     // })
@@ -2139,7 +2156,7 @@
 
         },
         beforeCreate() {
-            user = localStorage.getItem('user');
+            user = sessionStorage.getItem('user');
             token = JSON.parse(user).token;
         },
         created() {
@@ -2201,7 +2218,6 @@
                     getTeacherList(token).then((res) => { //获取老师
                         this.teachersName = res.data;
                     })
-
                 }).then(() => {
 
                     let si = {

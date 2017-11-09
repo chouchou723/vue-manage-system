@@ -60,12 +60,12 @@
                     <el-form-item label="录入时间:" prop='time'>
                         <span>{{student.time}}</span>
                     </el-form-item>
-                    <el-form-item label="CC:" prop='teacher' v-if="this.Ustatus != '待认领'">
+                    <el-form-item label="CC:" prop='teacher' v-if="this.Ustatus != '待认领'&&this.Uresourse!=3">
                         <span>{{student.teacher}}</span>
                     </el-form-item>
                 </el-form>
             </div>
-            <div style="float:left;width:34%;background-color:white;border-radius:5px;margin-right:12px;min-height:466px;height:auto;position:relative;padding-bottom: 10px;">
+            <div style="float:left;width:34%;background-color:white;border-radius:5px;margin-right:12px;height:auto;position:relative;padding-bottom: 10px;">
                 <div class='communityTitle'>
                     <!--  <i class=el-icon-my-tongxunlu style="font-size:31px"></i> -->
                     <span style="font-weight:600;font-size:22px">沟通记录({{number}})</span>
@@ -418,7 +418,7 @@ let para = {
 search: value
 }
 searchResource(para, token).then(res => {
-if(res.data.length!=0){
+if(res.data.data.length!=0){
 callback('此手机号码已存在');
 }else{
 callback();
@@ -1131,7 +1131,7 @@ callback();
 
         },
         beforeCreate() {
-            user = localStorage.getItem('user');
+            user = sessionStorage.getItem('user');
             token = JSON.parse(user).token;
         },
         created() {

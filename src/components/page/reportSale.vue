@@ -251,68 +251,70 @@
                 <span style="color:grey;line-height:20px;" v-if='code.includes("cc")'>根据签单人头数排列</span>
                 <span style="color:grey;line-height:20px;" v-if='code.includes("tmk")'>根据到访人数排列</span>
                 <div style="margin-top:10px"> <span style="display:inline-block;vertical-align: middle;"><img src="../../../static/img/rank.png" width='20'alt=""></span>
-                    <span style="color:grey;line-height:20px;">我的排名:第四名</span></div>
+                    <span style="color:grey;line-height:20px;">我的排名:第{{myRank}}名</span></div>
             </div>
-            <div id="tableRSale" style="width:90%;margin:0 auto;position:relative">
-                <el-radio-group v-model="radio3" @change='getNewRank' style="position:absolute;top:-55px;left:45%" v-if="code.includes('_c')">
-                    <el-radio-button :label='1'>按老师</el-radio-button>
-                    <el-radio-button :label='2'>按校区</el-radio-button>
+            <div id="tableRSale" style="width:96%;margin:0 auto;position:relative">
+                <el-radio-group v-model="radio3" @change='updateListSA(3)' style="position:absolute;top:-55px;left:45%" v-if="code.includes('_c')">
+                    <el-radio-button :label='teach'>按老师</el-radio-button>
+                    <el-radio-button :label='school'>按校区</el-radio-button>
                 </el-radio-group>
                 <div style='display:flex;width:100%'>
 
-                    <el-table :data="code.includes('cc')?titleData2:code.includes('tmk')?titleData3:titleData" border style="width: 10%;" :show-header='backface'>
+                    <!-- <el-table :data="code.includes('cc')?titleData2:code.includes('tmk')?titleData3:titleData" border style="width: 10%;" :show-header='backface'>
                         <el-table-column prop="title" label="日期">
                         </el-table-column>
-                    </el-table>
-                    <el-table :data="SAData1" border y style="width: 90%;" :show-header='backface' id='tableright'>
-                        <el-table-column prop="rank1" >
+                    </el-table> -->
+                    <el-table :data="SAData1" border y style="width: 100%;" :show-header='backface' >
+                            <el-table-column prop="title" >
+                                </el-table-column>
+                        <el-table-column prop="val1" >
                                 <template scope="scope">
-                                        <span :style="scope.row.rank1==uname?'color:#dc2500': '' ">{{scope.row.rank1}}</span>
+                                        <span :style="scope.row.val1==uname?'color:#dc2500': '' ">{{scope.row.val1}}</span>
                                     </template>
                         </el-table-column>
-                        <el-table-column prop="rank2" >
+                        <el-table-column prop="val2" >
                                 <template scope="scope">
-                                        <span :style="scope.row.rank2==uname?'color:#dc2500': '' ">{{scope.row.rank2}}</span>
+                                        <span :style="scope.row.val2==uname?'color:#dc2500': '' ">{{scope.row.val2}}</span>
                                     </template>
                         </el-table-column>
-                        <el-table-column prop="rank3" >
+                        <el-table-column prop="val3" >
                                 <template scope="scope">
-                                        <span :style="scope.row.rank3==uname?'color:#dc2500': '' ">{{scope.row.rank3}}</span>
+                                        <span :style="scope.row.val3==uname?'color:#dc2500': '' ">{{scope.row.val3}}</span>
                                     </template>
                         </el-table-column>
-                        <el-table-column prop="rank4" >
+                        <el-table-column prop="val4" >
                                 <template scope="scope">
-                                        <span :style="scope.row.rank4==uname?'color:#dc2500': '' ">{{scope.row.rank4}}</span>
+                                        <span :style="scope.row.val4==uname?'color:#dc2500': '' ">{{scope.row.val4}}</span>
                                     </template>
                             </el-table-column>
-                            <el-table-column prop="rank5" >
+                            <el-table-column prop="val5" >
                                     <template scope="scope">
-                                            <span :style="scope.row.rank5==uname?'color:#dc2500': '' ">{{scope.row.rank5}}</span>
+                                            <span :style="scope.row.val5==uname?'color:#dc2500': '' ">{{scope.row.val5}}</span>
                                         </template>
                             </el-table-column>
-                            <el-table-column prop="rank6" >
+                            <el-table-column prop="val6" >
                                     <template scope="scope">
-                                            <span :style="scope.row.rank6==uname?'color:#dc2500': '' ">{{scope.row.rank6}}</span>
+                                            <span :style="scope.row.val6==uname?'color:#dc2500': '' ">{{scope.row.val6}}</span>
                                         </template>
                             </el-table-column>
-                            <el-table-column prop="rank7" >
+                            <el-table-column prop="val7" >
                                     <template scope="scope">
-                                            <span :style="scope.row.rank7==uname?'color:#dc2500': '' ">{{scope.row.rank7}}</span>
+                                            <span :style="scope.row.val7==uname?'color:#dc2500': '' ">{{scope.row.val7}}</span>
                                         </template>
                                 </el-table-column>
-                                <el-table-column prop="rank8" >
+                                <el-table-column prop="val8" >
                                         <template scope="scope">
-                                                <span :style="scope.row.rank8==uname?'color:#dc2500': '' ">{{scope.row.rank8}}</span>
+                                                <span :style="scope.row.val8==uname?'color:#dc2500': '' ">{{scope.row.val8}}</span>
                                             </template>
                                 </el-table-column>
-                                <el-table-column prop="rank9" >
+                                <el-table-column prop="val9" >
                                         <template scope="scope">
-                                                <span :style="scope.row.rank9==uname?'color:#dc2500': '' ">{{scope.row.rank9}}</span>
+                                                <span :style="scope.row.val9==uname?'color:#dc2500': '' ">{{scope.row.val9}}</span>
                                             </template>
                                 </el-table-column>
-                                <el-table-column prop="rank10" >
+                                <el-table-column prop="val10" >
                                         <template scope="scope">
-                                                <span :style="scope.row.rank10==uname?'color:#dc2500': '' ">{{scope.row.rank10}}</span>
+                                                <span :style="scope.row.val10==uname?'color:#dc2500': '' ">{{scope.row.val10}}</span>
                                             </template>
                                     </el-table-column>
                     </el-table>
@@ -337,7 +339,8 @@
         getReportSA,
         campusList,
         getAllCCList,
-        sourceList
+        sourceList,
+        gettmkRankList
     } from '../../api/api';
     export default {
         components: {
@@ -377,35 +380,15 @@
                 num: '10人',
                 rate: '2%'
             },],
-            titleData: [{
-                title: '排名'
-            }, {
-                title: '老师'
-            }, {
-                title: '课耗量'
-            }],
-            titleData2: [{
-                title: '排名'
-            }, {
-                title: 'CC'
-            }, {
-                title: '签单量'
-            }],
-            titleData3: [{
-                title: '排名'
-            }, {
-                title: 'TMK'
-            }, {
-                title: '到访量'
-            }],
             datatype: '',
             code: '',
             aid:'',
-            radio3: '2',
+            myRank:0,
+            radio3: 'teach',
             schoolList:[],
             isCharge: true,
             currentPage: 1, //页数
-            pagesize: 7, //默认每页
+            pagesize: 3, //默认每页
             total: 0, //总页数
             currentPage2: 1, //页数
             pagesize2: 3, //默认每页
@@ -461,15 +444,13 @@
                 return: '6'
             }],
             ccs: [],
+            SADataD:[],
             resourceData: [{date:'2017-10-03',newResources:4,newCall:9,invitation:3,},
             {date:'2017-10-04',newResources:4,newCall:9,invitation:3,},
             {date:'2017-10-05',newResources:4,newCall:9,invitation:3,},
             {date:'2017-10-06',newResources:4,newCall:9,invitation:3,},
             {date:'2017-10-07',newResources:4,newCall:9,invitation:3,},],
-            SAData: [{rank1:'1',rank2:'2',rank3:'3',rank4:'4',rank5:'5',rank6:'6',rank7:'6',rank8:'6',rank9:'6',rank10:'6'},
-            {rank1:'张一',rank2:'张聪',rank3:'汪苏泷',rank4:'沈优霞',rank5:'张广联',rank6:'王磊',rank7:'薛之谦',rank8:'林志颖',rank9:'李志勇',rank10:'陈龙'},
-            {rank1:'21',rank2:'12',rank3:'11',rank4:'9',rank5:'8',rank6:'7',rank7:'7',rank8:'7',rank9:'7',rank10:'7'}
-        ],
+            SAData: [{},{},{}],
             HMData: [],
             options: [],
             options1: [],
@@ -760,7 +741,21 @@
             },
             handleCurrentChange: function (val) { //变更页数
                 this.currentPage = val;
-                // this.fetchData();
+                let z = (val-1)*10
+                let b = Object.values(this.SADataD[0])
+                let d = Object.values(this.SADataD[1])
+                let f = Object.values(this.SADataD[2])
+                if(this.code.includes('cc')){
+                    let one = {title:'排名',val1:b[z],val2:b[z+1],val3:b[z+2],val4:b[z+3],val5:b[z+4],val6:b[z+5],val7:b[z+6],val8:b[z+7],val9:b[z+8],val10:b[z+9]};
+                    let two =  {title:'CC',val1:d[z],val2:d[z+1],val3:d[z+2],val4:d[z+3],val5:d[z+4],val6:d[z+5],val7:d[z+6],val8:d[z+7],val9:d[z+8],val10:d[z+9]};
+                    let three =  {title:'签单量',val1:f[z],val2:f[z+1],val3:f[z+2],val4:f[z+3],val5:f[z+4],val6:f[z+5],val7:f[z+6],val8:f[z+7],val9:f[z+8],val10:f[z+9]};
+                    this.SAData = [one,two,three]
+                }else{
+                    let one = {title:'排名',val1:b[z],val2:b[z+1],val3:b[z+2],val4:b[z+3],val5:b[z+4],val6:b[z+5],val7:b[z+6],val8:b[z+7],val9:b[z+8],val10:b[z+9]};
+                    let two =  {title:'TMK',val1:d[z],val2:d[z+1],val3:d[z+2],val4:d[z+3],val5:d[z+4],val6:d[z+5],val7:d[z+6],val8:d[z+7],val9:d[z+8],val10:d[z+9]};
+                    let three =  {title:'到访量',val1:f[z],val2:f[z+1],val3:f[z+2],val4:f[z+3],val5:f[z+4],val6:f[z+5],val7:f[z+6],val8:f[z+7],val9:f[z+8],val10:f[z+9]};
+                    this.SAData = [one,two,three]
+                }
             },
             handleCurrentChange2: function (val) { //变更页数
                 this.currentPage2 = val;
@@ -934,27 +929,47 @@
             },
             getSAData() {
                 let para = {
+                    view:this.radio3
                     // period:this.periodCM,
                     // startDay: this.valueCM2[0] != null? new Date(this.valueCM2[0]).toLocaleDateString(): '',
                     // endDay: this.valueCM2[1] != null? new Date(this.valueCM2[1]).toLocaleDateString(): '',                    
                     // cc_id: this.valueCM1
                 }
-                getReport1(token, para).then(res => {
-                    this.resourceData = res.data
+                gettmkRankList(token, para).then(res => {
+                    this.SAData = res.data;
+                    for (let key in this.SAData[0]){
+                    this.SAData[0][key] = '第'+this.SAData[0][key]+ '名'
+                }
+                    this.SADataD[0] = {...this.SAData[0]}
+                    this.SADataD[1] = {...this.SAData[1]}
+                    this.SADataD[2] = {...this.SAData[2]}
+                    if(this.code.includes('cc')){
+                        this.SAData[0].title='排名';
+                        this.SAData[1].title='CC';
+                        this.SAData[2].title='签单量';
+                    }else{
+                        this.SAData[0].title='排名';
+                        this.SAData[1].title='TMK';
+                        this.SAData[2].title='到访量';
+                    }
+                    this.myRank = res.data[res.data.length-1].val1;
+                    let a = Math.ceil(Object.getOwnPropertyNames(res.data[0]).length/10)
+                    let c = a * this.pagesize;
+                    this.total = parseInt(c);
                 })
             },
         },
         beforeCreate() {
-            user = localStorage.getItem('user');
+            user = sessionStorage.getItem('user');
             token = JSON.parse(user).token;
         },
         computed: {
             SAData1(){
-                let a = this.SAData[0];
-                for (let key in this.SAData[0]){
-                    this.SAData[0][key] = '第'+this.SAData[0][key]+ '名'
-                }
-                return this.SAData
+                // let a = this.SADataD[0];
+                // for (let key in this.SADataD[0]){
+                //     this.SADataD[0][key] = '第'+this.SADataD[0][key]+ '名'
+                // }
+                return this.SAData.slice(0,3)
             }
         },
         created() {
@@ -962,6 +977,7 @@
             this.code = JSON.parse(user).job ? JSON.parse(user).job.code : '';
             this.uname = JSON.parse(user).uname ? JSON.parse(user).uname : '';
             this.aid = JSON.parse(user).aid ? JSON.parse(user).aid : ''; //获取aid
+            this.getSAData();
             // this.getResoureData();
             // this.getCTData();
             // this.getSAData();

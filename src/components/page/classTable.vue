@@ -285,13 +285,17 @@
                 this.value3 = new Date(c)
             },
             getClassName() { //获取课程名称
-                let para = {
-                    pid: this.classform.kc_tid,
-                    simple: 1
+                this.classform.course_id=''
+                if(this.classform.kc_tid){
+
+                    let para = {
+                        pid: this.classform.kc_tid,
+                        simple: 1
+                    }
+                    getClassLibrary(token, para).then((res) => {
+                        this.courseName = res.data;
+                    })
                 }
-                getClassLibrary(token, para).then((res) => {
-                    this.courseName = res.data;
-                })
             },
             showClass(i, e) { //获取课程详细
                 if (e.target.localName == 'span') {
@@ -336,19 +340,19 @@
             resetD() {
                 this.canEdit = false;
                 this.in = '';
-                this.courseName = []
                 this.classform = {
-                        kc_tid: '',
-                        course_id: '',
-                        classroom_id: '',
-                        teacher_id: '',
-                        week: '',
-                        class_time: '',
-                        // pwd: '',
-                        start_time: '',
-                        end_time: ''
-                    },
-                    this.$refs['classform'].resetFields();
+                    kc_tid: '',
+                    course_id: '',
+                    classroom_id: '',
+                    teacher_id: '',
+                    week: '',
+                    class_time: '',
+                    // pwd: '',
+                    start_time: '',
+                    end_time: ''
+                },
+                this.$refs['classform'].resetFields();
+                this.courseName = []
 
             },
             editClass(data, index) { //点击就修改
@@ -377,6 +381,10 @@
                     start_time: data.start_time ? new Date(data.start_time) : '',
                     end_time: data.end_time ? new Date(data.end_time) : '',
                 };
+                let that = this;
+                setTimeout(function() {
+                    that.classform.course_id=data.course_id - 0
+                }, 1);
                 this.dialogFormVisible = true;
 
             },
@@ -457,7 +465,7 @@
             }
         },
         beforeCreate() {
-            user = localStorage.getItem('user');
+            user = sessionStorage.getItem('user');
             token = JSON.parse(user).token;
         },
         created() { //创建组件时

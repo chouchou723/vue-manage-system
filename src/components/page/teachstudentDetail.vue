@@ -7,7 +7,7 @@
             </el-breadcrumb>
         </div>
         <!-- 用户资料 -->
-        <div style="float:left;width:30%;background-color:white;height:500px;border-radius:5px;margin-right:1%;position:relative">
+        <div style="float:left;width:30%;background-color:white;height:550px;border-radius:5px;margin-right:1%;position:relative">
             <div class='UserDetailTitle'>
                 <!--  <i class=el-icon-my-tongxunlu style="font-size:31px"></i> -->
                 <span style="font-weight:600;font-size:22px">学员资料</span>
@@ -22,6 +22,9 @@
                 <el-form-item label="年龄:" prop='age'>
                     <span>{{student.age}}</span>
                 </el-form-item>
+                <el-form-item label="出生日期:" prop='birthday'>
+                        <span>{{student.birthday}}</span>
+                    </el-form-item>
                 <el-form-item label="身份证号:" prop='id_number'>
                         <span>{{student.id_number}}</span>
                     </el-form-item>
@@ -55,7 +58,7 @@
             </div>
         </div>
         <!-- 考勤记录 -->
-        <div style="float:left;width:69%;background-color:white;height:500px;border-radius:5px;position:relative">
+        <div style="float:left;width:69%;background-color:white;height:550px;border-radius:5px;position:relative">
             <div class='AttRecord'>
                 <!--  <i class=el-icon-my-tongxunlu style="font-size:31px"></i> -->
                 <i class='el-icon-my-richeng' style="font-size:24px"></i><span style="font-weight:600;font-size:22px">考勤记录</span>
@@ -182,7 +185,7 @@
                             </el-table-column>
                             <el-table-column prop="status" label="课程状态" column-key='status'>
                                 <template scope="scope">
-                                    <span :style="scope.row.status=='正常'? 'color:black' : scope.row.status=='未排班'?'color:#dba31c':'color:#50bfff' ">{{scope.row.status}}</span>
+                                    <span :style="scope.row.status=='正常'? 'color:black' : scope.row.status=='未排班'?'color:#dba31c':scope.row.status=='冻结'?'color:#50bfff':'color:#e21a59' ">{{scope.row.status}}</span>
                                 </template>
                             </el-table-column>
                         </el-table>
@@ -307,7 +310,7 @@
             },
         },
         beforeCreate() {
-            user = localStorage.getItem('user');
+            user = sessionStorage.getItem('user');
             token = JSON.parse(user).token;
         },
         created() {
@@ -323,6 +326,7 @@
                     name: data.child_name,
                     age: data.age,
                     sex: data.sex,
+                    birthday: data.birthday,
                     school: data.school_name,
                     channel: data.source_name,
                     time: data.regtime,

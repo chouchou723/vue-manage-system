@@ -855,7 +855,7 @@ export default {
         },
     },
     beforeCreate() {
-        user = localStorage.getItem('user');
+        user = sessionStorage.getItem('user');
         token = JSON.parse(user).token;
     },
     created() {

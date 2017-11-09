@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import {
-    getAccess
+    getAccess,getUserinfo
 } from '../api/api';
 Vue.use(Router);
 const router = new Router({
@@ -453,38 +453,87 @@ const router = new Router({
     //   }
 })
 router.beforeEach((to, from, next) => {
-    let user = localStorage.getItem('user');
-   if(!user&&to.path!=="/login"){
-        next('/login')
-    }else if(user&&to.path!=="/login"){
-        let token = JSON.parse(user).token?JSON.parse(user).token:'';
-        let para = {
-            path: to.path
-        };
-        getAccess(token,para).then((res) => {
-            if(res.data==1){
+    let user = sessionStorage.getItem('user');
+//    if(!user&&to.path!=="/login"){
+//         next('/login')
+//     }else if(user&&to.path=="/login"){
+//         let data =  JSON.parse(user);
+//         if(data.job && data.job.code == 'hr'){
+//             next('/api/v1/admin');
+//        }else if(!data.wechat){
+//        next('/wechat');
+//        }else{
+//           next('/Index');
+//        }
+//     }else if(user&&to.path!=="/login"){
+//         let token = JSON.parse(user).token?JSON.parse(user).token:'';
+//         let para = {
+//             path: to.path
+//         };
+//         getAccess(token,para).then((res) => {
+//             if(res.data==1){
                 
-                next()
-                // document.body.scrollTop = 0
-            }else{
+//                 next()
+//                 // document.body.scrollTop = 0
+//             }else{
+//                 Vue.prototype.$message.error('对不起,您无权限访问此页面')
+//                 // next('/login')
+//             }
+//             return res
+//         }).then(res=>{
+//             if(res.data!==1){
+//             setTimeout(function() {
+//                     next('/login')
+//                 }, 1000);
+//             }
+//         }).catch(()=>{
+//             Vue.prototype.$message.error('对不起,您无权限访问此页面')
+//         })
+//     }else{
+//         sessionStorage.removeItem('user');
+//         next()
+//     }
+        if(!user&&to.path!=="/login"){
+            next('/login'); 
+        }else if(user&&to.path!=="/login"){
+            let token = JSON.parse(user).token?JSON.parse(user).token:'';
+            let para = {
+                path: to.path
+            };
+            getAccess(token,para).then((res) => {
+                if(res.data==1){
+                    
+                    next()
+                    // document.body.scrollTop = 0
+                }else{
+                    Vue.prototype.$message.error('对不起,您无权限访问此页面')
+                    // next('/login')
+                }
+                return res
+            }).then(res=>{
+                if(res.data!==1){
+                setTimeout(function() {
+                        next('/login')
+                    }, 1000);
+                }
+            }).catch(()=>{
                 Vue.prototype.$message.error('对不起,您无权限访问此页面')
-                // next('/login')
-            }
-            return res
-        }).then(res=>{
-            if(res.data!==1){
-            setTimeout(function() {
-                    next('/login')
-                }, 1000);
-            }
-        }).catch(()=>{
-            Vue.prototype.$message.error('对不起,您无权限访问此页面')
-        })
+            })
+            // getUserinfo(token).then(u => {
+            //     let {
+            //         data
+            //     } = u;
+            //     data.token = token;
+            //     sessionStorage.setItem('user', JSON.stringify(data));
+            // }).then(()=>{
+                
+               
+            // })
+       
     }else{
-        localStorage.removeItem('user');
-        next()
+        sessionStorage.removeItem('user');        
+        next();
     }
-    
   })
 export {router}
 

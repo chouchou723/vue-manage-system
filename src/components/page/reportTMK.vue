@@ -65,7 +65,7 @@
                                 </el-select>
                             </div>
                     <div class='dateReportT' style='float:left;'>  
-                        <el-date-picker v-model="valueCM2" type="daterange" size='small' :clearable='backface' placeholder="选择日期范围" @change="updateListCM(2)">
+                        <el-date-picker v-model="valueCM2" type="daterange" size='small' :clearable='backface' :picker-options="pickerOptions1" placeholder="选择日期范围" @change="updateListCM(2)">
                         </el-date-picker>
                     </div>
                     <div style='width:140px;float:left;margin-left:10px'>
@@ -158,7 +158,7 @@
                                 </el-date-picker>
                         </div>
                         <div  style='float:left;margin-left:10px'>
-                            <el-date-picker v-model="valueRE2" type="month" size='small' :clearable='backface' placeholder="月选择" @change="updateListRE(2)" style='width:100px'>
+                            <el-date-picker v-model="valueRE2" type="month" size='small' :clearable='backface' placeholder="月选择" :picker-options="pickerOptions1" @change="updateListRE(2)" style='width:100px'>
                             </el-date-picker>
                         </div>
                         <div style='width:140px;float:left;margin-left:10px'>
@@ -177,7 +177,7 @@
                             </IEcharts>
         
                         </div>
-                    <div id="tableRTMK" style='width: 90%;margin:0 auto'>
+                    <div id="tableRTMK" style='width: 90%;margin:10px auto'>
                         <el-table :data="resourceData" border show-summary style="width: 100%">
                             <el-table-column prop="names" label="排名">
                             </el-table-column>
@@ -187,10 +187,10 @@
                             </el-table-column>
                         </el-table>
         
-                        <div class="block">
+                        <!-- <div class="block">
                             <el-pagination layout="prev, pager, next" :total="total2" :current-page="currentPage2" :page-size="pagesize2" @current-change="handleCurrentChange2">
                             </el-pagination>
-                        </div>
+                        </div> -->
                     </div>
         
                 </div>
@@ -234,12 +234,12 @@
                             </el-select>
                         </div>  -->
             <div class='dateReportT' style='float:left;margin-left:10px'>
-                <el-select v-model="valueSA1" size='small' clearable placeholder="切换日周月" style='width:75px' @change="updateListSA">
+                <el-select v-model="valueSA1" size='small'  placeholder="切换日周月" style='width:115px' @change="updateListSA(1)">
                     <el-option label="本日" value="1"></el-option>
                     <el-option label="本周" value="2"></el-option>
                     <el-option label="本月" value="3"></el-option>
                 </el-select>
-                <el-date-picker v-model="valueSA2" type="month" size='small' placeholder="选择月份" @change="updateListSA" style='width:100px'>
+                <el-date-picker v-model="valueSA2" type="month" size='small' :clearable='backface' placeholder="选择月份" :picker-options="pickerOptions1" @change="updateListSA(2)" style='width:100px'>
                 </el-date-picker>
             </div>
             <!-- <div style='width:100px;float:right;margin-right:10px'>
@@ -257,34 +257,34 @@
                 <span style="color:grey;line-height:20px;">我的排名:第十名</span></div>
         </div>
         <div id="tableRTMK1" style="width:90%;margin:0 auto;position:relative">
-            <el-radio-group v-model="radio3" @change='getNewRank' style="position:absolute;top:-55px;left:45%" v-if="code.includes('_c')">
-                <el-radio-button :label='1'>按老师</el-radio-button>
-                <el-radio-button :label='2'>按校区</el-radio-button>
+            <el-radio-group v-model="radio3" @change='updateListSA(3)' style="position:absolute;top:-55px;left:45%" v-if="code.includes('_c')">
+                <el-radio-button :label='teach'>按老师</el-radio-button>
+                <el-radio-button :label='school'>按校区</el-radio-button>
             </el-radio-group>
             <el-table :data="code.includes('cc')?titleData2:code.includes('tmk')?titleData3:titleData" border style="width: 10%;float:left" :show-header='backface'>
                 <el-table-column prop="title" label="日期">
                 </el-table-column>
             </el-table>
             <el-table :data="SAData" border y style="width: 90%;float:left" :show-header='backface' id='tableright'>
-                <el-table-column prop="rank1" >
+                <el-table-column prop="val1" >
                 </el-table-column>
-                <el-table-column prop="rank2" >
+                <el-table-column prop="val2" >
                 </el-table-column>
-                <el-table-column prop="rank3" >
+                <el-table-column prop="val3" >
                 </el-table-column>
-                <el-table-column prop="rank4" >
+                <el-table-column prop="val4" >
                     </el-table-column>
-                    <el-table-column prop="rank5" >
+                    <el-table-column prop="val5" >
                     </el-table-column>
-                    <el-table-column prop="rank6" >
+                    <el-table-column prop="val6" >
                     </el-table-column>
-                    <el-table-column prop="rank7" >
+                    <el-table-column prop="val7" >
                         </el-table-column>
-                        <el-table-column prop="rank8" >
+                        <el-table-column prop="val8" >
                         </el-table-column>
-                        <el-table-column prop="rank9" >
+                        <el-table-column prop="val9" >
                         </el-table-column>
-                        <el-table-column prop="rank10" >
+                        <el-table-column prop="val10" >
                             </el-table-column>
             </el-table>
             <div style="clear:both"></div>
@@ -306,7 +306,8 @@
             gettmkFormsSource,
             campusList,
             getTMK,
-            sourceList
+            sourceList,
+            gettmkRankList
         } from '../../api/api';
         export default {
             components: {
@@ -336,9 +337,17 @@
                 }],
                 dateRangeOptions1: {
                     firstDayOfWeek: 1,
+                    disabledDate(time) {
+                        return time.getTime() > Date.now() ;
+                    }
+                },
+                pickerOptions1: {
+                    disabledDate(time) {
+                        return time.getTime() > Date.now() ;
+                    }
                 },
                 code: '',
-                radio3: '2',
+                radio3: 'teach',
                 currentPage: 1, //页数
                 pagesize: 15, //默认每页
                 total: 0, //总页数
@@ -349,17 +358,9 @@
                 pagesize3: 15, //默认每页
                 total3: 0, //总页数
                 ccs: [],
-                resourceCMData:[{day:'2017-10-01',newResources:10,newCall:5,activation:1,invalid:5,returnCall:7},
-                {day:'2017-10-02',newResources:10,newCall:5,activation:1,invalid:5,returnCall:7},
-                {day:'2017-10-03',newResources:10,newCall:5,activation:1,invalid:5,returnCall:7},
-                {day:'2017-10-04',newResources:10,newCall:5,activation:1,invalid:5,returnCall:7},
-                {day:'2017-10-05',newResources:10,newCall:5,activation:1,invalid:5,returnCall:7},
-                {day:'2017-10-06',newResources:10,newCall:5,activation:1,invalid:5,returnCall:7},],
+                resourceCMData:[],
                 resourceData: [],
-                SAData: [{rank1:'第一名',rank2:'第二名',rank3:'第三名',rank4:'第四名',rank5:'第五名',rank6:'第六名',rank7:'第七名',rank8:'第八名',rank9:'第九名',rank10:'第十名'},
-                {rank1:'张一',rank2:'张聪',rank3:'汪苏泷',rank4:'第四名',rank5:'第五名',rank6:'第六名',rank7:'第七名',rank8:'第八名',rank9:'第九名',rank10:'第十名'},
-                {rank1:'21',rank2:'12',rank3:'11',rank4:'9',rank5:'8',rank6:'7',rank7:'6',rank8:'3',rank9:'2',rank10:'1'}
-            ],
+                SAData: [{},{},{}],
                 options: [],//校区
                 options1: [],//渠道
                 titleCM: '最近一周',
@@ -544,8 +545,8 @@
                 getCM1Data() {//折线图
                     let para = {
                         tmk_id:this.valueCM1,
-                        start_date: this.valueCM2[0] != null ? new Date(this.valueCM2[0]).toLocaleDateString() : '',
-                        end_date:this.valueCM2[1] != null ? new Date(this.valueCM2[1]).toLocaleDateString() : '',
+                        start_date: this.valueCM2[0] ? new Date(this.valueCM2[0]).toLocaleDateString() : '',
+                        end_date:this.valueCM2[1]  ? new Date(this.valueCM2[1]).toLocaleDateString() : '',
                         short_date:this.valueCM6,
                         column:this.valueCM3,
                         school_id:this.valueCM4,
@@ -553,7 +554,7 @@
                     }
                     gettmkFormsPiclData(token, para).then(res => {
                         let data = res.data;
-                        console.log(data)
+                        // console.log(data)
                         this.line.xAxis.data = data.day;
                         this.line.series = [{ //以后改成动态获取
                             name: "新资源",
@@ -582,13 +583,14 @@
                             data: ["新资源", "沟通量", "资源激活","无效认定","学员回访"],
                             // backgroundColor:'white'
                         };
+                        // this.line.xAxis.axisLabel.showMaxLabel=true
                     })
                 },
                 getCM2Data() {//表格
                     let para = {
                         tmk_id:this.valueCM1,
-                        start_date: this.valueCM2[0] != null ? new Date(this.valueCM2[0]).toLocaleDateString() : '',
-                        end_date:this.valueCM2[1] != null ? new Date(this.valueCM2[1]).toLocaleDateString() : '',
+                        start_date: this.valueCM2[0]  ? new Date(this.valueCM2[0]).toLocaleDateString() : '',
+                        end_date:this.valueCM2[1]  ? new Date(this.valueCM2[1]).toLocaleDateString() : '',
                         short_date:this.valueCM6,
                         column:this.valueCM3,
                         school_id:this.valueCM4,
@@ -687,27 +689,37 @@
                 //         this.resourceData = res.data
                 //     })
                 // },
-                updateListSA() {//第三张表格
-                    
-                    // this.getSAData();
+                updateListSA(i) {//第三张表格
+                    if (i==1&&this.valueSA1) {
+                        // console.log(1)
+                        this.valueSA2 = '';
+                        // this.getRE1Data(i);
+                    }else if (i==2&&this.valueSA2 != '') {
+                        
+                        this.valueSA1 = '';
+                        // this.getRE1Data(i);
+                    }else if(i==3){
+
+                        // this.getSAData();
+                    }
                 },
                 getSAData() {
                     let para = {
+                        column:this.valueSA1,
+                        month:this.valueSA2,
+                        view:this.radio3
                         // period:this.periodCM,
                         // startDay: this.valueCM2[0] != null? new Date(this.valueCM2[0]).toLocaleDateString(): '',
                         // endDay: this.valueCM2[1] != null? new Date(this.valueCM2[1]).toLocaleDateString(): '',                    
                         // cc_id: this.valueCM1
                     }
-                    getReport1(token, para).then(res => {
-                        this.resourceData = res.data
+                    gettmkRankList(token, para).then(res => {
+                        this.SAData = res.data
                     })
-                },
-                getNewRank() {
-                    //切换不同的标签来获取最新数据
                 },
             },
             beforeCreate() {
-                user = localStorage.getItem('user');
+                user = sessionStorage.getItem('user');
                 token = JSON.parse(user).token;
             },
             created() {

@@ -2,14 +2,16 @@
     <div class="table">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-moban"></i> 资源管理</el-breadcrumb-item>
+                <el-breadcrumb-item>
+                    <i class="el-icon-moban"></i> 资源管理</el-breadcrumb-item>
                 <el-breadcrumb-item :to="{ path: '/myResource' }">我的资源</el-breadcrumb-item>
                 <el-breadcrumb-item class='ss'>录入资料</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class='addUserTitle'>
             <div class='AUtitle'>
-                <span class='AUadd'>录入资料</span></div>
+                <span class='AUadd'>录入资料</span>
+            </div>
         </div>
         <div>
             <el-form ref="form" :model="form" :rules='rule' label-width="80px" class='AUform'>
@@ -65,7 +67,7 @@
                 </el-form-item>
                 <el-form-item label="">
                     <el-form-item prop="parent1" class='AU142float'>
-                        <el-input v-model="form.parent1" placeholder='请输入家长姓名' ></el-input>
+                        <el-input v-model="form.parent1" placeholder='请输入家长姓名'></el-input>
                     </el-form-item>
                     <!-- <div style='position:absolute;color:#ff4949;bottom:-26px;font-size:12px;left:184px' v-if="secondRule">第二家长信息如若填写,必须填写完全,不然将不予保存</div> -->
                     <el-form-item prop="con1" class='AU142float'>
@@ -112,7 +114,7 @@
                 </el-form-item>
                 <el-form-item label="来源渠道" prop='sour_id'>
                     <el-form-item prop='sour_id' class='AU142float'>
-                        <el-cascader :options="source" :props="propsource" v-model="form.sour_id" :show-all-levels="false" placeholder="请选择渠道"  @change="handleChange(form.sour_id)">
+                        <el-cascader :options="source" :props="propsource" v-model="form.sour_id" :show-all-levels="false" placeholder="请选择渠道" @change="handleChange(form.sour_id)">
                         </el-cascader>
                     </el-form-item>
                     <!-- <el-form-item prop='referee' class='AU172float'>
@@ -136,7 +138,7 @@
                     <!-- <el-form-item prop='familys_name' class='AUfloat'>
                         <span v-if='this.form.sour_id == 4&&this.form.familys_name'>家长姓名:{{form.familys_name}}</span>
                     </el-form-item> -->
-                    
+
                     <!-- <span v-if='isWarning' class='AUwarn'> {{warning}}</span> -->
                 </el-form-item>
                 <el-form-item>
@@ -210,7 +212,17 @@
                 } else if (!myreg.test(value)) {
                     callback('请输入有效手机号');
                 } else {
-                    callback()
+                    let para = {
+                        search: value
+                    }
+                    searchResource(para, token).then(res => {
+                        if (res.data.data.length != 0) {
+                            callback('此手机号码已存在');
+                        } else {
+                            callback();
+
+                        }
+                    })
                 }
             }
             var isPhone1 = (rule, value, callback) => {
@@ -219,26 +231,26 @@
                     callback()
                 } else if (!myreg.test(value)) {
                     callback('请输入有效手机号');
-                }else if(this.form.phone==value){
-callback('不要输入重复的手机号');
-}else {
-let para = {
-search: value
-}
-searchResource(para, token).then(res => {
-if(res.data.length!=0){
-callback('此手机号码已存在');
-}else{
-callback();
+                } else if (this.form.phone == value) {
+                    callback('不要输入重复的手机号');
+                } else {
+                    let para = {
+                        search: value
+                    }
+                    searchResource(para, token).then(res => {
+                        if (res.data.data.length != 0) {
+                            callback('此手机号码已存在');
+                        } else {
+                            callback();
 
-}
-})
-}
+                        }
+                    })
+                }
             }
             return {
-                maxlength:11,
-                loading:false,
-                options4:[],
+                maxlength: 11,
+                loading: false,
+                options4: [],
                 // nostudent: false,
                 warning: '*系统中没有该成员', //以后改成调服务显示
                 form: {
@@ -343,37 +355,37 @@ callback();
                     }, ],
                 },
                 // secondRule:false,
-                hasSelect:0
+                hasSelect: 0
             }
         },
         methods: {
-    //         remoteMethod(query) {
-    //     if (query !== '') {
-    //       this.loading = true;
-    //       let para = {
-    //                 input: query
-    //             }
-    //             repeatStudentList(token, para).then(res => {
-    //                 if(res.data.length!=0){
-    //                     this.loading = false;
-    //                     this.options4 = res.data.filter(item => {
-    //           return item.label.nickname.toLowerCase()
-    //             .indexOf(query.toLowerCase()) > -1;
-    //         });
-    //                 }
-    //             })
-    //     } else {
-    //         // this.nostudent = true;
-    //         this.form.referee = ''
-    //       this.options4 = [];
-    //     }
-    //   },
+            //         remoteMethod(query) {
+            //     if (query !== '') {
+            //       this.loading = true;
+            //       let para = {
+            //                 input: query
+            //             }
+            //             repeatStudentList(token, para).then(res => {
+            //                 if(res.data.length!=0){
+            //                     this.loading = false;
+            //                     this.options4 = res.data.filter(item => {
+            //           return item.label.nickname.toLowerCase()
+            //             .indexOf(query.toLowerCase()) > -1;
+            //         });
+            //                 }
+            //             })
+            //     } else {
+            //         // this.nostudent = true;
+            //         this.form.referee = ''
+            //       this.options4 = [];
+            //     }
+            //   },
             // changerule(){
             //     let that= this;
             //     setTimeout(function() {
-                    
+
             //         if(that.form.parent1||that.form.phone1||that.form.con1){
-    
+
             //             that.secondRule = true;
             //         }else if(that.form.parent1&&that.form.phone1&&that.form.con1){
             //             that.secondRule = false;
@@ -382,7 +394,7 @@ callback();
             //         }
             //     }, 0);
             // },
-            handleChange(val){
+            handleChange(val) {
                 this.$refs['form'].validate((valid) => {})
                 // if(val!=4){
                 //     this.form.referee = ''
@@ -455,7 +467,7 @@ callback();
             },
             onSubmit(formName) {
                 this.$refs[formName].validate((valid) => {
-                    if (valid&&this.isWarning===false) {
+                    if (valid && this.isWarning === false) {
                         if (this.form.parent1 || this.form.con1 || this.form.phone1) {
                             this.form.familys = this.form.parent + '|' + this.form.con + '|' + this.form.phone +
                                 ',' + this.form.parent1 + '|' + this.form.con1 + '|' + this.form.phone1
@@ -493,7 +505,7 @@ callback();
             }
         },
         computed: {
-            isWarning(){
+            isWarning() {
                 return false
                 // return this.form.sour_id == 4&&this.form.referee==""
             },
@@ -501,7 +513,7 @@ callback();
             //     if(this.form.parent1&&this.form.phone1&&this.form.con1){
             //             return false;
             //         }else if(this.form.parent1||this.form.phone1||this.form.con1){
-    
+
             //            return true;
             //         }else{
             //             return false;
@@ -509,7 +521,7 @@ callback();
             // }
         },
         beforeCreate() {
-            let user = localStorage.getItem('user');
+            let user = sessionStorage.getItem('user');
             token = JSON.parse(user).token;
         },
         created() {
@@ -518,9 +530,9 @@ callback();
                 this.cities = res.data
             })
             sourceList(token).then(res => {
-                this.source = res.data.filter(item=>{
-                        return item.id!=4
-                    })
+                this.source = res.data.filter(item => {
+                    return item.id != 4
+                })
             })
         }
     }
@@ -557,11 +569,13 @@ callback();
         margin-right: 30px;
         float: left
     }
+
     .AU172float {
         width: 172px;
         margin-right: 30px;
         float: left
     }
+
     .AUfloat {
         width: 142px;
         float: left

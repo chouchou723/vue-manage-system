@@ -213,7 +213,17 @@
                 } else if (!myreg.test(value)) {
                     callback('请输入有效手机号');
                 } else {
-                    callback()
+                    let para = {
+                        search: value
+                    }
+                    searchResource(para, token).then(res => {
+                        if (res.data.data.length != 0) {
+                            callback('此手机号码已存在');
+                        } else {
+                            callback();
+
+                        }
+                    })
                 }
             }
             var isPhone1 = (rule, value, callback) => {
@@ -229,7 +239,7 @@ let para = {
 search: value
 }
 searchResource(para, token).then(res => {
-if(res.data.length!=0){
+if(res.data.data.length!=0){
 callback('此手机号码已存在');
 }else{
 callback();
@@ -480,11 +490,11 @@ callback();
             // }
         },
         beforeCreate() {
-            let user = localStorage.getItem('user');
+            let user = sessionStorage.getItem('user');
             token = JSON.parse(user).token;
         },
         created() {
-            let user = localStorage.getItem('user');
+            let user = sessionStorage.getItem('user');
             this.school_name = JSON.parse(user).school_name;
             cityList(token).then((res) => {
                 // console.log(res)

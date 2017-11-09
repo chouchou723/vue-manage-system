@@ -14,6 +14,12 @@
                     </el-option>
                 </el-select>
             </div>
+            <div class='studentReturnNoneed'>
+                <el-select v-model="valueK"  clearable placeholder="资源类型" @change="updateList">
+                    <el-option label="我的资源" value="1"></el-option>
+                    <el-option label="无需求资源" value="2"></el-option>
+                </el-select>
+            </div>
             <div style="width:200px;display:inline-block;margin-left: 10px;margin-bottom: 10px;margin-right:110px">
                 <el-input placeholder="输入手机号或姓名" icon="search" v-model="input2" @keyup.enter.native="updateList" :on-icon-click="updateList"
                     style='margin-right:10px'> </el-input>
@@ -58,7 +64,8 @@
         </div>
         <div class="block">
             <span class="demonstration"></span>
-            <el-pagination layout="prev, pager, next" :total="total" :current-page="currentPage" :page-size="pagesize" @current-change="handleCurrentChange">
+            <el-pagination layout="sizes,prev, pager, next" :total="total"  :page-sizes="[150,300,500]" :current-page="currentPage"
+             :page-size="pagesize" @current-change="handleCurrentChange"  @size-change="handleSizeChange">
             </el-pagination>
         </div>
     </div>
@@ -77,6 +84,7 @@
                 isDisabled: [],
                 multipleSelection: [],
                 no: false,
+                valueK:'',
                 code: '',
                 resourceAssign: {
                     receiveTMK: ''
@@ -89,7 +97,7 @@
                 valueT: '',
                 input2: '',
                 currentPage: 1, //页数
-                pagesize: 15, //默认每页
+                pagesize: 150, //默认每页
             }
         },
         methods: {
@@ -108,6 +116,10 @@
             },
             handleSelectionChange(val) { //选中数据
                 this.multipleSelection = val
+            },
+            handleSizeChange :function (val) { //换页
+                this.pagesize = val;
+                this.fetchData();
             },
             handleCurrentChange: function (val) { //换页
                 this.currentPage = val;
@@ -134,6 +146,8 @@
                     teach_id: this.valueT, //TMK
                     page: this.currentPage,
                     input:this.input2,
+                    pagesize:this.pagesize,
+                    group:this.valueK
                 }
 
                 getTransposing(token,para).then((res) => { //替换以后的人员查询
@@ -168,7 +182,7 @@
         },
 
         beforeCreate() {
-            user = localStorage.getItem('user');
+            user = sessionStorage.getItem('user');
             token = JSON.parse(user).token;
         },
         created() {

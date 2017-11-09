@@ -32,7 +32,7 @@
             <div style='margin-bottom:20px;font-weight:bold'>请选择要接管的课程顾问:</div>
             <el-form :model="resourceAssign" id='actSchool1'>
                 <el-form-item prop='school'>
-                    <el-select v-model="resourceAssign.school" clearable placeholder="选择校区" filterable @change='getCC'>
+                    <el-select v-model="resourceAssign.school"  placeholder="选择校区" filterable @change='getCC'>
                         <el-option v-for="item in receiveSchool" :key="item.value" :label="item.label" :value="item.value">
                         </el-option>
                     </el-select>
@@ -70,7 +70,8 @@
         </div>
         <div class="block">
             <span class="demonstration"></span>
-            <el-pagination layout="prev, pager, next" :total="total" :current-page="currentPage" :page-size="pagesize" @current-change="handleCurrentChange">
+            <el-pagination layout="sizes,prev, pager, next" :total="total" :page-sizes="[150,300,500]" :current-page="currentPage" :page-size="pagesize" @current-change="handleCurrentChange"
+            @size-change="handleSizeChange">
             </el-pagination>
         </div>
     </div>
@@ -106,7 +107,7 @@
                 valueR: 'client',
                 input2: '',
                 currentPage: 1, //页数
-                pagesize: 15, //默认每页
+                pagesize: 150, //默认每页
             }
         },
         methods: {
@@ -119,17 +120,22 @@
                 }
             },
             getCC(){
-                let para = {
-                    school_id:this.resourceAssign.school
+                this.resourceAssign.receiveCC = '';
+                if( this.resourceAssign.school !=''){
+
+                    let para = {
+                        school_id:this.resourceAssign.school
+                    }
+                    getAllCCList(token,para).then((res) => {
+                    this.listCC = res.data
+                })
                 }
-                getAllCCList(token,para).then((res) => {
-                this.listCC = res.data
-            })
             
             },
             openResource() { //打开人员分配
                 this.resourceAssign.school = ''
-                this.resourceAssign.receiveCC = ''
+                this.resourceAssign.receiveCC = '';
+                this.listCC=[]
                 this.dialogFormVisible = true
             },
             handleSelectionChange(val) { //选中数据
@@ -137,6 +143,10 @@
             },
             handleCurrentChange: function (val) { //换页
                 this.currentPage = val;
+                this.fetchData();
+            },
+            handleSizeChange :function (val) { //换页
+                this.pagesize = val;
                 this.fetchData();
             },
             updateList() {
@@ -149,7 +159,8 @@
                     teach_id: this.valueT, //TMK
                     page: this.currentPage,
                     input:this.input2,
-                    type:this.valueR
+                    type:this.valueR,
+                    pagesize:this.pagesize,
                 }
 
                 getTransposing(token,para).then((res) => { //替换以后的人员查询
@@ -183,7 +194,7 @@
         },
 
         beforeCreate() {
-            user = localStorage.getItem('user');
+            user = sessionStorage.getItem('user');
             token = JSON.parse(user).token;
         },
         created() {

@@ -232,7 +232,7 @@
                         <div v-for='i in contracts' class='CDlessonhover'>
                             <div class="CDlessonD">
                                 <div>
-                                    <el-select v-model="i.kc_tid" clearable placeholder="课程类型" size='small' class="CD123" @change='getClassName(i.kc_tid,i)'>
+                                    <el-select v-model="i.kc_tid"  placeholder="课程类型" size='small' class="CD123" @change='getClassName(i.kc_tid,i)'>
                                         <el-option v-for="item in classkind" :key="item.kc_tid" :label="item.kc_tname" :value="item.kc_tid">
                                         </el-option>
                                     </el-select>
@@ -802,7 +802,7 @@
             },
         },
         beforeCreate() {
-            user = localStorage.getItem('user');
+            user = sessionStorage.getItem('user');
             token = JSON.parse(user).token;
         },
         created() {

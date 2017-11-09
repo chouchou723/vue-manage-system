@@ -327,7 +327,7 @@ import { rangeList,create_menuList,put_menuList,delete_menuList,get_level,detail
        }
     },
     beforeCreate(){
-           let user = localStorage.getItem('user');
+           let user = sessionStorage.getItem('user');
             token =  JSON.parse(user).token;
         },
     created(){

@@ -87,7 +87,7 @@ export default {
             }
         },
         beforeCreate() {
-            let user = localStorage.getItem('user');
+            let user = sessionStorage.getItem('user');
             token = JSON.parse(user).token;
         },
         created() {

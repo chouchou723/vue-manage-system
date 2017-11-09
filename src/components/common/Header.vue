@@ -9,9 +9,9 @@
                 </el-input>
             </div>
         </div>
-        <!-- <div class="hoverrt" style="float:left;margin-left:5px;width: 55px;height: 70px;">
-            <img id='addUser' src="../../../static/img/add.png" height="30" width="28" @click="gotoAdd" >
-            </div> -->
+        <div class="hoverrt" v-if="code.includes('tmk')||code=='cc'||code=='cc_m'" @click="gotoAdd" >
+            <img id='addUser' src="../../../static/img/add.png" height="30" width="28" >
+            </div>
         <div class="user-info">
             <el-dropdown @command="handleCommand" >
                 <span class="el-dropdown-link">
@@ -61,7 +61,7 @@
     </div>
 </template>
 <script>
-    var token, user
+    var token,user
     import {
         mapGetters,
         mapActions
@@ -115,9 +115,9 @@
             handleCommand(command) {
                 if (command == 'loginout') {
                     // this.$router.go();
+                    sessionStorage.removeItem('user')
+                    // sessionStorage.clear();
                     this.$router.push('/login');
-                    localStorage.clear();
-            // localStorage.removeItem('user')
                     
                 }
                 if (command == 'setting') {
@@ -141,9 +141,15 @@
                 this.searchKey(this.input2);
                 this.$router.push('/searchResult')
             },
-            // gotoAdd() {
-            //     this.$router.push('/addUser')
-            // },
+            gotoAdd() {
+                if(this.code.includes('tmk')){
+
+                    this.$router.push('/addUser')
+                }else{
+                    this.$router.push('/addCustomer')
+                    
+                }
+            },
             getM(){//计时器使用
                 let p ={
                     
@@ -156,6 +162,18 @@
             }
         },
         computed: {
+            // code(){
+            //   return JSON.parse(user).job ? JSON.parse(user).job.code?JSON.parse(user).job.code : '':''; //获取职位code  
+            // },
+            // username(){
+            //     return JSON.parse(user).uname
+            // },
+            // agetSrc(){
+            //     return JSON.parse(user).avatar
+            // },
+            // duty(){
+            //     return JSON.parse(user).job.full_name
+            // },
             finalNumber() {
                 if (this.getMessNumber !== '') {
                     return this.getMessNumber;
@@ -172,20 +190,20 @@
             ])
         },
         beforeCreate() {
-            user = localStorage.getItem('user');
+            user = sessionStorage.getItem('user');
             token = JSON.parse(user).token;
         },
         created() {
-            this.code = JSON.parse(user).job ? JSON.parse(user).job.code : ''; //获取职位code
-            // var user = localStorage.getItem('user');
-            if (user) {
+            this.code = JSON.parse(user).job ? JSON.parse(user).job.code?JSON.parse(user).job.code : '':''; //获取职位code
+            // var user = sessionStorage.getItem('user');
+            // if (user) {
                 let user1 = JSON.parse(user);
-                // console.log(user);
+            //     // console.log(user);
                 this.username = user1.uname || '';
                 this.agetSrc = user1.avatar || '';
                 this.duty = user1.job ? user1.job.full_name : ''
 
-            }
+            // }
              this.contGet = setInterval(this.getM,600000)
             let p = {
                 length:3
@@ -209,11 +227,12 @@ width: 245px;height: 48px;float: left; padding-left:183px
 	} 
 
     .hoverrt {
-        background: #6daba8;
+        background: #6daba8;float:left;margin-left:25px;width: 55px;height: 48px;display:flex;justify-content: center;align-items: center;
     }
 
     .hoverrt:hover {
         background-color: #1fb5ad;
+        cursor: pointer;
     }
     /*.hoverbg:hover
 	{background-color: #2b3a40;}*/
@@ -344,16 +363,14 @@ width: 245px;height: 48px;float: left; padding-left:183px
         display: none
     }
 
-    #addUser {
+    /* #addUser {
         margin-left: 13px;
         margin-top: 22px;
-    }
+    } */
 
-    #addUser:hover {
-        /*background-color: #6daba8;*/
-        /*border:1px solid #6daba8;*/
+    /* #addUser:hover {
         cursor: pointer;
-    }
+    } */
     .rotateInUpRight {
     -webkit-animation-timing-function: cubic-bezier(.05, .45, .64, .94);
     animation-timing-function: cubic-bezier(.05, .45, .64, .94);
