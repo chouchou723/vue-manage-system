@@ -4,12 +4,14 @@
             <el-breadcrumb-item><i class="el-icon-my-yonhu"></i> 客户管理</el-breadcrumb-item>
             <el-breadcrumb-item class='ss'>客户认领</el-breadcrumb-item>
         </el-breadcrumb> -->
-        <div class='noEff'>
-            <h2 class="studentReturnnoEff">
-                客户认领({{number}}人)
-            </h2>
+        <div class='publicPhH'>
+            <h3 class="publicPh">
+                客户认领
+                <span v-if="number==='0'" style="font-size:14px;color: #bdb8b8;">加载中...</span>
+               <span v-else>({{number}}人)</span>
+            </h3>
         </div>
-        <div id="table2PP">
+        <div id="publicPhHPP">
             <el-table :data="publicData"  style="width: 100%"  @sort-change='sortChange'>
                 <el-table-column prop="names" label="姓名" width='140'>
                     <template scope="scope">
@@ -37,12 +39,12 @@
             class='publicDialog'>
             <span style="font-size:16px">是否确认要认领该客户?</span>
             <div slot="footer" class="dialog-footer" style='text-align:center'>
-                <el-button type="primary" @click="claimYes" style='margin-right:20px'>是</el-button>
+                <el-button type="primary" :loading="writeL" @click="claimYes" style='margin-right:20px'>是</el-button>
                 <el-button @click="dialogFormVisible = false">否</el-button>
             </div>
         </el-dialog>
         <div class="block">
-            <span class="demonstration"></span>
+              <!-- <span class="demonstration"></span> -->
             <el-pagination layout="prev, pager, next" :total="total" @current-change="handleCurrentChange" :page-size='pagesize'>
             </el-pagination>
         </div>
@@ -57,11 +59,12 @@
     export default {
         data() {
             return {
+                writeL:false,
                 dialogFormVisible: false,
                 no: false,
                 code: '',
                 total: 0,
-                number: 0,
+                number: '0',
                 publicData: [],
                 currentPage: 1, //页数
                 pagesize: 15, //默认每页
@@ -86,6 +89,7 @@
                 this.dialogFormVisible = true;
             },
             claimYes() {
+                this.writeL = true;
                 claim_customer(this.claimConfirm, token).then(res => {
                     if (res.code == 0) {
                         this.$message({
@@ -94,8 +98,10 @@
                         });
                         this.fetchData();
                         this.dialogFormVisible = false;
+                        this.writeL = false;
                     } else {
-                        this.$message.error(res.data)
+                        this.$message.error(res.data);
+                        this.writeL = false;                        
                     }
                 })
             },
@@ -138,14 +144,14 @@
 
 </script>
 <style>
-    /* #table2PP .el-table td,
-    #table2PP .el-table th:not(.gutter) {
+    /* #publicPhHPP .el-table td,
+    #publicPhHPP .el-table th:not(.gutter) {
         padding: 1px;
         text-align: center
     }
 
-    #table2PP .el-table th>div,
-    #table2PP .el-table .cell {
+    #publicPhHPP .el-table th>div,
+    #publicPhHPP .el-table .cell {
         padding-left: 0;
         padding-right: 0;
     } */
@@ -159,13 +165,14 @@
         margin-top: 10px;
     }
 
-    .studentReturnnoEff {
+    .publicPh {
         float: left;
         margin-right: 5px;
         padding-left: 10px;
+        margin-top:5px;
     }
 
-    .noEff {
+    .publicPhH {
         width: 100%;
         position: relative;
         height: 46px;

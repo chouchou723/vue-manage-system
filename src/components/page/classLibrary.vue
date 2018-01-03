@@ -7,17 +7,19 @@
             </el-breadcrumb>
         </div> -->
         <div class='classLi'>
-            <div class="h1">
-                <h3 class='accountH2'>
-               课程库({{number}}个)
+            <div class="classLibraryH">
+                <h3 class='classLibraryH2'>
+               课程库
+               <span v-if="number==='0'" style="font-size:14px;color: #bdb8b8;">加载中...</span>
+               <span v-else>({{number}}个)</span>
                 </h3>
-                <div class='oneSelect'>
+                <div class='classLibraryS'>
                     <el-select v-model="value" clearable placeholder="课程类型" filterable @change="updateList">
                         <el-option v-for="item in options" :key="item.kc_tid" :label="item.kc_tname" :value="item.kc_tid">
                         </el-option>
                     </el-select>
                 </div>
-                <el-button type="primary" size="mid" class='buttonAdd' @click="createCh('aform')">添加课程</el-button>
+                <el-button type="primary" size="mid" class='classLibrarySB' @click="createCh('aform')" v-if="!code.includes('school')">添加课程</el-button>
             </div>
             <el-dialog :title="alter" :visible.sync="dialogFormVisible" :close-on-click-modal="no" custom-class='classLibraryDialog' top='9%' @close='resetD' size='tiny'>
                 <el-form :model="aform" ref="aform" :rules="rules2">
@@ -31,19 +33,19 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="课时" :label-width="formLabelWidth" prop="year_num">
-                        <el-input v-model.number="aform.year_num" auto-complete="off" placeholder='请输入课时'class='CL200'></el-input>
+                        <el-input v-model="aform.year_num" auto-complete="off" placeholder='请输入课时'class='CL200'></el-input>
                     </el-form-item>
                     <el-form-item label="签单数" :label-width="formLabelWidth" prop="head_count">
-                        <el-input v-model.number="aform.head_count" auto-complete="off" placeholder='请输入签单数' class='CL200'></el-input>
+                        <el-input v-model="aform.head_count" auto-complete="off" placeholder='请输入签单数' class='CL200'></el-input>
                     </el-form-item>
                     <el-form-item label="学费" :label-width="formLabelWidth" prop="tuition_price">
-                        <el-input v-model.number="aform.tuition_price" auto-complete="off" placeholder='请输入学费' class='CL200'></el-input>
+                        <el-input v-model="aform.tuition_price" auto-complete="off" placeholder='请输入学费' class='CL200'></el-input>
                     </el-form-item>
                     <el-form-item label="教材费" :label-width="formLabelWidth" prop="teaching_price">
-                        <el-input v-model.number="aform.teaching_price" auto-complete="off" placeholder='请输入教材费' class='CL200'></el-input>
+                        <el-input v-model="aform.teaching_price" auto-complete="off" placeholder='请输入教材费' class='CL200'></el-input>
                     </el-form-item>
                     <el-form-item label="书本费" :label-width="formLabelWidth" prop="book_price">
-                        <el-input v-model.number="aform.book_price" auto-complete="off" placeholder='请输入书本费' class='CL200'></el-input>
+                        <el-input v-model="aform.book_price" auto-complete="off" placeholder='请输入书本费' class='CL200'></el-input>
                     </el-form-item>
                     <el-form-item label="有效期" :label-width="formLabelWidth" prop="order_date">
                         <el-select v-model="aform.order_date" class='CL200'>
@@ -53,7 +55,7 @@
                     </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer" >
-                    <el-button type="primary" @click="addAccount('aform')">确 定</el-button>
+                    <el-button type="primary" :loading='writeL' @click="addAccount('aform')">确 定</el-button>
                     <el-button @click="dialogFormVisible = false">取 消</el-button>
                 </div>
             </el-dialog>
@@ -79,12 +81,12 @@
                 </el-table-column>
                 <el-table-column prop="order_date" label="有效期" :formatter='formatter'>
                 </el-table-column>
-                <el-table-column prop="person_num" label="在读数/总销量" width='120'>
+                <el-table-column prop="balance_num" label="在读数/总销量" width='120'>
                      <template scope="scope">
-                        <span >{{scope.row.person_num}}/{{scope.row.total_num}}</span>
+                        <span >{{scope.row.balance_num}}/{{scope.row.total_num}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column label="操作">
+                <el-table-column label="操作" v-if="!code.includes('school')">
                     <template scope="scope">
                         <el-button type="text" size="small" @click="editCh(scope.$index, accountData)">修改</el-button>
                         <el-button type="text" size="small" @click="open2(scope.$index, accountData)" class='classDel'>删除</el-button>
@@ -99,7 +101,7 @@
     </div>
 </template>
 <script>
-var token
+var token,user
 import {
     getClassLibrary,
     getClassKind,
@@ -116,17 +118,59 @@ export default {
                     callback('请选择课程类型')
                 }
             }
-            // var isPName = (rule, value, callback) => {
-            //     var myreg = /^[\u4e00-\u9fa5a-zA-Z()]+$/;
-            //     if (value == '') {
-            //         callback('请输入课程名称')
-            //     } else if (!myreg.test(value)) {
-            //         callback('请输入有效的课程名称');
-            //     } else {
-            //         callback();
-            //     }
-            // }
+            var isNumber = (rule, value, callback) => {
+                var myreg1 = /^[0-9]*$/;
+                if(value==''){
+                    callback('请输入课时')
+                }else if (!myreg1.test(value)) {
+                    callback('请输入有效的课时')
+                }else {
+                    callback();
+                }
+            }
+            var isNumber1 = (rule, value, callback) => {
+                var myreg1 = /\d/;
+                if(value==''){
+                    callback('请输入签单数')
+                }else if (!myreg1.test(value)) {
+                    callback('请输入有效的签单数')
+                }else {
+                    callback();
+                }
+            }
+            var isNumber2 = (rule, value, callback) => {
+                var myreg1 = /^[0-9]*$/;
+                if(value==''){
+                    callback('请输入学费')
+                }else if (!myreg1.test(value)) {
+                    callback('请输入有效的学费')
+                }else {
+                    callback();
+                }
+            }
+            var isNumber3 = (rule, value, callback) => {
+                var myreg1 = /^[0-9]*$/;
+                if(value==''){
+                    callback('请输入教材费')
+                }else if (!myreg1.test(value)) {
+                    callback('请输入有效的教材费')
+                }else {
+                    callback();
+                }
+            }
+            var isNumber4 = (rule, value, callback) => {
+                var myreg1 = /^[0-9]*$/;
+                if(value==''){
+                    callback('请输入书本费')
+                }else if (!myreg1.test(value)) {
+                    callback('请输入有效的书本费')
+                }else {
+                    callback();
+                }
+            }
             return {
+                writeL:false,
+                code:'',
                 period: [{
                     label: '1个月',
                     value: '1'
@@ -179,7 +223,7 @@ export default {
                 in : '', //修改时代表修改的index
                 no: false, //取消点击关闭
                 accountData: [],
-                number: 0,
+                number: '0',
                 options: '', //选择课程类型
                 value: '', //对应课程类型select的值
                 aform: {
@@ -208,33 +252,38 @@ export default {
                     }],
                     year_num: [{
                         required: true,
-                        type:'number',
-                        // validator: isNan,                        
-                        message: '请输入课时',
+                        // type:'number',
+                        // // validator: isNan,                        
+                        // message: '请输入课时',
+                        validator: isNumber,
                         trigger: 'blur'
                     }],
                     head_count: [{
                         required: true,
-                        type:'number',
-                        message: '请输入签单数',
+                        // type:'number',
+                        // message: '请输入签单数',
+                        validator: isNumber1,
                         trigger: 'blur'
                     }],
                     tuition_price: [{
                         required: true,
-                        type:'number',
-                        message: '请输入学费',
+                        // type:'number',
+                        // message: '请输入学费',
+                        validator: isNumber2,
                         trigger: 'blur'
                     }],
                     teaching_price: [{
                         required: true,
-                        type:'number',
-                        message: '请输入教材费',
+                        // type:'number',
+                        // message: '请输入教材费',
+                        validator: isNumber3,
                         trigger: 'blur'
                     }],
                     book_price: [{
                         required: true,
-                        type:'number',
-                        message: '请输入书本费',
+                        // type:'number',
+                        // message: '请输入书本费',
+                        validator: isNumber4,
                         trigger: 'blur'
                     }],
                     order_date: [{
@@ -314,7 +363,7 @@ export default {
                         })
                             }
                         }).catch((res) => {
-                            this.$message.error('该用户未授权')
+                            // this.$message.error('该用户未授权')
                         })
                     }).catch(()=>{})
                 }
@@ -326,6 +375,7 @@ export default {
                     let i = this.in;
                     // console.log(valid)
                     if (valid) {
+                        this.writeL = true;
                         if (i !== '') {
                             let para = f;
                             put_class(para, token).then(res => {
@@ -336,11 +386,13 @@ export default {
                                     });
                                     this.fetchData();
                                     this.dialogFormVisible = false;
+                                    this.writeL = false;
                                 } else {
                                     this.$message({
                                         type: 'error',
                                         message: res.data
                                     });
+                                    this.writeL = false;
                                 }
                             })
                         } else {
@@ -353,11 +405,13 @@ export default {
                                     });
                                     this.fetchData();
                                     this.dialogFormVisible = false;
+                                    this.writeL = false;
                                 } else {
                                     this.$message({
                                         type: 'error',
                                         message: res.data
                                     });
+                                    this.writeL = false;
                                 }
                             })
                         }
@@ -387,10 +441,11 @@ export default {
             },
         },
         beforeCreate() {
-            let user = sessionStorage.getItem('user');
+            user = sessionStorage.getItem('user');
             token = JSON.parse(user).token;
         },
         created() { //创建组件时
+            this.code = JSON.parse(user).job ? JSON.parse(user).job.code : '';
             this.fetchData();
             getClassKind(token).then((res) => { //获取课程分类
                 this.options = res.data
@@ -408,7 +463,7 @@ export default {
 }
 </script>
 <style>
-.h1 .el-button--primary {
+.classLibraryH .el-button--primary {
     background-color: #32a4d3;
     border-color: #32a4d3;
 }
@@ -474,21 +529,21 @@ export default {
     border-radius: 5px;
 }
 
-.accountH2 {
+.classLibraryH2 {
     display: inline-block;
     /*margin-top: 20px;*/
     margin-bottom: 15px;
     padding-left: 10px
 }
 
-.oneSelect {
+.classLibraryS {
     display: inline-block;
     margin-bottom: 10px;
     margin-left: 10px;
     width: 140px
 }
 
-.buttonAdd {
+.classLibrarySB {
     position: absolute;
     right: 10px;
     top: 10px;

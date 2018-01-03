@@ -53,3 +53,6 @@ export const setmyTeachS = ({commit},data) =>{
 export const setmyActS = ({commit},data) =>{
 	commit('SENDMYACT',data)
 }
+export const setmyGAL = ({commit},data) =>{
+	commit('SENDMYGAL',data)
+}

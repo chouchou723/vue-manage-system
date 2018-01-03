@@ -55,3 +55,6 @@ export const getmyTeachS = state => {
 export const getmyActS = state => {
     return state.myActS
 }
+export const getmyGal = state => {
+    return state.myGal
+}

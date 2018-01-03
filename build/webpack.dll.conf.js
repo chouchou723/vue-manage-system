@@ -3,7 +3,7 @@ const webpack = require('webpack');
 
 module.exports = {
   entry: {
-    vendor: ['vue/dist/vue.common.js','vue-router', 'babel-polyfill','axios','vue-echarts-v3']
+    vendor: ['vue/dist/vue.common.js','vue-router', 'babel-polyfill','axios','element-ui','echarts/lib/chart/funnel','echarts/lib/chart/line','echarts/lib/chart/pie','echarts/lib/component/legend','echarts/lib/component/tooltip',]
   },
   output: {
     path: path.join(__dirname, '../static/js'),
@@ -13,7 +13,8 @@ module.exports = {
   plugins: [
     new webpack.DllPlugin({
       path: path.join(__dirname, '.', '[name]-manifest.json'),
-      name: '[name]_library'
+      name: '[name]_library',
+      context: path.resolve(__dirname, '..'),
     }),
     new webpack.optimize.UglifyJsPlugin({
       compress: {

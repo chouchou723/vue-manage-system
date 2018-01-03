@@ -81,25 +81,23 @@ import {
     qcodeLogin,
     findPassword,findToEditPwd
 } from '../../api/api';
+// var i = 1;
+// var inter;
+// var color = "";
+// var str = "0123456789abcdef";
+// var length = str.length + 1;
+// var span = document.getElementsByTagName("span");
+// window.onload = randomNumber;
 
-var i = 1;
-var inter;
-var color = "";
-var str = "0123456789abcdef";
-var length = str.length + 1;
-var span = document.getElementsByTagName("span");
-window.onload = randomNumber;
-
-function randomNumber() {
-    for (let i = 0; i < 4; i++) { //生成四位数
-        for (let j = 0; j < 6; j++) { //随机改变每个数字的颜色
-            color += str.substr(parseInt(Math.random() * length), 1); //取颜色(循环，每次提取一位，进行拼接组成6为颜色的值)
-        }
-        span[i].style.color = ("#" + color); //随机改变每个span的颜色
-        color = "";
-    }
-}
-
+// function randomNumber() {
+//     for (let i = 0; i < 4; i++) { //生成四位数
+//         for (let j = 0; j < 6; j++) { //随机改变每个数字的颜色
+//             color += str.substr(parseInt(Math.random() * length), 1); //取颜色(循环，每次提取一位，进行拼接组成6为颜色的值)
+//         }
+//         span[i].style.color = ("#" + color); //随机改变每个span的颜色
+//         color = "";
+//     }
+// }
 export default {
     data: function() {
         var validatePass = (rule, value, callback) => {
@@ -181,6 +179,8 @@ export default {
                 }
             }
         return {
+            i:0,
+            inter:'',
             clock:'',
                 a: 60,
                 canClick: false,
@@ -268,38 +268,38 @@ export default {
                     return '获取验证码'
                 }
             },
-        _codeNumber1: {
-            set: function(value) {
-                this.codeNumber1 = value;
-            },
-            get: function() {
-                return this.codeNumber1
-            }
-        },
-        _codeNumber2: {
-            set: function(value) {
-                this.codeNumber2 = value;
-            },
-            get: function() {
-                return this.codeNumber2
-            }
-        },
-        _codeNumber3: {
-            set: function(value) {
-                this.codeNumber3 = value;
-            },
-            get: function() {
-                return this.codeNumber3
-            }
-        },
-        _codeNumber4: {
-            set: function(value) {
-                this.codeNumber4 = value;
-            },
-            get: function() {
-                return this.codeNumber4
-            }
-        },
+        // _codeNumber1: {
+        //     set: function(value) {
+        //         this.codeNumber1 = value;
+        //     },
+        //     get: function() {
+        //         return this.codeNumber1
+        //     }
+        // },
+        // _codeNumber2: {
+        //     set: function(value) {
+        //         this.codeNumber2 = value;
+        //     },
+        //     get: function() {
+        //         return this.codeNumber2
+        //     }
+        // },
+        // _codeNumber3: {
+        //     set: function(value) {
+        //         this.codeNumber3 = value;
+        //     },
+        //     get: function() {
+        //         return this.codeNumber3
+        //     }
+        // },
+        // _codeNumber4: {
+        //     set: function(value) {
+        //         this.codeNumber4 = value;
+        //     },
+        //     get: function() {
+        //         return this.codeNumber4
+        //     }
+        // },
         correct: function() {
             return this.codeNumber1 * 1000 + this.codeNumber2 * 100 + this.codeNumber3 * 10 + this.codeNumber4 * 1;
         }
@@ -332,7 +332,10 @@ export default {
                         }).then(res=>{
                             if(res.code == 0){
 
-                             this.$router.push('/login');
+                            //  this.$router.push('/login');
+                            this.passD= false;
+                this.$refs['ruleForm2'].resetFields();
+                            
                             }else{
                                  this.$message.error(res.message);
                                  this.ruleForm2.code1 = '';
@@ -397,13 +400,13 @@ export default {
                     this.fullscreenLoading = true;
                     requestLogin(loginParams).then(data => {
                         if(data.message =='登录成功'){
-                        let {
-                            access_token,
-                            status,
-                            token_type
-                        } = data;
-                        var token = {
-                            'Authorization': token_type + ' ' + access_token
+                        // let {
+                        //     access_token,
+                        //     status,
+                        //     token_type
+                        // } = data;
+                        let token = {
+                            'Authorization': data.token_type + ' ' + data.access_token
                         }
                         getUserinfo(token).then(u => {
                             let {
@@ -411,13 +414,26 @@ export default {
                             } = u;
                             data.token = token;
                             sessionStorage.setItem('user', JSON.stringify(data));
-                            if(data.job && data.job.code == 'hr'){
-                                 self.$router.push('/api/v1/admin');
-                            }else if(!data.wechat){
-                            self.$router.push('/wechat');
+                            if(!data.wechat){
+                                self.$router.push('/wechat');
+                            }else if(data.job.code.includes('hr')){
+                                self.$router.push('/api/v1/admin');
+                            }else if(data.job.code=='cc_c'){
+                            self.$router.push('/reportFormTmkTotal');
+                            }else if(data.job.code.includes('purchase')||data.job.code.includes('product')){
+                                self.$router.push('/wechat');
                             }else{
                                 self.$router.push('/Index');
                             }
+                            // if(data.job && data.job.code.includes('hr')){
+                            //      self.$router.push('/api/v1/admin');
+                            // }else if(!data.wechat){
+                            // self.$router.push('/wechat');
+                            // }else if(data.job.code=='cc_c'){
+                            // self.$router.push('/reportFormTmkTotal');
+                            // }else{
+                            //     self.$router.push('/Index');
+                            // }
                         })
                         }else{
                             this.fullscreenLoading = false;
@@ -451,10 +467,12 @@ export default {
             });
         },
         switchWechat() {
-            this.loginAdd = 'http://pandatest.dfth.com/auth/createRqCodeImg?token=' + this.uuid;
+            // let a = 'http://pandatest.dfth.com/auth/createRqCodeImg?token=';
+            let a = '/auth/createRqCodeImg?token='
+            this.loginAdd =  a + this.uuid;
             this.ruleForm.hidden = true;
             this.ruleForm.isDisplay = false;
-            inter = setInterval(this.codeLogin, 2000)
+            this.inter = setInterval(this.codeLogin, 2000)
         },
         codeLogin() {//扫二维码登录
             let para = {
@@ -462,14 +480,14 @@ export default {
             }
             qcodeLogin(para).then(res => {
                 if (res.status == 'success') {
-                    clearInterval(inter)
-                    let {
-                        access_token,
-                        status,
-                        token_type
-                    } = res;
-                    var token = {
-                        'Authorization': token_type + ' ' + access_token
+                    clearInterval(this.inter)
+                    // let {
+                    //     access_token,
+                    //     status,
+                    //     token_type
+                    // } = res;
+                    let token = {
+                        'Authorization': res.token_type + ' ' + res.access_token
                     }
                     getUserinfo(token).then(u => {
                         let {
@@ -477,22 +495,36 @@ export default {
                         } = u;
                         data.token = token;
                         sessionStorage.setItem('user', JSON.stringify(data));
-                         if(data.job && data.job.code == 'hr'){
-                                 this.$router.push('/api/v1/admin');
+                        if(!data.wechat){
+                                this.$router.push('/wechat');
+                            }else if(data.job.code.includes('hr')){
+                                this.$router.push('/api/v1/admin');
+                            }else if(data.job.code=='cc_c'){
+                            this.$router.push('/reportFormTmkTotal');
+                            }else if(data.job.code.includes('purchase')||data.job.code.includes('product')){
+                                this.$router.push('/wechat');
                             }else{
                                 this.$router.push('/Index');
                             }
+                        //  if(data.job && data.job.code.includes('hr')){
+                        //          this.$router.push('/api/v1/admin');
+                        //     }else if(data.job.code=='cc_c'){
+                        //     self.$router.push('/reportFormTmkTotal');
+                        //     }else{
+                        //         this.$router.push('/Index');
+                        //     }
                     })
                 } else if (res.status == 0) {
-                    i++
-                    if (i > 300) {
+                    this.i++
+                    // console.log(this.i)
+                    if (this.i > 300) {
                         this.winReload();
                     }
                 }
             })
 
         },
-        winReload: function(cond) {
+        winReload: function() {
             window.location.reload();
         },
         switchMail() {
@@ -500,15 +532,15 @@ export default {
             this.ruleForm.isDisplay = true;
             this.loginAdd = '';
             this.add = '';
-            clearInterval(inter);
+            clearInterval(this.inter);
 
         },
         change() {
-            this._codeNumber1 = Math.floor(Math.random() * 9) + 1;
-            this._codeNumber2 = Math.floor(Math.random() * 9) + 1;
-            this._codeNumber3 = Math.floor(Math.random() * 9) + 1;
-            this._codeNumber4 = Math.floor(Math.random() * 9) + 1;
-            randomNumber();
+            this.codeNumber1 = Math.floor(Math.random() * 9) + 1;
+            this.codeNumber2 = Math.floor(Math.random() * 9) + 1;
+            this.codeNumber3 = Math.floor(Math.random() * 9) + 1;
+            this.codeNumber4 = Math.floor(Math.random() * 9) + 1;
+            this.randomNumber();
         },
         // isLogin(){
         //     requestLogin().then(res => {
@@ -563,12 +595,31 @@ export default {
         //         }
         //     })
         // }
+        randomNumber() {
+              let color = "";
+let str = "0123456789abcdef";
+let span = document.getElementsByTagName("span");
+let length = str.length + 1;
+    for (let i = 0; i < 4; i++) { //生成四位数
+        for (let j = 0; j < 6; j++) { //随机改变每个数字的颜色
+            color += str.substr(parseInt(Math.random() * length), 1); //取颜色(循环，每次提取一位，进行拼接组成6为颜色的值)
+        }
+        span[i].style.color = ("#" + color); //随机改变每个span的颜色
+        color = "";
+    }
+}
     },
     mounted() {
+        // var color = "";
+// var str = "0123456789abcdef";
+// var length = str.length + 1;
+// window.onload = randomNumber;
+
+        this.randomNumber();
         this.change();    
     },
     beforeDestroy() {
-        clearInterval(inter)
+        clearInterval(this.inter)
     },
     created() {
         // let userc = sessionStorage.getItem('user');
@@ -657,7 +708,9 @@ width:100%
     font-size: 19px;
     font-weight: 800;
 }
-
+#codeNumber:hover{
+    cursor: pointer;
+}
 .wechatlogin {
     position: absolute;
     left: 50%;

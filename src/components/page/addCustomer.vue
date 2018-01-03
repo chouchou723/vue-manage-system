@@ -2,7 +2,7 @@
     <div class="table">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-moban"></i> 客户管理</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-my-yonhu"></i> 客户管理</el-breadcrumb-item>
                 <el-breadcrumb-item :to="{ path: '/myResource' }">我的客户</el-breadcrumb-item>
                 <el-breadcrumb-item class='ss'>录入资料</el-breadcrumb-item>
             </el-breadcrumb>
@@ -100,7 +100,7 @@
                         <el-input v-model="form.address" placeholder='请输入具体地址'></el-input>
                     </el-form-item>
                 </el-form-item>
-                <el-form-item label="就近校区">
+                <el-form-item label="所属校区">
                     <span>{{school_name}}</span>
                     <!-- <el-select v-model="form.school_id" placeholder="请选择校区" style="width:142px" readonly>
                         <el-option v-for="item in schools" :key="item.id" :label="item.title" :value="item.id">
@@ -132,18 +132,18 @@
                         </el-option>
                       </el-select>
                     </el-form-item>
-                    <el-form-item prop='familys_name' style='float:left;width:142px;'>
+                    <!-- <el-form-item prop='familys_name' style='float:left;width:142px;'>
                         <span v-if='this.form.sour_id == 4&&this.form.familys_name'>家长姓名:{{form.familys_name}}</span>
-                    </el-form-item>
-                    <el-form-item prop='referral_uid' style="display:none">
+                    </el-form-item> -->
+                    <!-- <el-form-item prop='referral_uid' style="display:none">
                         <span>{{form.referral_uid}}</span>
-                    </el-form-item>
-                    <el-form-item prop='familys' style="display:none">
-                    </el-form-item>
+                    </el-form-item> -->
+                    <!-- <el-form-item prop='familys' style="display:none">
+                    </el-form-item> -->
                     <span v-if='isWarning' class='ACwarn'> {{warning}}</span>
                 </el-form-item>
                 <el-form-item >
-                    <el-button type="primary" @click="onSubmit('form')">确定</el-button>
+                    <el-button type="primary" :loading='writeL' @click="onSubmit('form')">确定</el-button>
                     <el-button @click="back">取消</el-button>
                 </el-form-item>
             </el-form>
@@ -249,10 +249,11 @@ callback();
 }
             }
             return {
+                writeL:false,
                 maxlength:11,
                 school_name: '',
                 nostudent: false,
-                warning: '*系统中没有该成员', //以后改成调服务显示
+                warning: '*请选择转介绍学员', //以后改成调服务显示
                 form: {
                     names: '',
                     sex: '',
@@ -438,6 +439,7 @@ callback();
             onSubmit(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid&&this.isWarning===false) {
+                        this.writeL = true;
                         if (this.form.parent1 || this.form.con1 || this.form.phone1) {
                             this.form.familys = this.form.parent + '|' + this.form.con + '|' + this.form.phone +
                                 ',' + this.form.parent1 + '|' + this.form.con1 + '|' + this.form.phone1
@@ -454,9 +456,11 @@ callback();
                                     type: 'success'
                                 });
                                 this.$refs.form.resetFields();
+                                this.writeL = false;
                             } else {
                                 this.$message.error(res.data);
                                 // this.form.phone = '';
+                                this.writeL = false;
                                 this.$refs.parentPhone.$refs.input.focus();
                                 this.$refs.parentPhone.$refs.input.blur();
                                 // this.form.sour_id = this.form.sour_id.split(',')
@@ -499,9 +503,11 @@ callback();
             cityList(token).then((res) => {
                 // console.log(res)
                 this.cities = res.data
+            }).then(()=>{
+                this.form.city_id = 31
             })
             sourceList(token).then(res => {
-                this.source = res.data.slice(1);
+                this.source = res.data;
             })
             let para1 = {
                 simple: 1

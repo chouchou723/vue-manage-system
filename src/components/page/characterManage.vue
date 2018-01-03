@@ -25,7 +25,7 @@
                 </div>
             </el-dialog>
         </div>
-        <el-table :data="charData" border style="width: 100%">
+        <el-table :data="charData" border style="width: 100%;margin-bottom:10px;">
             <el-table-column prop="name" label="">
             </el-table-column>
             <el-table-column width='140px' label="操作">
@@ -88,6 +88,7 @@ export default {
     },
     methods: {
         resetTree(){
+            this.in = '';
             this.form.name = '';
             this.form.role_id = '';
             this.loading2 =  true;
@@ -99,7 +100,7 @@ export default {
         },
         open2(index, data) { //删除角色
             this.$confirm('是否确定要删除该角色?', '删除角色', {
-                    customClass: 'redwarn',
+                    customClass: 'CMredwarn',
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
@@ -226,16 +227,16 @@ width: 100%;position:relative;background-color:white;margin-bottom:5px;padding:1
     border-color: #32a4d3;
 }
 
-.redwarn .el-message-box__header {
+.CMredwarn .el-message-box__header {
     background-color: #e95c5c;
     padding: 20px 20px 20px;
 }
 
-.redwarn .el-message-box__title {
+.CMredwarn .el-message-box__title {
     color: white;
 }
 
-.redwarn .el-button--primary {
+.CMredwarn .el-button--primary {
     background-color: #e95c5c;
     border-color: #e95c5c;
 }

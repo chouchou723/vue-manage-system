@@ -27,7 +27,7 @@
             </div>
             <!-- </el-upload> -->
             <!-- </el-form> -->
-            <my-upload field="file" @crop-upload-success="cropUploadSuccess" @crop-upload-fail="cropUploadFail" v-model="show" url="http://pandatest.dfth.com/api/v1/userinfo/uploadAvatar" :headers="headers" img-format="jpg"></my-upload>
+            <my-upload field="file" @crop-upload-success="cropUploadSuccess" @crop-upload-fail="cropUploadFail" v-model="show" :url="Iurl" :headers="headers" img-format="jpg"></my-upload>
         </div>
     </div>
 </template>
@@ -46,6 +46,8 @@
     export default {
         data: function () {
             return {
+                // Iurl:'http://pandatest.dfth.com/api/v1/userinfo/uploadAvatar',
+                Iurl:'/api/v1/userinfo/uploadAvatar',
                 show: false,
                 headers: {
                     Authorization: token.Authorization,

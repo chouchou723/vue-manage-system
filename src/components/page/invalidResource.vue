@@ -6,10 +6,11 @@
             <el-breadcrumb-item class='ss'>无效资源</el-breadcrumb-item>
         </el-breadcrumb> -->
         <div class='noInvalid'>
-            <h2 class="studentinvalid">
-
-                无效资源({{number}}人)
-            </h2>
+            <h3 class="studentinvalid">
+                无效资源
+                <span v-if="number==='0'" style="font-size:14px;color: #bdb8b8;">加载中...</span>
+               <span v-else>({{number}}人)</span>
+            </h3>
             <div class="IRtitle">
                 <div class='studentReturnThreeNoEff'>
                     <el-select v-model="value" clearable placeholder="选择校区" filterable @change="updateList">
@@ -23,16 +24,10 @@
                     </el-cascader>
                 </div>
                 <div class='studentReturnThreeNoEffTime'>
-                    <el-date-picker v-model="value3" type="daterange" placeholder="录入时间" @change="updateList">
+                    <el-date-picker v-model="value3" type="daterange" placeholder="录入时间" @change="updateList" :picker-options="pickerOptions0">
                     </el-date-picker>
-                </div>
-           
-                
-            </div>
-           
-           
-            
-            
+                </div>    
+            </div>   
         </div>
         <div id="table3IR">
             <el-table :data="noEffData"  style="width: 100%" @sort-change='sortChange'>
@@ -58,7 +53,7 @@
             </el-table>
         </div>
         <div class="block">
-            <span class="demonstration"></span>
+              <!-- <span class="demonstration"></span> -->
             <el-pagination layout="prev, pager, next" :total="total" :current-page="currentPage" :page-size="pagesize" @current-change="handleCurrentChange">
             </el-pagination>
         </div>
@@ -78,8 +73,13 @@
     export default {
         data() {
             return {
+                pickerOptions0: {
+                        disabledDate(time) {
+                            return time.getTime() > Date.now();
+                        }
+                    },
                 total: 0,
-                number: 0,
+                number: '0',
                 noEffData: [],
                 options: [],
                 options2: [],
@@ -243,9 +243,10 @@
 
     .studentinvalid {
         float: left;
-        margin-right: 5px;
+        margin:5px 5px 10px 0;
+        /* margin-right: 5px; */
         padding-left: 10px;
-        margin-bottom: 10px;
+        /* margin-bottom: 10px; */
     }
 
     .studentReturnThreeNoEffTime {

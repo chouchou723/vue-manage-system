@@ -4,11 +4,13 @@
             <el-breadcrumb-item><i class="el-icon-my-tongzhi"></i> 活动管理</el-breadcrumb-item>
             <el-breadcrumb-item class='ss'>活动模板</el-breadcrumb-item>
         </el-breadcrumb> -->
-        <div class='noEff'>
-            <h2 class="studentReturnnoEff">
+        <div class='activityTemH'>
+            <h3 class="activityTemH1">
 
-                活动模板({{number}}个)
-            </h2>
+                活动模板
+                <span v-if="number==='0'" style="font-size:14px;color: #bdb8b8;">加载中...</span>
+               <span v-else>({{number}})</span>
+            </h3>
             <!-- <div class='studentReturnNoneed' v-if="code =='cc_m'">
                 <el-select v-model="valueT" clearable placeholder="选择CC" @change="updateList">
                     <el-option v-for="item in optionsCC" :key="item.key" :label="item.label" :value="item.key">
@@ -65,7 +67,7 @@
             </el-table>
         </div>
         <div class="block">
-            <span class="demonstration"></span>
+              <!-- <span class="demonstration"></span> -->
             <el-pagination layout="prev, pager, next" :total="total" :current-page="currentPage" :page-size="pagesize" @current-change="handleCurrentChange">
             </el-pagination>
         </div>
@@ -78,6 +80,7 @@
                 <el-form-item label="活动类型" prop='type'>
                     <el-select v-model="form.type" placeholder="请选择活动类型" style="width:172px">
                         <el-option label="亲子俱乐部" value="100"></el-option>
+                        <!-- <el-option label="节日活动课" value="300"></el-option> -->
                     </el-select>
                 </el-form-item>
                 <el-form-item label="活动价格" prop='price'>
@@ -97,10 +100,12 @@
                 <el-form-item label="最大报名人数" prop='stock'>
                     <el-input v-model="form.stock" placeholder='最大报名人数' style="width:172px"></el-input>
                 </el-form-item>
-                <el-form-item label="适合年龄段" prop='minage' required>
-                    <el-col :span="3" style='margin-right:10px'>
-                            <el-form-item  prop='minage'>
-                        <el-select v-model="form.minage" placeholder="请选择最小年龄" style="width:70px">
+                <el-form-item label="适合年龄段" prop='rangeage' >
+                    <!-- <el-col :span="3" style='margin-right:10px'> -->
+                        <div style='display:flex'>
+
+                            <el-form-item  prop='minage' style="margin-right:10px">
+                        <el-select v-model="form.minage" placeholder="请选择最小年龄" style="width:70px" @change='checkMin'>
                             <el-option label="3" value="3"></el-option>
                             <el-option label="4" value="4"></el-option>
                             <el-option label="5" value="5"></el-option>
@@ -120,11 +125,11 @@
                         </el-select>
                         </el-form-item>
 
-                    </el-col>
-                    <el-col class="line" :span="1">至</el-col>
-                    <el-col :span="3">
+                    <!-- </el-col> -->
+                    <div  style="margin-right:10px">至</div>
+                    <!-- <el-col :span="3"> -->
                             <el-form-item  prop='maxage'>
-                        <el-select v-model="form.maxage" placeholder="请选择最大年龄" style="width:70px">
+                        <el-select v-model="form.maxage" placeholder="请选择最大年龄" style="width:70px" @change='checkMin'>
                             <el-option label="3" value="3"></el-option>
                             <el-option label="4" value="4"></el-option>
                             <el-option label="5" value="5"></el-option>
@@ -143,36 +148,38 @@
                             <el-option label="18" value="18"></el-option>
                         </el-select>
                         </el-form-item>
+                        </div>
 
-                    </el-col>
+                    <!-- </el-col> -->
                 </el-form-item>
-                <el-form-item label="活动介绍" prop='content'>
-                        <quill-editor ref="myTextEditor" v-model="form.content" :config="editorOption"></quill-editor>
-                        <div style="position:absolute;bottom:-26px;left:0;color:#ff4949;width:120px" v-if="!form.content">请输入活动介绍</div>
+                <el-form-item label="活动介绍" prop='content' required>
+                        <quill-editor ref="myTextEditor" v-model="form.content" :config="editorOption" @change='resetTE1'></quill-editor>
+                        <!-- <div style="position:absolute;bottom:-26px;left:0;color:#ff4949;width:120px" v-if="!form.content">请输入活动介绍</div> -->
                     <!-- <el-input type="textarea" :rows="4" placeholder="请输入内容" v-model="form.des"  :autosize="{ minRows: 4, maxRows: 24}"  style="width:342px" >
                     {{form.des}}
                     </el-input> -->
                 </el-form-item>
                 <div style="position:absolute;top:72px;right:58px">
-                   <div style="position:absolute;top:20px;right:-9px;width:100px"><span style="color:#ff4949">*</span> 封面图片</div>
+                   <div style="position:absolute;top:10px;right:-9px;width:100px"><span style="color:#ff4949">*</span> 封面图片</div>
                     <i class="el-icon-circle-close" style="position:absolute;top:43px;right:-33px;z-index:1" v-if="imageUrl" @click="handleRemove"></i>
                         <el-upload
                         class="avatar-uploader"
                         action="https://jsonplaceholder.typicode.com/posts/"
                         :show-file-list="false"
-                        :on-change="beforeAvatarUpload"
+                        :on-change="beforeAvatarUploadaa"
                         :auto-upload="false"
                         >
                         <img v-if="imageUrl" :src="imageUrl" class="avatar">
                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                       </el-upload>
-                      <div style="position:absolute;bottom:-20px;left:-53px;color:#ff4949;width:120px" v-if="!imageUrl">请选择封面图片</div>
+                      <div style="position:absolute;bottom:-20px;left:-53px;color:#ff4949;width:120px" v-if="!imageUrl&&countImg!=0">请选择封面图片</div>
+                      <div style="position:absolute;top: 27px;width: 203px;left: -109px;">推荐尺寸（宽）750X（高）564</div>
                 </div>
-                <el-form-item style='margin-top:40px;'>
-                    <el-button type="primary" @click="onSubmit('form')">确定</el-button>
-                    <el-button @click="dialogFormVisible = false">取消</el-button>
-                </el-form-item>
             </el-form>
+                    <div slot="footer" class="dialog-footer" style='text-align:center'>
+                        <el-button type="primary" @click="onSubmit('form')">确定</el-button>
+                        <el-button @click="dialogFormVisible = false">取消</el-button>
+                    </div>
         </el-dialog>
         <el-dialog :title="corReB" :visible.sync="dialogFormVisibleBirthday" :close-on-click-modal="no" top='7%' size='small' show-close style='z-index:100'
         id='activityDB' @close='resetDB'>
@@ -197,53 +204,67 @@
                      </el-select>
                 </el-form-item>
                 <el-form-item label="举办校区" prop='school_id'>
-                   <el-select v-model="formBirthday.school_id" clearable placeholder="选择校区" filterable @change='getTeacher' style="width:172px" >
+                   <el-select v-model="formBirthday.school_id"  placeholder="选择校区" filterable @change='getTeacher' style="width:172px" >
                         <el-option v-for="item in schoolList" :key="item.id" :label="item.title" :value="item.id">
                         </el-option>
                     </el-select>
                 </el-form-item>
                  <el-form-item label="负责老师" prop='teachid'>
-                    <el-select v-model="formBirthday.teachid" clearable placeholder="选择老师" filterable  style="width:172px">
+                    <el-select v-model="formBirthday.teachid"  placeholder="选择老师" filterable  style="width:172px">
                         <el-option v-for="item in teachersName" :key="item.aid" :label="item.uname" :value="item.aid">
                         </el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="报名截至时间" prop='sign_time' >
-                   <el-date-picker v-model="formBirthday.sign_time" format="yyyy-MM-dd HH:mm" type="datetime" :picker-options="pickerOptions0" placeholder="报名截至时间" style="width:172px">
+                   <el-date-picker v-model="formBirthday.sign_time" format="yyyy-MM-dd HH:mm" type="datetime" :clearable="no" popper-class='top55' :picker-options="pickerOptions0" placeholder="报名截至时间" style="width:172px">
                     </el-date-picker>
                 
                 </el-form-item>
-                <el-form-item prop='start_end_time' label='活动起止时间' >
-                    <el-date-picker v-model="formBirthday.start_end_time" format="yyyy-MM-dd HH:mm" type="datetimerange" placeholder="活动起止时间" style="width:280px" :picker-options="pickerOptions0">
-                    </el-date-picker>
+                <el-form-item prop='from_time' label='活动起止时间' >
+                        <el-date-picker
+                        v-model="formBirthday.start_end_time"
+                        type="date"
+                        placeholder="选择日期"
+                        :picker-options="pickerOptions0">
+                      </el-date-picker>
+                      <el-time-picker
+                      is-range
+                      v-model="formBirthday.time"
+                      popper-class='top55'
+                      format="HH:mm"
+                      placeholder="选择时间范围">
+                    </el-time-picker>
+                    <!-- <el-date-picker v-model="formBirthday.start_end_time" format="yyyy-MM-dd HH:mm" range-separator=" ~ " :clearable="no" type="datetimerange" placeholder="活动起止时间" style="width:285px" :picker-options="pickerOptions0">
+                    </el-date-picker> -->
                 </el-form-item>
                 <el-form-item label="活动地点" prop='address'>
                     <el-input v-model="formBirthday.address" placeholder='请输入活动地点' style="width:512px"></el-input>
                 </el-form-item>
-                 <el-form-item label="活动介绍" prop='content'>
-                        <quill-editor ref="myTextEditor" v-model="formBirthday.content" :options="editorOption"></quill-editor>
-                        <div style="position:absolute;bottom:-26px;left:0;color:#ff4949;width:120px" v-if="!formBirthday.content">请输入活动介绍</div>
+                 <el-form-item label="活动介绍" prop='content' required >
+                        <quill-editor ref="myTextEditor" v-model="formBirthday.content" :options="editorOption" @change='resetTE'></quill-editor>
+                        <!-- <div style="position:absolute;bottom:-26px;left:0;color:#ff4949;width:120px" v-if="!formBirthday.content">请输入活动介绍</div> -->
                 </el-form-item>
                 <div style="position:absolute;top:72px;right:58px">
-                        <div style="position:absolute;top:20px;right:-9px;width:100px"><span style="color:#ff4949">*</span> 封面图片</div>
+                        <div style="position:absolute;top:10px;right:-9px;width:100px"><span style="color:#ff4949">*</span> 封面图片</div>
                         <i class="el-icon-circle-close" style="position:absolute;top:43px;right:-33px;z-index:1" v-if="imageUrl1" @click="handleRemove1"></i>
                             <el-upload
                             class="avatar-uploader"
                             action="https://jsonplaceholder.typicode.com/posts/"
                             :show-file-list="false"
-                            :on-change="beforeAvatarUpload1"
+                            :on-change="beforeAvatarUpload1aa"
                             :auto-upload="false"
                             >
                             <img v-if="imageUrl1" :src="imageUrl1" class="avatar">
                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                           </el-upload>
-                          <div style="position:absolute;bottom:-20px;left:-53px;color:#ff4949;width:120px" v-if="!imageUrl1">请选择封面图片</div>
+                          <div style="position:absolute;bottom:-20px;left:-53px;color:#ff4949;width:120px" v-if="!imageUrl1&&countImg!=0">请选择封面图片</div>
+                          <div style="position:absolute;top: 27px;width: 203px;left: -109px;">推荐尺寸（宽）750X（高）564</div>
                     </div>
-                <el-form-item style='margin-top:40px;'>
-                    <el-button type="primary" @click="onBirthdaySubmit('formBirthday')">确定</el-button>
-                    <el-button @click="dialogFormVisibleBirthday = false">取消</el-button>
-                </el-form-item>
-            </el-form>
+                </el-form>
+                        <div slot="footer" class="dialog-footer" style='text-align:center'>
+                        <el-button type="primary" @click="onBirthdaySubmit('formBirthday')">确定</el-button>
+                        <el-button @click="dialogFormVisibleBirthday = false">取消</el-button>
+                </div>
         </el-dialog>
         <el-dialog title="活动模板详情" :visible.sync="dialogFormVisibleShow" :close-on-click-modal="no" custom-class='classDetailDialog' top='2%' size='small' @close='resetS'>
             <el-form id='actDeatilForm' label-width="102px" label-position='left' style='padding-left:10px;'>
@@ -263,14 +284,14 @@
                     <span>{{activity.age}}</span>
                 </el-form-item>
                 <el-form-item label="活动介绍:" prop='content'>
-                        <div  style='border:1px solid gainsboro' v-html="activity.content" class='actImg'></div>
+                        <div  style='border:1px solid gainsboro' v-html="activity.content" class='actImg ql-editor'></div>
                 </el-form-item>
                 <el-form-item label="创建时间:" prop='created'>
                     <span>{{activity.created}}</span>
                 </el-form-item>
                 <div style="position: absolute;top: 72px;right: 12px;width: 300px;text-align: center;" >
                         <div style="position: absolute;top: 20px;right: 99px;width: 100px;"> 封面图片</div>
-                        <img :src="activity.images" alt="" width='178' height="100"  style="margin-top:40px">
+                        <img :src="activity.images" alt="" width='178' height="134"  style="margin-top:40px">
                     </div>
             </el-form>
         </el-dialog>
@@ -299,14 +320,14 @@
                                 <span>{{activityB.address}}</span>
                             </el-form-item>
                     <el-form-item label="活动介绍:" prop='content'>
-                            <div  style='border:1px solid gainsboro' v-html="activityB.content" class='actImg'></div>
+                            <div  style='border:1px solid gainsboro' v-html="activityB.content" class='actImg ql-editor'></div>
                     </el-form-item>
                     <el-form-item label="创建时间:" prop='created'>
                         <span>{{activityB.created}}</span>
                     </el-form-item>
                     <div style="position: absolute;top: 72px;right: 12px;width: 300px;text-align: center;">
                             <div style="position: absolute;top: 20px;right: 99px;width: 100px;"> 封面图片</div>
-                            <img :src="activityB.images" alt="" width='178' height="100"  style="margin-top:40px">
+                            <img :src="activityB.images" alt="" width='178' height="134"  style="margin-top:40px">
                         </div>
                 </el-form>
             </el-dialog>
@@ -314,46 +335,51 @@
         >
         <el-form :model="formLaunch" :rules='ruleLaunch' ref="formLaunch" label-width="120px">
             <el-form-item label="举办校区" prop='school_id'>
-               <el-select v-model="formLaunch.school_id" clearable placeholder="选择校区" filterable @change='getTeacherL'>
+               <el-select v-model="formLaunch.school_id"  placeholder="选择校区" filterable @change='getTeacherL'>
                     <el-option v-for="item in schoolList" :key="item.id" :label="item.title" :value="item.id">
                     </el-option>
                 </el-select>
             </el-form-item>
              <el-form-item label="负责老师" prop='teachid'>
-                <el-select v-model="formLaunch.teachid" clearable placeholder="选择老师" filterable >
+                <el-select v-model="formLaunch.teachid"  placeholder="选择老师" filterable >
                     <el-option v-for="item in teachersNameL" :key="item.aid" :label="item.uname" :value="item.aid">
                     </el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="报名截至时间" prop='sign_time' >
-                <el-date-picker v-model="formLaunch.sign_time" format="yyyy-MM-dd HH:mm" type="datetime" placeholder="报名截至时间" :picker-options="pickerOptions0" style="width:217px">
+                <el-date-picker v-model="formLaunch.sign_time" format="yyyy-MM-dd HH:mm" :clearable="no" type="datetime" placeholder="报名截至时间" popper-class='top55'  :picker-options="pickerOptions0" style="width:217px">
                 </el-date-picker>     
             </el-form-item>
                     <el-form-item label="活动地点" prop='address'>
-                        <el-input v-model="formLaunch.address" placeholder='请输入活动地点' style="width:280px"></el-input>
+                        <el-input v-model="formLaunch.address" placeholder='请输入活动地点' style="width:285px"></el-input>
                     </el-form-item>
-            <el-form-item prop='start_end_time' label='活动起止时间' >
-                <el-date-picker v-model="formLaunch.start_end_time" format="yyyy-MM-dd HH:mm" type="datetimerange" placeholder="活动起止时间" style="width:280px" :picker-options="pickerOptions0">
-                </el-date-picker>
-            </el-form-item>
-            <el-form-item style='margin-top:40px;'>
-                <el-button type="primary" @click="onSubmitLaunch('formLaunch')">确定</el-button>
-                <el-button @click="dialogFormVisibleLaunch = false">取消</el-button>
+            <el-form-item prop='form_time' label='活动起止时间' >
+                <!-- <el-date-picker v-model="formLaunch.start_end_time" format="yyyy-MM-dd HH:mm" :clearable="no" range-separator=" ~ " type="datetimerange" placeholder="活动起止时间" style="width:285px" :picker-options="pickerOptions0">
+                </el-date-picker> -->
+                <el-date-picker v-model="formLaunch.start_end_time" format="yyyy-MM-dd HH:mm" :clearable="no" @change="checkForm" type="datetime" placeholder="活动开始时间" popper-class='top55'  :picker-options="pickerOptions0" style="width:217px">
+                </el-date-picker>  
+                <el-date-picker v-model="formLaunch.time" format="yyyy-MM-dd HH:mm" :clearable="no" @change="checkForm" type="datetime" placeholder="活动结束时间" popper-class='top55'  :picker-options="pickerOptions0" style="width:217px">
+                </el-date-picker>  
             </el-form-item>
         </el-form>
+                <div slot="footer" class="dialog-footer" style='text-align:center'>
+                    <el-button type="primary" @click="onSubmitLaunch('formLaunch')">确定</el-button>
+                    <el-button @click="dialogFormVisibleLaunch = false">取消</el-button>
+             </div>
     </el-dialog>
     </div>
 </template>
 <script>
     var user, token
-    import { quillEditor } from 'vue-quill-editor';
+    import 'quill/dist/quill.core.css'
+// import 'quill/dist/quill.snow.css'
+// import 'quill/dist/quill.bubble.css'
+    
     import {
-        getMyResoure,
         getActivityList,
         campusList,
         getTeacherList,
         // getAllCCList,
-        claim_customer,
         addTpl,
         addBirthdayParty,
         getTplInfo,
@@ -361,15 +387,25 @@
         getBirthdayInfo,
     } from '../../api/api';
     export default {
-        components: {
-            quillEditor
-        },
+        // components: {
+        //     quillEditor
+        // },
         data() {
+            var isNumber = (rule, value, callback) => {
+                var myreg1 = /^[0-9]*$/;
+                if(value==''){
+                    callback('请输入最大报名人数')
+                }else if (!myreg1.test(value)) {
+                    callback('请输入有效的报名人数')
+                }else {
+                    callback();
+                }
+            }
             var bigger = (rule, value, callback) => {
-                if (this.form.maxage<this.form.minage) {
-                    callback('最选择正确的年龄段')
+                if (this.form.minage-0>this.form.maxage-0) {
+                    callback('请正确选择年龄段')
                 } else {
-                    callback('')
+                    callback()
                 }
             }
             var nan = (rule, value, callback) => {
@@ -393,6 +429,45 @@
                     callback()
                 }
             }
+            var content1 = (rule, value, callback) => {
+                if (value[0]-0 == 0) {
+                    callback('请选择时间');
+                } else {
+                    callback()
+                }
+            }
+            var contentfrom_time = (rule, value, callback) => {
+                if (this.formBirthday.start_end_time&&this.formBirthday.time) {
+                    callback();
+                } else {
+                    callback('请选择活动起止时间')
+                }
+            }
+            var contentfrom_time1 = (rule, value, callback) => {
+                if (!this.formLaunch.start_end_time||!this.formLaunch.time) {
+                    callback('请选择活动起止时间');
+                } else if(this.formLaunch.time<this.formLaunch.start_end_time){
+                    callback('结束时间应大于开始时间');
+                }else {
+                    callback()
+                }
+            }
+            var contentB = (rule, value, callback) => {
+               
+                if (this.formBirthday.content == '') {
+                    callback('请输入活动介绍');
+                } else {
+                    callback()
+                }
+            }
+            var contentA = (rule, value, callback) => {
+               
+                if (this.form.content == '') {
+                    callback('请输入活动介绍');
+                } else {
+                    callback()
+                }
+            }
             return {
                 pickerOptions0: {
                     disabledDate(time) {
@@ -403,7 +478,9 @@
                 loadingB:false,
                 imageUrl: '',
                 imageUrl1: '',
+                countImg:0,
                 editorOption: {
+
                     // something config
                 },
                 teachersName:[],
@@ -416,6 +493,7 @@
                     teachid:'',
                     sign_time:'',
                     start_end_time:'',
+                    time:'',
                     address:'',
                     content:'',
                     images:''
@@ -446,9 +524,9 @@
                         validator: content,
                         trigger: 'change'
                     }],
-                    start_end_time: [{
+                    from_time: [{
                         required: true,
-                        validator: content,
+                        validator: contentfrom_time,
                         trigger: 'change'
                     }],
                     address: [{
@@ -461,11 +539,12 @@
                     //     validator: bigger,
                     //     trigger: 'change'
                     // }],
-                    // content: [{
-                    //     required: true,
-                    //     message: '请输入活动介绍',
-                    //     trigger: 'blur'
-                    // }],
+                    content: [{
+                        required: true,
+                        validator: contentB,
+                        // message: '请输入活动介绍',
+                        trigger: 'blur'
+                    }],
                 },
                 activity:{
                 },
@@ -486,31 +565,35 @@
                     }],
                     stock: [{
                         required: true,
-                        message: '请输入最大报名人数',
+                        // type:'number',
+                        validator: isNumber,
+                        // message: '请输入最大报名人数',
                         trigger: 'blur'
                     }],
                     // minage: [{
                     //     required: true,
-                    // validator: bigger,
+                    // validator: smallerer,
                     //     // message: '请选择最小年龄',
                     //     trigger: 'change'
                     // }],
-                    // maxage: [{
-                    //     required: true,
-                    //     validator: bigger,
-                    //     trigger: 'change'
-                    // }],
-                    // content: [{
-                    //     required: true,
-                    //     validator: content,
-                    //     trigger: 'blur'
-                    // }],
+                    rangeage: [{
+                        required: true,
+                        validator: bigger,
+                        trigger: 'change'
+                    }],
+                    content: [{
+                        required: true,
+                        validator: contentA,
+                        // message: '请输入活动介绍',
+                        trigger: 'blur'
+                    }],
                 },
                 formLaunch:{
                     school_id:'',
                     teachid:'',
                     sign_time:'',
                     start_end_time:'',
+                    time:'',
                     address:'',
                 },
                 ruleLaunch:{
@@ -529,9 +612,9 @@
                         validator: content,
                         trigger: 'change'
                     }],
-                    start_end_time: [{
+                    form_time: [{
                         required: true,
-                        validator: content,
+                        validator: contentfrom_time1,
                         trigger: 'change'
                     }],
                     address: [{
@@ -558,7 +641,7 @@
                 no: false,
                 code: '',
                 total: 0,
-                number: 0,
+                number: '0',
                 publicData: [],
                 // optionsCC: [],
                 // valueT: '', //全部CC下拉
@@ -571,6 +654,22 @@
             }
         },
         methods: {
+            checkForm(){
+                this.$refs['formLaunch'].validateField('form_time');       
+            },
+            checkMin(){
+                    this.$refs['form'].validateField('rangeage');                               
+            },
+            resetTE(){
+                if(this.formBirthday.content){
+                    this.$refs['formBirthday'].validateField('content')
+                }
+            },
+            resetTE1(){
+                if(this.form.content){
+                    this.$refs['form'].validateField('content')
+                }
+            },
             resetS(){
                 this.activity={}
             },
@@ -589,7 +688,8 @@
 
                 }
                 this.imageUrl = ''   
-                this.in=''                             
+                this.in='';
+                this.countImg = 0;                           
                 this.$refs['form'].resetFields();
             },
             resetDB(){
@@ -607,6 +707,7 @@
                 this.teachersName = []
                 this.imageUrl1 = ''
                 this.inB=''
+                this.countImg = 0;
                 this.$refs['formBirthday'].resetFields();
             },
             resetDL(){
@@ -627,7 +728,16 @@
             handleRemove(){
                 this.imageUrl = ''
             },
-            beforeAvatarUpload(file, fileList){
+            beforeAvatarUploadaa(file, fileList){
+                const isJPG =  file.raw.type === 'image/jpeg' || file.raw.type === 'image/png';
+                const isLt2M = file.size / 1024 / 1024 < 5;
+
+                if (!isJPG) {
+                    this.$message.error('上传图片格式为.jpg或.jpeg或.png!');
+                }else if (!isLt2M) {
+                    this.$message.error('上传图片大小不能超过5MB!');
+                }else{
+
                 let that = this;                
                 let a = new FileReader();
                a.onload = function ( event ) { 
@@ -635,24 +745,35 @@
                     that.imageUrl = txt;
                     };
                 a.readAsDataURL(file.raw);
+                }
                 
                 // this.imageUrl =URL.createObjectURL(file.raw);
                 // console.log(d)
             },
-            beforeAvatarUpload1(file, fileList){
+            beforeAvatarUpload1aa(file, fileList){//生日会
+                const isJPG =  file.raw.type === 'image/jpeg' || file.raw.type === 'image/png';
+                const isLt2M = file.size / 1024 / 1024 < 5;
+                if (!isJPG) {
+                    this.$message.error('上传图片格式为.jpg或.jpeg或.png!');
+                }else if (!isLt2M) {
+                    this.$message.error('上传图片大小不能超过5MB!');
+                }else{
+
                 let that = this;
                 let a = new FileReader();
-               a.onload = function ( event ) { 
+               a.onload = function ( event ) {
                     var txt = event.target.result;
                     that.imageUrl1 = txt;
+                    // console.log(txt)
                     };
                 a.readAsDataURL(file.raw);
+                }
                 
                 // this.imageUrl1 =URL.createObjectURL(file.raw);
                 // console.log(d)
             },
-            handleAvatarSuccess(){},
             onSubmit(form){
+                this.countImg = 1;
                 this.$refs[form].validate((valid) => {
                     if (valid&&this.imageUrl&&this.form.content) {
                         this.loading2 = true;
@@ -698,22 +819,29 @@
                 
             },
             onBirthdaySubmit(form){
+                this.countImg = 1;
+                // let para = {...this.formBirthday}
+                // para.start_end_time = new Date(para.start_end_time).toLocaleDateString()+','+new Date(para.time[0]).toLocaleTimeString('chinese', {
+                //     hour12: false
+                // })+','+new Date(para.time[1]).toLocaleTimeString('chinese', {
+                //     hour12: false
+                // });
+                // console.log(para)
                 this.$refs[form].validate((valid) => {
                     
                     if (valid&&this.imageUrl1) {
                         this.loadingB = true;
                         let para = {...this.formBirthday}
-                para.sign_time = new Date(para.sign_time).toLocaleString('chinese', {
-                    hour12: false
-                });
-                para.start_end_time = new Date(para.start_end_time[0]).toLocaleString('chinese', {
-                    hour12: false
-                }) +','+new Date(para.start_end_time[1]).toLocaleString('chinese', {
-                    hour12: false
-                });
+                para.sign_time = new Date(para.sign_time)
+                para.start_end_time = new Date(para.start_end_time).toLocaleDateString()+','+new Date(para.time[0]).getHours()+':'+new Date(para.time[0]).getMinutes()+','+new Date(para.time[1]).getHours()+':'+new Date(para.time[1]).getMinutes()
+                // new Date(para.start_end_time[0]).toLocaleString('chinese', {
+                //     hour12: false
+                // }) +','+new Date(para.start_end_time[1]).toLocaleString('chinese', {
+                //     hour12: false
+                // });
                 para.age = para.age.join(',')
                 para.images = this.imageUrl1
-                console.log(para)  
+                // console.log(para)  
                 if(this.inB!==''){
                     para.id = this.inB;
                     addBirthdayParty(para,token).then(res=>{
@@ -722,7 +850,8 @@
                     this.loadingB = false;                        
                         this.$message.success('修改成功')
                         this.dialogFormVisibleBirthday = false;
-                        this.fetchData();
+                        this.$router.push('/api/v1/Travel/activityList');
+                        // this.fetchData();
                     }else{
                         this.$message.error(res.data);
                     this.loadingB = false;                        
@@ -737,7 +866,8 @@
                     this.loadingB = false;                                                
                         this.$message.success('发布成功')
                         this.dialogFormVisibleBirthday = false;
-                        this.fetchData();
+                        // this.fetchData();
+                        this.$router.push('/api/v1/Travel/activityList');
                     }else{
                         this.$message.error(res.data);
                     this.loadingB = false;                        
@@ -759,20 +889,19 @@
                     if (valid) {
                         let para = {...this.formLaunch}
                         para.tpl_id = this.temId;
-                para.sign_time = new Date(para.sign_time).toLocaleString('chinese', {
-                    hour12: false
-                });
-                para.start_end_time = new Date(para.start_end_time[0]).toLocaleString('chinese', {
-                    hour12: false
-                }) +','+new Date(para.start_end_time[1]).toLocaleString('chinese', {
-                    hour12: false
-                });
-                console.log(para)                
+                para.sign_time = new Date(para.sign_time)
+                let one = new Date(para.start_end_time);
+                let two =new Date(para.time);
+                let d1 = one.toLocaleDateString()+' '+one.getHours()+':'+one.getMinutes();
+                let d2 = two.toLocaleDateString()+' '+two.getHours()+':'+two.getMinutes();
+                para.start_end_time = d1 +','+d2;
+                // console.log(para)                
                 addActivity(para,token).then(res=>{
                     // console.log(res)
                     if(res.code==0){
                         this.$message.success('发起成功')
-                        this.dialogFormVisibleLaunch = false
+                        this.dialogFormVisibleLaunch = false;
+                        this.$router.push('/api/v1/Travel/activityList');
                     }else{
                         this.$message.error(res.data)
                     }
@@ -809,16 +938,14 @@
                 }
                 if(type=='生日会'){
                     getTplInfo(token,para).then(res=>{
-                    console.log(res)
+                    // console.log(res)
                     this.activityB = res.data
-                    // this.activityB.images = 'http://pandatest.dfth.com/uploads/adminHead/860.jpeg'
                         this.dialogFormVisibleShowB = true;
                 })
                 }else{
                     getTplInfo(token,para).then(res=>{
-                        console.log(res)
+                        // console.log(res)
                         this.activity = res.data
-                        // this.activity.images = 'http://pandatest.dfth.com/uploads/adminHead/860.jpeg'
                             this.dialogFormVisibleShow = true;
                     })
                 }
@@ -830,12 +957,16 @@
                 }
                 getTplInfo(token,para).then(res=>{
                     // console.log(res)
-                    this.form = res.data
-                    let a = res.data.age.split('-');
-                    this.form.type = '100'
-                    this.form.minage = a[0]
-                    this.form.maxage = a[1]
-                    this.imageUrl= this.form.images  //'http://pandatest.dfth.com/uploads/adminHead/860.jpeg'
+                let data = res.data;
+                    let a = data.age.split('-');
+                this.form.names=data.names;
+                    this.form.type = '100';
+                this.form.stock=data.stock-0;
+                this.form.minage = a[0]
+                    this.form.maxage = a[1];
+                this.form.price=data.price;
+                this.form.content=data.content;
+                    this.imageUrl= data.images 
                     this.dialogFormVisible = true;
                 })
             },
@@ -852,21 +983,13 @@
                     this.formBirthday.teachid =this.formBirthday.teachid-0
                     this.formBirthday.start_end_time =[this.formBirthday.start_time,this.formBirthday.end_time]
                     
-                    this.imageUrl1= res.data.images//'http://pandatest.dfth.com/uploads/adminHead/860.jpeg'//res.data.images
+                    this.imageUrl1= res.data.images
                 this.dialogFormVisibleBirthday = true;
                 })
             },
             createActivity() {
                 this.in = '';
                 this.dialogFormVisible = true;
-            },
-            formatter(row, column) {
-                let reg = /(\d{4})\d{4}(\d{3})/;
-                if (reg.test(row.mobile)) {
-                    return row.mobile.replace(reg, '$1****$2');
-                } else {
-                    return row.mobile
-                }
             },
             handleCurrentChange: function (val) { //换页
                 this.currentPage = val;
@@ -959,13 +1082,14 @@
         margin-top: 10px;
     }
 
-    .studentReturnnoEff {
+    .activityTemH1 {
         float: left;
         margin-right: 5px;
         padding-left: 10px;
+        margin-top:5px;
     }
 
-    .noEff {
+    .activityTemH {
         width: 100%;
         position: relative;
         height: 46px;
@@ -974,11 +1098,6 @@
         padding-top: 10px;
         margin-bottom: 5px;
         border-radius: 5px;
-    }
-
-    .publicDialog .el-dialog__body {
-        text-align: center;
-        /*color:#ec6161;*/
     }
 
     .activityTem .el-dialog .el-dialog__header {
@@ -1023,6 +1142,13 @@
       margin-bottom: 5px;
   }
   .actImg img{
-      width: 100%
+      width: auto;
+      max-width: 100%;
   }
+  .top55  .el-time-panel__content::after,.top55 .el-time-panel__content::before{
+        top:55%
+    }
+    .ql-editor{
+        color:black;
+    }
 </style>

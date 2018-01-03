@@ -7,12 +7,14 @@
             </el-breadcrumb>
         </div> -->
         <div class='accouMyStudents'>
-            <h2 class="myMSReturn">
-                学员({{number}}人)
-            </h2>
+            <h3 class="myMSReturn">
+                学员
+                <span v-if="number==='0'" style="font-size:14px;color: #bdb8b8;">加载中...</span>
+               <span v-else>({{number}}人)</span>
+            </h3>
             <div class="MStitle">
                 <div class='studentReturnThreeNewMS' v-if="code.includes('_c')">
-                    <el-select v-model="valueR" clearable placeholder="选择校区" @change="updateListCC">
+                    <el-select v-model="valueR"  placeholder="选择校区" @change="updateListCC">
                         <el-option v-for="item in optionR" :key="item.id" :label="item.title" :value="item.id">
                         </el-option>
                     </el-select>
@@ -24,9 +26,23 @@
                         </el-option>
                     </el-select>
                 </div>
-                <div class='mystudentSelect'>
-                    <el-date-picker v-model="value" type="month" placeholder="生日月份" @change="updateList">
-                    </el-date-picker>
+                <div class='studentReturnThreeNewMS'>
+                    <!-- <el-date-picker v-model="value" type="month" placeholder="生日月份" @change="updateList">
+                    </el-date-picker> -->
+                    <el-select v-model="value" clearable placeholder="生日月份" @change="updateList">
+                            <el-option label="1月" value="1"></el-option>
+                            <el-option label="2月" value="2"></el-option>
+                            <el-option label="3月" value="3"></el-option>
+                            <el-option label="4月" value="4"></el-option>
+                            <el-option label="5月" value="5"></el-option>
+                            <el-option label="6月" value="6"></el-option>
+                            <el-option label="7月" value="7"></el-option>
+                            <el-option label="8月" value="8"></el-option>
+                            <el-option label="9月" value="9"></el-option>
+                            <el-option label="10月" value="10"></el-option>
+                            <el-option label="11月" value="11"></el-option>
+                            <el-option label="12月" value="12"></el-option>
+                        </el-select>
                 </div>
                 <div class='studentReturnThreeNewMS'>
                     <el-select v-model="value1" clearable filterable placeholder="课程名称" @change="updateList">
@@ -75,7 +91,7 @@
             <div v-for="item in customerData" class='customerDataDiv' v-if='customerData.length!=0'>
                 <div class='customerDiv'>
                     <div @click='gotoDetail(item)' class='myStudentsSpan'>
-                        <img :src="item.img" width='35' height='35' alt="" class="MSradius">
+                        <img :src="item.head_img" width='35' height='35' alt="" class="MSradius">
                         <div class="MSname">{{item.child_name}}</div>
                     </div>
                     <div class="MSgrey">出生日期: {{item.birthday}}</div>
@@ -188,7 +204,7 @@
                 total: 0,
                 no: false,
                 customerData: [],
-                number: 0,
+                number: '0',
                 optionsCC: [], //表单上方的select
                 valueCC: '', //对应select的值
                 value: '',
@@ -211,6 +227,8 @@
                     course_curr_num: this.value3, //剩余课时
                     scheduling_status: this.value5, //排班状态
                     status: this.value6, //使用状态
+                    optionsCC : this.optionsCC,
+                    optionR : this.optionR
                 }
                 this.setmyStudentS(d)
                 this.$router.push('/studentDetail/' + row.uid);
@@ -221,28 +239,34 @@
             },
             updateListCC() {
                 this.currentPage = 1;
-                this.valueCC = '';
-                this.optionsCC = [{
-                    aid: 0,
-                    uname: '全部CC'
-                }];
+                // this.valueCC = '';
                 if (this.valueR != '') {
                     let para = {
-                        school_id: this.valueR
-                    }
-                    getAllCCList(token, para).then((res) => {
-                        this.optionsCC = res.data;
-                        this.optionsCC.unshift({
-                            aid: '0',
-                            uname: '全部CC'
-                        })
-                    }).then(()=>{
-                        this.valueCC = '0'
-                    })
-                } else {
-                    this.valueCC = '0';
+                    school_id: this.valueR
                 }
-                this.fetchData();
+                getAllCCList(token, para).then((res) => {
+                    this.optionsCC = res.data;
+                    this.optionsCC.unshift({
+                        aid: 0,
+                        uname: '全部CC'
+                    })
+                }).then(()=>{
+                    if( this.valueCC===0){
+                    this.updateList()
+                    }else{
+                        this.valueCC=0
+                    }
+                    })
+                }else{
+                    if(this.valueCC=== 0){//cc选择
+                    this.updateList()
+                    }
+                    this.optionsCC=[{
+                        aid: 0,
+                        uname: '全部CC'
+                    }]
+                    this.valueCC= 0;
+                }
             },
             ...mapActions([
                 'setmyStudentS'
@@ -257,16 +281,8 @@
                     this.value3 = this.getmyStudentS.course_curr_num;
                     this.value5 = this.getmyStudentS.scheduling_status;
                     this.value6 = this.getmyStudentS.status;
-                    let para = {
-                        school_id: this.valueR
-                    }
-                    getAllCCList(token, para).then((res) => {
-                        this.optionsCC = res.data;
-                        this.optionsCC.unshift({
-                            aid: '0',
-                            uname: '全部CC'
-                        })
-                    })
+                    this.optionsCC = this.getmyStudentS.optionsCC;
+                    this.optionR = this.getmyStudentS.optionR
                 }
 
                 let para = {
@@ -292,7 +308,7 @@
                     this.loading2 = false;
                     this.setmyStudentS({})
                 }).catch(() => {
-                    this.$message.error('该用户未授权');
+                    // this.$message.error('该用户未授权');
                     this.loading2 = false
                 })
             },
@@ -368,38 +384,44 @@
         },
         created() {
             this.code = JSON.parse(user).job ? JSON.parse(user).job.code : '';
-            if (this.code.includes('_c')) {
 
-                let cam = {
-                    simple: 1
-                }
-                campusList(cam, token).then((res) => { //获取校区
-                    this.optionR = res.data
-                })
-            }
-            if ((this.code == 'cc_m' || this.code.includes('_c')) && Object.keys(this.getmyStudentS).length == 0) {
-                if (this.code.includes('cc_c') || this.code.includes('teach_c')) {
-                    this.optionsCC.unshift({
-                        aid: '0',
-                        uname: '全部CC'
+            if (Object.keys(this.getmyStudentS).length == 0) {
+                if (this.code.includes('cc_c') || this.code.includes('teach_c')) {//经理以上
+                    let cam = {
+                        simple: 1
+                    }
+                    campusList(cam, token).then((res) => {//获取校区
+                        this.optionR = res.data
+                    this.optionR.unshift({
+                            id:0,
+                            title:'全部校区'
+                        })
+                    }).then(()=>{
+                        this.valueR=0;
+
                     })
-                    this.valueCC = '0'
-                } else {
+                    // this.fetchData();
+                }else if(this.code=='cc_m'){
                     getAllCCList(token).then((res) => {
                         this.optionsCC = res.data;
                         this.optionsCC.unshift({
-                            aid: '0',
+                            aid: 0,
                             uname: '全部CC'
                         })
-                        this.valueCC = '0'
+                    }).then(()=>{
+                        this.valueCC = JSON.parse(user).aid
+
                     })
+                }else{
+                    this.fetchData();
                 }
+            }else{
+                this.fetchData();
             }
-            this.fetchData();
             let si = {
                 simple: 1,
             }
-            getClassLibrary(token, si).then((res) => { //获取课程名称
+            getClassLibrary(token, si).then((res) => {//获取课程名称
                 this.classkind = res.data
             })
 
@@ -461,7 +483,7 @@
 
     .myMSReturn {
         /*display: block;*/
-        /*margin-top: 20px;*/
+        margin-top: 5px;
         margin-bottom: 15px;
         padding-left: 10px;
         width: 350px;

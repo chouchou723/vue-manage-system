@@ -6,9 +6,9 @@
             </el-breadcrumb>
         </div> -->
         <div class='systemTitle'>
-            <h2 style='background:white;padding:9px 17px'>
+            <h3 style='background:white;padding:9px 17px'>
                 消息通知(未读{{number}}条)
-            </h2>
+            </h3>
         </div>
         <div class="systemwrapper">
             <div style="position:relative;width:450px;height:900px;float:left;margin-top:10px;margin-left:25px;border:1px solid gainboro;border-radius:5px;box-shadow:0px -5px 10px gainsboro"
@@ -40,7 +40,7 @@
                 <div style="margin-left:5px" v-if='content.type=="代课申请失败"'>
                        您的代课申请请求未通过
                     </div>
-                    <div style="margin-left:5px;" v-if='content.type=="代课申请成功"'>
+                    <div style="margin-left:5px;" v-if='content.type=="代课申请通过"'>
                         您的代课申请请求已通过
                      </div>
                 </div>
@@ -56,9 +56,11 @@
                     <div style="height:30px;margin-left:20px;padding-bottom:10px;border-bottom:1px solid gainsboro">
                         <div style="float:left;font-weight:600;font-size:20px;margin-top:5px">{{detailData.type}}通知</div>
                         <div style="float:right;margin-right:20px;margin-top:10px">
-                            {{new Date(detailData.created).toLocaleDateString() == new Date().toLocaleDateString().substring(0,9)?detailData.created.substring(11):
+                               <span :style='detailData.status=="已同意"?"color:rgb(24, 195, 24)":"color:red"'>{{detailData.status}}</span> 
+                            <!-- {{new Date(detailData.created).toLocaleDateString() == new Date().toLocaleDateString().substring(0,9)?detailData.created.substring(11):
                                 new Date(detailData.created.substring(0,10)).valueOf() - new Date().toLocaleDateString().valueOf() ==
-                                -86400000? '昨天'+detailData.created.substring(11) :detailData.created.substring(5)}}</div>
+                                -86400000? '昨天'+detailData.created.substring(11) :detailData.created.substring(5)}} -->
+                            </div>
                     </div>
                     <div style="margin-left:5px">
                         <div v-if='detailData.type=="转校"' style="width:92%;margin:0 auto">
@@ -80,9 +82,9 @@
                         </div>
                         <div v-if='detailData.type=="转校失败"' style="width:92%;margin:0 auto">
                             <el-form label-width="120px">
-                                <el-form-item prop='time' label='学生:'>
+                                <el-form-item prop='time' >
                                    
-                                    <div> {{ detailData.content.child}}的转校申请, {{ detailData.content.msg}}</div>
+                                    <div> 学生:{{ detailData.content.child}}的转校申请, {{ detailData.content.msg}}</div>
                                 </el-form-item>
                             </el-form>
                         </div>
@@ -96,7 +98,7 @@
                                 </el-form-item>
                             </el-form> -->
                         </div>
-                        <div v-if='detailData.type=="代课申请成功"' style="width:92%;margin:0 auto">
+                        <div v-if='detailData.type=="代课申请通过"' style="width:92%;margin:0 auto">
                             <!-- <div style='margin-top:10px;'>课程:{{detailData.content.topic}}</div>                                 -->
                         <div style='margin-top:10px;'>您的代课申请(<span style='font-weight:bold'>{{detailData.content.topic}}</span>)已通过。</div>
                         <!-- <el-form label-width="120px">
@@ -165,7 +167,7 @@
                 changegrey: false,
                 display: false,
                 input2: '',
-                number: 0,
+                number: '0',
                 total: 0,
                 currentPage: 1,
                 pagesize: 10,
@@ -262,7 +264,7 @@
                     this.display = true;
                     data.read = '1';
                 }).catch(()=>{
-                    this.$message.error('该用户未授权')
+                    // this.$message.error('该用户未授权')
                 })
             },
             chooseContent(data, index) {
@@ -319,6 +321,7 @@
             token = JSON.parse(user).token;
         },
         created() {
+            document.body.scrollTop = 0
             let para = {
                 page: this.currentPage
             }

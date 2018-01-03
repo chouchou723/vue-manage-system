@@ -8,7 +8,7 @@
                搜索到的相关的结果有{{number}}条
       </h2>
         </div>
-        <div id="tableSR">
+        <div id="tableSResult">
             <el-table :data="searchData" border style="width: 100%" :show-header="no" >
                 <el-table-column prop="symbol" label="标记" width='80'>
                     <template scope="scope">
@@ -53,11 +53,11 @@
                                 </template>
                             </el-table-column>
             </el-table>
-            <!-- <div class="block">
-                <span class="demonstration"></span>
+       <div class="block">
+                  <!-- <span class="demonstration"></span> -->
                 <el-pagination layout="prev, pager, next" :total="total" :current-page="currentPage" :page-size="pagesize" @current-change="handleCurrentChange">
                 </el-pagination>
-            </div> -->
+            </div> 
         </div>
     </div>
 </template>
@@ -79,7 +79,7 @@ export default {
             pagesize: 15, //默认每页
             total: 0, //总页数
             searchData: [],
-            number: 0,
+            number: '0',
         }
     },
     methods: {
@@ -107,10 +107,10 @@ export default {
                     case '学员回访':
                         this.$router.push('/returnDetail' + '/' + row.id);
                         break;
-                    case '我的学员':
+                    case '学员':
                         this.$router.push('/studentDetail' + '/' + row.id);
                         break;
-                    case '我的客户':
+                    case '资源':
                     this.$router.push({ name: 'customerDetailList', params: { uid: row.id,status: row.status}});
                         // this.$router.push('/studentDetail' + '/' + row.id);
                         break;
@@ -143,7 +143,7 @@ export default {
             this.fullscreenLoading = false
         }).catch(() => {
             this.fullscreenLoading = false
-            this.$message.error('该用户未授权')
+            // this.$message.error('该用户未授权')
         })
     },
     watch: {
@@ -159,7 +159,7 @@ export default {
                 this.fullscreenLoading = false
             }).catch(() => {
                 this.fullscreenLoading = false
-                this.$message.error('该用户未授权')
+                // this.$message.error('该用户未授权')
             })
 
         }
@@ -168,18 +168,18 @@ export default {
 
 </script>
 <style>
-#tableSR .el-table td,
-#tableSR .el-table th:not(.gutter) {
+#tableSResult .el-table td,
+#tableSResult .el-table th:not(.gutter) {
     padding: 1px;
 }
 
-#tableSR .el-table--border td,
-.el-table--border th {
+#tableSResult .el-table--border td,
+#tableSResult .el-table--border th {
     border-right: none;
 }
 
-#tableSR .el-table th>div,
-#tableSR .el-table .cell {
+#tableSResult .el-table th>div,
+#tableSResult .el-table .cell {
     padding-left: 0;
     padding-right: 0;
 }

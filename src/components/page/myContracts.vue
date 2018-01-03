@@ -7,12 +7,14 @@
             </el-breadcrumb>
         </div> -->
         <div class='accouMyresoureCon'>
-            <h2 class="mydataReturn">
-                合同({{number}}份)
-            </h2>
+            <h3 class="mydataReturn">
+                合同
+                <span v-if="number==='0'" style="font-size:14px;color: #bdb8b8;">加载中...</span>
+               <span v-else>({{number}}个)</span>
+            </h3>
             <div class="MCtitle">
                 <div class='studentReturnThreeNewCon' v-if="code.includes('_c')">
-                    <el-select v-model="valueR" clearable placeholder="选择校区" @change="updateListCC">
+                    <el-select v-model="valueR"  placeholder="选择校区" @change="updateListCC">
                         <el-option v-for="item in optionR" :key="item.id" :label="item.title" :value="item.id">
                         </el-option>
                     </el-select>
@@ -42,7 +44,7 @@
                     </el-select>
                 </div>
                 <div class='mycontractSelect'>
-                    <el-date-picker v-model="value3" type="daterange" placeholder="签约时间" @change="updateList">
+                    <el-date-picker v-model="value3" type="daterange" placeholder="签约时间" @change="updateList" :picker-options="pickerOptions0">
                     </el-date-picker>
 
                 </div>
@@ -76,7 +78,7 @@
                             <span  class="MCname" :style="item.order_status=='待审核'?'color:blue;':item.order_status=='审核通过'?'color:#18c318':item.order_status=='被退回'?'color:#e4a821':'color:red'">
                            ({{item.order_status}}) 
                         </span>
-                        <span style="padding-left:5px;"  class='myContractsSpan' @click='gotoSDetail(item)'>学员:{{item.users.child_name}}</span>
+                        <span style="padding-left:5px;"  class='myContractsSpan' @click='gotoSDetail(item)'>学员:{{item.users?item.users.child_name:''}}</span>
                         </div>
                     </div>
                     <div class="MC5">
@@ -98,9 +100,9 @@
                                 </div>
                             </template>
                         </el-table-column>
-                        <el-table-column prop="course_curr_num" label="课时" width='40'>
+                        <el-table-column prop="course_num" label="课时" width='40'>
                             <template scope="scope">
-                                <div v-for='(item,index) in scope.row.course_curr_num' :class="index != (scope.row.title.length-1)?'MC12':'MC13'">{{item}}</div>
+                                <div v-for='(item,index) in scope.row.course_num' :class="index != (scope.row.title.length-1)?'MC12':'MC13'">{{item}}</div>
                             </template>
                         </el-table-column>
                         <el-table-column prop="people_number" label="签单数" width='45'>
@@ -216,6 +218,11 @@
     export default {
         data() {
             return {
+                pickerOptions0: {
+                        disabledDate(time) {
+                            return time.getTime() > Date.now();
+                        }
+                    },
                 valueR: '',
                 optionR: [],
                 remainTime: '',
@@ -225,7 +232,7 @@
                 currentPage: 1, //页数
                 pagesize: 15, //默认每页
                 total: 0,
-                number: 0,
+                number: '0',
                 optionsCC: [], //表单上方的select
                 valueCC: '', //对应select的值
                 value1: '',
@@ -254,6 +261,8 @@
                     order_type: this.value2, //合同类型
                     start_created: this.value3,
                     panda_gohome: this.value4,
+                    optionR:this.optionR,
+                    optionsCC:this.optionsCC
                 }
                 this.setmyContractS(d)
                 this.$router.push('/contractDetail/' + row.order_id + '/' + row.uid);
@@ -265,26 +274,34 @@
             },
             updateListCC() {
                 this.currentPage = 1;
-                this.valueCC = '';
-                this.optionsCC = [{aid:0,uname:'全部CC'}];
-                if(this.valueR!=''){
-
+                // this.valueCC = '';
+                if (this.valueR != '') {
                     let para = {
-                        school_id: this.valueR
+                    school_id: this.valueR
+                }
+                getAllCCList(token, para).then((res) => {
+                    this.optionsCC = res.data;
+                    this.optionsCC.unshift({
+                        aid: 0,
+                        uname: '全部CC'
+                    })
+                }).then(()=>{
+                    if( this.valueCC===0){
+                    this.updateList()
+                    }else{
+                        this.valueCC=0
                     }
-                    getAllCCList(token, para).then((res) => {
-                        this.optionsCC = res.data;
-                        this.optionsCC.unshift({
-                            aid: '0',
-                            uname: '全部CC'
-                        })
-                    }).then(()=>{
-                        this.valueCC = '0'
                     })
                 }else{
-                    this.valueCC ='0';
+                    if(this.valueCC=== 0){//cc选择
+                    this.updateList()
+                    }
+                    this.optionsCC=[{
+                        aid: 0,
+                        uname: '全部CC'
+                    }]
+                    this.valueCC= 0;
                 }
-                this.fetchData();
             },
             fetchData() {
                 if(Object.keys(this.getmyContractS).length!=0){
@@ -295,16 +312,18 @@
                     this.value2 =  this.getmyContractS.order_type;
                     this.value3 = this.getmyContractS.start_created;
                     this.value4 =  this.getmyContractS.panda_gohome;
-                    let para = {
-                        school_id: this.valueR
-                    }
-                    getAllCCList(token, para).then((res) => {
-                        this.optionsCC = res.data;
-                        this.optionsCC.unshift({
-                            aid: '0',
-                            uname: '全部CC'
-                        })
-                    })
+                    this.optionR=this.getmyContractS.optionR;
+                    this.optionsCC=this.getmyContractS.optionsCC;
+                    // let para = {
+                    //     school_id: this.valueR
+                    // }
+                    // getAllCCList(token, para).then((res) => {
+                    //     this.optionsCC = res.data;
+                    //     this.optionsCC.unshift({
+                    //         aid: 0,
+                    //         uname: '全部CC'
+                    //     })
+                    // })
                 }
                 let para = {
                     school_id: this.valueR,
@@ -331,7 +350,7 @@
                     this.loading2 = false;
                     this.setmyContractS({})
                 }).catch(() => {
-                    this.$message.error('该用户未授权');
+                    // this.$message.error('该用户未授权');
                     this.loading2 = false
                 })
             },
@@ -347,32 +366,37 @@
         },
         created() {
             this.code = JSON.parse(user).job ? JSON.parse(user).job.code : '';
-            if ((this.code == 'cc_m' || this.code.includes('_c'))&&Object.keys(this.getmyContractS).length==0) {
-                if(this.code.includes('cc_c')||this.code.includes('teach_c')){//销售经理 和 教务经理 默认进来全部CC
-                    this.optionsCC.unshift({
-                        aid: '0',
-                        uname: '全部CC'
+            if (Object.keys(this.getmyContractS).length==0) {
+                if(this.code.includes('cc_c')){//销售经理 和 教务经理 默认进来全部CC
+                    let cam = {
+                        simple: 1
+                    }
+                    campusList(cam, token).then((res) => { //获取校区
+                        this.optionR = res.data
+                    this.optionR.unshift({
+                            id:0,
+                            title:'全部校区'
+                        })
+                    }).then(()=>{
+                        this.valueR=0;
+
                     })
-                    this.valueCC='0'
-                }else{
+                }else if(this.code=='cc_m'){
                     getAllCCList(token).then((res) => {
                         this.optionsCC = res.data;
                         this.optionsCC.unshift({
-                            aid: '0',
+                            aid: 0,
                             uname: '全部CC'
                         })
-                        this.valueCC='0'
+                    }).then(()=>{
+                        this.valueCC =JSON.parse(user).aid
+
                     })
+                }else{
+                this.fetchData();                    
                 }
-            }
-            this.fetchData();
-            if (this.code.includes('_c')) {
-                let cam = {
-                    simple: 1
-                }
-                campusList(cam, token).then((res) => { //获取校区
-                    this.optionR = res.data
-                })
+            }else{
+                this.fetchData();
             }
             
             
@@ -450,7 +474,7 @@
 
     .mydataReturn {
         /*display: block;*/
-        /*margin-top: 20px;*/
+        margin-top: 5px;
         margin-bottom: 15px;
         padding-left: 10px;
         width: 350px;

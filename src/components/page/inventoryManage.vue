@@ -1,77 +1,91 @@
 <template>
-        <div class='classLibrary'>
-            <div class="crumbs">
+        <div class='invManage'>
+            <!-- <div class="crumbs">
                 <el-breadcrumb separator="/">
                     <el-breadcrumb-item><i class="el-icon-my-yoncheguanli"></i> 熊猫到家</el-breadcrumb-item>
                     <el-breadcrumb-item class='ss'>库存管理</el-breadcrumb-item>
                 </el-breadcrumb>
-            </div>
-            <div class='accou'>
-                <div class="h1">
-                    <h3 class='accountH2'>
+            </div> -->
+            <div class='invManageA'>
+                <div class="invManageH1">
+                    <h3 class='invManageH2'>
                    库存管理
                     </h3>
-                    <div class='oneSelect'>
+                    <!-- <div class='invManageS'>
                             <el-date-picker v-model="value1" type="year" placeholder="年份选择" @change="updateList" >
                                 </el-date-picker>
                     </div>
-                    <div class='oneSelect'>
-                            <el-date-picker v-model="value2" type="month" placeholder="月份选择" @change="updateList" >
-                                </el-date-picker>
-                    </div>
-                    <el-button type="primary" size="mid" class='buttonAdd' @click="createCh('aform')">导出表格</el-button>
+                    <div class='invManageS'> -->
+                            <!-- <el-date-picker v-model="value2" type="month" placeholder="月份选择" @change="updateList" >
+                                </el-date-picker> -->
+                                <!-- <el-select v-model="value2" clearable placeholder="选择月份">
+                                        <el-option label="1月" value="01"></el-option>
+                                        <el-option label="2月" value="02"></el-option>
+                                        <el-option label="3月" value="03"></el-option>
+                                        <el-option label="4月" value="04"></el-option>
+                                        <el-option label="5月" value="05"></el-option>
+                                        <el-option label="6月" value="06"></el-option>
+                                        <el-option label="7月" value="07"></el-option>
+                                        <el-option label="8月" value="08"></el-option>
+                                        <el-option label="9月" value="09"></el-option>
+                                        <el-option label="10月" value="10"></el-option>
+                                        <el-option label="11月" value="11"></el-option>
+                                        <el-option label="12月" value="12"></el-option>
+                                    </el-select>
+                    </div> -->
+                    <!-- <el-button type="primary" size="mid" class='buttonAdd' @click="createCh('aform')">导出表格</el-button> -->
                 </div>
             </div>
             <div id="tableIM">
                 <el-table :data="accountData" border style='width:100%'>
-                    <el-table-column prop="title" label="产品型号">
+                    <el-table-column prop="sku" label="产品型号">
                         <template scope="scope">
-                            <span style='font-weight:600'>{{scope.row.title}}</span>
+                            <span style='font-weight:600'>{{scope.row.sku}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="kecheng_type" label="产品名称">
+                    <el-table-column prop="goods_name" label="产品名称">
                     </el-table-column>
-                    <el-table-column prop="year_num" label="产品级别">
+                    <el-table-column prop="level" label="产品级别">
                     </el-table-column>
-                    <el-table-column prop="head_count" label="上月剩余库存量">
+                    <!-- <el-table-column prop="month_stock" label="上月剩余库存量">
+                    </el-table-column> -->
+                    <el-table-column prop="total_stock" label="生产入库量">
                     </el-table-column>
-                    <el-table-column prop="tuition_price" label="生产入库量">
+                    <el-table-column prop="month_sales" label="发货量">
                     </el-table-column>
-                    <el-table-column prop="teaching_price" label="发货量">
-                    </el-table-column>
-                    <el-table-column prop="book_price" label="本月剩余库存量">
+                    <el-table-column prop="stock" label="剩余库存量">
                     </el-table-column>
                     <el-table-column prop="book_price" label="入库记录">
                             <template scope="scope">
-                                    <div class='timesInv' @click='openTimesInv'>{{scope.row.head_count}}次</div>
-                                    <div>最新入库{{scope.row.book_price}}</div>
+                                    <div class='timesInv' @click='openTimesInv(scope.row)'>{{scope.row.lastLog.total_num}}次</div>
+                                    <div>最新入库{{scope.row.lastLog.last_stock}}</div>
                                 </template>
                         </el-table-column>
                         <el-table-column label="操作" width='100'>
                                 <template scope="scope">
-                                    <el-button type="text" size="small" @click="openProduct(scope.$index, accountData)">生产入库</el-button>
+                                    <el-button type="text" size="small" @click="openProduct(scope.row)">生产入库</el-button>
                                 </template>
                             </el-table-column>
 
                 </el-table>
-                <div class="block">
+                <div class="invManageBlock">
                     <el-pagination layout="prev, pager, next" :total="total" :current-page="currentPage" :page-size="pagesize" @current-change="handleCurrentChange">
                     </el-pagination>
                 </div>
             </div>
-            <el-dialog title="生产入库" :visible.sync="dialogFormVisible" :close-on-click-modal="no" custom-class='classLibraryDialog' top='25%' @close='resetD' size='tiny'>
+            <el-dialog title="生产入库" :visible.sync="dialogFormVisible" :close-on-click-modal="no" custom-class='invManageDD' top='25%' @close='resetD' size='tiny'>
                     <el-form :model="aform" :rules="rules2" ref="aform" style='padding-right:70px'>
                             <el-form-item label="产品型号" :label-width="formLabelWidth" >
-                                   <div>111</div>
+                                   <div>{{inStock.sku}}</div>
                                 </el-form-item>
                                 <el-form-item label="产品名称" :label-width="formLabelWidth" >
-                                        <div>111</div>
+                                        <div>{{inStock.goods_name}}</div>
                                     </el-form-item>
                                     <el-form-item label="产品级别" :label-width="formLabelWidth" >
-                                            <div>111</div>
+                                            <div>{{inStock.level}}</div>
                                         </el-form-item>
-                        <el-form-item label="生产入库量" :label-width="formLabelWidth" prop="title">
-                            <el-input v-model="aform.title" placeholder='请输入生产入库量' style='width:180px'></el-input>
+                        <el-form-item label="生产入库量" :label-width="formLabelWidth" prop="qty">
+                            <el-input v-model="aform.qty" placeholder='请输入生产入库量' style='width:180px'></el-input>
                         </el-form-item>
                     </el-form>
                     <div slot="footer" class="dialog-footer" style="text-align:center;margin-top:40px">
@@ -79,22 +93,23 @@
                         <el-button @click="dialogFormVisible = false">取 消</el-button>
                     </div>
                 </el-dialog>
-                <el-dialog title="入库记录" :visible.sync="dialogFormVisibleTime" :close-on-click-modal="no" custom-class='timesDialog' top='25%' @close='resetD' size='tiny'>
+                <el-dialog title="入库记录" :visible.sync="dialogFormVisibleTime" :close-on-click-modal="no" custom-class='invManageTD' top='25%'  size='tiny'>
                    <div style="margin-bottom:20px">
-                       <div v-for='item in timeData' style='margin-bottom:10px'>
-                        <span style='margin-left:40px;margin-right:110px'>{{item.date}}</span>
-                        <span>入库{{item.amount}}盒</span>
+                       <div v-for='item in timeData' v-if="timeData.length!=0" style='margin-bottom:10px'>
+                        <span style='margin-left:40px;margin-right:110px'>{{item.created}}</span>
+                        <span>入库 {{item.stock}} 盒</span>
                     </div>
+                    <div style="text-align:center" v-if="timeData.length==0">暂无入库</div>
                 </div>
                     <el-form style='border-top:1px solid gainsboro'>
                             <el-form-item label="产品型号" :label-width="formLabelWidth" >
-                                   <div>111</div>
+                                   <div>{{inStock.sku}}</div>
                                 </el-form-item>
                                 <el-form-item label="产品名称" :label-width="formLabelWidth" >
-                                        <div>111</div>
+                                        <div>{{inStock.goods_name}}</div>
                                     </el-form-item>
                                     <el-form-item label="产品级别" :label-width="formLabelWidth" >
-                                            <div>111</div>
+                                            <div>{{inStock.level}}</div>
                                         </el-form-item>
                     </el-form>
                 </el-dialog>
@@ -107,29 +122,37 @@
         getClassKind,
         create_class,
         put_class,
-        delete_class
+        delete_class,
+        addStock,
+        stockControl,
+        getProductStockLog
     } from '../../api/api';
     export default {
         data() {
-                var nan = (rule, value, callback) => {
-                    if (typeof value == 'number') {
-                        callback();
-                    } else {
-                        callback('请选择课程类型')
-                    }
+                var isNumber = (rule, value, callback) => {
+                var myreg1 = /^[0-9]*$/;
+                if(value==''){
+                    callback('请输入生产入库量')
+                }else if (!myreg1.test(value)) {
+                    callback('请输入有效的入库量')
+                }else {
+                    callback();
                 }
+            }
                 return {
-                    timeData:[{date:'2017-8-1 18:00',amount:'900'},{date:'2017-8-1 18:00',amount:'900'},{date:'2017-8-1 18:00',amount:'900'}],
+                    timeData:[],
                     rules2: {
-                    title: [{
+                        qty: [{
                         required: true,
-                        message: '请输入生产入库量',
+                        validator: isNumber,
+                        // type:'number',
+                        // message: '请输入生产入库量',
                         trigger: 'blur'
                     }]
                 },
                     aform: {
                     id: '',
-                    title: '',
+                    qty: '',
                 },
                     value1:'',
                     value2:'',
@@ -140,15 +163,43 @@
                     dialogFormVisible: false,
                     dialogFormVisibleTime:false,
                     no: false, //取消点击关闭
-                    formLabelWidth:'110px'
+                    formLabelWidth:'110px',
+                    inStock:{},
 
                 }
             },
             methods: {
-                openTimesInv(){
-                    this.dialogFormVisibleTime = true;
+                openTimesInv(data){
+                    this.inStock = data;
+                    let para ={
+                        product_id:data.id
+                    }
+                    getProductStockLog(token,para).then((res)=>{
+                        this.timeData = res.data
+                    }).then(()=>{
+
+                        this.dialogFormVisibleTime = true;
+                    })
                 },
-                addAccount(formName) { },
+                addAccount(formName) {
+                    this.$refs[formName].validate((valid) => {
+                        if(valid){
+                            let para = {
+                            product_id:this.aform.id,
+                            qty:this.aform.qty
+                        }
+                        addStock(para,token).then(res=>{
+                            if(res.code==0){
+                                this.$message.success('入库成功');
+                                this.dialogFormVisible = false;
+                                this.fetchData()
+                            }else{
+                                this.$message.error(res.data)
+                            }
+                        })
+                        }
+                    })
+                 },
                 resetD() {
                 this.$refs['aform'].resetFields();
             },
@@ -160,15 +211,18 @@
                     
     
                 },
-                openProduct(){
+                openProduct(data){
+                    // console.log(data)
+                    this.inStock = data;
+                    this.aform.id = data.id
                     this.dialogFormVisible = true;
                 },
                 fetchData() {
                     let para = {
                         page: this.currentPage,
-                        pid: this.value
+                        month: this.value2
                     }
-                    getClassLibrary(token, para).then((res) => {
+                    stockControl(token, para).then((res) => {
                         this.number = res.data.total;
                         let a = res.data;
                         let c = res.data.last_page * this.pagesize;
@@ -188,12 +242,13 @@
             },
             created() { //创建组件时
                 this.fetchData();
+                console.log(1)
     
             },
     }
     </script>
     <style>
-    .h1 .el-button--primary {
+    .invManageH1 .el-button--primary {
         background-color: #32a4d3;
         border-color: #32a4d3;
     }
@@ -209,56 +264,56 @@
         padding-left: 0;
         padding-right: 0;
     }
-    .block {
+    .invManageBlock {
         text-align: center;
         margin-top: 10px;
     }
     
-    .accou {
+    .invManageA {
         width: 100%;
         position: relative;
         height: 45px;
         background-color: white;
-        margin-top: 30px;
+        /* margin-top: 30px; */
         padding-top: 10px;
         margin-bottom: 5px;
         border-radius: 5px;
     }
     
-    .accountH2 {
+    .invManageH2 {
         display: inline-block;
-        /*margin-top: 20px;*/
+        margin-top: 5px;
         margin-bottom: 15px;
         padding-left: 10px
     }
     
-    .oneSelect {
+    .invManageS {
         display: inline-block;
         margin-bottom: 10px;
         margin-left: 10px;
         width: 120px
     }
-    .oneSelect .el-date-editor.el-input{
+    .invManageS .el-date-editor.el-input{
         width:120px;
     }
-    .buttonAdd {
+    .invManage .buttonAdd {
         position: absolute;
         right: 10px;
         top: 10px;
     }
-    .classLibraryDialog .el-dialog__body {
+    .invManageDD .el-dialog__body {
     padding: 20px 20px 0 20px;
 }
 
-.classLibraryDialog .el-dialog__footer {
+.invManageDD .el-dialog__footer {
     padding: 0 20px 15px;
 }
-.el-dialog .el-dialog__header {
+.invManage .el-dialog .el-dialog__header {
     background-color: #1fb5ad;
     padding: 20px 20px 20px;
 }
 
-.el-dialog .el-dialog__title {
+.invManage .el-dialog .el-dialog__title {
     color: white;
 }
 .timesInv{
@@ -267,7 +322,7 @@ color:#1fb5ad
 .timesInv:hover{
     cursor: pointer;
 }
-.timesDialog .el-form-item{
+.invManageTD .el-form-item{
     margin-bottom:0;
 }
     </style>

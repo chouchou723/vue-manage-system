@@ -3,18 +3,20 @@
         <!-- <el-breadcrumb separator="/">
             <el-breadcrumb-item><i class="el-icon-my-weituoguanxiguanli"></i> 业务交接</el-breadcrumb-item>
         </el-breadcrumb> -->
-        <div class='noEff'>
-            <h2 class="studentReturnnoEff">
+        <div class='PATH'>
+            <h3 class="PATH1">
 
-                业务交接({{number}}人)
-            </h2>
-            <div class='studentReturnNoneed'>
+                业务交接
+                <span v-if="number==='0'" style="font-size:14px;color: #bdb8b8;">加载中...</span>
+               <span v-else>({{number}}人)</span>
+            </h3>
+            <div class='PATH13'>
                 <el-select v-model="valueT"  placeholder="选择TMK" @change="updateList">
                     <el-option v-for="item in optionsTMK" :key="item.key" :label="item.label" :value="item.key">
                     </el-option>
                 </el-select>
             </div>
-            <div class='studentReturnNoneed'>
+            <div class='PATH13'>
                 <el-select v-model="valueK"  clearable placeholder="资源类型" @change="updateList">
                     <el-option label="我的资源" value="1"></el-option>
                     <el-option label="无需求资源" value="2"></el-option>
@@ -29,10 +31,10 @@
             </div>
         </div>
         <el-dialog title="接收人" :visible.sync="dialogFormVisible" :close-on-click-modal="no" top='33%' size='tiny' show-close custom-class='personAssign'>
-            <div style='margin-bottom:20px;font-weight:bold'>请选择要接管的电话销售:</div>
+            <div style='margin-bottom:20px;font-weight:bold'>请选择要接管的tmk:</div>
             <el-form :model="resourceAssign" id='actSchool1'>
                 <el-form-item prop='receiveTMK'>
-                    <el-select v-model="resourceAssign.receiveTMK" placeholder="课程顾问选择" style="width:185px">
+                    <el-select v-model="resourceAssign.receiveTMK" placeholder="选择tmk" style="width:185px">
                         <el-option v-for="item in optionsTMK" :key="item.key" :label="item.label" :value="item.key">
                         </el-option>
                     </el-select>
@@ -63,7 +65,7 @@
             </el-table>
         </div>
         <div class="block">
-            <span class="demonstration"></span>
+              <!-- <span class="demonstration"></span> -->
             <el-pagination layout="sizes,prev, pager, next" :total="total"  :page-sizes="[150,300,500]" :current-page="currentPage"
              :page-size="pagesize" @current-change="handleCurrentChange"  @size-change="handleSizeChange">
             </el-pagination>
@@ -91,7 +93,7 @@
                 },
                 dialogFormVisible: false,
                 total: 0,
-                number: 0,
+                number: '0',
                 noEffData: [],
                 optionsTMK: [],
                 valueT: '',
@@ -101,14 +103,14 @@
             }
         },
         methods: {
-            formatter(row, column) {
-                let reg = /(\d{4})\d{4}(\d{3})/;
-                if (reg.test(row.mobile)) {
-                    return row.mobile.replace(reg, '$1****$2');
-                } else {
-                    return row.mobile
-                }
-            },
+            // formatter(row, column) {
+            //     let reg = /(\d{4})\d{4}(\d{3})/;
+            //     if (reg.test(row.mobile)) {
+            //         return row.mobile.replace(reg, '$1****$2');
+            //     } else {
+            //         return row.mobile
+            //     }
+            // },
             openResource() { //打开人员分配
                 this.resourceAssign.receiveTMK = ''
 
@@ -241,19 +243,20 @@
         margin-top: 10px;
     }
 
-    .studentReturnnoEff {
+    .PATH1 {
         float: left;
         margin-right: 5px;
         padding-left: 10px;
+        margin-top:5px;
     }
 
-    .studentReturnNoneed {
+    .PATH13 {
         float: left;
         width: 120px;
         margin-right: 10px;
     }
 
-    .noEff {
+    .PATH {
         width: 100%;
         position: relative;
         height: 46px;
@@ -262,13 +265,6 @@
         padding-top: 10px;
         margin-bottom: 5px;
         border-radius: 5px;
-    }
-
-    .kuangyi {
-        padding: 1px;
-        width: 100%;
-        height: 100%;
-        border-style: none;
     }
 
 </style>

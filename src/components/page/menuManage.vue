@@ -14,7 +14,7 @@
   <el-dialog class='dialog' title="添加菜单" :visible.sync="dialogFormVisible"  :close-on-click-modal="no"  @close = 'resetLevel'>
   <el-form ref="dynamicValidateForm" :model="dynamicValidateForm"   label-width="100px">
   <el-form-item label="菜单名称" prop='menu_name' >
-    <el-input v-model="dynamicValidateForm.menu_name" placeholder='请输入菜单名单'  class="MM180" ></el-input>
+    <el-input v-model="dynamicValidateForm.menu_name" placeholder='请输入菜单名称'  class="MM180" ></el-input>
   </el-form-item>
   <el-form-item label="菜单级别" prop='level' >
     <el-select v-model="dynamicValidateForm.level" placeholder="请选择级别" class="MM180"  @change='changeDisplay'>
@@ -43,7 +43,7 @@
                   </el-option>
     </el-select>
   </el-form-item>
-  <el-form-item label="菜单图标" prop='icon' v-if='icDisplay'>
+  <el-form-item label="菜单图标" prop='icon' v-if='dynamicValidateForm.level==="0"'>
     <el-select v-model="dynamicValidateForm.icon" placeholder="请选择图标" class="MM180"   popper-class='menuIcon'>
     
       <el-option :class='item.value' v-for="(item,index) in cssClass" :label="index+1" :value='item.value' ></el-option>
@@ -102,7 +102,7 @@ import { rangeList,create_menuList,put_menuList,delete_menuList,get_level,detail
           icon:'',
           sort_code:'',
           location:'',
-          status:'',
+          status:'1',
           level:'',
           kid:'',
           pid:''
@@ -199,14 +199,14 @@ import { rangeList,create_menuList,put_menuList,delete_menuList,get_level,detail
             this.$alert('当前菜单有下级菜单,无法删除菜单', '删除菜单', {
                  title:'删除菜单',
                  type: 'warning',
-                 customClass:'redwarn',
+                 customClass:'MMredwarn',
                  confirmButtonText: '确定'
         });
         }
         else{
             this.$confirm('是否确定要删除该菜单?', '删除菜单', {
                   title:'删除菜单',
-                  customClass:'redwarn',
+                  customClass:'MMredwarn',
                   confirmButtonText: '确定',
                   cancelButtonText: '取消',
                   type: 'warning'
@@ -371,14 +371,14 @@ this.data2 = res.data
 .dialog .el-dialog--small{
   width:50%
 }
-.redwarn .el-message-box__header{
+.MMredwarn .el-message-box__header{
     background-color: #e95c5c;
     padding: 20px 20px 20px;
 }
-.redwarn .el-message-box__title{
+.MMredwarn .el-message-box__title{
     color:white;
 }
-.redwarn .el-button--primary{
+.MMredwarn .el-button--primary{
     background-color: #e95c5c;
     border-color: #e95c5c;
 }

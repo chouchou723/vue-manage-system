@@ -1,91 +1,94 @@
 <template>
-        <div class='classLibrary'>
-            <div class="crumbs">
+        <div class='deliveryManage'>
+            <!-- <div class="crumbs">
                 <el-breadcrumb separator="/">
                     <el-breadcrumb-item><i class="el-icon-my-yoncheguanli"></i> 熊猫到家</el-breadcrumb-item>
                     <el-breadcrumb-item class='ss'>发货管理</el-breadcrumb-item>
                 </el-breadcrumb>
-            </div>
-            <div class='accou'>
-                <div class="h1">
-                    <h3 class='accountH2'>
+            </div> -->
+            <div class='deliveryManageA'>
+                <div class="deliMH">
+                    <h3 class='deliveryManageA2'>
                    发货管理
                     </h3>
-                    <div class='oneSelect'>
-                            <el-date-picker v-model="value2" type="month" placeholder="月份选择" @change="updateList" >
+                    <div class='deliveryManageS'>
+                            <el-date-picker v-model="value2" type="month" placeholder="月份选择" @change="updateList" :picker-options="pickerOptions0">
                                 </el-date-picker>
                     </div>
-                    <div class='buttonAdd1'>
+                    <div class='deliveryManageSb'>
 
                         <el-upload
                         class="upload-demo"
-                        action="https://jsonplaceholder.typicode.com/posts/" :show-file-list='f'>
-                        <el-button type="primary" size="mid"  @click="createCh('aform')">批量导入</el-button>
+                        :action="action" :headers='headers' :show-file-list='f'
+                        name='excel'
+                        :on-success='handleSuccess' :on-error='handleError'>
+                        <el-button type="primary" size="mid" >导入发货确认单</el-button>
                       </el-upload>
                     </div>
                    
-                    <el-button type="primary" size="mid" class='buttonAdd' @click="createCh('aform')">导出表格</el-button>
+                    <el-button type="primary" size="mid" class='deliveryManageSbb' @click="outputD">导出发货单</el-button>
                 </div>
             </div>
-            <div id="tableDM">
+            <div id="deliveryManageT">
                 <el-table :data="accountData" border style='width:100%'>
-                    <el-table-column prop="title" label="校区">
-                        <template scope="scope">
-                            <span style='font-weight:600'>{{scope.row.title}}</span>
-                        </template>
+                    <el-table-column prop="schoolName" label="校区">
                     </el-table-column>
-                    <el-table-column prop="kecheng_type" label="学员">
+                    <el-table-column prop="child_name" label="学员">
                     </el-table-column>
-                    <el-table-column prop="year_num" label="收件人">
+                    <el-table-column prop="user_name" label="收件人">
                     </el-table-column>
-                    <el-table-column prop="head_count" label="联系方式">
+                    <el-table-column prop="mobile" label="联系方式">
                     </el-table-column>
-                    <el-table-column prop="tuition_price" label="收货地址">
+                    <el-table-column prop="address" label="收货地址">
                     </el-table-column>
-                    <el-table-column prop="teaching_price" label="产品型号">
+                    <el-table-column prop="goods_sku" label="产品型号">
                     </el-table-column>
-                    <el-table-column prop="book_price" label="产品名称">
+                    <el-table-column prop="goods_name" label="产品名称">
                     </el-table-column>
-                    <el-table-column prop="book_price" label="物流单号">
+                    <el-table-column prop="create_at" label="发货时间">
+                    </el-table-column>
+                    <el-table-column prop="express_id" label="物流单号">
                             <template scope="scope">
-                                    <span style='color:#1fb5ad' @click='openInfo' class='canClick'>{{scope.row.book_price}}</span>
+                                    <span  @click='openInfo(scope.row.id)' class='deliveryManagec'>{{scope.row.express_id}}</span>
                                 </template>
                         </el-table-column>
                 </el-table>
-                <div class="block">
+                <div class="deliveryManageBlock">
                     <el-pagination layout="prev, pager, next" :total="total" :current-page="currentPage" :page-size="pagesize" @current-change="handleCurrentChange">
                     </el-pagination>
                 </div>
             </div>
-            <el-dialog title="物流信息" :visible.sync="dialogFormVisibleInfo" :close-on-click-modal="no" custom-class='infoDialog' top='9%'
+            <el-dialog title="物流信息" :visible.sync="dialogFormVisibleInfo" :close-on-click-modal="no" custom-class='deliveryManageID' top='9%'
             size='small'>
-            <div style="display:flex;;height:550px;border: 1px solid gainsboro;align-items:center">
+            <div style="display:flex;;height:auto;border: 1px solid gainsboro;align-items:center">
+                <!-- <div style="flex: 0 0 50px;text-align:center;height:100%;display: flex;align-items: center;justify-content: center;border-right:1px solid gainsboro">7月</div> -->
                 <div style="display:flex;height:100%;flex:auto;flex-direction:column;justify-content:flex-start;">
-                    <div style="height:50px;line-height:50px;font-size:18px;border-bottom:1px solid gainsboro;padding-left:25px">你的订单已签收</div>
+                    <div style="height:50px;line-height:50px;font-size:18px;border-bottom:1px solid gainsboro;padding-left:25px">订单记录</div>
                     <div class="track-rcol">
                         <div class="track-list">
                             <ul>
-                                <li v-for='(item,index) in stepData' :class='stepData.length==1?"onlyone":index==stepData.length-1?"last":index==0?"first":""'>
+                                <li v-for='(item,index) in stepData' v-if="stepData.length!=0" :class='stepData.length==1?"onlyone":index==stepData.length-1?"last":index==0?"first":""'>
                                     <i class="node-icon"></i>
-                                    <span class="time">{{item.title}}</span>
-                                    <span class="txt">{{item.content}}</span>
+                                    <span class="time">{{item.time.substring(0,16)}}</span>
+                                    <span class="txt">{{item.context}}</span>
                                 </li>
+                                <div v-if="stepData.length==0" style="text-align:center">暂无数据</div>
                             </ul>
                             <div class='cleargrey'></div>
                         </div>
                     </div>
 
                     <div style='display:flex;padding:10px 25px;width:80%;justify-content: space-between;'>
-                        <div >运单号:111</div>
-                        <div>物流公司:顺风</div>
-                        <div>客户电话:95533</div>
+                        <div >运单号:{{stepContent.express_id}}</div>
+                        <div>物流公司:{{stepContent.express}}</div>
+                        <div>客户电话:{{stepContent.kuaidi?stepContent.kuaidi.comcontact:''}}</div>
                     </div>
                     <div style='padding:0 25px 10px 25px;width:80%;'>
 
-                        <div style="padding-bottom:10px">产品类型:DFTH-EFEF-FE-FEF</div>
-                        <div style="padding-bottom:10px">产品名称:俄方金额空间</div>
-                        <div style="padding-bottom:10px">收获地址:上海市黄浦区北京西路201号世纪佳缘88号楼1808室   200030  </div>
-                        <div style="padding-left:62px"> 刘科长  18689786654</div>
+                        <div style="padding-bottom:10px">产品类型:{{stepContent.goods_sku}}</div>
+                        <div style="padding-bottom:10px">产品名称:{{stepContent.goods_name}}</div>
+                        <div style="padding-bottom:10px">收货地址:{{stepContent.address}}</div>
+                        <div style="padding-left:62px"> {{stepContent.user_name}}  {{stepContent.mobile}}</div>
                     </div>
                 </div>
             </div>
@@ -95,68 +98,30 @@
     <script>
     var token
     import {
-        getClassLibrary,
-        getClassKind,
-        create_class,
-        put_class,
-        delete_class
+        shipmentList,
+        exportDelivery,
+        getShipmentLogistics
     } from '../../api/api';
     export default {
         data() {
-                var nan = (rule, value, callback) => {
-                    if (typeof value == 'number') {
-                        callback();
-                    } else {
-                        callback('请选择课程类型')
-                    }
-                }
+                // var nan = (rule, value, callback) => {
+                //     if (typeof value == 'number') {
+                //         callback();
+                //     } else {
+                //         callback('请选择课程类型')
+                //     }
+                // }
                 return {
-                    stepData: [{
-                        title: '2017-8-31 周一',
-                        content: '13:44:13 卖家发货'
-                    }, {
-                        content: '13:44:13 卖家发货'
-                    }, {
-                        title: '2017-8-31 周一',
-                        content: '13:44:13 卖家发货'
-                    }, {
-                        content: '13:44:13 卖家发货'
+                    // action:'http://pandatest.dfth.com/api/v1/pandagohome/importInvoice',
+                    action:'/api/v1/pandagohome/importInvoice',
+                    pickerOptions0: {
+                        disabledDate(time) {
+                            return time.getTime() > Date.now() ;
+                        }
                     },
-                    {
-                        title: '2017-8-31 周一',
-                        content: '13:44:13 卖家发货'
-                    }, {
-                        content: '13:44:13 卖家发货'
-                    }, {
-                        title: '2017-8-31 周一',
-                        content: '13:44:13 卖家发货'
-                    }, {
-                        content: '13:44:13 卖家发货'
-                    },
-                    {
-                        title: '2017-8-31 周一',
-                        content: '13:44:13 卖家发货'
-                    }, {
-                        content: '13:44:13 卖家发货'
-                    }, {
-                        title: '2017-8-31 周一',
-                        content: '13:44:13 卖家发货'
-                    }, {
-                        content: '13:44:13 卖家发货'
-                    },
-                    {
-                        title: '2017-8-31 周一',
-                        content: '13:44:13 卖家发货'
-                    }, {
-                        content: '13:44:13 卖家发货'
-                    }, {
-                        title: '2017-8-31 周一',
-                        content: '13:44:13 卖家发货'
-                    }, {
-                        content: '13:44:13 卖家发货'
-                    }
-                ],
-                    value1:'',
+                    stepData: [
+                    ],
+                    stepContent:{},
                     value2:'',
                     currentPage: 1, //页数
                     pagesize: 15, //默认每页
@@ -164,12 +129,32 @@
                     accountData: [],
                     f:false,
                     dialogFormVisibleInfo:false,
-                    no:false
+                    no:false,
+                    headers: {
+                    Authorization: token.Authorization
+                },
                 }
             },
             methods: {
-                openInfo(){
-                    this.dialogFormVisibleInfo = true;
+                handleSuccess(response, file, fileList) {//上传图片成功
+                this.$message.success('上传成功');
+                this.fetchData();
+            },
+            handleError(err, file, fileList) {
+                this.$message.error(error.message)
+            },
+                openInfo(id){
+                    let para={
+                        id:id
+                    }
+                    getShipmentLogistics(token,para).then(res=>{
+                        this.stepContent = res.data
+                        this.stepData = this.stepContent.kuaidi.data? this.stepContent.kuaidi.data:[];
+                        // console.log( this.stepContent)
+                    }).then(()=>{
+
+                        this.dialogFormVisibleInfo = true;
+                    })
                 },
                 updateList() { //表格上方select change之后刷新表格
                     this.currentPage = 1;
@@ -179,12 +164,19 @@
                     alert(1)
     
                 },
+                outputD(){
+                    exportDelivery(token).then((res)=>{
+                        // let a = 'http://pandatest.dfth.com/download/stream?name=';
+                        let a = '/download/stream?name=';
+                        window.open( a+res.data.name)
+                    })
+                },
                 fetchData() {
                     let para = {
                         page: this.currentPage,
-                        pid: this.value
+                        month: this.value2?new Date(this.value2).toLocaleDateString():''
                     }
-                    getClassLibrary(token, para).then((res) => {
+                    shipmentList(token, para).then((res) => {
                         this.number = res.data.total;
                         let a = res.data;
                         let c = res.data.last_page * this.pagesize;
@@ -209,60 +201,60 @@
     }
     </script>
     <style>
-    .h1 .el-button--primary {
+    .deliMH .el-button--primary {
         background-color: #32a4d3;
         border-color: #32a4d3;
     }
     
-    #tableDM .el-table td,
-    #tableDM .el-table th:not(.gutter) {
+    #deliveryManageT .el-table td,
+    #deliveryManageT .el-table th:not(.gutter) {
         padding: 5px 5px;
         text-align: center
     }
     
-    #tableDM .el-table th>div,
-    #tableDM .el-table .cell {
+    #deliveryManageT .el-table th>div,
+    #deliveryManageT .el-table .cell {
         padding-left: 0;
         padding-right: 0;
     }
-    .block {
+    .deliveryManageBlock {
         text-align: center;
         margin-top: 10px;
     }
     
-    .accou {
+    .deliveryManageA {
         width: 100%;
         position: relative;
         height: 45px;
         background-color: white;
-        margin-top: 30px;
+        /* margin-top: 30px; */
         padding-top: 10px;
         margin-bottom: 5px;
         border-radius: 5px;
     }
     
-    .accountH2 {
+    .deliveryManageA2 {
         display: inline-block;
         /*margin-top: 20px;*/
         margin-bottom: 15px;
         padding-left: 10px
     }
     
-    .oneSelect {
+    .deliveryManageS {
         display: inline-block;
         margin-bottom: 10px;
         margin-left: 10px;
         width: 120px
     }
-    .oneSelect .el-date-editor.el-input{
+    .deliveryManageS .el-date-editor.el-input{
         width:120px;
     }
-    .buttonAdd1 {
+    .deliveryManageSb {
         position: absolute;
-        right: 110px;
+        right: 130px;
         top: 10px;
     }
-    .buttonAdd {
+    .deliveryManageSbb {
         position: absolute;
         right: 10px;
         top: 10px;
@@ -270,44 +262,45 @@
     }
     .upload-demo .el-upload--text{
         height: 36px;
-    width: 100px;
+    width: 166px;
     margin-right: 115px;
     margin-top:0;
     margin-left: 0
     }
-    .canClick{
+    .deliveryManagec{
         cursor: pointer;
+        color:#1fb5ad;
     }
-    .el-dialog .el-dialog__header {
+   .deliveryManage .el-dialog .el-dialog__header {
         background-color: #1fb5ad;
         padding: 20px 20px 20px;
     }
 
-    .el-dialog .el-dialog__title {
+    .deliveryManage .el-dialog .el-dialog__title {
         color: white;
     }
 
-    .infoDialog .el-dialog__body {
+    .deliveryManageID .el-dialog__body {
         padding: 15px;
     }
-    ul li {
+    .deliveryManage  ul li {
         list-style: none;
     }
 
-    .track-rcol {
+    .deliveryManage   .track-rcol {
         width: 100%;
         border-bottom: 1px solid gainsboro;
-        height: 350px;
+        height: auto;
         overflow-y: auto;
     }
 
-    .track-list {
-        margin: 10px 20px;
+    .deliveryManage  .track-list {
+        margin: 10px 20px 30px;
         padding-left: 5px;
         position: relative;
     }
 
-    .track-list li {
+    .deliveryManage  .track-list li {
         position: relative;
         padding: 0 0 0 25px;
         line-height: 18px;
@@ -315,69 +308,77 @@
         color: #999;
         display: flex;
         align-items: center;
-        height: 27px;
+        height: 40px;
+        justify-content: start;
     }
-
-    .track-list li.first {
-        padding-top: 0;
-        border-left-color: #fff;
-    }
-
-    .track-list li.last {
-        color: red;
-        padding-top: 0;
-    }
-
-    .track-list li.onlyone {
+    .deliveryManage  .track-list .onlyone {
         color: red;
         padding-top: 0;
         border-left-color: #fff;
     }
 
-    .track-list li .node-icon {
+    .deliveryManage   .node-icon {
         position: absolute;
         left: -6px;
-        top: 49%;
+        top: 40.9%;
         width: 11px;
         height: 11px;
-        background: url(http://demo.daimabiji.com/3531/img/order-icons.png) -21px -72px no-repeat;
+        background: url(../../../static/img/order-icons.png) -21px -72px no-repeat;
     }
 
-    .track-list li.first .node-icon {
-        background-position: -21px -72px;
+    .deliveryManage  .first .node-icon,
+    .deliveryManage .onlyone .node-icon {
+        background-position: 0px -72px;
+    }
+    .deliveryManage  .first::before {
+        position: absolute;
+        width:10px;
+        height: 100%;
+        top:-22px;
+        left:-5px;
+        background: white;
+        content:''
+    }
+    .deliveryManage  .last::before {
+        position: absolute;
+        width:10px;
+        height: 100%;
+        bottom:-28px;
+        left:-5px;
+        background: white;
+        content:''
     }
 
-    .track-list li.last .node-icon,
-    .track-list li.onlyone .node-icon {
-        background-position: 0 -72px;
-    }
-
-    .track-list li .time {
+    .deliveryManage  .time {
         margin-right: 20px;
         position: relative;
-        top: 4px;
+        top: 2px;
         display: inline-block;
         vertical-align: middle;
-        width: 110px;
+        /* width: 114px;
+         */
+         flex:0 0 114px;
     }
 
-    .track-list li .txt {
+    .deliveryManage   .txt {
         max-width: 600px;
         position: relative;
-        top: 4px;
+        top: 2px;
         display: inline-block;
         vertical-align: middle;
     }
 
-    .track-list li.first .time {
-        margin-right: 20px;
+    .deliveryManage  .first .time {
+        /* margin-right: 20px; */
+        color:red;
     }
 
-    .track-list li.first .txt {
-        max-width: 600px;
+    .deliveryManage .first .txt {
+        /* max-width: 600px; */
+        color:red;
     }
 
-    .cleargrey {
+    .deliveryManage  .cleargrey {
         position: absolute;
         bottom: -2px;
         left: -2px;

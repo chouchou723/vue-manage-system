@@ -119,13 +119,13 @@
             <el-row v-for='item in items1' class="CDEint1">
                 <div class="CDEint2">邀约日期: {{item.alert_time.substring(0,16)}}</div>
                 <div class='inviteRecord'>邀约课程: <span class='CDErgrey'>{{item.course}}</span> </div>
-                <div class='inviteRecord'>上课老师: <span class='CDErgrey'>{{item.teach_name.uname}}</span></div>
+                <div class='inviteRecord'>上课老师: <span class='CDErgrey'>{{item.teach_name?item.teach_name.uname:'无'}}</span></div>
                 <div class='inviteRecord'>记录时间: <span class='CDErgrey'>{{item.created.substring(0,16)}}</span></div>
                 <div class='inviteRecord'>
                     <div class="CDEint3">
                         <div>到访设置: <span :style="item.fla == '已到访'?'color:#e9bd23':item.fla == '未到访'?'color:#e24545':'color:grey'">{{item.fla}}</span>
                         </div>
-                        <div class='editVisit' v-if='item.update_count<1&&!code.includes("_c")' @click='confirmVisit(item.id,item)'></div>
+                        <div class='editVisit' v-if='item.update_count-0<1&&!code.includes("_c")' @click='confirmVisit(item.id,item)'></div>
                         <div class='editVisitI' @click='editInvite(item.id,item,$event)' v-if="new Date().getTime()-new Date(item.created).getTime()<7200000&&userid==item.tmk_uid&&!code.includes('_c')&&item.update_count<1"></div>
                     </div>
                 </div>
@@ -263,7 +263,7 @@
                     </el-select>
                 </el-form-item> -->
                 <el-form-item>
-                    <el-button type="primary" @click="onSubmit('form')">确定</el-button>
+                    <el-button type="primary" :loading='writeL' @click="onSubmit('form')">确定</el-button>
                     <el-button @click="dialogFormVisibleAdd = false">取消</el-button>
                 </el-form-item>
             </el-form>
@@ -273,7 +273,7 @@
             class='schoolDialog'>
             <div>是否确认要把客户设置为无需求客户</div>
             <div slot="footer" class="dialog-footer CDEcenter">
-                <el-button type="primary" @click="restartResource" class="CDEm20">是</el-button>
+                <el-button type="primary" :loading='writeL' @click="restartResource" class="CDEm20">是</el-button>
                 <el-button @click="dialogFormVisible2 = false">否</el-button>
                 <div class="CDEred">*请在了解资源实际情况后做出判断</div>
             </div>
@@ -382,7 +382,7 @@
             </div>
         </el-dialog>
         <!-- 签合同第二步 @close="resetAll('actSchool')"-->
-        <el-dialog title="填写合同内容" :visible.sync="dialogFormVisible3" :close-on-click-modal="no" top='7%' show-close class='signContactDialog'
+        <el-dialog title="填写合同内容" :visible.sync="dialogFormVisible3" :close-on-click-modal="no" top='7%' show-close class='signContactDialogC'
             >
             <el-form :model="actSchool" id='actSchool1' :rules='ruleActSchool' ref="actSchool">
                 <div class="CDEflex">
@@ -400,7 +400,7 @@
                                     </el-select>
                                 </div>
                                 <div style="margin-left:10px">
-                                    <el-select v-model="i.course_id" clearable placeholder="课程名称" size='small' class="CDE123" @change='getPrice(i,i.course_id)'>
+                                    <el-select v-model="i.course_id"  placeholder="课程名称" size='small' class="CDE123" @change='getPrice(i,i.course_id)'>
                                         <el-option v-for="item in i.courseName1" :key="item.kcid" :label="item.title" :value="item.kcid">
                                         </el-option>
                                     </el-select>
@@ -421,9 +421,9 @@
                             <div class='CDEflex6'>
                                 <span>{{i.book_price}}</span>
                             </div>
-                            <!-- <div style="text-align:center;background:#f3f3f3;flex:0 0 66px;display:flex;border-right:1px solid gainsboro;border-bottom:1px solid gainsboro;justify-content:center;align-items: center;">
-                                <span>{{i.study_money}}</span>
-                            </div> -->
+                            <div class='CDEflex6' style='background:#ffffff'>
+                                <span >{{i.study_money}}</span>
+                            </div>
                         </div>
                     </div>
                     <!--  <div style="background:#ffffff;text-align:center;border-right:1px solid gainsboro;border-bottom:1px solid gainsboro;flex:0 0 66px;display:flex;flex-direction: column;justify-content: center;height:auto">{{totalP}}</div> -->
@@ -439,6 +439,11 @@
                             <div class='CDEflex6'>
                                 <el-input v-model="i.coupons_money" class='promotionMoney'></el-input>
                             </div>
+                        </div>
+                    </div>
+                    <div class="CDEflex8">
+                        <div v-for='i in contracts' class='CDEflex6'>
+                            <span >{{i.study_money-(i.coupons_money-0)}}</span>
                         </div>
                     </div>
                     <!--  <div style="background:#ffffff;text-align:center;border-right:1px solid gainsboro;border-bottom:1px solid gainsboro;flex:0 0 66px;display:flex;flex-direction: column;justify-content: center;height:auto">{{totalP2}}</div> -->
@@ -465,28 +470,28 @@
                     <el-form-item label="合同编号" prop='sku'>
                         <el-input v-model="actSchool.sku" placeholder='请输入合同编号' class='CDE142'></el-input>
                     </el-form-item>
-                    <el-form-item label="试听老师" prop='teacher_uid'>
-                        <el-select v-model="actSchool.teacher_uid" placeholder="请选择试听老师" class='CDE142'>
+                    <el-form-item label="试听老师" prop="teacher_uid">
+                        <el-select v-model="actSchool.teacher_uid"  placeholder="请选择试听老师" class='CDE142'  @change='changeReset1("teacher_uid")'>
                             <el-option v-for="item in teachersName" :key="item.aid" :label="item.uname" :value="item.aid">
                             </el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="熊猫到家" prop='panda_gohome'>
-                        <el-select v-model="actSchool.panda_gohome" placeholder="请选择" class='CDE142'>
+                        <el-select v-model="actSchool.panda_gohome" placeholder="请选择" class='CDE142' @change='changeReset1("panda_gohome")'>
                             <el-option label="有" value="1"></el-option>
                             <el-option label="无" value="0"></el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="付款方式" style='position:relative' required>
+                    <el-form-item label="付款方式" style='position:relative'  prop="method">
                         <div v-for="(a, index) in actSchool.pay" :class="[index !=0?'male':'']">
-                            <el-form-item prop="method" class='CDE142float'>
-                                <el-select v-model="a.method"  placeholder="请选择方式" @change='changeReset'>
+                            <el-form-item  class='CDE142float'>
+                                <el-select v-model="a.method"  placeholder="请选择方式" @change='changeReset1("method")'>
                                     <el-option v-for="item in payMethods" :key="item.id" :label="item.name" :value="item.id">
                                     </el-option>
                                 </el-select>
                             </el-form-item>
                             <el-form-item prop="money" class='CDEfloat'>
-                                <el-input v-model.number="a.money" placeholder='请输入金额'></el-input>
+                                <el-input v-model.number="a.money" placeholder='请输入金额' @change='changeReset1("money")'></el-input>
                             </el-form-item>
                             <span @click='addPay' class='addPay' v-if='index==0'>添加付款方式</span>
                             <span @click='deletePay' class='deletePay' v-else>删除</span>
@@ -495,7 +500,7 @@
                     </el-form-item>
                     <el-form-item label="付款总额">
                         {{payTotal}}元
-                        <span v-bind:class='{CDEnred:ok,cmk:isActive}' id="CDEnred">*付款总额与实收总额不符*</span>
+                        <!-- <span class='CDEnred' id="CDEnred" v-if='this.payTotal != this.totalP3'>*付款总额与实收总额不符*</span> -->
                         <!--<span v-if='this.payTotal != this.totalP3' class='{CDEnred:ok,cmk:yes}' id="CDEnred">*付款总额与实收总额不符*</span>-->
                     </el-form-item>
                     <!-- <el-form-item label="签约时间" prop='created'>
@@ -523,7 +528,7 @@
                         <el-form-item prop='syllabus_id' class='CDselectClass'>
                             <el-radio-group v-model="art[index].syllabus_id" @change='radioChange'>
                                 <el-radio :label="item.id" class='selectClass1' v-for='item in selectionClass[index]'>
-                                    <span class="selectClass2">{{item.week==1?'周一':item.week==2?'周二':item.week==3?'周三':item.week==4?'周四':item.week==5?'周五':item.week==6?'周六':'周日'}}  {{item.class_time.substring(0,5)}}
+                                    <span class="selectClass2">{{item.week==1?'周一':item.week==2?'周二':item.week==3?'周三':item.week==4?'周四':item.week==5?'周五':item.week==6?'周六':'周日'}}  {{item.class_time}}
                         </span>
                                     <span class="selectClass2">{{item.teacher?item.teacher.uname:''}}</span>
                                     <span>{{item.class_room.names+'(当前班级'+item.syllabus_person_num+'人)' }}
@@ -536,7 +541,7 @@
             </el-tabs>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="backTolastOne">上一步</el-button>
-                <el-button type="primary" @click="submitTheContract('art')">提交</el-button>
+                <el-button type="primary" :loading='writeL' @click="submitTheContract('art')">提交</el-button>
                 <br>
             </div>
         </el-dialog>
@@ -546,10 +551,10 @@
             @close="resetD('commuForm')">
             <el-form :model="commuForm" id='detailForm' :rules='rulecommuForm' ref="commuForm">
                 <el-form-item label="" prop="remark">
-                    <el-input maxlength=100 type="textarea" :autosize="{ minRows: 3, maxRows: 4}" placeholder="请输入内容(100字以内)" v-model="commuForm.remark">
+                    <el-input  type="textarea" :autosize="{ minRows: 3, maxRows: 4}" placeholder="请输入内容(100字以内)" v-model="commuForm.remark">
                     </el-input>
                 </el-form-item>
-                <el-form-item label="记录标签(选填)：" class="CDEm10" prop="tags">
+                <el-form-item label="记录标签：" class="CDEm10" prop="tags">
                     <br>
                     <el-checkbox-group v-model="commuForm.tags">
                         <el-checkbox v-for="box in boxes" :label="box.key" :value='box.key'>
@@ -558,13 +563,13 @@
                     </el-checkbox-group>
                 </el-form-item>
                 <el-form-item label="跟进时间:" prop="remind_time">
-                    <el-date-picker v-model="commuForm.remind_time" type="datetime" placeholder="选择日期时间" :picker-options="pickerOptions0" :editable=no>
+                    <el-date-picker v-model="commuForm.remind_time" type="datetime" placeholder="选择日期时间" :picker-options="pickerOptions0"  popper-class='top55' :editable=no format='yyyy-MM-dd HH:mm'>
                     </el-date-picker>
                     <span>(选填)</span>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="commuFormSubmit('commuForm')">确 定</el-button>
+                <el-button type="primary"  :loading="writeL" @click="commuFormSubmit('commuForm')">确 定</el-button>
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
             </div>
         </el-dialog>
@@ -574,24 +579,24 @@
             class='CDDialog' @close="resetD('inviteForm')">
             <el-form :model="inviteForm" id='detailForm' :rules='ruleinviteForm' ref="inviteForm" label-width='82px'>
                 <el-form-item label="邀约时间:" prop="alert_time">
-                    <el-date-picker v-model="inviteForm.alert_time" type="datetime" placeholder="选择日期时间" :picker-options="pickerOptions0" :editable=no>
+                    <el-date-picker v-model="inviteForm.alert_time" type="datetime" placeholder="选择日期时间" :picker-options="pickerOptions0" :editable=no popper-class='top55' format='yyyy-MM-dd HH:mm'>
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item label="上课老师:" style='margin-top:10px' prop="teacher_id">
-                    <el-select v-model="inviteForm.teacher_id" clearable placeholder="请选择老师" class="CDE193">
+                    <el-select v-model="inviteForm.teacher_id"  placeholder="请选择老师" class="CDE193">
                         <el-option v-for="item in teachersName" :key="item.aid" :label="item.uname" :value="item.aid">
                         </el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="邀约课程:" prop="course_id">
-                    <el-select v-model="inviteForm.course_id" clearable placeholder="请选择课程" class="CDE193">
+                    <el-select v-model="inviteForm.course_id"  placeholder="请选择课程" class="CDE193">
                         <el-option v-for="item in courseName" :key="item.kcid" :label="item.title" :value="item.kcid">
                         </el-option>
                     </el-select>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="inviteFormSubmit('inviteForm')">确 定</el-button>
+                <el-button type="primary" :loading="writeL" @click="inviteFormSubmit('inviteForm')">确 定</el-button>
                 <el-button @click="dialogFormVisibleInvite = false">取 消</el-button>
             </div>
         </el-dialog>
@@ -600,14 +605,13 @@
             class='CDDialog'>
             <div class='CDEfs16'>请确认该学员是否到访?</div>
             <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="confirmVisitSubmit('1')">已到访</el-button>
-                <el-button @click="confirmVisitSubmit('0')">未到访</el-button>
+                <el-button type="primary" :loading="writeL" @click="confirmVisitSubmit('1')">已到访</el-button>
+                <el-button :loading="writeL" @click="confirmVisitSubmit('0')">未到访</el-button>
             </div>
         </el-dialog>
     </div>
 </template>
 <script>
-
     var token, user
     import {
         getMyCustomerTag,
@@ -631,15 +635,18 @@
         signContract,
         getClassTable,
         getDateClass,
-        searchResource
+        searchResource,
+        checkOrderSku
     } from '../../api/api';
 
     export default {
         data() {
             var isSpace = (rule, value, callback) => {
-                var myreg = /^\S{1,100}$/;
-                if (value.trim() == '') {
-                    callback('内容不得为空')
+                var myreg = /^.{1,100}$/;
+                var myreg1 = /^\s/;
+                
+                if (myreg1.test(value)) {
+                    callback('请输入有效内容')
                 } else if (!myreg.test(value)) {
                     callback('内容不得超过100字');
                 } else {
@@ -683,40 +690,50 @@
                 } else if (!myreg.test(value)) {
                     callback('请输入有效合同编号');
                 } else {
-                    callback();
+                    let para={
+                        sku:value
+                    }
+                    checkOrderSku(para,token).then(res=>{
+                        // console.log(res)
+                        if(res.data.repeat===0){
+
+                            callback();
+                        }else{
+                            callback('合同编号已存在')
+                        }
+                    })
                 }
             }
             var nan = (rule, value, callback) => {
-                if (value === '') {
+                if (value == '') {
                     callback('请选择')
                 } else if (typeof value == 'number') {
                     callback();
+                }else{
+                    callback();
+                    
                 }
             }
-            var isPhone = (rule, value, callback) => {
+            var hasTag = (rule, value, callback) => {
+                if (value.length == 0) {
+                    callback('请选择')
+                }else{
+                    callback();
+                    
+                }
+            }
+            var isPhone = (rule, value, callback) => {//签合同
                 var myreg = /^(((1[0-9]{1}))+\d{9})$/;
                 if (value == '') {
                     callback('不能为空且必须唯一')
                 } else if (!myreg.test(value)) {
                     callback('请输入有效手机号');
                 } else {
-                    callback()
-                }
-            }
-            var isPhone1 = (rule, value, callback) => {
-                var myreg = /^(((1[0-9]{1}))+\d{9})$/;
-                if (value == '') {
-                    callback()
-                } else if (!myreg.test(value)) {
-                    callback('请输入有效手机号');
-                }else if(this.form.phone==value){
-                callback('不要输入重复的手机号');
-                }else {
-                let para = {
+                    let para = {
                 search: value
                 }
                 searchResource(para, token).then(res => {
-                if(res.data.data.length!=0){
+                if(res.data.data.length!=0&&res.data.data[0].id!=this.signform.id){
                 callback('此手机号码已存在');
                 }else{
                 callback();
@@ -725,7 +742,7 @@
                 })
                 }
             }
-            var isPhone2 = (rule, value, callback) => {
+            var isPhone2 = (rule, value, callback) => {//签合同
                 var myreg = /^(((1[0-9]{1}))+\d{9})$/;
                 if (value == '') {
                     callback()
@@ -738,7 +755,7 @@
                 search: value
                 }
                 searchResource(para, token).then(res => {
-                if(res.data.data.length!=0){
+                if(res.data.data.length!=0&&res.data.data[0].id!=this.signform.id){
                 callback('此手机号码已存在');
                 }else{
                 callback();
@@ -747,6 +764,49 @@
                 })
                 }
             }
+            var isPhone3 = (rule, value, callback) => {//修改用户
+                var myreg = /^(((1[0-9]{1}))+\d{9})$/;
+                if (value == '') {
+                    callback('不能为空且必须唯一')
+                } else if (!myreg.test(value)) {
+                    callback('请输入有效手机号');
+                } else {
+                    let para = {
+                search: value
+                }
+                searchResource(para, token).then(res => {
+                if(res.data.data.length!=0&&res.data.data[0].id!=this.form.id){
+                callback('此手机号码已存在');
+                }else{
+                callback();
+
+                }
+                })
+                }
+            }
+            var isPhone1 = (rule, value, callback) => {//修改用户
+                var myreg = /^(((1[0-9]{1}))+\d{9})$/;
+                if (value == '') {
+                    callback()
+                } else if (!myreg.test(value)) {
+                    callback('请输入有效手机号');
+                }else if(this.form.phone==value){
+                callback('不要输入重复的手机号');
+                }else {
+                let para = {
+                search: value
+                }
+                searchResource(para, token).then(res => {
+                if(res.data.data.length!=0&&res.data.data[0].id!=this.form.id){
+                callback('此手机号码已存在');
+                }else{
+                callback();
+
+                }
+                })
+                }
+            }
+            
             var isId = (rule, value, callback) => {
                 var myreg =
                     /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}$)/;
@@ -763,22 +823,22 @@
                     return item.method != ''
                 })
                 if (!a) {
-                    callback('请选择支付方式')
+                    callback('请选择付款方式')
                 } else {
                     callback();
                 }
             }
-            // var isMoney = (rule, value, callback) => {
-            //     let a = 0
-            //     this.actSchool.pay.map(item => {
-            //         a += item.money
-            //     })
-            //     if (a != this.totalP3) {
-            //         callback('付款总额与实收总额不等')
-            //     } else {
-            //         callback();
-            //     }
-            // }
+            var isMoney = (rule, value, callback) => {
+                let a = 0
+                this.actSchool.pay.map(item => {
+                    a += item.money
+                })
+                if (a != this.totalP3) {
+                    callback('付款总额与实收总额不等')
+                } else {
+                    callback();
+                }
+            }
             // var isToday = (rule, value, callback) => {
             //     if (value == '') {
             //         callback('请选择签约日期')
@@ -789,6 +849,7 @@
             //     }
             // }
             return {
+                writeL:false,
                 ok:true,
                 isActive:true,
                 maxlength:11,
@@ -842,7 +903,7 @@
                     coupons_money: '',
                     courseName1: []
                 }],
-                tableTitle: ['课时', '签单数', '学费', '教材费', '书本费', '优惠类型', '优惠金额', '实收总额', '操作'],
+                tableTitle: ['课时', '签单数', '学费', '教材费', '书本费', '课程金额','优惠类型', '优惠金额','小计', '实收总额', '操作'],
                 inviteForm: {
                     alert_time: '',
                     teacher_id: '',
@@ -885,7 +946,7 @@
                 dialogFormVisible3: false, //填写合同内容
                 dialogFormVisibleLast: false,
                 no: false,
-                number: 0,
+                number: '0',
                 number1: 0,
                 commuForm: {
                     remark: '',
@@ -911,7 +972,7 @@
                 total: 0,
                 total1: 0,
                 regions: [],
-                allCC: [],
+                // allCC: [],
                 form: { //修改客户的form
                     names: '',
                     sex: '',
@@ -964,6 +1025,11 @@
                         // message: '请输入内容',
                         validator: isSpace,
                         trigger: 'blur'
+                    }],
+                    tags:[{required:true,
+                        message: '请选择标签',
+                        validator: hasTag,
+                        trigger: 'blur'
                     }]
                 },
                 ruleinviteForm: {
@@ -991,7 +1057,7 @@
                         validator: numAndEng,
                         // message: '请输入合同编号',
                         trigger: 'blur'
-                    }, ],
+                    }],
                     teacher_uid: [{
                         required: true,
                         validator: nan,
@@ -1008,12 +1074,12 @@
                         validator: isPay,
                         trigger: 'change'
                     }],
-                    // money: [{
-                    //     required: true,
-                    //     message:'请输入金额',
-                    //     validator: all,
-                    //     trigger: 'blur'
-                    // }],
+                    money: [{
+                        required: true,
+                        // message:'请输入金额',
+                        validator: isMoney,
+                        trigger: 'blur'
+                    }],
                     // created: [{
                     //     required: true,
                     //     validator: isToday,
@@ -1082,7 +1148,8 @@
                     }],
                     address: [{
                         required: true,
-                        trigger: 'blur'
+                        message: '请输入具体地址',
+                        trigger: 'blur',
                     }],
                 },
                 artRules: {
@@ -1134,7 +1201,7 @@
                     }],
                     phone: [{
                         required: true,
-                        validator: isPhone,
+                        validator: isPhone3,
                         trigger: 'blur'
                     }],
                     phone1: [{
@@ -1153,6 +1220,7 @@
                     }],
                     address: [{
                         required: true,
+                        message: '请输入具体地址',
                         trigger: 'blur'
                     }],
                 },
@@ -1182,7 +1250,7 @@
             },
             submitTheContract(formName) { //排班好,最终提交合同
                 let a = [];
-                let b = '';
+                // let b = '';
                 this.tabClass.map((item, index) => {
                     if (item.isR == 'yes') {
                         a.push(index)
@@ -1200,6 +1268,7 @@
                             if (valid&&c[item].syllabus_id) {
                                 count.push(item);
                                 if(count.length==a.length){
+                                    this.writeL = true;
                                 let para = {}
                                 para.customer_id = this.$route.params.uid
                                 para.users = { ...this.backData
@@ -1225,30 +1294,42 @@
                                 para.scheduling = JSON.stringify(para.scheduling)
                                 signContract(para, token).then((res) => {
                                     if (res.code == 0) {
-                                        this.$message.success('添加成功');
+                                        this.$message.success('合同签约成功');
+                                        this.dialogFormVisibleLast = false;
+                                        this.writeL = false;
                                         this.$router.push('/studentDetail/' + res.data.uid); //可能要改成去到学员详细页
                                     } else {
-                                        this.$message.error(res.data)
+                                        this.$message.error(res.data);
+                                        this.writeL = false;
                                     }
                                 })
 
+                                }
+                            }else{
+                                if(c[item].time&&this.selectionClass[item].length!=0){
+
+                                this.$message.info('请选择具体班级')
+                                }
+                                if(c[item].time&&this.selectionClass[item].length==0){
+                                    this.$message.info('该日没有此课程班级,请重新选择')
                                 }
                             }
                         })
                     })
                     if(c.length!=a.length){
-                        console.log(count)
-                        console.log(a)
-                        
+                        // console.log(count)
+                        // console.log(a)
                         let o = new Set(count);//[]
                         let p = new Set(a);//[0,1,2]
                         let r = new Set([...p].filter(x => !o.has(x)));//1,2
-                        console.log([...r][0])
+                        // console.log([...r][0])
                         this.activeName = [...r][0]+1+'';
-                                if(this.art[[...r][0]].time){
-
-                        this.$message.info('请选择排课班级')
+                        if (this.art[[...r][0]].time&&this.selectionClass[[...r][0]].length!=0) {
+                            this.$message.info('请选择具体班级')
                         }
+                        if (this.art[[...r][0]].time&&this.selectionClass[[...r][0]].length==0){
+                                    this.$message.info('该日没有此课程班级,请重新选择')
+                                }
                     }
                 } else {
                     let para = {}
@@ -1271,19 +1352,23 @@
 
                     para.order = JSON.stringify(para.order)
                     para.users = JSON.stringify(para.users)
-                    para.scheduling = JSON.stringify(para.scheduling)
+                    para.scheduling = JSON.stringify(para.scheduling);
+                    this.writeL = true;
                     signContract(para, token).then((res) => {
                         if (res.code == 0) {
-                            this.$message.success('添加成功');
+                            this.$message.success('合同签约成功');
+                            this.dialogFormVisibleLast = false;
+                            this.writeL = false;
                             this.$router.push('/studentDetail/' + res.data.uid); //可能要改成去到学员详细页
                         } else {
-                            this.$message.error(res.data)
+                            this.$message.error(res.data);
+                            this.writeL = false;
                         }
                     })
                 }
             },
             radioChange() { //为了显示
-                // console.log(1)
+                console.log(1)
             },
             getClassRoom(time, index, data) { //切换日期获取当天班级
                 // console.log(time)
@@ -1300,9 +1385,10 @@
                             that.art[index].syllabus_id = time
                             that.art[index].syllabus_id = ''
                         } else {
-                            that.art[index].syllabus_id = ''
+                            that.art[index].syllabus_id = 999;
                             that.selectionClass[index] = [];
-                            this.$message.info('该天没有该课程')
+                            that.art[index].syllabus_id = ''                            
+                            this.$message.info('该日没有此课程班级')
                         }
                     })
                     // console.log(that.selectionClass[index])
@@ -1323,12 +1409,14 @@
                             this.contracts = [...this.backContract];
                             this.actSchool = { ...this.backactSchool
                             }
-                        }
-                        this.dialogFormVisibleSign = false;
-                        this.dialogFormVisible3 = true;
+                        }else{
                         setTimeout(function() {
                             that.$refs['actSchool'].resetFields();
                         }, 1);
+
+                        }
+                        this.dialogFormVisibleSign = false;
+                        this.dialogFormVisible3 = true;
                     }
 
                 })
@@ -1336,7 +1424,7 @@
             },
             nextToLast(formName) { //2 to 3
                 this.$refs[formName].validate((valid) => {
-                    if (valid && this.isEqual === 1) {
+                    if (valid && this.isEqual === 1&&this.contracts.every(item=>{return item.course_id})) {
                         this.backContract = [...this.contracts]
                         this.backContract.map((item, index) => {
                             item.courseName1.map(i => {
@@ -1358,6 +1446,12 @@
                         this.dialogFormVisible3 = false;
                         this.dialogFormVisibleLast = true;
 
+                    }else{
+                        if(!this.contracts.every(item=>{return item.course_id})){
+                        this.$message.info('课程还未选择')
+                        }else{
+                        this.$message.info('请确认所有项目填写正确')                            
+                        }
                     }
                 })
 
@@ -1394,6 +1488,8 @@
             },
             deletePay() { //删除支付方式
                 this.actSchool.pay.pop();
+                this.changeReset1('method');
+                this.changeReset1('money')
             },
             resetAll() { //重置第二步
                 this.contracts = [{
@@ -1421,10 +1517,17 @@
                 // this.$refs['actSchool'].resetFields();
 
             },
-            changeReset(val){
-                if(val!=''){
-
-                this.$refs['actSchool'].validate((valid) => {})
+            // changeReset(val){
+            //     if(val!=''){
+            //         // console.log( this.$refs['actSchool'].teacher_uid)
+            //     this.$refs['actSchool'].validate((valid) => {})
+            //     }
+            // },
+            changeReset1(val){
+                if(val==='money'){
+                    this.$refs['actSchool'].validate((valid) => {})
+                }else{
+                    this.$refs['actSchool'].validateField(val);
                 }
             },
             resetClass(formName) { //重置第三步
@@ -1526,28 +1629,20 @@
                     id: this.isVisitId,
                     status: num
                 }
+                this.writeL = true;
                 confirm_visit(para, token).then(res => {
                     if (res.code == 0) {
                         this.confirmVisitDialog = false;
-                        let p = {
-                            page: '1',
-                            customer_id: this.$route.params.uid
-                        }
-                        getInviteList(token, p).then(res => {
-                            this.number1 = res.data.total;
-                            this.items1 = res.data.data;
-                            let c = res.data.last_page * this.pagesize1;
-                            this.total1 = parseInt(c);
-                        })
-
+                        this.writeL = false;
+                        this.getIL();
                     } else {
-                        this.$message.error(res.message)
+                        this.$message.error(res.message);
+                        this.writeL = false;
                     }
                     return res
                 }).then((res) => {
                     if (res.code == 0) {
                         if (num == 1) {
-
                             this.$router.push({ name: 'customerDetailList', params: { uid: this.$route.params.uid,status: '已到访'}});
                         } else {
                             this.$router.push({ name: 'customerDetailList', params: { uid: this.$route.params.uid,status: '未到访'}});
@@ -1555,7 +1650,8 @@
 
                     }
                 }).catch(()=>{
-                    this.$message.error('该用户未授权')
+                    // this.$message.error('该用户未授权')
+                    this.writeL = false;
                 })
 
             },
@@ -1580,7 +1676,6 @@
 
             },
             addInvite() { //点击添加邀约记录
-
                 let para = {
                     simple: 1
                 }
@@ -1592,71 +1687,41 @@
             inviteFormSubmit(formName) { //提交 添加邀约记录
                 this.$refs[formName].validate((valid) => { //替换提交服务
                     if (valid) {
+                        this.writeL = true;
                         let para = { ...this.inviteForm
                         }
-                        para.alert_time = new Date(para.alert_time).toLocaleString('chinese', {
-                            hour12: false
-                        });
+                        para.alert_time = new Date(para.alert_time)
                         para.customer_id = this.$route.params.uid
                         if (this.inInvite == '') {
                             create_inviteR(para, token).then((res) => {
                                 if (res.code == 0) {
-
                                     this.$message.success('添加成功')
-                                    let p = {
-                                        page: '1',
-                                        customer_id: this.$route.params.uid
-                                    }
-                                    getInviteList(token, p).then(res => {
-                                        this.number1 = res.data.total;
-                                        this.items1 = res.data.data;
-                                        let c = res.data.last_page * this.pagesize1;
-                                        this.total1 = parseInt(c);
-                                    })
                                     this.currentPage1 = 1;
+                                    this.getIL();
+                                    this.writeL = false;                                    
                                     this.$router.push({ name: 'customerDetailList', params: { uid: this.$route.params.uid,status: '未到访'}});
                                     this.dialogFormVisibleInvite = false;
                                 } else {
-                                    this.$message.error(res.data)
+                                    this.$message.error(res.data);
+                                    this.writeL = false;
                                 }
                             }).catch(error => {
-                                // if (error.response) {
-                                this.$message({
-                                    type: 'error',
-                                    message: '该用户未授权'
-                                });
-                                // console.log(error.response);
-                                // }
+                                this.writeL = false;
                             })
                         } else {
                             put_inviteR(para, token).then((res) => {
                                 if (res.code == 0) {
-
                                     this.$message.success('修改成功')
-                                    let p = {
-                                        page: '1',
-                                        customer_id: this.$route.params.uid
-                                    }
-                                    getInviteList(token, p).then(res => {
-                                        this.number1 = res.data.total;
-                                        this.items1 = res.data.data;
-                                        let c = res.data.last_page * this.pagesize1;
-                                        this.total1 = parseInt(c);
-                                    })
                                     this.currentPage1 = 1;
-                                    this.dialogFormVisibleInvite = false
+                                    this.getIL();
+                                    this.dialogFormVisibleInvite = false;
+                                    this.writeL = false;                                    
                                 } else {
-                                    this.$message.error(res.data)
+                                    this.$message.error(res.data);
+                                    this.writeL = false;
                                 }
                             }).catch(error => {
-                                // console.log(error)
-                                // if (error) {
-                                this.$message({
-                                    type: 'error',
-                                    message: '该用户未授权'
-                                });
-                                // console.log(error.response);
-                                // }
+                                this.writeL = false;
                             })
                         }
                     } else {
@@ -1678,19 +1743,21 @@
                     teacher_id: '',
                     course_id: ''
                 }
-                this.$refs[formName].resetFields();
+                this.$refs['inviteForm'].resetFields();
             },
             onSubmit(formName) { //修改用户资料提交
                 this.$refs[formName].validate((valid) => { //替换提交服务
                     if (valid) {
-                        if (this.form.parent1 || this.form.con1 || this.form.phone1) {
-                            this.form.familys = this.form.parent + '|' + this.form.con + '|' + this.form.phone +
-                                ',' + this.form.parent1 + '|' + this.form.con1 + '|' + this.form.phone1
+                        this.writeL = true;  
+                        let para = {...this.form}                      
+                        if (para.parent1 || para.con1 || para.phone1) {
+                            para.familys = para.parent + '|' + para.con + '|' + para.phone +
+                                ',' + para.parent1 + '|' + para.con1 + '|' + para.phone1
                         } else {
-                            this.form.familys = this.form.parent + '|' + this.form.con + '|' + this.form.phone
+                            para.familys = para.parent + '|' + para.con + '|' + para.phone
                         }
-                        this.form.customer_id = this.$route.params.uid;
-                        let para = JSON.parse(JSON.stringify(this.form));
+                        para.customer_id = this.$route.params.uid;
+                        // let para = JSON.parse(JSON.stringify(this.form));
                         put_customer(para, token).then(res => {
                             if (res.code == 0) {
                                 this.form.sour_id = [];
@@ -1699,48 +1766,16 @@
                                     type: 'success'
                                 });
                                 this.dialogFormVisibleAdd = false;
-
+                                this.writeL = false;                                
                             } else {
                                 this.$message.error(res.message);
+                                this.writeL = false;
                                 this.form.phone = '';
                                 this.$refs.parentPhone.$refs.input.focus();
                                 this.$refs.parentPhone.$refs.input.blur();
                             }
                         }).then(() => {
-                            let para = {
-                                customer_id: this.$route.params.uid
-                            }
-                            getMyCustomerDetail(token, para).then(res => { //获取用户资料
-                                let data = res.data.info;
-                                this.student = {
-                                    names: data.names,
-                                    born: data.birthday,
-                                    age: data.age,
-                                    sex: data.sex ,
-                                    school_name: data.school_name,
-                                    cc_name: data.cc_name,
-                                    channel: data.source_name,
-                                    fullAddress: data.fullAddress,
-                                    created: data.created,
-                                    parent: data.customer_famliy[0].uname ? data.customer_famliy[
-                                            0].uname + '(' + data.customer_famliy[0].relation +
-                                        ')' : '',
-
-                                    parent1: data.customer_famliy[1] ? data.customer_famliy[
-                                            1].uname?data.customer_famliy[
-                                            1].uname + '(' + data.customer_famliy[1].relation +
-                                        ')' :'': '',
-                                    parent_phone: data.customer_famliy[0].mobile,
-                                    parent1_phone: data.customer_famliy[1] ? data.customer_famliy[
-                                        1].mobile?data.customer_famliy[
-                                        1].mobile:'' : '',
-                                    sour_id: data.sour_id,
-                                    referral_name: data.referral ? data.referral.referral_name :
-                                        '',
-                                    teach_name: data.referral ? data.referral.teach_name : ''
-                                }
-                                console.log(11111)
-                            })
+                            this.getCU();
                         })
                     } else {
                         console.log('error submit!!');
@@ -1749,61 +1784,6 @@
                 });
 
             },
-            // handleSelect(item) { //转介绍时 选择同名的人后
-            //     this.nostudent = false;
-            //     this.form.familys_name = item.familys_name;
-            //     this.form.referral_uid = item.referral_uid
-            // },
-            // querySearchAsync(queryString, cb) { //转介绍时 输入姓名 同步搜索
-            //     let para = {
-            //         input: queryString
-            //     }
-            //     repeatStudentList(token, para).then(res => {
-            //         // console.log(res.data)
-            //         if (res.data.length != 0) {
-            //             this.studentsList = res.data.map(item => {
-            //                 return {
-            //                     referral_uid: item.label.uid,
-            //                     value: item.label.nickname,
-            //                     familys_name: item.label.familys_name,
-            //                     mobile: item.label.mobile
-            //                 }
-            //             })
-            //             var studentsList = this.studentsList;
-            //             if (isNaN(queryString)) {
-
-            //                 var results = studentsList.filter(item => {
-            //                     return item.value.indexOf(queryString) > -1
-            //                 });
-            //             } else {
-            //                 var results = studentsList
-            //             }
-            //         } else {
-            //             var results = [];
-            //             this.nostudent = true;
-            //         }
-
-            //         clearTimeout(this.timeout);
-            //         this.timeout = setTimeout(() => {
-            //             cb(results);
-            //         }, 2000 * Math.random());
-            //     })
-
-            // },
-            // remoteMethod(query) { //远程搜索，录入时进行过滤
-            //     if (query !== '') {
-            //         this.loading = true;
-            //         setTimeout(() => {
-            //             this.loading = false;
-            //             this.schools = this.list.filter(item => {
-            //                 return item.label.toLowerCase()
-            //                     .indexOf(query.toLowerCase()) > -1;
-            //             });
-            //         }, 200);
-            //     } else {
-            //         this.schools = [];
-            //     }
-            // },
             signContact() { //点击签合同第一步
                 this.resetAll();
                 let that =this;
@@ -1819,10 +1799,11 @@
                 getMyCustomerDetail(token, para).then(res => {//获取用户资料
                     let data = res.data.info;
                     this.signform = {
+                        id:data.id,
                         names: data.names,
                         sex: data.sex == '男' ? '1' : '2',
                         id_number: '',
-                        birthday: '',
+                        birthday: '',//new Date(data.birthday),
                         parent: data.customer_famliy[0].uname,
                         parent1: data.customer_famliy[1] ? data.customer_famliy[1].uname? data.customer_famliy[1].uname:'' : '',
                         con: data.customer_famliy[0].relation,
@@ -1851,12 +1832,15 @@
                 }
                 confirm_noDemand(para, token).then(res => {
                     if (res.code == 0) {
-                        this.$message.success('已设置为无需求')
+                        this.$message.success('已设置为无需求');
+                    }else{
+                        this.$message.error(res.data);
+                        this.writeL = false;
                     }
                 }).then(() => {
                     this.$router.push('/myCustomer');
-
                     this.dialogFormVisible2 = false;
+                    this.writeL = false;
                 })
             },
 
@@ -1871,61 +1855,40 @@
             commuFormSubmit(formName) { //提交 添加沟通记录
                 this.$refs[formName].validate((valid) => { //替换提交服务
                     if (valid) {
+                        this.writeL = true;
                         let para = { ...this.commuForm
                         }
-
-                        para.remind_time = new Date(para.remind_time).toLocaleString('chinese', {
-                            hour12: false
-                        });
+                        para.remind_time = new Date(para.remind_time)
                         para.tags = para.tags.join(',')
                         if (this.in == '') {
-                            create_commuR(para, token).then(() => {
-                                this.$message.success('添加成功')
-                                let p = {
-                                    page: '1',
-                                    customer_id: this.$route.params.uid
+                            create_commuR(para, token).then((res) => {
+                                if(res.code==0){
+                                    this.$message.success('添加成功')
+                                    this.currentPage = 1;
+                                    this.getCL();
+                                    this.dialogFormVisible = false;
+                                    this.writeL = false;
+                                }else{
+                                    this.$message.error(res.data);
+                                    this.writeL = false;                                    
                                 }
-                                getCommuList(token, p).then(res => {
-                                    this.number = res.data.total;
-                                    this.items = res.data.data;
-                                    let c = res.data.last_page * this.pagesize;
-                                    this.total = parseInt(c);
-                                })
-                                this.currentPage = 1;
-                                this.dialogFormVisible = false
                             }).catch(error => {
-                                // if (error.response) {
-                                this.$message({
-                                    type: 'error',
-                                    message: '该用户未授权'
-                                });
-                                // console.log(error.response);
-                                // }
+                                this.writeL = false;
                             })
                         } else {
-                            put_commuR(para, token).then(() => {
-                                this.$message.success('修改成功')
-                                let p = {
-                                    page: '1',
-                                    customer_id: this.$route.params.uid
+                            put_commuR(para, token).then((res) => {
+                                if(res.code==0){
+                                    this.$message.success('修改成功');
+                                    this.currentPage = 1;
+                                    this.getCL();
+                                    this.dialogFormVisible = false;
+                                    this.writeL = false;
+                                }else{
+                                    this.$message.error(res.data);
+                                    this.writeL = false;                                    
                                 }
-                                getCommuList(token, p).then(res => {
-                                    this.number = res.data.total;
-                                    this.items = res.data.data;
-                                    let c = res.data.last_page * this.pagesize;
-                                    this.total = parseInt(c);
-                                })
-                                this.currentPage = 1;
-                                this.dialogFormVisible = false
                             }).catch(error => {
-                                console.log(error)
-                                // if (error) {
-                                this.$message({
-                                    type: 'error',
-                                    message: '该用户未授权'
-                                });
-                                // console.log(error.response);
-                                // }
+                                this.writeL = false;
                             })
                         }
                     } else {
@@ -1950,7 +1913,7 @@
             },
             getRegion() { //获取城市，就近校区
                 this.form.area_id = '';
-                this.form.address = ''
+                // this.form.address = ''
                 let para = {
                     pid: this.form.city_id
                 }
@@ -1976,6 +1939,7 @@
                     // console.log(data)
                     // let arr = [];
                     this.form = {
+                        id:data.id,
                         names: data.names,
                         sex: data.sex,
                         age: data.age + '',
@@ -1997,7 +1961,8 @@
                         // familys: '',
                         cc_id: data.cc_uid - 0,
                     }
-                }).then(() => {
+                    return data
+                }).then((d) => {
                     let para = {
                     pid: this.form.city_id
                 }
@@ -2008,6 +1973,8 @@
                 cityList(token, para).then((res) => {
                     // console.log(res)
                     this.regions = res.data
+                }).then(()=>{
+                    this.form.area_id =d.area_id - 0;    
                 })
                      //根据城市获取区
                     // sourceList(token).then(res => {
@@ -2023,24 +1990,70 @@
             },
             handleCurrentChange: function (val) { //变更页数
                 this.currentPage = val;
+                this.getCL();
+            },
+            handleCurrentChange1: function (val) { //变更页数
+                this.currentPage1 = val;
+                this.getIL();
+            },
+            getCU(){
+                let para = {
+                customer_id: this.$route.params.uid
+            }
+            getMyCustomerDetail(token, para).then(res => {//获取用户资料
+                // console.log(res)
+                let data = res.data.info
+                this.student = {
+                                    names: data.names,
+                                    born:data.birthday,
+                                    age: data.age,
+                                    sex: data.sex ,
+                                    school_name: data.school_name,
+                                    cc_name: data.cc_name,
+                                    channel: data.source_name,
+                                    fullAddress: data.fullAddress,
+                                    created: data.created,
+                                    parent: data.customer_famliy[0].uname ? data.customer_famliy[
+                                            0].uname + '(' + data.customer_famliy[0].relation +
+                                        ')' : '',
+
+                                    parent1: data.customer_famliy[1] ? data.customer_famliy[
+                                            1].uname?data.customer_famliy[
+                                            1].uname + '(' + data.customer_famliy[1].relation +
+                                        ')' :'': '',
+                                    parent_phone: data.customer_famliy[0].mobile,
+                                    parent1_phone: data.customer_famliy[1] ? data.customer_famliy[
+                                        1].mobile?data.customer_famliy[
+                                        1].mobile:'' : '',
+                                    sour_id: data.sour_id,
+                                    referral_name: data.referral ? data.referral.referral_name :
+                                        '',
+                                    teach_name: data.referral ? data.referral.teach_name : ''
+                                }
+            }).catch((res) => {
+                // console.log('No Data');
+                // this.$message.error('数据有误')
+            })
+            },
+            getCL(){
                 let p = {
                     page: this.currentPage,
                     customer_id: this.$route.params.uid
                 }
-                getCommuList(token, p).then(res => {
+                getCommuList(token, p).then(res => {//获取沟通记录
+                    // console.log(res)
                     this.number = res.data.total;
                     this.items = res.data.data;
                     let c = res.data.last_page * this.pagesize;
                     this.total = parseInt(c);
                 })
             },
-            handleCurrentChange1: function (val) { //变更页数
-                this.currentPage1 = val;
+            getIL(){
                 let p = {
                     page: this.currentPage1,
                     customer_id: this.$route.params.uid
                 }
-                getInviteList(token, p).then(res => {
+                getInviteList(token, p).then(res => { //获取邀约记录
                     this.number1 = res.data.total;
                     this.items1 = res.data.data;
                     let c = res.data.last_page * this.pagesize1;
@@ -2164,105 +2177,47 @@
             this.userid = JSON.parse(user).aid;
             // this.school_name = JSON.parse(user).school_name;
             this.code = JSON.parse(user).job ? JSON.parse(user).job.code : '';
-            let para = {
-                customer_id: this.$route.params.uid
-            }
-            getMyCustomerDetail(token, para).then(res => { //获取用户资料
-                // console.log(res)
-                let data = res.data.info
-                this.student = {
-                                    names: data.names,
-                                    born:data.birthday,
-                                    age: data.age,
-                                    sex: data.sex ,
-                                    school_name: data.school_name,
-                                    cc_name: data.cc_name,
-                                    channel: data.source_name,
-                                    fullAddress: data.fullAddress,
-                                    created: data.created,
-                                    parent: data.customer_famliy[0].uname ? data.customer_famliy[
-                                            0].uname + '(' + data.customer_famliy[0].relation +
-                                        ')' : '',
-
-                                    parent1: data.customer_famliy[1] ? data.customer_famliy[
-                                            1].uname?data.customer_famliy[
-                                            1].uname + '(' + data.customer_famliy[1].relation +
-                                        ')' :'': '',
-                                    parent_phone: data.customer_famliy[0].mobile,
-                                    parent1_phone: data.customer_famliy[1] ? data.customer_famliy[
-                                        1].mobile?data.customer_famliy[
-                                        1].mobile:'' : '',
-                                    sour_id: data.sour_id,
-                                    referral_name: data.referral ? data.referral.referral_name :
-                                        '',
-                                    teach_name: data.referral ? data.referral.teach_name : ''
-                                }
-            }).then(() => {
-                let p = {
-                    page: this.currentPage,
-                    customer_id: this.$route.params.uid
+            this.getCU();
+            this.getCL();
+            this.getIL();
+            getClassKind(token).then((res) => { //获取课程分类
+                this.classkind = res.data;console.log(1)
+            }).then(()=>{
+                getTeacherList(token).then((res) => { //获取老师
+                    this.teachersName = res.data;
+                })
+                let si = {
+                    simple: 1,
                 }
-                getCommuList(token, p).then(res => { //获取沟通记录
+                getPromotionList(token, si).then((res) => { //获取优惠列表
+                    this.couponsList = res.data;
+                })
+                cityList(token).then((res) => { //获取城市 表格中用
                     // console.log(res)
-                    this.number = res.data.total;
-                    this.items = res.data.data;
-                    let c = res.data.last_page * this.pagesize;
-                    this.total = parseInt(c);
+                    this.cities = res.data
                 })
-                getInviteList(token, p).then(res => { //获取邀约记录
-                    this.number1 = res.data.total;
-                    this.items1 = res.data.data;
-                    let c = res.data.last_page * this.pagesize1;
-                    this.total1 = parseInt(c);
-                }).then(() => {
-                    getTeacherList(token).then((res) => { //获取老师
-                        this.teachersName = res.data;
                     })
-                }).then(() => {
-
-                    let si = {
-                        simple: 1,
-                    }
-                    getPromotionList(token, si).then((res) => { //获取优惠列表
-
-                        this.couponsList = res.data;
-                    })
-                }).then(() => {
-                    getClassKind(token).then((res) => { //获取课程分类
-                        this.classkind = res.data
-                    })
-
-                }).then(() => {
-
-                    cityList(token).then((res) => { //获取城市 表格中用
-                        // console.log(res)
-                        this.cities = res.data
-                    })
-                })
-            }).catch((res) => {
-                console.log('No Data')
-            })
-            if (this.code == 'cc_m') {
-                getAllCCList(token).then((res) => {
-                    this.allCC = res.data;
-                    // this.allCC.unshift({aid:0,uname:'自己'})
-                })
-            }
-        },        
-        watch:{
-            'payTotal':function (val) {
-                if(this.payTotal==this.totalP3){
-                    this.isActive=true;
-                    console.log(this.isActive);
-                }else{
-                    this.isActive=false;
-                }
-            }
-            // '$route' (to,form){
-            //     console.log(to)
-            //      console.log(from)
+            // if (this.code == 'cc_m') {
+            //     getAllCCList(token).then((res) => {
+            //         this.allCC = res.data;
+            //         // this.allCC.unshift({aid:0,uname:'自己'})
+            //     })
             // }
-        }
+        },        
+        // watch:{
+        //     // 'payTotal':function (val) {
+        //     //     if(this.payTotal==this.totalP3){
+        //     //         this.isActive=true;
+        //     //         console.log(this.isActive);
+        //     //     }else{
+        //     //         this.isActive=false;
+        //     //     }
+        //     // }
+        //     // '$route' (to,form){
+        //     //     console.log(to)
+        //     //      console.log(from)
+        //     // }
+        // }
     }
 
 </script>
@@ -2431,8 +2386,8 @@
         width: 56%;
     }
 
-    .signContactDialog .el-dialog--small {
-        width: 986.75px;
+    .signContactDialogC .el-dialog--small {
+        width: 1186.75px;
     }
 
     .tableUserCD .el-dialog .el-dialog__header {
@@ -2636,7 +2591,7 @@
     }
 
     .CDE202 {
-        width: 202px
+        width: 193px
     }
 
     .CDE66 {
@@ -2662,7 +2617,7 @@
         line-height: 40px;
         background: #f3f3f3;
         border: 1px solid gainsboro;
-        flex: 0 0 260px
+        flex: 0 0 280px
     }
 
     .CDEflex2 {
@@ -2676,7 +2631,7 @@
     .CDEflex3 {
         line-height: 40px;
         background: white;
-        width: 598px;
+        flex:0 0 617px;
         display: flex;
         align-items: stretch;
         flex-wrap: wrap
@@ -2685,7 +2640,7 @@
     .CDEflex4 {
         font-size: 14px;
         display: flex;
-        width: 598px;
+        width: 684px;
     }
 
     .CDEflex5 {
@@ -2693,23 +2648,22 @@
         background: #f3f3f3;
         border: 1px solid gainsboro;
         border-top: none;
-        flex: 0 0 260px;
+        flex: 0 0 280px;
         display: flex;
         justify-content: center;
         align-items: center;
     }
 
     .CDE103 {
-        width: 103px
+        width: 101px
     }
 
     .CDE123 {
-        width: 123px
+        width: 155px
     }
 
     .CDEflex6 {
         text-align: center;
-        ;
         background: #f3f3f3;
         flex: 0 0 66px;
         display: flex;
@@ -2724,7 +2678,7 @@
         text-align: center;
         border-right: 1px solid gainsboro;
         border-bottom: 1px solid gainsboro;
-        flex: 0 0 145px;
+        flex: 0 0 146px;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -2738,16 +2692,16 @@
 
     .CDEflex8 {
         line-height: 40px;
-        width: 68px;
+        flex: 0 0 67px;
         display: flex;
         align-items: stretch;
-        flex-wrap: wrap
+        flex-wrap: wrap;
     }
 
     .CDEflex68 {
         font-size: 14px;
         display: flex;
-        flex: 0 0 68px
+        flex: 0 0 68px;
     }
 
     .CDEflex9 {
@@ -2765,7 +2719,7 @@
     .CDEflex10 {
         line-height: 40px;
         background: white;
-        width: 5.4%;
+        flex: 0 0 68;
         display: flex;
         align-items: stretch;
         flex-wrap: wrap
@@ -2919,5 +2873,7 @@
     .CDEfs16 {
         font-size: 16px
     }
-
+    .top55  .el-time-panel__content::after,.top55 .el-time-panel__content::before{
+        top:55%
+    }
 </style>

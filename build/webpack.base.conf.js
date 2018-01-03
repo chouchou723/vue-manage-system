@@ -41,7 +41,7 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: [resolve('src'), resolve('test')]
+        include: [resolve('src'), resolve('test'),resolve('node_modules/vue-echarts-v3/src')]
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
@@ -65,11 +65,11 @@ module.exports = {
 }
     ]
   },
-    // plugins: [
-    //     new webpack.DllReferencePlugin({
-    //       context: path.resolve(__dirname, '..'),
-    //       manifest: require('./vendor-manifest.json')
-    //     })
-    // ]
+    plugins: [
+        new webpack.DllReferencePlugin({
+          context: path.resolve(__dirname, '..'),
+          manifest: require('./vendor-manifest.json')
+        })
+    ]
 }
 

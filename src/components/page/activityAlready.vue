@@ -1,22 +1,25 @@
 <template>
 
-    <div class="crumbsInval">
+    <div class="aalready">
         <!-- <el-breadcrumb separator="/">
            <el-breadcrumb-item><i class="el-icon-my-tongzhi"></i> 活动管理</el-breadcrumb-item>
             <el-breadcrumb-item class='ss'>已发布活动</el-breadcrumb-item>
         </el-breadcrumb> -->
-        <div class='noInvalid'>
-            <h2 class="studentinvalid">
+        <div class='aalreadyH'>
+            <h3 class="aalreadyH1">
             
-        已发布活动({{number}}个)
-        </h2>
-            <div class='studentReturnThreeNoEff'>
+        已发布活动
+        <span v-if="number==='0'" style="font-size:14px;color: #bdb8b8;">加载中...</span>
+               <span v-else>({{number}})</span>
+        </h3>
+            <div class='aalreadyH1S'>
                 <el-select v-model="value" clearable placeholder="活动类型" filterable @change="updateList">
                         <el-option label="亲子俱乐部" value="100"></el-option>
                         <el-option label="生日会" value="200"></el-option>
+                        <!-- <el-option label="节日活动课" value="300"></el-option> -->
                 </el-select>
             </div>
-            <div class='studentReturnThreeNoEff'>
+            <div class='aalreadyH1S'>
                 <el-select v-model="value1" clearable placeholder="活动状态" filterable @change="updateList">
                     <el-option label="进行中" value="1"></el-option>
                         <el-option label="已结束" value="0"></el-option>
@@ -41,9 +44,9 @@
                 </el-table-column>
                 <el-table-column prop="address" label="活动地点" >
                 </el-table-column>
-                <el-table-column prop="sign_time" label="报名截至时间"  width='150'>
+                <el-table-column prop="sign_time" label="报名截至时间"  width='120'>
                 </el-table-column>
-                <el-table-column prop="created" label="活动起止时间" width='180'>
+                <el-table-column prop="created" label="活动起止时间" width='160'>
                         <template scope="scope">
                                 <div >{{scope.row.start_time}}</div>
                                 <div>至</div>
@@ -60,7 +63,7 @@
             </el-table>
         </div>
         <div class="block">
-            <span class="demonstration"></span>
+              <!-- <span class="demonstration"></span> -->
             <el-pagination layout="prev, pager, next" :total="total" :current-page="currentPage" :page-size="pagesize" @current-change="handleCurrentChange">
             </el-pagination>
         </div>
@@ -70,9 +73,6 @@
 <script>
 var user, token
 import {
-    campusList,
-    sourceList,
-    getMyResoure,
     getActivityAlreadyList
 } from '../../api/api';
 import {
@@ -82,7 +82,7 @@ export default {
     data() {
             return {
                 total: 0,
-                number: 0,
+                number: '0',
                 noEffData: [],
                 options: [],
                 value: '',
@@ -95,14 +95,6 @@ export default {
             ...mapActions([
                 'setmyActS'
             ]),
-            formatter(row, column) {
-                let reg = /(\d{4})\d{4}(\d{3})/;
-                if (reg.test(row.mobile)) {
-                    return row.mobile.replace(reg, '$1****$2');
-                } else {
-                    return row.mobile
-                }
-            },
             handleCurrentChange: function(val) {
                 this.currentPage = val;
                 this.fetchData();
@@ -185,16 +177,16 @@ export default {
     font-weight: 600;
     color:#1fb5ad
 }
-.crumbsInval .block {
+.aalready .block {
     text-align: center;
     margin-top: 10px;
 }
 
-.studentinvalid {
+.aalreadyH1 {
     float: left;
     margin-right: 5px;
     padding-left: 10px;
-
+    margin-top:5px;
 }
 
 .studentReturnThreeNoEffTime {
@@ -203,13 +195,13 @@ export default {
     margin-right: 10px;
 }
 
-.studentReturnThreeNoEff {
+.aalreadyH1S {
     float: left;
     width: 125px;
     margin-right: 10px;
 }
 
-.noInvalid {
+.aalreadyH {
     width: 100%;
     position: relative;
     height: 46px;

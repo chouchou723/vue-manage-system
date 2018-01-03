@@ -53,7 +53,7 @@
                     <!--  <i class=el-icon-my-tongxunlu style="font-size:31px"></i> -->
                     <span class="RD2">回访记录({{number}})</span>
                     <div class="RD3">
-                        <div class='addR' @click='addReturn' v-if="code!='cc_c'"></div>
+                        <div class='addR' @click='addReturn' v-if="!code.includes('_c')"></div>
                     </div>
                 </div>
                 <div class="RD4">
@@ -100,7 +100,7 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="returnFormSubmit('returnform')">确 定</el-button>
+                <el-button type="primary" :loading='writeL' @click="returnFormSubmit('returnform')">确 定</el-button>
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
             </div>
         </el-dialog>
@@ -122,9 +122,11 @@
     export default {
         data() {
             var isSpace = (rule, value, callback) => {
-                var myreg = /^\S{1,100}$/;
-                if (value.trim() == '') {
-                    callback('内容不得为空')
+                var myreg = /^.{1,100}$/;
+                var myreg1 = /^\s/;
+                
+                if (myreg1.test(value)) {
+                    callback('请输入有效内容')
                 } else if (!myreg.test(value)) {
                     callback('内容不得超过100字');
                 } else {
@@ -132,6 +134,7 @@
                 }
             }
             return {
+                writeL:false,
                 student: {
                     name: '',
                     sex: '',
@@ -148,7 +151,7 @@
                 items: [],
                 dialogFormVisible: false,
                 no: false,
-                number: 0,
+                number: '0',
                 warning: '*系统中没有该成员', //以后改成调服务显示
                 boxes: [],
                 returnform: {
@@ -200,7 +203,8 @@
             returnFormSubmit(formName) {
                 this.$refs[formName].validate((valid) => { //替换提交服务
                     if (valid) {
-                        this.returnform.uid = this.$route.params.post
+                        this.returnform.uid = this.$route.params.post;
+                        this.writeL = true;
                         //可能要送 用户名
                         if (this.in) {
                             put_returnList(this.returnform, token).then((res) => {
@@ -218,13 +222,16 @@
                                         this.total = parseInt(c);
                                     })
                                     this.currentPage = 1;
-                                    this.dialogFormVisible = false
+                                    this.dialogFormVisible = false;
+                                    this.writeL = false;
                                 } else {
-                                    this.$message.error(res.data)
+                                    this.$message.error(res.data);
+                                    this.writeL = false;
                                 }
                             }).catch(() => {
-                                this.$message.error('该用户未授权');
-                                this.dialogFormVisible = false
+                                // this.$message.error('该用户未授权');
+                                // this.dialogFormVisible = false;
+                                this.writeL = false;
                             })
                         } else {
                             create_returnList(this.returnform, token).then((res) => {
@@ -241,14 +248,17 @@
                                         this.total = parseInt(c);
                                     })
                                     this.currentPage = 1;
-                                    this.dialogFormVisible = false
+                                    this.dialogFormVisible = false;
+                                    this.writeL = false;
 
                                 } else {
-                                    this.$message.error(res.data)
+                                    this.$message.error(res.data);
+                                    this.writeL = false;
                                 }
                             }).catch(() => {
-                                this.$message.error('该用户未授权');
-                                this.dialogFormVisible = false
+                                // this.$message.error('该用户未授权');
+                                // this.dialogFormVisible = false;
+                                this.writeL = false;
                             })
                         }
                     } else {

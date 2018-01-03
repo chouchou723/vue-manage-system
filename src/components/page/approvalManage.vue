@@ -2,26 +2,30 @@
     <div>
         <!-- <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item ><i class="el-icon-my-shengpi"></i> 审批管理</el-breadcrumb-item>
+                <el-breadcrumb-item ><i class="el-icon-my-shoujianxiang" style='font-size:15px'></i> 消息通知</el-breadcrumb-item>
             </el-breadcrumb>
         </div> -->
         <div class='systemTitle'>
-            <h2 style='background:white;padding:9px 17px'>
-                审批记录(未处理{{number}}条)
-            </h2>
+            <h3 style='background:white;padding:9px 17px'>
+                审批管理(未处理{{number}}条)
+            </h3>
         </div>
         <div class="systemwrapper">
-            <div style="position:relative;width:450px;height:900px;float:left;margin-top:10px;margin-left:25px;border:1px solid gainboro;border-radius:5px;box-shadow:0 -9px 20px gainsboro"
+            <div style="position:relative;width:450px;height:900px;float:left;margin-top:10px;margin-left:25px;border:1px solid gainboro;border-radius:5px;box-shadow:0px -5px 10px gainsboro"
                 v-loading='loading'>
+                <!-- <div style='width:80%;margin:10px auto'>
+                    <el-input placeholder="请输入关键字" icon="search" v-model="input2" :on-icon-click="handleIconClick">
+                    </el-input>
+                </div> -->
                 <div v-for="(content,index) in notifyData" v-if="notifyData.length!=0" :class="[content.read =='0'?'greenContent':'','systemContent']" @click='chooseContent(content,index)'
-                    :id='index'>
-                    <div v-if="content.read == '0'" style="position:absolute;top:16px;left:0">
+                    :id='content.id'>
+                    <div v-if="content.read == '0'" style="position:absolute;top:16px;left:4px">
                         <span class='circle'></span>
                     </div>
                     <div style="height:40px;margin-left:5px">
-                        <div style="float:left;font-weight:600;font-size: 16px;" :class="{green:content.created.substring(0,10).replace(/0/g,'') == new Date().toLocaleString().substring(0,9).replace(/0/g,'')}">{{content.type}}审批</div>
-                        <div style="float:right;">{{new Date(content.created).toDateString() == new Date().toDateString()?content.created.substring(11):
-                            new Date(content.created.substring(0,10)).valueOf() - new Date(new Date().toDateString()).valueOf()
+                        <div style="float:left;font-weight:600;font-size: 16px;" :class="{green:content.created.substring(0,10).replace(/0/g,'') == new Date().toLocaleString().substring(0,9).replace(/0/g,'')}">{{content.type}}通知</div>
+                        <div style="float:right;">{{content.created.substring(0,10).replace(/0/g,'') == new Date().toLocaleDateString().substring(0,9).replace(/0/g,'').replace(/\//g,'-')?content.created.substring(11):
+                            new Date(content.created.substring(0,10)).valueOf() - new Date().toLocaleDateString().valueOf()
                             == -86400000? '昨天'+content.created.substring(11) :content.created.substring(5)}}</div>
                     </div>
                     <div style="margin-left:5px" v-if='content.type=="转校"'>
@@ -33,22 +37,30 @@
                      <div style="margin-left:5px" v-if='content.type=="转校失败"'>
                     学生:{{ content.content.child}}的转校申请, {{ content.content.msg}}
                 </div>
+                <div style="margin-left:5px" v-if='content.type=="代课申请失败"'>
+                       您的代课申请请求未通过
+                    </div>
+                    <div style="margin-left:5px;" v-if='content.type=="代课申请通过"'>
+                        您的代课申请请求已通过
+                     </div>
                 </div>
-                <div v-if="notifyData.length==0" style='text-align:center;margin-top:30px'>暂无记录</div>
+                <div v-if="notifyData.length==0" style='text-align:center;margin-top:30px'>暂无消息</div>
                 <div class="sysblock">
                     <el-pagination layout="prev, pager, next" :total="total" :current-page="currentPage" :page-size="pagesize" @current-change="handleCurrentChange">
                     </el-pagination>
                 </div>
             </div>
-            <div v-if="display" style="flex:auto;height:837px;float:right;margin-right:2%;background:#f3f3f3;border-radius:5px;box-shadow:9px 12px 10px gainsboro">
+            <div v-if="display" style="flex:auto;height:837px;float:right;margin-right:2%;background:#f3f3f3;box-shadow:2px 2px 10px gainsboro">
                 <div class='detailContent'>
 
                     <div style="height:30px;margin-left:20px;padding-bottom:10px;border-bottom:1px solid gainsboro">
                         <div style="float:left;font-weight:600;font-size:20px;margin-top:5px">{{detailData.type}}通知</div>
                         <div style="float:right;margin-right:20px;margin-top:10px">
-                            {{new Date(detailData.created).toLocaleDateString() == new Date().toLocaleDateString().substring(0,9)?detailData.created.substring(11):
+                            <span :style='detailData.status=="已同意"?"color:rgb(24, 195, 24)":"color:red"'>{{detailData.status}}</span>
+                            <!-- {{new Date(detailData.created).toLocaleDateString() == new Date().toLocaleDateString().substring(0,9)?detailData.created.substring(11):
                                 new Date(detailData.created.substring(0,10)).valueOf() - new Date().toLocaleDateString().valueOf() ==
-                                -86400000? '昨天'+detailData.created.substring(11) :detailData.created.substring(5)}}</div>
+                                -86400000? '昨天'+detailData.created.substring(11) :detailData.created.substring(5)}} -->
+                            </div>
                     </div>
                     <div style="margin-left:5px">
                         <div v-if='detailData.type=="转校"' style="width:92%;margin:0 auto">
@@ -76,6 +88,26 @@
                                 </el-form-item>
                             </el-form>
                         </div>
+                        <div v-if='detailData.type=="代课申请失败"' style="width:92%;margin:0 auto">
+                                <!-- <div style='margin-top:10px;'>课程:{{detailData.content.topic}}</div>                                 -->
+                            <div style='margin-top:10px;'>对不起,您的代课申请(<span style='font-weight:bold'>{{detailData.content.topic}}</span>)未通过。</div>
+                            <!-- <el-form label-width="120px">
+                                <el-form-item prop='time' >
+                                   
+                                   您的代课申请未通过
+                                </el-form-item>
+                            </el-form> -->
+                        </div>
+                        <div v-if='detailData.type=="代课申请通过"' style="width:92%;margin:0 auto">
+                            <!-- <div style='margin-top:10px;'>课程:{{detailData.content.topic}}</div>                                 -->
+                        <div style='margin-top:10px;'>您的代课申请(<span style='font-weight:bold'>{{detailData.content.topic}}</span>)已通过。</div>
+                        <!-- <el-form label-width="120px">
+                            <el-form-item prop='time' >
+                               
+                               您的代课申请未通过
+                            </el-form-item>
+                        </el-form> -->
+                    </div>
                         <div v-if='detailData.type=="代课申请"' style="width:92%;margin:0 auto">
                             <el-form label-width="120px">
                                 <el-form-item prop='time' label='申请人:'>
@@ -123,10 +155,10 @@
         getMessagDetail,
         agreeTransferSchool
     } from '../../api/api';
-    // import {
-    //     mapGetters,
-    //     mapActions
-    // } from 'vuex';
+    import {
+        mapGetters,
+        mapActions
+    } from 'vuex';
     export default {
         data() {
 
@@ -135,7 +167,7 @@
                 changegrey: false,
                 display: false,
                 input2: '',
-                number: 0,
+                number: '0',
                 total: 0,
                 currentPage: 1,
                 pagesize: 10,
@@ -162,9 +194,9 @@
             };
         },
         methods: {
-            // ...mapActions([
-            //     'setMessNumber'
-            // ]),
+            ...mapActions([
+                'setMessNumber'
+            ]),
             acceptStudent(data, agree) {
                 let para = {
                     message_id: data.id,
@@ -174,7 +206,7 @@
                     // console.log(res)
                     if (res.code == 0) {
                             this.$message.success('操作成功');
-                            if(data.type=='转校'){
+                            if(data.type=='转校'&&agree==1){
 
                                 this.$router.push('/studentDetail/' + data.action.uid);
                             }
@@ -209,28 +241,7 @@
             handleIconClick() {
 
             },
-            chooseContent(data, index) {
-
-                if (this.aaa === '') {
-                    this.aaa = index;
-                    document.getElementById(this.aaa).style.background = '#f3f3f3';
-                } else {
-                    document.getElementById(this.aaa).style.background = '#ffffff'
-                    this.aaa = index;
-                    document.getElementById(this.aaa).style.background = '#f3f3f3'
-
-                }
-                if (data.read == 0) {
-                    // let a = this.getMessNumber - 1;
-                    // console.log(a)
-                    if(this.number>=1){
-                        --this.number
-                    // this.number =this.number -1;
-                    }else{
-                        this.number = 0
-                    }
-                    // this.setMessNumber( this.number)
-                }
+            getMD(data){
                 let para = {
                     msgid: data.id
                 }
@@ -240,16 +251,59 @@
 
                     // }
                     this.detailData = res.data
+                    // let a = this.getMessNumber - 1;
+                    // console.log(a)
+                    if(this.number>=1){
+                        --this.number
+                    // this.number =this.number -1;
+                    }else{
+                        this.number = 0
+                    }
+                    this.setMessNumber( this.number)
                 }).then(() => {
                     this.display = true;
+                    data.read = '1';
+                }).catch(()=>{
+                    // this.$message.error('该用户未授权')
                 })
+            },
+            chooseContent(data, index) {
+
+                // this.aaa = data.id;
+                if (this.aaa === '') {
+                    this.aaa =data.id;
+                    document.getElementById(this.aaa).style.background = '#f3f3f3';
+                  this.getMD(data)
+                } else {
+                    if(data.id == this.aaa){
+                        if(this.display == true){
+                            document.getElementById(this.aaa).style.background = '#ffffff';
+
+                            this.display = false;
+                        }else{
+                        document.getElementById(this.aaa).style.background = '#f3f3f3'
+                            
+                            this.display = true;                            
+                        }
+                    }else{
+                        document.getElementById(this.aaa).style.background = '#ffffff'
+                       this.aaa = data.id;
+                       document.getElementById(this.aaa).style.background = '#f3f3f3'
+                       
+                        // this.display = true;
+                        this.getMD(data)
+                    }
+                }
+                // if (data.read == 0) {
+                    
+                // }
+                
                 // console.log(data)
-                data.read = '1';
+               
             },
             getM(){
                 let p ={
-                    page: this.currentPage,
-                    type:1
+                    page: this.currentPage
                 }
                 getMessage(p,token).then(res=>{
                 // console.log(res);
@@ -257,7 +311,7 @@
                 this.notifyData = res.data.list.data;
                 let c = res.data.list.last_page * this.pagesize;
                 this.total = parseInt(c);
-                // this.setMessNumber(this.number)
+                this.setMessNumber(this.number)
             })
             }
 
@@ -267,9 +321,9 @@
             token = JSON.parse(user).token;
         },
         created() {
+            document.body.scrollTop = 0
             let para = {
-                page: this.currentPage,
-                type:1
+                page: this.currentPage
             }
             getMessage(para, token).then(res => {
                 this.number = res.data.total;
@@ -282,9 +336,9 @@
             // this.mail = JSON.parse(user).name ? JSON.parse(user).name : ''; //获取mail
         },
         computed: {
-            // ...mapGetters([
-            //     'getMessNumber'
-            // ])
+            ...mapGetters([
+                'getMessNumber'
+            ])
         },
         beforeDestroy() {
             clearInterval(this.contGet)

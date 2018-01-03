@@ -9,7 +9,9 @@
         <div class='accou'>
             <div class="h1">
                 <h3 class='accountH2'>
-               账号管理({{number}}人)
+               账号管理
+               <span v-if="number==='0'" style="font-size:14px;color: #bdb8b8;">加载中...</span>
+               <span v-else>({{number}}人)</span>
                 </h3>
                 <div class='oneSelect'>
                     <el-select v-model="value" clearable placeholder="选择校区" filterable @change="updateList">
@@ -18,7 +20,7 @@
                     </el-select>
                 </div>
                 <div class='twoSelect'>
-                    <el-select v-model="value1" clearable placeholder="选择部门" @change="updateList" >
+                    <el-select v-model="value1" clearable placeholder="选择部门" @change="updateJobList1" >
                         <el-option v-for="item in options1" :key="item.value" :label="item.label" :value="item.value">
                         </el-option>
                     </el-select>
@@ -39,7 +41,7 @@
                     <el-input placeholder="请输入手机号或姓名" icon="search" v-model="input2" :on-icon-click="handleIconClick" @keyup.enter.native="handleIconClick">
                     </el-input>
                 </div>
-                <el-button type="primary" size="mid" class='buttonAdd' @click="createCh('aform')">添加账号</el-button>
+                <el-button type="primary" size="mid" class='buttonAdd' @click="createCh('aform')" v-if="!code.includes('school')">添加账号</el-button>
             </div>
             <el-dialog :title="alter" :visible.sync="dialogFormVisible" :close-on-click-modal="no" custom-class='accountManageDialog' top='9%'  @close='resetD'>
                 <el-form :model="aform" :rules="rules2" ref="aform">
@@ -134,7 +136,7 @@
                         <span :style="scope.row.status=='停用'?'color:red':'color:black'">{{scope.row.status}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column label="操作" width='80'>
+                <el-table-column label="操作" width='80' v-if="!code.includes('school')">
                     <template scope="scope">
                         <el-button type="text" size="small" @click="editCh(scope.$index, accountData)">修改</el-button>
                       <!--   <el-button type="text" size="small" @click="open2(scope.$index, accountData)">删除</el-button> -->
@@ -149,7 +151,7 @@
     </div>
 </template>
 <script>
-var token
+var token,user
 import {
     account,
     campusList,
@@ -232,13 +234,14 @@ export default {
             //     }
             // }
             return {
+                code:'',
                 currentPage: 1, //页数
                 pagesize: 15, //默认每页
                 total: 0, //总页数
                 in : '', //修改时代表修改的index
                 no: false, //取消点击关闭
                 accountData: [],
-                number: '',
+                number: '0',
                 input2: '',
                 options: '', //表单上方的校区select
                 options1: '', //表单上方的部门select
@@ -289,6 +292,11 @@ export default {
                         validator: nan,
                         trigger: 'change'
                     }],
+                    region: [{
+                        required: true,
+                        validator: nan,
+                        trigger: 'change'
+                    }],
                     job_id: [{
                         required: true,
                         validator: nan,
@@ -324,7 +332,7 @@ export default {
                 this.currentPage = 1;
                 this.fetchData();
             },
-            updateJobList() { //部门变更后,刷新职位
+            updateJobList() {//部门变更后,刷新职位
                 // this.aform.job_id = ''
                 let para = {
                     did: this.aform.did
@@ -340,6 +348,27 @@ export default {
                         });
                     }
                 })
+            },
+            updateJobList1() {//部门变更后,刷新职位
+                // this.aform.job_id = ''
+                this.value2=''
+                if(this.value1!==''){
+
+                    let para = {
+                        did: this.value1
+                    };
+                    departList(para, token).then((res) => {
+                        if(res.data[0]._child){
+    
+                            this.options2 = res.data[0]._child
+                        }
+                    })
+                }else{
+                    sdjList(token).then((res) => {//获取职位
+                    this.options2 = res.data.job
+                })
+                }
+                this.fetchData()
             },
             createCh(formName) { //点击创建按钮
                 this.dialogFormVisible = true;
@@ -465,15 +494,14 @@ export default {
                                     type: 'success'
                                 });   
                                 this.fetchData();
+                                this.dialogFormVisible = false;
                                 }else{
                                     this.$message({
                                 type: 'error',
-                                message: res.data
+                                message: res.message
                             });
                                 }
-                            }).then(()=>{
-                                 this.dialogFormVisible = false;
-                            });
+                            })
                         }else {
                             create_account(f, token).then(res => {
                                if(res.code ==0){
@@ -482,15 +510,14 @@ export default {
                                     type: 'success'
                                 });   
                                 this.fetchData();
+                                this.dialogFormVisible = false;
                                 }else{
                                     this.$message({
                                 type: 'error',
-                                message: res.data
+                                message: res.message
                             });
                                 }
-                            }).then(()=>{
-                                 this.dialogFormVisible = false;
-                            });
+                            })
                         }
                     }else {
                         console.log('error submit!!');
@@ -523,13 +550,15 @@ export default {
             },
         },
         beforeCreate() {
-            let user = sessionStorage.getItem('user');
+            user = sessionStorage.getItem('user');
             token = JSON.parse(user).token;
         },
         created() { //创建组件时
+            this.code = JSON.parse(user).job ? JSON.parse(user).job.code : '';
             this.fetchData();
             let cam = {
-                simple: '1'
+                simple: '1',
+                type:'am'
             };
             campusList(cam, token).then((res) => {//获取校区
                 let a = res.data.map(item => {
@@ -587,7 +616,7 @@ export default {
     padding-right: 0;
 }
 
-.redwarn .el-message-box__header {
+/* .redwarn .el-message-box__header {
     background-color: #e95c5c;
     padding: 20px 20px 20px;
 }
@@ -599,7 +628,7 @@ export default {
 .redwarn .el-button--primary {
     background-color: #e95c5c;
     border-color: #e95c5c;
-}
+} */
 
 .el-dialog .el-dialog__header {
     background-color: #1fb5ad;

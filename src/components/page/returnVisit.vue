@@ -6,13 +6,11 @@
             </el-breadcrumb>
         </div> -->
         <div class='accouVisit'>
-          
-              
-       
-              <h2 class="studentReturn">
-            
-        学员回访({{number}}人)
-        </h2>
+              <h3 class="studentReturn">
+        学员回访
+        <span v-if="number==='0'" style="font-size:14px;color: #bdb8b8;">加载中...</span>
+               <span v-else>({{number}}人)</span>
+        </h3>
         
    
     <div style="display:flex;flex-wrap:wrap;margin-right: 5px;">
@@ -35,7 +33,7 @@
                 </el-select>
             </div>
             <div class='studentReturnThreedate'>
-                <el-date-picker v-model="value3" type="daterange" placeholder="请选择签约时间" @change="updateList">
+                <el-date-picker v-model="value3" type="daterange" placeholder="选择签约时间" @change="updateList"  :picker-options="pickerOptions0">
                 </el-date-picker>
             </div>
         <div class='studentReturnThreeS'>
@@ -102,6 +100,11 @@ import {
 export default {
     data() {
             return {
+                pickerOptions0: {
+                        disabledDate(time) {
+                            return time.getTime() > Date.now();
+                        }
+                    },
                 noreturnlist:{0:'未回访'},
                 loading2:true,
                 // dynamicTags: [], //动态替换
@@ -115,7 +118,7 @@ export default {
                 total: 0,
                 no: false,
                 returnData: [],
-                number: 0,
+                number: '0',
                 options: [], //表单上方的select
                 options1: [], //表单上方的select
                 value1: '', //对应select的值
@@ -169,7 +172,9 @@ export default {
                     status: this.status,
                     start_time: this.value3,
                     sortName:this.sortName,
-                    sortOrder:this.sortOrder
+                    sortOrder:this.sortOrder,
+                    options1 : this.options1
+                    
                 }
                 this.setmyReturnS(d)
                 this.$router.push('/returnDetail'+'/'+row.uid); 
@@ -188,6 +193,7 @@ export default {
                     this.value3 =  this.getmyReturnS.start_time;
                     this.sortName =  this.getmyReturnS.sortName;
                     this.sortOrder =  this.getmyReturnS.sortOrder;
+                    this.options1= this.getmyReturnS.options1;
                 }
                 let para = {
                     page: this.currentPage,
@@ -214,7 +220,7 @@ export default {
                     this.loading2 = false;
                     this.setmyReturnS({})
                 }).catch(()=>{
-                    this.$message.error('该用户未授权');
+                    // this.$message.error('该用户未授权');
                     this.loading2 = false
                 })
             },
@@ -298,7 +304,19 @@ export default {
         },
         created() {
             this.code = JSON.parse(user).job ? JSON.parse(user).job.code : '';
-            this.fetchData();
+            if(Object.keys(this.getmyReturnS).length==0){
+                if (this.code == 'tmk_m'||this.code=='cc_c') {
+            getTMK(token).then((res) => {
+                this.options1 = res.data;
+                 this.options1.unshift({key:0,label:'全部TMK'});
+                 this.value2= 0;
+            })
+                }else{
+                    this.fetchData(); //获取表格数据
+                    }
+            }else{
+                this.fetchData(); //获取表格数据
+                }
             let cam = {
                 simple: '1'
             };
@@ -311,12 +329,6 @@ export default {
                     };
                 });
             })
-            if (this.code == 'tmk_m'||this.code=='cc_c') {
-            getTMK(token).then((res) => {
-                this.options1 = res.data;
-                 this.options1.unshift({key:'0',label:'全部TMK'})
-            })
-        }
         },
         computed: {
         ...mapGetters([
@@ -378,7 +390,7 @@ export default {
   justify-content: flex-start;
   margin-top:0;
   padding-top:10px;
-  /* margin-bottom: 10px; */
+  margin-bottom: 5px;
   border-radius: 5px;
 }
 
@@ -398,7 +410,7 @@ export default {
 
 .studentReturn {
    display: inline-block;
-    /*margin-top: 20px;*/
+    margin-top: 5px;
     margin-bottom: 15px;
     padding-left: 10px;
     

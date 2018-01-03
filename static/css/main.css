@@ -58,9 +58,9 @@ a{text-decoration: none}
 .form-box .line{
     text-align: center;
 }
-.el-time-panel__content::after, .el-time-panel__content::before {
+/* .el-time-panel__content::after, .el-time-panel__content::before {
     margin-top: -7px;
-}
+} */
 /*Readme*/
 .ms-doc .el-checkbox__input.is-disabled+.el-checkbox__label{
     color: #333;

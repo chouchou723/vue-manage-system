@@ -7,13 +7,15 @@
             </el-breadcrumb>
         </div> -->
         <div class='accouMyresoureceMC'>
-            <h2 class="myMCReturn">
-                我的客户({{number}}人)
+            <h3 class="myMCReturn">
+                我的客户
+                <span v-if="number==='0'" style="font-size:14px;color: #bdb8b8;">加载中...</span>
+               <span v-else>({{number}}人)</span>
                 <!-- <el-button type="primary" size="mid" class='myresourceButton' @click="goToAdd" v-if='!code.includes("_c")'>添加客户</el-button> -->
-            </h2>
+            </h3>
             <div class="MCUtitle">
                 <div class='studentReturnThreeNew' v-if="code.includes('_c')">
-                    <el-select v-model="valueR" clearable placeholder="选择校区" @change="updateListCC">
+                    <el-select v-model="valueR"  placeholder="选择校区" @change="updateListCC">
                         <el-option v-for="item in optionR" :key="item.id" :label="item.title" :value="item.id">
                         </el-option>
                     </el-select>
@@ -30,11 +32,11 @@
                     </el-cascader>
                 </div>
                 <div class='studentReturnThreeN'>
-                    <el-date-picker v-model="value3" type="daterange" placeholder="录入时间" @change="updateList">
+                    <el-date-picker v-model="value3" type="daterange" placeholder="录入时间" @change="updateList" :picker-options="pickerOptions0">
                     </el-date-picker>
                 </div>
                 <div class='studentReturnThreeN'>
-                    <el-date-picker v-model="value4" type="daterange" placeholder="最近联系时间" @change="updateList">
+                    <el-date-picker v-model="value4" type="daterange" placeholder="最近联系时间" @change="updateList" :picker-options="pickerOptions0">
                     </el-date-picker>
                 </div>
                 <div class='studentReturnThreeNew'>
@@ -125,6 +127,11 @@
     export default {
         data() {
             return {
+                pickerOptions0: {
+                        disabledDate(time) {
+                            return time.getTime() > Date.now();
+                        }
+                    },
                 valueR: '',
                 optionR: [],
                 loading2: true,
@@ -138,7 +145,7 @@
                 total: 0,
                 no: false,
                 customerData: [],
-                number: 0,
+                number: '0',
                 optionsCC: [], //CClist
                 options2: [], //渠道来源
                 valueCC: '', //对应select的值
@@ -184,7 +191,9 @@
                     status: this.value5,
                     tag_id: this.valueTag,
                     sortName:this.sortName,
-                    sortOrder:this.sortOrder
+                    sortOrder:this.sortOrder,
+                    optionsCC : this.optionsCC,
+                    optionR : this.optionR
                 }
                 this.setmyCustomerS(d)
                 this.$router.push({ name: 'customerDetailList', params: { uid: row.id,status: row.status}});
@@ -195,11 +204,11 @@
             },
             updateListCC() {
                 this.currentPage = 1;
-                this.valueCC = '';
-                this.optionsCC = [{
-                    aid: 0,
-                    uname: '全部CC'
-                }];
+                // this.valueCC = '';
+                // this.optionsCC = [{
+                //     aid: 0,
+                //     uname: '全部CC'
+                // }];
                 if (this.valueR != '') {
                     let para = {
                     school_id: this.valueR
@@ -207,16 +216,27 @@
                 getAllCCList(token, para).then((res) => {
                     this.optionsCC = res.data;
                     this.optionsCC.unshift({
-                        aid: '0',
+                        aid: 0,
                         uname: '全部CC'
                     })
                 }).then(()=>{
-                        this.valueCC = '0'
+                    if( this.valueCC===0){
+                    this.updateList()
+                    }else{
+                        this.valueCC=0
+                    }
                     })
                 }else{
-                    this.valueCC = '0'
+                    if(this.valueCC=== 0){//cc选择
+                    this.updateList()
+                    }
+                    this.optionsCC=[{
+                        aid: 0,
+                        uname: '全部CC'
+                    }]
+                    this.valueCC= 0;
                 }
-                this.fetchData();
+                // this.fetchData();
             },
             fetchData() { //查询列表
                 if(Object.keys(this.getmyCustomerS).length!=0){
@@ -230,16 +250,8 @@
                     this.valueTag =  this.getmyCustomerS.tag_id;
                     this.sortName =  this.getmyCustomerS.sortName;
                     this.sortOrder =  this.getmyCustomerS.sortOrder;
-                    let para = {
-                        school_id: this.valueR
-                    }
-                    getAllCCList(token, para).then((res) => {
-                        this.optionsCC = res.data;
-                        this.optionsCC.unshift({
-                            aid: '0',
-                            uname: '全部CC'
-                        })
-                    })
+                    this.optionsCC = this.getmyCustomerS.optionsCC;
+                    this.optionR = this.getmyCustomerS.optionR
                 }
                 let para = {
                     school_id: this.valueR,
@@ -267,7 +279,7 @@
                     this.setmyCustomerS({})
 
                 }).catch(() => {
-                    this.$message.error('该用户未授权');
+                    // this.$message.error('该用户未授权');
                     this.loading2 = false
                 })
             },
@@ -339,46 +351,43 @@
         },
         created() {
             this.code = JSON.parse(user).job ? JSON.parse(user).job.code : '';
-            if ((this.code == 'cc_m' || this.code.includes('_c'))&&Object.keys(this.getmyCustomerS).length==0) {
+            // console.log(Object.keys(this.getmyCustomerS))
+            if (Object.keys(this.getmyCustomerS).length==0) {
                     if(this.code.includes('cc_c')||this.code.includes('teach_c')){//销售经理 和 教务经理 默认进来全部CC
-                    this.optionsCC.unshift({
-                        aid: '0',
-                        uname: '全部CC'
-                    })
-                    this.valueCC='0'
-                }else{
+                        let cam = {
+                            simple: 1
+                        }
+                        campusList(cam, token).then((res) => {//获取校区
+                            this.optionR = res.data
+                        this.optionR.unshift({
+                                id:0,
+                                title:'全部校区'
+                            })
+                        }).then(()=>{
+                            this.valueR=0;
+
+                        })
+                }else if(this.code=='cc_m'){
                     getAllCCList(token).then((res) => {
                         this.optionsCC = res.data;
                         this.optionsCC.unshift({
-                            aid: '0',
+                            aid: 0,
                             uname: '全部CC'
                         })
-                        this.valueCC='0'
-                    })
-                }
+                    }).then(()=>{
+                        this.valueCC= JSON.parse(user).aid
 
-                    // getAllCCList(token).then((res) => {
-                    //     this.optionsCC = res.data;
-                    //     this.optionsCC.unshift({
-                    //         aid: 0,
-                    //         uname: '全部CC'
-                    //     })
-                    // })
+                    })
+                }else{
+                    this.fetchData();
                 }
-            this.fetchData();
+            }else{
+                 this.fetchData();
+                }
             sourceList(token).then(res => {
                 // let a = res.data.splice(0,1);
                 this.options2 = res.data;
             }).then(() => {
-                if (this.code.includes('_c')) {
-
-                    let cam = {
-                        simple: 1
-                    }
-                    campusList(cam, token).then((res) => { //获取校区
-                        this.optionR = res.data
-                    })
-                }
                 getMyCustomerTag(token).then(res => {
                     // this.dynamicTags = res.data.map(item => {
                     //     return item.label
@@ -445,14 +454,15 @@
         background-color: white;
         margin-top: 0;
         padding-top: 10px;
-        /* margin-bottom: 5px; */
+        margin-bottom: 5px;
         border-radius: 5px;
     }
 
     .myMCReturn {
-        margin-bottom: 15px;
+        /* margin-bottom: 15px; */
         padding-left: 10px;
-        margin-right:25%;
+        /* margin-right:25%; */
+        margin:5px 25% 15px 0;
         /* width: 350px; */
     }
 

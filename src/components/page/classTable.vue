@@ -23,7 +23,7 @@
                         </el-option>
                     </el-select>
                 </div>
-                <el-button type="primary" size="mid" class='buttonAdd' @click="createCh('classform')" v-if='code =="cc_m"'>添加班级</el-button>
+                <el-button type="primary" size="mid" class='buttonAdd' @click="createCh('classform')" v-if="!code.includes('_c')">添加班级</el-button>
             </div>
             <el-dialog :title="alter" :visible.sync="dialogFormVisible" :close-on-click-modal="no" custom-class='classTableDialog' top='20%'
                 @close='resetD'>
@@ -37,7 +37,7 @@
                         </el-form-item>
                         <el-form-item prop="course_id" class='CT142I'>
                             <el-select v-model="classform.course_id" placeholder="请选择课程名" :disabled='canEdit'>
-                                <el-option v-for="item in courseName" :key="item.kcid" :label="item.title" :value="item.kcid" >
+                                <el-option v-for="item in courseName" :key="item.kcid" :label="item.title" :value="item.kcid" loading>
                                 </el-option>
                             </el-select>
                         </el-form-item>
@@ -68,7 +68,7 @@
                             </el-select>
                         </el-form-item>
                         <el-form-item prop="class_time" class='CT142I'>
-                            <el-time-picker v-model="classform.class_time" format="HH:mm" class='CT142' placeholder="请选择具体时间">
+                            <el-time-picker v-model="classform.class_time" format="HH:mm" class='CT142' placeholder="请选择具体时间" popper-class='top55'>
                             </el-time-picker>
                         </el-form-item>
                     </el-form-item>
@@ -77,13 +77,13 @@
                         </el-date-picker>
                     </el-form-item>
                     <el-form-item label="结班日期" prop="end_time">
-                        <el-date-picker v-model="classform.end_time" type="date" placeholder="选择日期" class='CT142'>
+                        <el-date-picker v-model="classform.end_time" type="date" placeholder="选择日期" class='CT142' >
                         </el-date-picker>
                         <span>(选填)</span>
                     </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer">
-                    <el-button type="primary" @click="addAccount('classform')">确 定</el-button>
+                    <el-button type="primary" :loading='writeL' @click="addAccount('classform')">确 定</el-button>
                     <el-button @click="dialogFormVisible = false">取 消</el-button>
                 </div>
             </el-dialog>
@@ -96,35 +96,38 @@
                 </el-date-picker>
                 <i class="el-icon-arrow-right" @click='nextWeek'></i>
             </div>
-            <div class="CTweek">
-                <div class='CTweekT'>老师</div>
-                <div v-for='(item,index) in week' class='CTweekI'>{{item}}
-                    <span>{{index==0?w1:index==1?w2:index==2?w3:index==3?w4:index==4?w5:index==5?w6:index==6?w7:''}}</span>
+            <div v-loading="loading">
+
+                <div class="CTweek">
+                    <div class='CTweekT'>老师</div>
+                    <div v-for='(item,index) in week' class='CTweekI'>{{item}}
+                        <span>{{index==0?w1:index==1?w2:index==2?w3:index==3?w4:index==4?w5:index==5?w6:index==6?w7:''}}</span>
+                    </div>
                 </div>
-            </div>
-            <div v-for='(t,index) in teachers' class='CTlesson'>
-                <div class='CTlessonN'>{{t.uname}}</div>
-                <div v-for='item in t.week' class='CTlessonI'>
-                    <div v-for='(i,index) in item' v-if='Array.isArray(item)' class='lessonhover' @click='showClass(i,$event)'>
-                        <div class='CTlessonD'><span class='CTlesson26'>{{i.class_time}}</span>
-                            <span class="CTlesson73">{{i.class_room.names}}({{i.syllabus_person_num}}人)</span></div>
-                        <div class='CTlessonC'><span class='CTlesson15'>{{i.course?i.course.title:i.title}}</span>
-                            <div class='CTlessonFlex'>
-                                <img :src="src" width='20' alt="" class='classImg' @click='editClass(i,index)' v-if="code.includes('cc_m')">
+                <div v-for='(t,index) in teachers' class='CTlesson' >
+                    <div class='CTlessonN'>{{t.uname}}</div>
+                    <div v-for='item in t.week' class='CTlessonI'>
+                        <div v-for='(i,index) in item'  class='lessonhover' @click='showClass(i,$event)'>
+                            <div class='CTlessonD'><span class='CTlesson26'>{{i.class_time}}</span>
+                                <span class="CTlesson73">{{i.class_room.names}}({{i.syllabus_person_num}}人)</span></div>
+                            <div class='CTlessonC'><span class='CTlesson15'>{{i.course?i.course.title:i.title}}</span>
+                                <div class='CTlessonFlex'>
+                                    <img :src="src" width='20' alt="" class='classImg' @click='editClass(i,index)' v-if="!code.includes('_c')">
+                                </div>
                             </div>
                         </div>
+                        <!-- <div v-if='!Array.isArray(item)' style='padding-left:10px;border-bottom:1px solid gainsboro' class='lessonhover'>
+                            <div><span style="margin-right:10px">{{item.class_time}}</span><span style="margin-left:10px">{{item.course.title}}</span></div>
+                            <div><span>{{item.class_room.names}}({{item.syllabus_person_num}}人)</span>
+                                <img src="../../../static/img/editClass.png" width='20' alt="" class='classImg'>
+                            </div>
+                        </div> -->
                     </div>
-                    <!-- <div v-if='!Array.isArray(item)' style='padding-left:10px;border-bottom:1px solid gainsboro' class='lessonhover'>
-                        <div><span style="margin-right:10px">{{item.class_time}}</span><span style="margin-left:10px">{{item.course.title}}</span></div>
-                        <div><span>{{item.class_room.names}}({{item.syllabus_person_num}}人)</span>
-                            <img src="../../../static/img/editClass.png" width='20' alt="" class='classImg'>
-                        </div>
-                    </div> -->
                 </div>
             </div>
         </div>
         <el-dialog title="班级详情" :visible.sync="dialogFormVisibleClass" :close-on-click-modal="no" custom-class='classDetailDialog'
-            top='5%' size='tiny'>
+            top='5%' size='tiny' @close="resetClass">
             <div class='CTTclass'>
                 <div class='CTTclassTitle'>
                     <div class='CTTclass600'>课程:{{classDetail.title}}</div>
@@ -182,6 +185,7 @@
                 }
             }
             return {
+                writeL:false,
                 canEdit:false,
                 pickerOptions0: {
                     disabledDate(time) {
@@ -189,6 +193,8 @@
                     }
                 },
                 valueR: '',
+                substringc :new Date().toLocaleDateString().indexOf('年')>0?8:5,
+                loading:true,
                 optionR: '',
                 classRoom: [],
                 teachersName: [],
@@ -204,7 +210,7 @@
                     date: '',
                     teacher: '',
                     title: '',
-                    number: 0,
+                    number: '0',
                     classroom: ''
                 },
                 students: [],
@@ -275,11 +281,13 @@
         },
         methods: {
             lastWeek() {
+                // this.loading = true;
                 let date = new Date(this.thisWeekStart)
                 let c = date.setDate(date.getDate() - 6);
                 this.value3 = new Date(c)
             },
             nextWeek() {
+                // this.loading = true;                
                 let date = new Date(this.thisWeekStart)
                 let c = date.setDate(date.getDate() + 8);
                 this.value3 = new Date(c)
@@ -298,11 +306,12 @@
                 }
             },
             showClass(i, e) { //获取课程详细
-                if (e.target.localName == 'span') {
+                if (e.target.localName != 'img') {
                     let para = {
                         id: i.id,
                         schooltime:i.schoolDate
                     }
+                        this.dialogFormVisibleClass = true;
                     getClassDetail(token, para).then(res => {
                         this.classDetail = {
                             title: res.data.title,
@@ -312,11 +321,14 @@
                             number: res.data.syllabus_person_num,
                             date: res.data.start_time.substring(0, 11),
                         }
-                        this.students = [...res.data.students]
+                        this.students = res.data.students
                     }).then(() => {
-                        this.dialogFormVisibleClass = true;
                     })
                 }
+            },
+            resetClass(){
+                this.classDetail = {};
+                this.students = [];
             },
             updateClass() { //获取当前第几周 调服务
                 this.fetchData();
@@ -393,12 +405,14 @@
                     let f = this.classform;
                     let i = this.in;
                     if (valid) {
+                        this.writeL = true;
                         if (i !== '') {
                             let para = { ...f
                             };
                             para.start_time = para.start_time.toLocaleDateString();
                             para.end_time = para.end_time ? para.end_time.toLocaleDateString() : '';
-                            para.class_time = para.class_time.toTimeString().substring(0, 5)
+                            para.class_time = para.class_time.toTimeString().substring(0, 5);
+                            console.log(para)
                             put_lesson(para, token).then(res => {
                                 if (res.code == 0) {
                                     this.$message({
@@ -407,11 +421,13 @@
                                     });
                                     this.fetchData();
                                     this.dialogFormVisible = false;
+                                    this.writeL = false;
                                 } else {
                                     this.$message({
                                         type: 'error',
                                         message: res.data
                                     });
+                                    this.writeL = false;
                                 }
                             })
                         } else {
@@ -428,11 +444,13 @@
                                     });
                                     this.fetchData();
                                     this.dialogFormVisible = false;
+                                    this.writeL = false;
                                 } else {
                                     this.$message({
                                         type: 'error',
                                         message: res.data
                                     });
+                                    this.writeL = false;
                                 }
                             })
                         }
@@ -443,15 +461,14 @@
                 });
             },
             fetchData() {
+                this.loading = true;
                 let a = new Date(this.value3)
                 let year = a.getFullYear();
                 let month = a.getMonth()
                 let day = a.getDate() - 1;
-                this.thisWeekStart = new Date(year, month, day).toLocaleDateString()
-                let year1 = a.getFullYear();
-                let month1 = a.getMonth()
+                this.thisWeekStart = new Date(year, month, day)
                 let day1 = a.getDate() + 5;
-                this.thisWeekEnd = new Date(year1, month1, day1).toLocaleDateString()
+                this.thisWeekEnd = new Date(year, month, day1)
                 let para = {
                     start_date:  this.thisWeekStart,
                     end_date: this.thisWeekEnd,
@@ -460,6 +477,8 @@
                 }
                 getClassTable(token, para).then((res) => {
                     this.teachers = res.data;
+                }).then(()=>{
+                    this.loading=false;
                 })
 
             }
@@ -470,20 +489,27 @@
         },
         created() { //创建组件时
             this.code = JSON.parse(user).job ? JSON.parse(user).job.code : '';
+            // this.fetchData()
+            if(this.code=='cc'||this.code=='cc_m'){
             this.fetchData()
-            if (this.code.includes('_c')) {
+                
+            }else if (this.code.includes('_c')) {
                 let cam = {
                     simple: 1
                 }
                 campusList(cam, token).then((res) => { //获取校区
                     this.optionR = res.data;
                     this.valueR = res.data[0].id
+                }).then(()=>{
+            this.fetchData()
                 })
+            }else{
+                this.fetchData()  
             }
             getClassRoom(token).then((res) => { //获取教室
                 this.classRoom = res.data;
             }).then(() => {
-                if(this.code=='cc_m'){
+                // if(this.code=='cc_m'){
 
                 getTeacherList(token).then((res) => { //获取老师
                     this.teachersName = res.data;
@@ -491,7 +517,7 @@
                 getClassKind(token).then((res) => { //获取课程分类
                     this.classkind = res.data
                 })
-                }
+                // }
             });
 
 
@@ -501,36 +527,37 @@
             w1(){
                 let a = new Date(this.value3);
                 let b = new Date(a.setDate(a.getDate() - 1));
-                return b.toLocaleDateString().substring(5);
+               
+                return b.toLocaleDateString().substring(this.substringc);
             },
             w2(){
                 let a = new Date(this.value3);
-                return a.toLocaleDateString().substring(5);
+                return a.toLocaleDateString().substring(this.substringc);
             },
             w3(){
                 let a = new Date(this.value3);
                 let b = new Date(a.setDate(a.getDate() + 1));
-                return b.toLocaleDateString().substring(5);
+                return b.toLocaleDateString().substring(this.substringc);
             },
             w4(){
                 let a = new Date(this.value3);
                 let b = new Date(a.setDate(a.getDate() + 2));
-                return b.toLocaleDateString().substring(5);
+                return b.toLocaleDateString().substring(this.substringc);
             },
             w5(){
                 let a = new Date(this.value3);
                 let b = new Date(a.setDate(a.getDate() + 3));
-                return b.toLocaleDateString().substring(5);
+                return b.toLocaleDateString().substring(this.substringc);
             },
             w6(){
                 let a = new Date(this.value3);
                 let b = new Date(a.setDate(a.getDate() + 4));
-                return b.toLocaleDateString().substring(5);
+                return b.toLocaleDateString().substring(this.substringc);
             },
             w7(){
                 let a = new Date(this.value3);
                 let b = new Date(a.setDate(a.getDate() + 5));
-                return b.toLocaleDateString().substring(5);
+                return b.toLocaleDateString().substring(this.substringc);
             },
             alter: function () {
                 if (this.in === '') {
@@ -545,10 +572,8 @@
                 let month = a.getMonth()
                 let day = a.getDate() - 1;
                 let thisWeekStart = new Date(year, month, day).toLocaleDateString()
-                let year1 = a.getFullYear();
-                let month1 = a.getMonth()
                 let day1 = a.getDate() + 5;
-                let thisWeekEnd = new Date(year1, month1, day1).toLocaleDateString()
+                let thisWeekEnd = new Date(year, month, day1).toLocaleDateString()
                 let dis = thisWeekStart + ' ~ ' + thisWeekEnd;
                 return dis
             }
@@ -680,7 +705,9 @@
         margin-right: 30px;
         display: inline-block
     }
-
+    .top55  .el-time-panel__content::after,.top55 .el-time-panel__content::before{
+        top:55%
+    }
     .classTableDialog .CT142 {
         width: 142px;
     }

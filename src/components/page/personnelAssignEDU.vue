@@ -4,10 +4,12 @@
             <el-breadcrumb-item><i class="el-icon-my-weituoguanxiguanli"></i> 业务交接</el-breadcrumb-item>
         </el-breadcrumb> -->
         <div class='noEff'>
-            <h2 class="studentReturnnoEff">
+            <h3 class="studentReturnnoEff">
 
-                业务交接({{number}}人)
-            </h2>
+                业务交接
+                <span v-if="number==='0'" style="font-size:14px;color: #bdb8b8;">加载中...</span>
+               <span v-else>({{number}}人)</span>
+            </h3>
             <div class='studentReturnNoneed'>
                 <el-select v-model="valueT"  placeholder="选择老师" @change="updateList">
                     <el-option v-for="item in optionsCC" :key="item.aid" :label="item.uname" :value="item.aid">
@@ -65,7 +67,7 @@
             </el-table>
         </div>
         <div class="block">
-            <span class="demonstration"></span>
+              <!-- <span class="demonstration"></span> -->
             <el-pagination layout="sizes,prev, pager, next" :total="total" :page-sizes="[150,300,500]" @size-change="handleSizeChange" :current-page="currentPage" :page-size="pagesize" @current-change="handleCurrentChange">
             </el-pagination>
         </div>
@@ -75,7 +77,7 @@
     var user, token
     import {
         getMyCustomerList,
-        dispatchResource,
+        dispatchPerson,
         campusList,
         getTeacherList,
         getTeachmyStudent
@@ -94,7 +96,7 @@
                 },
                 dialogFormVisible: false,
                 total: 0,
-                number: 0,
+                number: '0',
                 noEffData: [],
                 optionsCC: [],
                 receiveSchool: [],
@@ -106,14 +108,14 @@
             }
         },
         methods: {
-            formatter(row, column) {
-                let reg = /(\d{4})\d{4}(\d{3})/;
-                if (reg.test(row.mobile)) {
-                    return row.mobile.replace(reg, '$1****$2');
-                } else {
-                    return row.mobile
-                }
-            },
+            // formatter(row, column) {
+            //     let reg = /(\d{4})\d{4}(\d{3})/;
+            //     if (reg.test(row.mobile)) {
+            //         return row.mobile.replace(reg, '$1****$2');
+            //     } else {
+            //         return row.mobile
+            //     }
+            // },
             getCC(){
                 this.resourceAssign.receiveCC = ''
                 if(this.resourceAssign.school){
@@ -180,10 +182,11 @@
                     return item.id
                 })
                 let para = {
-                    customer_ids: a.join(','),
-                    tmk_id: this.resourceSchool.valueTMK
+                    type:'student',
+                    uids: a,
+                    new_teach_id: this.resourceAssign.receiveCC
                 }
-                dispatchResource(para, token).then(res => {
+                dispatchPerson(para, token).then(res => {
                     if (res.code == 0) {
 
                         this.fetchData();
@@ -191,6 +194,8 @@
                     } else {
                         this.$message.error(res.message)
                     }
+                }).catch(()=>{
+                    // this.$message.error('该用户未授权')
                 })
                 this.dialogFormVisible = false
             }

@@ -5,10 +5,12 @@
             <el-breadcrumb-item class='ss'>无需求资源</el-breadcrumb-item>
         </el-breadcrumb> -->
         <div class='noEff'>
-            <h2 class="studentReturnnoEff">
-                无需求资源({{number}}人)
-            </h2>
-            <div class='studentReturnNoneed' v-if="code =='tmk_m'||code=='cc_c'">
+            <h3 class="studentReturnnoEff">
+                无需求资源
+                <span v-if="number==='0'" style="font-size:14px;color: #bdb8b8;">加载中...</span>
+               <span v-else>({{number}}人)</span>
+            </h3>
+            <div class='studentReturnNoneed' v-if="code =='tmk_m'||code.includes('cc_c')">
                 <el-select v-model="valueT"  placeholder="选择TMK" @change="updateList">
                     <el-option v-for="item in optionsTMK" :key="item.key" :label="item.label" :value="item.key">
                     </el-option>
@@ -28,12 +30,12 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer NDRfoot">
-                <el-button type="primary" @click="distributeResource">确 定</el-button>
+                <el-button type="primary" :loading='writeL' @click="distributeResource">确 定</el-button>
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
             </div>
         </el-dialog>
         <div id="table2NDR">
-            <el-table :data="noEffData"  style="width: 100%"   @sort-change='sortChange' @selection-change="handleSelectionChange">
+            <el-table :data="noEffData"  style="width: 100%"   @sort-change='sortChange' @selection-change="handleSelectionChange" @select-all='saaa'>
                 <el-table-column type="selection" width="55" v-if="code =='tmk_m'">
                 </el-table-column>
                 <el-table-column prop="names" label="姓名" width='80'>
@@ -60,8 +62,8 @@
             </el-table>
         </div>
         <div class="block">
-            <span class="demonstration"></span>
-            <el-pagination layout="prev, pager, next" :total="total" @current-change="handleCurrentChange"  :current-page="currentPage" :page-size="pagesize">
+              <!-- <span class="demonstration"></span> -->
+            <el-pagination layout="sizes,prev, pager, next"  :total="total" :page-sizes="[150,300,500]"  @size-change="handleSizeChange" @current-change="handleCurrentChange"  :current-page="currentPage" :page-size="pagesize">
             </el-pagination>
         </div>
     </div>
@@ -79,6 +81,7 @@
     export default {
         data() {
             return {
+                writeL:false,
                 multipleSelection: [],
                 no: false,
                 code: '',
@@ -87,17 +90,20 @@
                 },
                 dialogFormVisible: false,
                 total: 0,
-                number: 0,
+                number: '0',
                 noEffData: [],
                 optionsTMK: [],
-                valueT: '0',
+                valueT: '',
                 currentPage: 1, //页数
-                pagesize: 15, //默认每页
+                pagesize: 150, //默认每页
                 sortName:'',
                 sortOrder:'',
             }
         },
         methods: {
+            saaa(){
+                // console.log(1)
+            },
             sortChange(column){
                 let {prop,order} = column
                 // console.log(prop)
@@ -136,7 +142,10 @@
                 this.currentPage = val;
                 this.fetchData();
             },
-
+            handleSizeChange :function (val) { //换页
+                this.pagesize = val;
+                this.fetchData();
+            },
             ...mapActions([
             'setmyNoDemandS'
         ]),
@@ -150,7 +159,9 @@
                     tmk_id: this.valueT, //TMK
                     page: this.currentPage,
                     sortName:this.sortName,
-                    sortOrder:this.sortOrder
+                    sortOrder:this.sortOrder,
+                    pagesize:this.pagesize,
+                    optionsTMK: this.optionsTMK
                 }
                 this.setmyNoDemandS(d)
                 // this.sendResourceId(uid)
@@ -167,13 +178,16 @@
                     this.currentPage = this.getmyNoDemandS.page;
                     this.sortName =  this.getmyNoDemandS.sortName;
                     this.sortOrder =  this.getmyNoDemandS.sortOrder;
+                    this.pagesize = this.getmyNoDemandS.pagesize;
+                    this.optionsTMK= this.getmyNoDemandS.optionsTMK;
                 }
                 let para = {
                     group_id: 0,
                     tmk_id: this.valueT, //TMK
                     page: this.currentPage,
                     sortName:this.sortName,
-                    sortOrder:this.sortOrder
+                    sortOrder:this.sortOrder,
+                    pagesize:this.pagesize,
                 }
 
                 getMyResoure(para, token).then((res) => { //
@@ -194,16 +208,19 @@
                     customer_ids: a.join(','),
                     tmk_id: this.resourceSchool.valueTMK
                 }
+                this.writeL = true;
                 dispatchResource(para, token).then(res => {
                     if (res.code == 0) {
 
                         this.fetchData();
-                        this.$message.success('分配成功')
+                        this.$message.success('分配成功');
+                        this.writeL = false;
+                        this.dialogFormVisible = false
                     } else {
-                        this.$message.error(res.message)
+                        this.$message.error(res.message);
+                        this.writeL = false;
                     }
                 })
-                this.dialogFormVisible = false
             }
         },
 
@@ -213,16 +230,31 @@
         },
         created() {
             this.code = JSON.parse(user).job ? JSON.parse(user).job.code : '';
-            this.fetchData();
-            if (this.code == 'tmk_m'||this.code=='cc_c') {
-                getTMK(token).then((res) => {
-                    this.optionsTMK = res.data;
-                    this.optionsTMK.unshift({
-                        key: '0',
-                        label: '全部TMK'
-                    })
+            // this.fetchData();
+            // if(this.code=='tmk'){
+                if(Object.keys(this.getmyNoDemandS).length==0){
+                    if(this.code == 'tmk_m'){
+                        getTMK(token).then((res) => {
+                    this.optionsTMK = res.data
+                    this.optionsTMK.unshift({key:'no',label:'无TMK'})                    
+                    this.optionsTMK.unshift({key:0,label:'全部TMK'})
+                    this.valueT=JSON.parse(user).aid+''
                 })
-            }
+                    }else if(this.code.includes('_c')){
+                        getTMK(token).then((res) => {
+                    this.optionsTMK = res.data
+                    this.optionsTMK.unshift({key:'no',label:'无TMK'})                    
+                    this.optionsTMK.unshift({key:0,label:'全部TMK'})
+                    this.valueT= 0
+                })
+                    }else{
+                this.fetchData(); //获取表格数据
+                        
+                    }
+                }else{
+
+                this.fetchData(); //获取表格数据
+                }
         },
         computed: {
         ...mapGetters([
@@ -273,6 +305,7 @@
         float: left;
         margin-right: 5px;
         padding-left: 10px;
+        margin-top:5px;
     }
 
     .studentReturnNoneed {
@@ -288,7 +321,7 @@
         background-color: white;
         margin-top: 0;
         padding-top: 10px;
-        /* margin-bottom: 5px; */
+        margin-bottom: 5px;
         border-radius: 5px;
     }
 

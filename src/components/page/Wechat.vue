@@ -13,7 +13,7 @@
   <div>
       
         <el-row style='background-color:white;padding:20px 0 150px'>
-            <el-col :span="12" :offset="6">
+            <el-col :span="24" style='display:flex;justify-content:center'>
                 <el-form label-width="100px" class="demo-ruleForm" v-if='changewechat'>
                     <el-steps :space="300" :active="active" align-center>
                         <el-step title="更换绑定"></el-step>
@@ -33,7 +33,7 @@
                     </el-col>
                 </el-form>
             </el-col>
-            <el-col :span="12" :offset="6">
+            <el-col :span="24" style='display:flex;justify-content:center'>
                 <el-form label-width="100px" class="demo-ruleForm" v-if='!changewechat'>
                     <el-steps :space="600" :active="active" align-center>
                         <el-step title="扫描二维码 关注公众号"></el-step>

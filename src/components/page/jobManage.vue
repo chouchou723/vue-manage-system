@@ -8,7 +8,7 @@
         </div> -->
         <div class='addjob'>
             <h3 class='jobH2'>职位管理</h3>
-            <el-button type="primary" size="mid" class="JMbutton" @click="createCh">添加职位</el-button>
+            <el-button type="primary" size="mid" class="JMbutton" @click="createCh" v-if="!code.includes('school')">添加职位</el-button>
         </div>
         <div>
             <el-dialog :title="alter" :visible.sync="dialogFormVisible" :close-on-click-modal="no" show-close @close="resetD('form')">
@@ -41,7 +41,7 @@
                 </div>
             </el-dialog>
         </div>
-        <el-table v-for="depart in departs" :data="depart._child" border style="width: 100%;" ref='table' >
+        <el-table v-for="depart in departs" :data="depart._child" border style="width: 100%;margin-bottom:10px;" ref='table' >
             <el-table-column  prop="full_name" :label="depart.full_name +'   (' + depart.count + '人)'" id='level'>
                 <template scope="scope">
                     <span class='canC' v-if='scope.row.pid==0' style='padding-left:40px;' @click='showD(scope.row.job_id)'>{{scope.row.full_name}}&nbsp&nbsp&nbsp({{scope.row.count}}人)</span>
@@ -52,7 +52,7 @@
                     <span  v-if="scope.row.pid!==0&&scope.row.pid!=depart._child[0].job_id&&depart._child.every(item=>{return scope.row.job_id!=item.pid})" style='padding-left:30px;'>{{scope.row.full_name}}&nbsp&nbsp&nbsp({{scope.row.count}}人)</span> -->
                 </template>
             </el-table-column>
-            <el-table-column width='140px' label="操作">
+            <el-table-column width='140px' label="操作" v-if="!code.includes('school')">
                 <template scope="scope">
                     <el-button type="text" size="small" @click="open4(scope.$index, depart._child)">修改</el-button>
                     <el-button type="text" size="small" class="JMred" @click="open2(scope.$index, depart._child)">删除</el-button>
@@ -107,7 +107,7 @@
     </div>
 </template>
 <script>
-    var token
+    var token,user;
     import {
         departList,
         create_departList,
@@ -139,6 +139,7 @@
                 }
             }
             return {
+                code:'',
                 accountData:[],
                 total:0,
                 currentPage:1,
@@ -269,13 +270,13 @@
                 if (data[index].count != 0) {
                     this.$alert('当前职位有成员,无法删除职位', '删除职位', {
                         type: 'warning',
-                        customClass: 'redwarn',
+                        customClass: 'JMredwarn',
                         confirmButtonText: '确定',
                     });
                 } else {
                     this.$confirm('是否确定要删除职位?', '删除职位', {
                         title: '删除职位',
-                        customClass: 'redwarn',
+                        customClass: 'JMredwarn',
                         confirmButtonText: '确定',
                         cancelButtonText: '取消',
                         type: 'warning'
@@ -308,7 +309,7 @@
             },
             open4(index, data) { //点击修改
                 this.$confirm('若该部门有成员,修改后原部门所有成员将自动更新到新部门！', '修改提示', {
-                    customClass: 'redwarn',
+                    customClass: 'JMredwarn',
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'danger'
@@ -316,19 +317,45 @@
 
                     this.in = index;
                     this.form.did = data[index].did - 0;
-                    this.updateLevel();
-                    this.$nextTick(function () {
-                        this.levels.push({
-                            label: '无',
-                            value: 0
-                        })
+                    // this.updateLevel();
+                    let para1 = {
+                        did: this.form.did
+                    }
+                    departList(para1, token).then(res => {
+                        // console.log(res)
+                        if(res.data[0]._child){
+    
+                        this.levels = res.data[0]._child.map(item => {
+                            return {
+                                value: item.job_id,
+                                label: item.full_name
+                            }
+                        }).filter(item=>{
+                            // console.log(item)
+                        return item.value!=data[index].job_id
                     })
-                    this.form.full_name = data[index].full_name;
+                       
+                        }
+                        // console.log(this.levels)
+                    }).then(()=>{
+                    this.levels.unshift({value:0,label:'无'});
                     this.form.pid = data[index].pid - 0;
+                    })
+                    // this.$nextTick(function () {
+                    //     console.log(this.levels)
+                    //     this.levels = this.levels.filter(item=>{
+                    //     return item.job_id!=data[index].job_id
+                    // })
+                    //     // this.levels.push({
+                    //     //     label: '无',
+                    //     //     value: 0
+                    //     // })
+                    // })
+                    this.form.full_name = data[index].full_name;
+                    this.form.job_id = data[index].job_id;
                     // if(this.form.pid == 0){
                     // }
                     this.form.status = data[index].status;
-                    this.form.job_id = data[index].job_id;
                     let para = {
                         job_id: this.form.job_id
                     }
@@ -340,12 +367,15 @@
                     })
                     this.form.count = data[index].count;
                     this.dialogFormVisible = true;
-                    this.levels = data.map(item => {
-                        return {
-                            value: item.job_id,
-                            label: item.full_name
-                        }
-                    })
+                    // this.levels = data.map(item => {
+                    //     return {
+                    //         value: item.job_id,
+                    //         label: item.full_name
+                    //     }
+                    // }).filter(item=>{
+                    //     console.log(data[index].job_id)
+                    //     return item.job_id!=data[index].job_id
+                    // })
                     // this.updateLevel();
 
                 }).catch(()=>{})
@@ -424,10 +454,11 @@
 
        
         beforeCreate() {
-            let user = sessionStorage.getItem('user');
+            user = sessionStorage.getItem('user');
             token = JSON.parse(user).token;
         },
         created() {
+            this.code = JSON.parse(user).job ? JSON.parse(user).job.code : '';
             let para = {}
             departList(para, token).then((res) => {
                 // this.filterData(res);
@@ -495,21 +526,21 @@
         border-color: #32a4d3;
     }
 
-    .redwarn .el-message-box__header {
+    .JMredwarn .el-message-box__header {
         background-color: #e95c5c;
         padding: 20px 20px 20px;
     }
 
-    .redwarn .el-message-box__title {
+    .JMredwarn .el-message-box__title {
         color: white;
     }
 
-    .redwarn .el-button--primary {
+    .JMredwarn .el-button--primary {
         background-color: #e95c5c;
         border-color: #e95c5c;
     }
 
-    .redwarn .el-button--primary:hover {
+    .JMredwarn .el-button--primary:hover {
         background-color: #ff6d6d;
         border-color: #ff6d6d;
     }

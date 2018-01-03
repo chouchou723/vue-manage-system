@@ -1,20 +1,22 @@
 <template>
-    <div class="crumbs">
+    <div class="PACH12">
         <!-- <el-breadcrumb separator="/">
             <el-breadcrumb-item><i class="el-icon-my-weituoguanxiguanli"></i> 业务交接</el-breadcrumb-item>
         </el-breadcrumb> -->
-        <div class='noEff'>
-            <h2 class="studentReturnnoEff">
+        <div class='PAC'>
+            <h3 class="PACH">
 
-                业务交接({{number}}人)
-            </h2>
-            <div class='studentReturnNoneed'>
+                业务交接
+                <span v-if="number==='0'" style="font-size:14px;color: #bdb8b8;">加载中...</span>
+               <span v-else>({{number}}人)</span>
+            </h3>
+            <div class='PACH1'>
                 <el-select v-model="valueT"  placeholder="选择CC" @change="updateList">
                     <el-option v-for="item in optionsCC" :key="item.aid" :label="item.uname" :value="item.aid">
                     </el-option>
                 </el-select>
             </div>
-            <div class='studentReturnNoneed'>
+            <div class='PACH1'>
                 <el-select v-model="valueR"  placeholder="调配类型" @change="updateList">
                     <el-option label="客户" value="client"></el-option>
                     <el-option label="学员" value="student"></el-option>
@@ -45,7 +47,7 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer" style='text-align:center;margin-top:-24px'>
-                <el-button type="primary" @click="distributeResource">确 定</el-button>
+                <el-button type="primary" :loading='writeL' @click="distributeResource">确 定</el-button>
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
             </div>
         </el-dialog>
@@ -69,7 +71,7 @@
             </el-table>
         </div>
         <div class="block">
-            <span class="demonstration"></span>
+              <!-- <span class="demonstration"></span> -->
             <el-pagination layout="sizes,prev, pager, next" :total="total" :page-sizes="[150,300,500]" :current-page="currentPage" :page-size="pagesize" @current-change="handleCurrentChange"
             @size-change="handleSizeChange">
             </el-pagination>
@@ -88,6 +90,7 @@
     export default {
         data() {
             return {
+                writeL:false,
                 listCC:[],
                 isDisabled: [],
                 multipleSelection: [],
@@ -99,7 +102,7 @@
                 },
                 dialogFormVisible: false,
                 total: 0,
-                number: 0,
+                number: '0',
                 noEffData: [],
                 optionsCC: [],
                 receiveSchool: [],
@@ -111,14 +114,14 @@
             }
         },
         methods: {
-            formatter(row, column) {
-                let reg = /(\d{4})\d{4}(\d{3})/;
-                if (reg.test(row.mobile)) {
-                    return row.mobile.replace(reg, '$1****$2');
-                } else {
-                    return row.mobile
-                }
-            },
+            // formatter(row, column) {
+            //     let reg = /(\d{4})\d{4}(\d{3})/;
+            //     if (reg.test(row.mobile)) {
+            //         return row.mobile.replace(reg, '$1****$2');
+            //     } else {
+            //         return row.mobile
+            //     }
+            // },
             getCC(){
                 this.resourceAssign.receiveCC = '';
                 if( this.resourceAssign.school !=''){
@@ -180,16 +183,19 @@
                     uids: a,
                     new_teach_id: this.resourceAssign.receiveCC
                 }
+                this.writeL = true;
                 dispatchPerson(para, token).then(res => {
                     if (res.code == 0) {
 
                         this.fetchData();
                         this.$message.success('分配成功')
+                        this.dialogFormVisible = false;
+                        this.writeL = false;
                     } else {
-                        this.$message.error(res.message)
+                        this.$message.error(res.message);
+                        this.writeL = false;
                     }
                 })
-                this.dialogFormVisible = false
             }
         },
 
@@ -256,19 +262,20 @@
         margin-top: 10px;
     }
 
-    .studentReturnnoEff {
+    .PACH {
         float: left;
         margin-right: 5px;
         padding-left: 10px;
+        margin-top:5px;
     }
 
-    .studentReturnNoneed {
+    .PACH1 {
         float: left;
         width: 120px;
         margin-right: 10px;
     }
 
-    .noEff {
+    .PAC {
         width: 100%;
         position: relative;
         height: 46px;

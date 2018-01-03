@@ -2,122 +2,120 @@
     <div class="tableUserDSD">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-my-gerenxinxi"></i> 学员合同</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-my-gerenxinxi"></i> 学员管理</el-breadcrumb-item>
                 <el-breadcrumb-item to="/myStudents">我的学员</el-breadcrumb-item>
                 <el-breadcrumb-item class='ss'>{{student.name}}</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
-        <!-- 用户资料 -->
-        <div class="SDtitle">
-            <div class='UserDetailTitle'>
-                <!--  <i class=el-icon-my-tongxunlu style="font-size:31px"></i> -->
-                <span class="SDtitle1">学员资料</span>
-                <div class="SDtitle2">
-                    <div class="SDtitle3">
-                    </div>
-                    <div class='addU' @click='addU' v-if="!code.includes('_c')"></div>
-                </div>
+       
+        <div style='display:flex'>
+ <!-- 用户资料 -->
+ <div class="SDtitle">
+    <div class='UserDetailTitle'>
+        <!--  <i class=el-icon-my-tongxunlu style="font-size:31px"></i> -->
+        <span class="SDtitle1">学员资料</span>
+        <div class="SDtitle2">
+            <div class="SDtitle3">
             </div>
-            <el-form id='customerDeatilForm' label-width="102px" label-position='left'>
-                <el-form-item label="姓名:" prop='name'>
-                    <span>{{student.name}}</span>
-                </el-form-item>
-                <el-form-item label="性别:" prop='sex'>
-                    <span>{{student.sex}}</span>
-                </el-form-item>
-                <el-form-item label="年龄:" prop='age'>
-                    <span>{{student.age}}</span>
-                </el-form-item>
-                <el-form-item label="出生日期:" prop='birthday'>
-                        <span>{{student.birthday}}</span>
-                    </el-form-item>
-                <el-form-item label="身份证号:" prop='id_number'>
-                    <span>{{student.id_number}}</span>
-                </el-form-item>
-                <el-form-item label="家长:" prop='parent'>
-                    <span>{{student.parent}}</span>
-                </el-form-item>
-                <el-form-item label="第二家长:" prop='parent1' v-if='student.parent1.split("(")[0]!=""'>
-                    <span>{{student.parent1}}</span>
-                </el-form-item>
-                <el-form-item label="手机:" prop='parent_phone'>
-                    <span>{{student.parent_phone}}</span>
-                </el-form-item>
-                <el-form-item label="第二手机:" prop='parent1_phone' v-if='student.parent1_phone!=""'>
-                    <span>{{student.parent1_phone}}</span>
-                </el-form-item>
-                <el-form-item label="渠道来源:" prop='channel'>
-                    <span>{{student.channel}}</span>
-                    <div v-if='student.sour_id==4'>介绍人:{{student.referral_name}} 老师:{{student.teach_name}}</div>
-                </el-form-item>
-                <el-form-item label="录入时间:" prop='time'>
-                    <span>{{student.time}}</span>
-                </el-form-item>
-                <!-- <el-form-item label="所在地区:" prop='fullAddress'>
-                        <span>{{student.fullAddress}}</span>
-                    </el-form-item> -->
-                <el-form-item label="校区:" prop='school'>
-                    <span>{{student.school}}</span>
-                </el-form-item>
-                <el-form-item label="CC:" prop='teacher'>
-                    <span>{{student.teacher}}</span>
-                </el-form-item>
-            </el-form>
-            <div class="SDtitleimg">
-                <img width="100" height="100" alt="">
-            </div>
+            <div class='addU' @click='addU' v-if="!code.includes('_c')"></div>
         </div>
-        <!-- 考勤记录 -->
-        <div class="SDsign">
-            <div class='AttRecord'>
-                <!--  <i class=el-icon-my-tongxunlu style="font-size:31px"></i> -->
-                <i class='el-icon-my-richeng' style="font-size:24px"></i><span class="SDsign600">考勤记录</span>
-                <div class='studentDetailThreeNew'>
-                    <el-select v-model="valueR" clearable placeholder="全部课程" @change="updateListR">
-                        <el-option v-for="item in allClass" :key="item.kcid" :label="item.title" :value="item.kcid">
-                        </el-option>
-                    </el-select>
-                </div>
-                <div class='studentDetailThreeNew'>
-                    <el-select v-model="value1" clearable placeholder="选择老师" filterable @change="updateList1">
-                        <el-option v-for="item in teachersName" :key="item.aid" :label="item.uname" :value="item.aid">
-                        </el-option>
-                    </el-select>
-                </div>
-            </div>
-            <div id="table1">
-                <el-table :data="tableData" border style="width: 100%">
-                    <el-table-column prop="course_id" label="课程">
-                    </el-table-column>
-                    <el-table-column prop="course_time" label="上课时间">
-                    </el-table-column>
-                    <el-table-column prop="teacher_uid" label="上课老师" width='60'>
-                    </el-table-column>
-                    <el-table-column prop="checkin_types" label="签到情况">
-                        <template scope="scope">
-                            <span :style="scope.row.checkin_types=='出勤'?'color:#18c318': scope.row.checkin_types=='请假'? 'color:#e4a821' :'color:red' ">{{scope.row.checkin_types}}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column prop="course_time" label="签到时间">
-                    </el-table-column>
-                </el-table>
-                <!-- <div class="block">
-                <span class="demonstration"></span>
-                <el-pagination layout="prev, pager, next" :total="total" :current-page="currentPage" :page-size="pagesize" @current-change="handleCurrentChange">
-                </el-pagination>
-            </div> -->
-            </div>
-            <div class="block">
-                <el-pagination layout="prev, pager, next" :total="total1" :current-page="currentPage1" :page-size="pagesize1" @current-change="handleCurrentChange1">
-                </el-pagination>
-            </div>
+    </div>
+    <el-form id='customerDeatilForm' label-width="102px" label-position='left'>
+        <el-form-item label="姓名:" prop='name'>
+            <span>{{student.name}}</span>
+        </el-form-item>
+        <el-form-item label="性别:" prop='sex'>
+            <span>{{student.sex}}</span>
+        </el-form-item>
+        <el-form-item label="年龄:" prop='age'>
+            <span>{{student.age}}</span>
+        </el-form-item>
+        <el-form-item label="出生日期:" prop='birthday'>
+                <span>{{student.birthday}}</span>
+            </el-form-item>
+        <el-form-item label="身份证号:" prop='id_number'>
+            <span>{{student.id_number}}</span>
+        </el-form-item>
+        <el-form-item label="家长:" prop='parent'>
+            <span>{{student.parent}}</span>
+        </el-form-item>
+        <el-form-item label="第二家长:" prop='parent1' v-if='student.parent1.split("(")[0]!=""'>
+            <span>{{student.parent1}}</span>
+        </el-form-item>
+        <el-form-item label="手机:" prop='parent_phone'>
+            <span>{{student.parent_phone}}</span>
+        </el-form-item>
+        <el-form-item label="第二手机:" prop='parent1_phone' v-if='student.parent1_phone!=""'>
+            <span>{{student.parent1_phone}}</span>
+        </el-form-item>
+        <el-form-item label="渠道来源:" prop='channel'>
+            <span>{{student.channel}}</span>
+            <div v-if='student.sour_id==4'>介绍人:{{student.referral_name}} 老师:{{student.teach_name}}</div>
+        </el-form-item>
+        <el-form-item label="录入时间:" prop='time'>
+            <span>{{student.time}}</span>
+        </el-form-item>
+        <!-- <el-form-item label="所在地区:" prop='fullAddress'>
+                <span>{{student.fullAddress}}</span>
+            </el-form-item> -->
+        <el-form-item label="校区:" prop='school'>
+            <span>{{student.school}}</span>
+        </el-form-item>
+        <el-form-item label="CC:" prop='teacher'>
+            <span>{{student.teacher}}</span>
+        </el-form-item>
+    </el-form>
+    <div class="SDtitleimg">
+        <img width="100" height="100" alt="" :src="student.head_img">
+    </div>
+</div>
+<!-- 考勤记录 -->
+<div class="SDsign">
+    <div class='AttRecord'>
+        <!--  <i class=el-icon-my-tongxunlu style="font-size:31px"></i> -->
+        <i class='el-icon-my-richeng' style="font-size:24px"></i><span class="SDsign600">考勤记录</span>
+        <div class='studentDetailThreeNew'>
+            <el-select v-model="valueR" clearable placeholder="全部课程" @change="updateListR">
+                <el-option v-for="item in allClass" :key="item.kcid" :label="item.title" :value="item.kcid">
+                </el-option>
+            </el-select>
+        </div>
+        <div class='studentDetailThreeNew'>
+            <el-select v-model="value1" clearable placeholder="选择老师" filterable @change="updateList1">
+                <el-option v-for="item in teachersName" :key="item.aid" :label="item.uname" :value="item.aid">
+                </el-option>
+            </el-select>
+        </div>
+    </div>
+    <div id="table1">
+        <el-table :data="tableData" border style="width: 95%;margin:0 auto">
+            <el-table-column prop="course_id" label="课程">
+            </el-table-column>
+            <el-table-column prop="course_time" label="上课时间">
+            </el-table-column>
+            <el-table-column prop="teacher_uid" label="上课老师" width='80'>
+            </el-table-column>
+            <el-table-column prop="checkin_types" label="签到情况">
+                <template scope="scope">
+                    <span :style="scope.row.checkin_types=='出勤'?'color:#18c318': scope.row.checkin_types=='请假'? 'color:#e4a821' :'color:red' ">{{scope.row.checkin_types}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column prop="course_time" label="签到时间">
+            </el-table-column>
+        </el-table>
+        <div class="block">
+            <el-pagination layout="prev, pager, next" :total="total1" :current-page="currentPage1" :page-size="pagesize1" @current-change="handleCurrentChange1">
+            </el-pagination>
+        </div>
+    </div>
+</div>
         </div>
         <!-- 第一步选择合同 -->
         <el-dialog title="合同选择" :visible.sync="dialogFormVisibleFirst" :close-on-click-modal="no" top='33%' size='tiny' show-close>
             <el-form :model="firstform" :rules='firstformrule' ref="firstform" label-width="80px">
                 <el-form-item prop='contract' label='合同号'>
                     <el-select v-model="firstform.contract" placeholder="请选择合同" style="width:185px">
-                        <el-option v-for="(item,index) in this.fronzeContra" :key="item.order_id" :label="item.sku" :value="index">
+                        <el-option v-for="(item,index) in this.fronzeContra" :key="item.ii" :label="item.sku" :value="item.ii">
                         </el-option>
                     </el-select>
                 </el-form-item>
@@ -177,11 +175,11 @@
             </div>
         </el-dialog>
         <!-- 转班/升 -->
-        <el-dialog title="转班" :visible.sync="dialogFormVisibletransferOrUp" :close-on-click-modal="no" top='13%' size='small' show-close>
+        <el-dialog title="转班" :visible.sync="dialogFormVisibletransferOrUp" :close-on-click-modal="no" top='13%' size='small' show-close @close='resetClear'>
             <el-form :model="transferOrUpform" :rules='transferOrUpformrule' ref="transferOrUpform" label-width="100px">
                 <el-form-item prop='class' :label="'转出课程'">
                     <el-select v-model="transferOrUpform.class" placeholder="请选择课程" filterable @change='getTransClass(transferOrUpform.class)'>
-                        <el-option v-for="(item,index) in transOut" :key="index" :label="item.title" :value="index">
+                        <el-option v-for="(item,index) in transOut" :key="item.i" :label="item.title" :value="item.i">
                         </el-option>
                     </el-select>
                 </el-form-item>
@@ -202,7 +200,7 @@
                 <el-form-item prop='class' class='selectClass SDselect' v-if="selectionClass !=''">
                     <el-radio-group v-model="transferOrUpform.syllabus_id">
                         <el-radio :label="item.id" class="SDtu" v-for='item in selectionClass'>
-                            <span class="SDm30">{{item.week==1?'周一':item.week==2?'周二':item.week==3?'周三':item.week==4?'周四':item.week==5?'周五':item.week==6?'周六':'周日'}}  {{item.class_time.substring(0,5)}}</span>
+                            <span class="SDm30">{{item.week==1?'周一':item.week==2?'周二':item.week==3?'周三':item.week==4?'周四':item.week==5?'周五':item.week==6?'周六':'周日'}}  {{item.class_time}}</span>
                             <span class="SDm30">{{item.teacher?item.teacher.uname:''}}</span>
                             <span>{{item.class_room.names+'(当前班级'+item.syllabus_person_num+'人)' }}</span>
                         </el-radio>
@@ -210,7 +208,7 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer SDtuc">
-                <el-button type="primary" class="SDm30" @click='transferToClass'>确定</el-button>
+                <el-button type="primary" :loading='writeL' class="SDm30" @click='transferToClass'>确定</el-button>
                 <el-button @click="dialogFormVisibletransferOrUp = false">取消</el-button>
                 <br>
                 <br>
@@ -235,12 +233,12 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer SDtuc">
-                <el-button type="primary" class="SDm30" @click='transferSchoolToCC'>确定</el-button>
+                <el-button type="primary" :loading='writeL' class="SDm30" @click='transferSchoolToCC'>确定</el-button>
                 <el-button @click="dialogFormVisibleTransferSchool = false">取消</el-button>
             </div>
         </el-dialog>
         <!-- 冻结 -->
-        <el-dialog title="冻结" :visible.sync="dialogFormVisibleFroze" :close-on-click-modal="no" top='33%' size='tiny' show-close
+        <el-dialog title="冻结" :visible.sync="dialogFormVisibleFroze" :close-on-click-modal="no" top='33%' size='tiny' show-close @close='resetFroze'
             class='frozeDialog'>
             <el-form :model="frozeform" :rules='frozeformrule' ref="frozeform" label-width="80px">
                 <!-- <el-form-item prop='class' label='冻结课程'>
@@ -255,7 +253,7 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer SDtuc">
-                <el-button type="info" class="SDm30" @click='forzenSubmit'>确定</el-button>
+                <el-button type="info" :loading='writeL' class="SDm30" @click='forzenSubmit'>确定</el-button>
                 <el-button @click="dialogFormVisibleFroze = false">取消</el-button>
                 <br>
                 <br>
@@ -375,9 +373,9 @@
                             </el-table-column>
                             <el-table-column prop="classTime" label="排班管理">
                                 <template scope="scope">
-                                    <span v-if="scope.row.classTime">{{scope.row.classTime}}</span>
                                     <!-- <img class='imgEdit' src="../../../static/img/editClass.png" width='16' alt="" @click='arrangeClass(scope.row)'> -->
-                                    <span v-else-if="!scope.row.classTime&&scope.row.course_curr_num!=0&&code.includes('_c')" class='arrangeClass22' >还未排班</span>
+                                    <span v-if="scope.row.classTime">{{scope.row.classTime}}</span>
+                                    <span v-else-if="!scope.row.classTime&&scope.row.course_curr_num!=0&&code.includes('_c')" class='arrangeClass22' >-</span>
                                     <span v-else-if="!scope.row.classTime&&scope.row.course_curr_num!=0" class='arrangeClass' @click='arrangeClass(item,scope.row)'>立即排班</span>
                                     <span v-else-if='!scope.row.classTime&&scope.row.course_curr_num==0'>无</span>
                                 </template>
@@ -526,7 +524,7 @@
                 </el-form-item> -->
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="nextToSign('signform')">确定</el-button>
+                <el-button type="primary" :loading='writeL' @click="nextToSign('signform')">确定</el-button>
                 <el-button @click="dialogFormVisibleSign = false">取消</el-button>
             </div>
         </el-dialog>
@@ -549,7 +547,7 @@
                                     </el-select>
                                 </div>
                                 <div class="SDml10">
-                                    <el-select v-model="i.course_id" clearable placeholder="课程名称" size='small' class='SDw123' @change='getPrice(i,i.course_id)'>
+                                    <el-select v-model="i.course_id"  placeholder="课程名称" size='small' class='SDw123' @change='getPrice(i,i.course_id)'>
                                         <el-option v-for="item in i.courseName1" :key="item.kcid" :label="item.title" :value="item.kcid">
                                         </el-option>
                                     </el-select>
@@ -570,9 +568,9 @@
                             <div class="signContactDiv">
                                 <span>{{i.book_price}}</span>
                             </div>
-                            <!-- <div style="text-align:center;background:#f3f3f3;flex:0 0 66px;display:flex;border-right:1px solid gainsboro;border-bottom:1px solid gainsboro;justify-content:center;align-items: center;">
+                            <div class="signContactDiv" style="background:#ffffff">
                                 <span>{{i.study_money}}</span>
-                            </div> -->
+                            </div>
                         </div>
                     </div>
                     <!--  <div style="background:#ffffff;text-align:center;border-right:1px solid gainsboro;border-bottom:1px solid gainsboro;flex:0 0 66px;display:flex;flex-direction: column;justify-content: center;height:auto">{{totalP}}</div> -->
@@ -588,6 +586,11 @@
                             <div class="signContactCouponsDiv">
                                 <el-input v-model="i.coupons_money" class='promotionMoney'></el-input>
                             </div>
+                        </div>
+                    </div>
+                    <div class='signContactMoney'>
+                        <div v-for='i in contracts' class='signContactCouponsDiv' style="background:#ffffff">
+                            <span>{{i.study_money-(i.coupons_money-0)}}</span>
                         </div>
                     </div>
                     <!--  <div style="background:#ffffff;text-align:center;border-right:1px solid gainsboro;border-bottom:1px solid gainsboro;flex:0 0 66px;display:flex;flex-direction: column;justify-content: center;height:auto">{{totalP2}}</div> -->
@@ -630,16 +633,16 @@
                             <el-option label="无" value="0"></el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="付款方式" class="SDpr" required>
+                    <el-form-item label="付款方式" class="SDpr"  prop="method">
                         <div v-for="(a, index) in actSchool.pay" :class="[index !=0?'male':'']">
-                            <el-form-item prop="method" class='SD142float'>
-                                <el-select v-model="a.method" placeholder="请选择方式" @change='changeReset'>
+                            <el-form-item class='SD142float'>
+                                <el-select v-model="a.method" placeholder="请选择方式" @change='changeReset1("method")'>
                                     <el-option v-for="item in payMethods" :key="item.id" :label="item.name" :value="item.id">
                                     </el-option>
                                 </el-select>
                             </el-form-item>
                             <el-form-item prop="money" class="SDfloat">
-                                <el-input v-model.number="a.money" placeholder='请输入金额'></el-input>
+                                <el-input v-model="a.money" placeholder='请输入金额' @change='changeReset1("money")'></el-input>
                             </el-form-item>
                             <span @click='addPay' class='addPay' v-if='index==0'>添加付款方式</span>
                             <span @click='deletePay' class='deletePay' v-else>删除</span>
@@ -647,9 +650,11 @@
                         </div>
                     </el-form-item>
                    
-                    <el-form-item label="付款总额" prop='money'>
+                    <el-form-item label="付款总额" >
                         {{payTotal.toFixed(2)}}元
-                        <span v-if='this.payTotal+(this.multipleSelection-0) != this.totalP3' class="SDnred">*付款总额与实收总额不符*</span>
+                        <!-- <span v-if='this.payTotal+(this.multipleSelection-0) != this.totalP3' class="SDnred">*付款总额与实收总额不符*</span> -->
+                        <!-- <span v-if='this.multipleSelection&&this.payTotal+(this.multipleSelection-0) < this.totalP3' class="SDnred">*付款总额与实收总额不符*</span> -->
+                        <!-- <span v-if='this.multipleSelection&&this.payTotal+(this.multipleSelection-0) > this.totalP3' class="SDnred">*转课补费额大于付款总额*</span> -->
                     </el-form-item>
                     <!-- <el-form-item label="签约时间" prop='created'>
                         <el-date-picker v-model="actSchool.created" type="date">
@@ -658,9 +663,9 @@
                 </div>
             </el-form>
             <div slot="footer" class="dialog-footer">
+                <el-button  v-if="step=='continueClass'" @click="backTolast">上一步</el-button>
+                <el-button type="primary" :loading='writeL' @click="submitCon('actSchool')">提交</el-button>
                 <el-button v-if="step=='rebuy'" @click="dialogFormVisible3=false">取消</el-button>
-                <el-button v-else @click="backTolast">上一步</el-button>
-                <el-button type="primary" @click="submitCon('actSchool')">提交</el-button>
                 <br>
             </div>
         </el-dialog>
@@ -677,7 +682,7 @@
                         <el-form-item prop='syllabus_id' class='selectClass SDselect'>
                             <el-radio-group v-model="art[index].syllabus_id" @change='radioChange'>
                                 <el-radio :label="item.id" class="SDtu" v-for='item in selectionClass1[index]'>
-                                    <span class="SDm30">{{item.week==1?'周一':item.week==2?'周二':item.week==3?'周三':item.week==4?'周四':item.week==5?'周五':item.week==6?'周六':'周日'}}  {{item.class_time.substring(0,5)}}
+                                    <span class="SDm30">{{item.week==1?'周一':item.week==2?'周二':item.week==3?'周三':item.week==4?'周四':item.week==5?'周五':item.week==6?'周六':'周日'}}  {{item.class_time}}
                         </span>
                                     <span class="SDm30">{{item.teacher?item.teacher.uname:''}}</span><span>{{item.class_room.names+'(当前班级'+item.syllabus_person_num+'人)' }}
                         </span>
@@ -688,8 +693,8 @@
                 </el-tab-pane>
             </el-tabs>
             <div slot="footer" class="dialog-footer">
+                <el-button type="primary" :loading='writeL' @click="submitTheContract('art')">提交</el-button>
                 <el-button @click="dialogFormVisibleLast=false">取消</el-button>
-                <el-button type="primary" @click="submitTheContract('art')">提交</el-button>
                 <br>
             </div>
         </el-dialog>
@@ -697,13 +702,13 @@
         <el-dialog :title="arrangeTitle" :visible.sync="dialogFormVisibleArrange" :close-on-click-modal="no" top='7%' show-close>
             <el-form :model="arrange" ref="arrange" :rules='arrangeRules' label-width="80px">
                 <el-form-item label="开课日期" prop='time'>
-                    <el-date-picker v-model="arrange.time" type="date" :picker-options="pickerOptions0" @change='getClassRoomArrange(arrange.time)'>
+                    <el-date-picker v-model="arrange.time" type="date" :picker-options="pickerOptions0" popper-class='hasClass' @change='getClassRoomArrange(arrange.time)' >
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item prop='syllabus_id' class='selectClass SDselect'>
-                    <el-radio-group v-model="arrange.syllabus_id">
+                    <el-radio-group v-model="arrange.syllabus_id"  @change='radioChange'>
                         <el-radio :label="item.id" class="SDtu" v-for='item in selectionClassArrange'>
-                            <span class="SDm30">{{item.week==1?'周一':item.week==2?'周二':item.week==3?'周三':item.week==4?'周四':item.week==5?'周五':item.week==6?'周六':'周日'}}  {{item.class_time.substring(0,5)}}
+                            <span class="SDm30">{{item.week==1?'周一':item.week==2?'周二':item.week==3?'周三':item.week==4?'周四':item.week==5?'周五':item.week==6?'周六':'周日'}}  {{item.class_time}}
                         </span>
                             <span class="SDm30">{{item.teacher?item.teacher.uname:''}}</span><span>{{item.class_room.names+'(当前班级'+item.syllabus_person_num+'人)' }}
                         </span>
@@ -712,8 +717,8 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
+                <el-button type="primary" :loading='writeL' @click="submitTheArrange()">提交</el-button>
                 <el-button @click="dialogFormVisibleArrange=false">取消</el-button>
-                <el-button type="primary" @click="submitTheArrange()">提交</el-button>
                 <br>
             </div>
         </el-dialog>
@@ -770,7 +775,7 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="commuFormSubmit('returnform')">确 定</el-button>
+                <el-button type="primary" :loading='writeL' @click="commuFormSubmit('returnform')">确 定</el-button>
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
             </div>
         </el-dialog>
@@ -802,7 +807,8 @@
         transferSchool,
         transferClass,
         frozenClass,
-        searchResource
+        searchResource,
+        checkOrderSku
     } from '../../api/api';
 
     export default {
@@ -867,14 +873,24 @@
                     callback('请选择日期')
                 }
             }
-            var isPhone = (rule, value, callback) => {
+            var isPhone = (rule, value, callback) => {//修改学员
                 var myreg = /^(((1[0-9]{1}))+\d{9})$/;
                 if (value == '') {
                     callback('不能为空且必须唯一')
                 } else if (!myreg.test(value)) {
                     callback('请输入有效手机号');
                 } else {
-                    callback()
+                    let para = {
+                    search: value
+                    }
+                    searchResource(para, token).then(res => {
+                    if(res.data.data.length!=0&&res.data.data[0].id!=this.signform.id){
+                    callback('此手机号码已存在');
+                    }else{
+                    callback();
+
+                    }
+                    })
                 }
             }
             var isPhone1 = (rule, value, callback) => {
@@ -884,20 +900,20 @@
                 } else if (!myreg.test(value)) {
                     callback('请输入有效手机号');
                 }else if(this.signform.phone==value){
-callback('不要输入重复的手机号');
-}else {
-let para = {
-search: value
-}
-searchResource(para, token).then(res => {
-if(res.data.data.length!=0){
-callback('此手机号码已存在');
-}else{
-callback();
+                    callback('不要输入重复的手机号');
+                    }else {
+                    let para = {
+                    search: value
+                    }
+                    searchResource(para, token).then(res => {
+                    if(res.data.data.length!=0&&res.data.data[0].id!=this.signform.id){
+                    callback('此手机号码已存在');
+                    }else{
+                    callback();
 
-}
-})
-}
+                    }
+                    })
+                    }
             }
             var isId = (rule, value, callback) => {
                 var myreg =
@@ -912,10 +928,10 @@ callback();
             }
             var isPay = (rule, value, callback) => {
                 let a = this.actSchool.pay.every(item => {
-                    return item.method != ''
+                    return item.method !== ''
                 })
                 if (!a) {
-                    callback('请选择支付方式')
+                    callback('请选择付款方式')
                 } else {
                     callback();
                 }
@@ -927,31 +943,47 @@ callback();
                 } else if (!myreg.test(value)) {
                     callback('请输入有效合同编号');
                 } else {
-                    callback();
+                    let para={
+                        sku:value
+                    }
+                    checkOrderSku(para,token).then(res=>{
+                        // console.log(res)
+                        if(res.data.repeat===0){
+
+                            callback();
+                        }else{
+                            callback('合同编号已存在')
+                        }
+                    })
                 }
             }
             var isSpace = (rule, value, callback) => {
-                var myreg = /^\S{1,100}$/;
-                if (value.trim() == '') {
-                    callback('内容不得为空')
+                var myreg = /^.{1,100}$/;
+                var myreg1 = /^\s/;
+                
+                if (myreg1.test(value)) {
+                    callback('请输入有效内容')
                 } else if (!myreg.test(value)) {
                     callback('内容不得超过100字');
                 } else {
                     callback();
                 }
             }
-            //  var isMoney = (rule, value, callback) => {
-            //     let a= 0
-            //     this.actSchool.area_id.map(item=>{
-            //         a += item.money
-            //     })
-            //     if (a != this.totalP3) {
-            //         callback('付款总额与实收总额不等')
-            //     }else{
-            //         callback();
-            //     }
-            // }
+             var isMoney = (rule, value, callback) => {
+                let a= 0
+                this.actSchool.pay.map(item=>{
+                    a += (item.money-0)
+                })
+                if (this.multipleSelection&&(a != this.totalP3)) {
+                    callback('付款金额不正确')
+                }else if(a  != this.totalP3){
+                    callback('付款总额与实收总额不等')
+                }else{
+                    callback();
+                }
+            }
             return {
+                writeL:false,
                 maxlength:11,
                 pickerOptions1: {
                     disabledDate(time) {
@@ -1069,7 +1101,8 @@ callback();
                     fullAddress:'',
                     school: '',
                     time: '',
-                    teacher: ''
+                    teacher: '',
+                    head_img:''
                 },
                 items: [],
                 dialogFormVisible: false,
@@ -1078,7 +1111,7 @@ callback();
                 dialogFormVisibleLast: false,
                 dialogFormVisibleArrange: false,
                 no: false,
-                number: 0,
+                number: '0',
                 returnform: {
                     contents: '',
                     tags: []
@@ -1147,12 +1180,12 @@ callback();
                         validator: isPay,
                         trigger: 'change'
                     }],
-                    // money: [{
-                    //     required: true,
-                    //     message:'请输入金额',
-                    //     validator: all,
-                    //     trigger: 'blur'
-                    // }],
+                    money: [{
+                        required: true,
+                        // message:'请输入金额',
+                        validator: isMoney,
+                        trigger: 'blur'
+                    }],
                     // created: [{
                     //     required: true,
                     //     type: 'date',
@@ -1227,7 +1260,7 @@ callback();
                     time: [{
                         // required: true,
                         // validator: isValue,
-                        message: '请选择开课时间',
+                        message: '请选择时间及开课班级',
                         type: 'date',
                         trigger: 'blur'
                     }],
@@ -1241,7 +1274,7 @@ callback();
                 arrangeRules: {
                     time: [{
                         required: true,
-                        message: '请选择开课时间',
+                        message: '请选择时间及开课班级',
                         type: 'date',
                         trigger: 'change'
                     }],
@@ -1366,16 +1399,44 @@ callback();
                 arrangeCourseId: '',
                 arrangeOrderId: '',
                 selectArr: [],
-                contractNumber: 0,
+                contractnumber: '0',
                 transClass: [],
                 stopchange: false,
                 
             }
         },
         methods: {
+            // showshow(){
+            //     let a = [...document.getElementsByClassName('hasClass')[0].getElementsByClassName('available')];
+            //     //  a.map(function(item){item.style.border='1px solid black'})
+            //      a.map(item=>{
+            //         //  if()
+            //         // console.log(item.innerHTML)
+            //         if(item.innerHTML==25){
+
+            //         item.style.border='1px solid #1fb5ad';
+            //         item.style.borderRadius='50%'
+            //         }
+            //      })
+            // },
+            resetFroze(){
+                this.frozeform.Ftime =[];
+                this.$refs['frozeform'].resetFields();
+            },
+            changeReset1(val){
+                if(val==='money'){
+                    this.$refs['actSchool'].validate((valid) => {})
+                }else{
+                    this.$refs['actSchool'].validateField(val);
+                }
+            },
+            resetClear(){
+                this.transClass = [];
+                this.$refs['transferOrUpform'].resetFields();
+            },
             getTransClass(i) { //转升班
                 this.transferOrUpform.school = '';
-                // console.log(i)
+                console.log(i)
                 if (i !== '') {
 
                     let para = {
@@ -1414,29 +1475,16 @@ callback();
                             start_time: new Date(this.frozeform.Ftime[0]).toLocaleDateString(),
                             end_date: new Date(this.frozeform.Ftime[1]).toLocaleDateString(),
                         }
+                        this.writeL = true;
                         frozenClass(para, token).then(res => {
                             if (res.code == 0) {
                                 this.$message.success('冻结成功');
-                                let para = {
-                                    uid: this.$route.params.uid
-                                }
-                                getMyStudentLessonDetail(token, para).then(res => { //合同课程
-                                    if (res.data.length != 0) {
-
-                                        this.contractNumber = res.data.length
-                                        this.students = res.data
-                                    } else {
-                                        this.students = [{
-                                            dataTable: [],
-                                            sku: ''
-                                        }]
-                                    }
-                                    // console.log(res)
-                                }).then(() => {
-                                    this.dialogFormVisibleFroze = false;
-                                })
+                                this.getCon();
+                                this.dialogFormVisibleFroze = false;
+                                this.writeL = false;
                             } else {
-                                this.$message.error(res.data)
+                                this.$message.error(res.data);
+                                this.writeL = false;
 
                             }
                         })
@@ -1460,34 +1508,31 @@ callback();
                             time: new Date(this.transferOrUpform.time).toLocaleDateString(),
                             syllabus_id: this.transferOrUpform.syllabus_id
                         }
+                        this.writeL = true;
                         transferClass(para, token).then(res => {
                             if (res.code == 0) {
                                 this.$message.success('转班成功');
-                                let para = {
-                                    uid: this.$route.params.uid
-                                }
-                                getMyStudentLessonDetail(token, para).then(res => { //合同课程
-                                    if (res.data.length != 0) {
-
-                                        this.contractNumber = res.data.length
-                                        this.students = res.data
-                                    } else {
-                                        this.students = [{
-                                            dataTable: [],
-                                            sku: ''
-                                        }]
-                                    }
-                                    // console.log(res)
-                                }).then(() => {
-                                    this.dialogFormVisibletransferOrUp = false;
-                                })
+                                this.getCon();
+                                this.dialogFormVisibletransferOrUp = false;
+                                this.writeL = false;
                             } else {
-                                this.$message.error(res.data)
+                                this.$message.error(res.data);
+                                this.writeL = false;
                             }
                             // console.log(res)
+                        }).catch((res)=>{
+                            this.$message.error(res.data);
+                            this.writeL = false;
                         })
                     } else {
-                        this.$message.info('还有项目未填写');
+                        if(this.transferOrUpform.time&&this.selectionClass.length==0){
+                        this.$message.info('该日没有此课程班级,请重新选择');
+
+                        }
+                        if(this.transferOrUpform.time&&this.selectionClass.length!=0){
+                        this.$message.info('请选择具体班级');
+
+                        }
                     }
                 })
 
@@ -1501,16 +1546,23 @@ callback();
                             school_id: this.transferSchoolform.school,
                             cc_uid: this.transferSchoolform.receiveCC
                         }
+                        this.writeL = true;
                         transferSchool(para, token).then(res => {
                             if (res.code == 0) {
-                                this.$message.success('成功提交转校')
+                                this.$message.success('成功提交转校');
                             } else {
                                 this.$message.error(res.data);
                             }
                             return res
                         }).then((res) => {
                             if (res.code == 0) {
+                                this.dialogFormVisibleTransferSchool = false;
+                                this.writeL = false;
                                 this.$router.push('/myStudents');
+                            }else{
+                                this.$message.error(res.data);
+                                this.writeL = false;
+                                this.dialogFormVisibleTransferSchool = false;
                             }
                         })
                     }
@@ -1553,42 +1605,33 @@ callback();
                         }]
                         para.assigns = JSON.stringify(para.assigns)
                         // console.log(para)
+                        this.writeL = true;
                         assignClass(para, token).then(res => {
                             // console.log(res)
                             if (res.code == 0) {
                                 this.$message.success('排班成功');
-                                let para = {
-                                    uid: this.$route.params.uid
-                                }
-                                getMyStudentLessonDetail(token, para).then(res => { //合同课程
-                                    if (res.data.length != 0) {
-
-                                        this.contractNumber = res.data.length
-                                        this.students = res.data
-                                    } else {
-                                        this.students = [{
-                                            dataTable: [],
-                                            sku: ''
-                                        }]
-                                    }
-                                    // console.log(res)
-                                }).then(() => {
+                                this.getCon();
+                                this.dialogFormVisibleArrange = false;
+                                this.writeL = false;
                                     let p = {
                                         uid: this.$route.params.uid
                                     }
                                     getTeacherList(token, p).then((res) => { //获取老师
                                         this.teachersName = res.data;
                                     })
-                                    this.dialogFormVisibleArrange = false;
-                                })
                             } else {
-                                this.$message.error(res.data)
+                                this.$message.error(res.data);
+                                this.writeL = false;
                             }
                         })
                     } else {
-                        if (this.arrange.time) {
+                        if (this.arrange.time&&this.selectionClassArrange==0) {
 
-                            this.$message.info('请选择排课班级')
+                            this.$message.info('该日没有此课程班级,请重新选择')
+                        }
+                        if (this.arrange.time&&this.selectionClassArrange!=0) {
+
+                            this.$message.info('请选择具体班级')
                         }
                         // this.activeName = b;
                     }
@@ -1596,7 +1639,6 @@ callback();
 
             },
             getClassName(data, i) { //获取课程名称
-                let that = this;
                 if (!this.stopchange&&data) {
                     i.course_id = ''
                     let para = {
@@ -1604,13 +1646,11 @@ callback();
                         simple: 1
                     }
                     getClassLibrary(token, para).then((res) => {
-
+                        
                         i.courseName1 = res.data;
                     })
                 }
-                setTimeout(function () {
-                    that.stopchange = false;
-                }, 1);
+               
             },
             nextToSignContract() { //续费到下一步
                 // console.log(this.$refs)
@@ -1618,7 +1658,9 @@ callback();
                     if (valid) {
                         this.dialogFormVisibleContinue = false;
                         this.dialogFormVisible3 = true;
-
+                        setTimeout(() => {
+                            this.$refs['actSchool'].resetFields();
+                        }, 1);
                     }
                 })
             },
@@ -1639,6 +1681,9 @@ callback();
 
                     this.dialogFormVisiblechangtobuy = false;
                     this.dialogFormVisible3 = true;
+                    setTimeout(() => {
+                        this.$refs['actSchool'].resetFields();
+                    }, 1);
                 } else {
                     this.$message.info('请选择要选的课程')
                 }
@@ -1653,7 +1698,8 @@ callback();
                 if (time != '') {
                     let para = {
                         date: new Date(time).toLocaleDateString(),
-                        course_id: data.course_id
+                        course_id: data.course_id,
+                        uid: this.$route.params.uid
                     }
                     // this.selectionClass[index].splice(0, this.selectionClass[index].length);
                     getDateClass(token, para).then(res => {
@@ -1666,7 +1712,7 @@ callback();
                             that.selectionClass1[index] = [];
                             that.art[index].syllabus_id = time;
                             that.art[index].syllabus_id = '';
-                            this.$message.info('该天没有该课程')
+                            this.$message.info('该日没有此课程班级')
                         }
                     })
 
@@ -1683,18 +1729,20 @@ callback();
                 if (time != '') {
                     let para = {
                         date: new Date(time).toLocaleDateString(), //日期
-                        course_id: data.school //课程id
+                        course_id: data.school, //课程id
+                        uid: this.$route.params.uid
                     }
                     getDateClass(token, para).then(res => {
                         if (res.data.length != 0) {
 
                             that.selectionClass = res.data
-                            // that.transferOrUpform.syllabus_id = time
-                            // that.transferOrUpform.syllabus_id = ''
+                            that.transferOrUpform.syllabus_id = time
+                            that.transferOrUpform.syllabus_id = ''
                         } else {
+                            that.transferOrUpform.syllabus_id = 999
                             that.transferOrUpform.syllabus_id = ''
                             that.selectionClass = [];
-                            this.$message.info('该天没有该课程')
+                            this.$message.info('该日没有此课程班级')
                         }
                     })
                 } else {
@@ -1702,24 +1750,26 @@ callback();
                     this.selectionClass.splice(0, this.selectionClass.length);
                 }
             },
-            getClassRoomArrange(time) { //立即排班按钮选班级 出时间表
-                // console.log(index)
-                let that = this;
+            getClassRoomArrange(time) {//立即排班按钮选班级 出时间表
+                // console.log(time)
+                // let that = this;
                 if (time != '') {
                     let para = {
                         date: new Date(time).toLocaleDateString(), //日期
-                        course_id: this.arrangeCourseId //课程id
+                        course_id: this.arrangeCourseId, //课程id
+                        uid: this.$route.params.uid
                     }
                     getDateClass(token, para).then(res => {
                         if (res.data.length != 0) {
 
-                            that.selectionClassArrange = res.data
-                            // that.arrange.syllabus_id = time
-                            // that.arrange.syllabus_id = ''
+                            this.selectionClassArrange = res.data
+                            this.arrange.syllabus_id = time
+                            this.arrange.syllabus_id = ''
                         } else {
-                            that.arrange.syllabus_id = ''
-                            that.selectionClassArrange = [];
-                            this.$message.info('该天没有该课程')
+                            this.arrange.syllabus_id = 999
+                            this.arrange.syllabus_id = ''
+                            this.selectionClassArrange = [];
+                            this.$message.info('该日没有此课程班级')
                         }
                     })
                 } else {
@@ -1774,50 +1824,39 @@ callback();
                     course_id: this.valueR,
                     uid: this.$route.params.uid
                 }
-                getTeacherList(token, p).then((res) => { //获取老师
+                getTeacherList(token, p).then((res) => {//获取老师
                     this.teachersName = res.data;
                 })
-                let para = {
-                    page: 1,
-                    course_id: this.valueR,
-                    teacher_uid: this.value1,
-                    uid: this.$route.params.uid
-                }
-                getMyStudentSign(token, para).then(res => {
-                    this.tableData = res.data.data;
-                    let c = res.data.last_page * this.pagesize1;
-                    this.total1 = parseInt(c);
-                })
+                this.currentPage1 = 1;
+                this.getSignList();
 
             },
             updateList1() { //选老师考勤记录更新
-                let para = {
-                    page: 1,
-                    course_id: this.valueR,
-                    teacher_uid: this.value1,
-                    uid: this.$route.params.uid
-                }
-                getMyStudentSign(token, para).then(res => {
-                    this.tableData = res.data.data;
-                    let c = res.data.last_page * this.pagesize1;
-                    this.total1 = parseInt(c);
-                })
+                this.currentPage1 = 1;
+                this.getSignList()
 
             },
-            changeReset(val) {
-                if (val != '') {
+            // changeReset(val) {
+            //     if (val != ''&&this.actSchool.sku&&this.actSchool.panda_gohome) {
 
-                    this.$refs['actSchool'].validate((valid) => {})
-                }
-            },
+            //         this.$refs['actSchool'].validate((valid) => {})
+            //     }
+            // },
             continueClass() { //续费
                 this.continueform.contract = ''
                 this.step = 'continueClass';
                 this.dialogFormVisibleContinue = true;
+                setTimeout(() => {
+                            this.$refs['continueform'].resetFields();
+                        }, 1);
+               
             },
             rebuy() { //再购买
                 this.step = 'rebuy';
                 this.dialogFormVisible3 = true;
+                setTimeout(() => {
+                            this.$refs['actSchool'].resetFields();
+                        }, 1);
             },
             changeToPay() { //转课补费
                 this.firstform.contract = '';
@@ -1845,6 +1884,9 @@ callback();
                 // this.transferOrUp = 'upClass'
                 this.step = 'transferClass';
                 this.dialogFormVisibleFirst = true;
+                setTimeout(() => {
+                            this.$refs['firstform'].resetFields();
+                        }, 1);
             },
             transferSchool() { //转校
                 this.step = 'transferSchool';
@@ -1857,11 +1899,17 @@ callback();
                 this.firstform.contract = ''
                 this.step = 'froze';
                 this.dialogFormVisibleFirst = true;
+                setTimeout(() => {
+                            this.$refs['firstform'].resetFields();
+                        }, 1);
             },
             refund() { //退费
                 this.firstform.contract = ''
                 this.step = 'refund';
                 this.dialogFormVisibleFirst = true;
+                setTimeout(() => {
+                            this.$refs['firstform'].resetFields();
+                        }, 1);
             },
             submitTheContract(formName) { //排班提交
                 let a = [];
@@ -1886,58 +1934,57 @@ callback();
                         this.$refs[n][0].validate((valid) => {
                             if (valid && c[item].syllabus_id) {
                                 count.push(item);
-                                if (count.length == a.length) {}
+                                if (count.length == a.length) {
                                 let para = {}
                                 para.assigns = c
                                 para.assigns = JSON.stringify(para.assigns)
                                 // console.log(para) //提交服务
+                                this.writeL = true;
                                 assignClass(para, token).then(res => {
                                     if (res.code == 0) {
                                         this.$message.success('排班成功');
-                                        let para = {
+                                        this.getCon();
+                                        let p = {
                                             uid: this.$route.params.uid
                                         }
-                                        getMyStudentLessonDetail(token, para).then(res => { //合同课程
-                                            if (res.data.length != 0) {
-
-                                                this.contractNumber = res.data.length
-                                                this.students = res.data
-                                            } else {
-                                                this.students = [{
-                                                    dataTable: [],
-                                                    sku: ''
-                                                }]
-                                            }
-                                            // console.log(res)
-                                        }).then(() => {
-                                            let p = {
-                                                uid: this.$route.params.uid
-                                            }
-                                            getTeacherList(token, p).then((res) => { //获取老师
-                                                this.teachersName = res.data;
-                                            })
-                                            this.dialogFormVisibleLast = false;
+                                        getTeacherList(token, p).then((res) => { //获取老师
+                                            this.teachersName = res.data;
                                         })
+                                        this.dialogFormVisibleLast = false;
+                                        this.writeL = false;
                                     } else {
-                                        this.$message.error(res.data)
+                                        this.$message.error(res.data);
+                                        this.writeL = false;
                                     }
                                 })
+                            }
+                            }else{
+                                if(c[item].time&&this.selectionClass1[item].length!=0){
+
+                                this.$message.info('请选择具体班级')
+                                }
+                                if(c[item].time&&this.selectionClass1[item].length==0){
+                                    this.$message.info('该日没有此课程班级,请重新选择')
+                                }
                             }
                         })
                     })
                     if (c.length != a.length) {
-                        console.log(count)
-                        console.log(a)
+                        // console.log(count)
+                        // console.log(a)
 
                         let o = new Set(count); //[]
                         let p = new Set(a); //[0,1,2]
                         let r = new Set([...p].filter(x => !o.has(x))); //1,2
-                        console.log([...r][0])
+                        // console.log([...r][0])
                         this.activeName = [...r][0] + 1 + '';
-                        if (this.art[[...r][0]].time) {
+                        if (this.art[[...r][0]].time&&this.selectionClass1[[...r][0]].length!=0) {
 
-                            this.$message.info('请选择排课班级')
+                            this.$message.info('请选择具体班级')
                         }
+                        if (this.art[[...r][0]].time&&this.selectionClass1[[...r][0]].length==0){
+                                    this.$message.info('该日没有此课程班级,请重新选择')
+                                }
                     }
                 } else {
                     // let re = c.some(item=>{
@@ -1946,37 +1993,25 @@ callback();
                     // if(re){
                     let para = {}
                     para.assigns = c
-                    para.assigns = JSON.stringify(para.assigns)
+                    para.assigns = JSON.stringify(para.assigns);
+                    this.writeL = true;
                     // console.log(para) //提交服务
                     assignClass(para, token).then(res => {
                         if (res.code == 0) {
                             this.$message.success('排班成功');
-                            let para = {
+                            this.getCon();
+                            let p = {
                                 uid: this.$route.params.uid
                             }
-                            getMyStudentLessonDetail(token, para).then(res => { //合同课程
-                                if (res.data.length != 0) {
-
-                                    this.contractNumber = res.data.length
-                                    this.students = res.data
-                                } else {
-                                    this.students = [{
-                                        dataTable: [],
-                                        sku: ''
-                                    }]
-                                }
-                                // console.log(res)
-                            }).then(() => {
-                                let p = {
-                                    uid: this.$route.params.uid
-                                }
-                                getTeacherList(token, p).then((res) => { //获取老师
-                                    this.teachersName = res.data;
-                                })
+                            getTeacherList(token, p).then((res) => { //获取老师
+                                this.teachersName = res.data;
+                            }).then(()=>{
                                 this.dialogFormVisibleLast = false;
+                                this.writeL = false;
                             })
                         } else {
-                            this.$message.error(res.data)
+                            this.$message.error(res.data);
+                            this.writeL = false;
                         }
                     })
                     // }else{
@@ -2000,7 +2035,8 @@ callback();
                         }
                         this.signform.customer_id = this.$route.params.uid;
                         let para = JSON.parse(JSON.stringify(this.signform));
-                        para.birthday = new Date(para.birthday).toLocaleDateString()
+                        para.birthday = new Date(para.birthday).toLocaleDateString();
+                        this.writeL = true;
                         put_student(para, token).then(res => { //接口要换
                             if (res.code == 0) {
                                 this.$message({
@@ -2008,46 +2044,20 @@ callback();
                                     type: 'success'
                                 });
                                 this.dialogFormVisibleSign = false;
+                                this.writeL = false;
                             } else {
                                 this.$message.error(res.data);
+                                this.writeL = false;
                                 // this.form.phone = '';
                                 // this.$refs.parentPhone.$refs.input.focus();
                                 // this.$refs.parentPhone.$refs.input.blur();
                                 // this.form.sour_id = this.form.sour_id.split(',')
                             }
                         }).then(() => {
-                            let para = {
-                                uid: this.$route.params.uid
-                            }
-                            returnVisitDetail(token, para).then(res => { //获取用户资料
-                                let data = res.data.info;
-                                this.student = {
-                                    name: data.child_name,
-                                    age: data.age,
-                                    sex: data.sex,
-                                    birthday: data.birthday,
-                                    id_number: data.id_number ? data.id_number : '无',
-                                    school: data.school_name,
-                                    channel: data.source_name,
-                                    cc_name:data.cc_name,
-                                    fullAddress: data.fullAddress,
-                                    time: data.regtime,
-                                    parent: res.data.famliys[0].uname + '(' + res.data.famliys[
-                                        0].relation + ')',
-                                    parent_phone: res.data.famliys[0].mobile,
-                                    parent1: res.data.famliys[1] ? res.data.famliys[1].uname?res.data.famliys[1].uname +
-                                        '(' + res.data.famliys[1].relation + ')' :'': '',
-                                    parent1_phone: res.data.famliys[1] ? res.data.famliys[1].mobile?res.data.famliys[1].mobile:'': '',
-                                    teacher: data.cc_name,
-                                    sour_id: data.sour_id,
-                                    referral_name: data.referral ? data.referral.referral_name :
-                                        '',
-                                    teach_name: data.referral ? data.referral.teach_name : ''
-
-                                }
-                            })
+                            this.getStudentD();
                         }).catch(() => {
-                            this.$message.error('该用户未授权');
+                            // this.$message.error('该用户未授权');
+                            this.writeL = false;
                         })
                     } else {
                         console.log('error submit!!');
@@ -2058,7 +2068,7 @@ callback();
             },
             submitCon(formName) { //最后提交合同
                 this.$refs[formName].validate((valid) => {
-                    if (valid && this.isEqual === 1) {
+                    if (valid && this.isEqual === 1&&this.contracts.every(item=>{return item.course_id})) {
                         let para = {
                             // order_id: this.step == 'continueClass' ? this.students[this.classIndex].order_id :'',
                             order_item_id: this.step == 'continueClass' ? this.students[this.classIndex].dataTable[
@@ -2081,10 +2091,10 @@ callback();
                         para.pay = JSON.stringify(para.pay)
                         para.coupons = JSON.stringify(para.coupons)
                         // console.log(para)
+                        this.writeL = true;
                         signThreeContract(para, token).then(res => {
                             // console.log(res)
                             if (res.code == 0) {
-
                                 res.data.order_item.map((item, index) => {
                                     this.tabClass[index] = {
                                         name: item.title,
@@ -2100,7 +2110,8 @@ callback();
                             // console.log(res)
                             if (res.code == 0) {
                                 this.dialogFormVisible3 = false;
-                                this.$message.success('添加合同成功');
+                                this.writeL = false;
+                                this.$message.success('合同签约成功');
                                 this.$confirm('是否立即排班', '排班选择', {
                                     customClass: 'green',
                                     confirmButtonText: '立即排班',
@@ -2111,28 +2122,22 @@ callback();
                                     this.tabClass = [];
 
                                 });
-                                let para = {
-                                    uid: this.$route.params.uid
-                                }
-                                getMyStudentLessonDetail(token, para).then(res => { //合同课程
-                                    if (res.data.length != 0) {
-
-                                        this.contractNumber = res.data.length
-                                        this.students = res.data
-                                    } else {
-                                        this.students = [{
-                                            dataTable: [],
-                                            sku: ''
-                                        }]
-                                    }
-                                    // console.log(res)
-                                })
+                                this.getCon();
                             } else {
-                                this.$message.error(res.data)
+                                this.$message.error(res.data);
+                                this.writeL = false;
                             }
                         })
                     }else{
-                        this.$message.error('付款总额与实收总额不符')
+                        // if(this.payTotal+(this.multipleSelection-0) != this.totalP3){
+
+                        // this.$message.error('付款总额与实收总额不符')
+                        // }else 
+                        if(!this.contracts.every(item=>{return item.course_id})){
+                            this.$message.info('课程还未选择')
+                        }else{
+                            this.$message.info('请确认所有项目填写正确')      
+                        }
                     }
                 })
 
@@ -2146,6 +2151,7 @@ callback();
                 if (this.step == 'continueClass') {
                     this.dialogFormVisibleContinue = true;
                 } else {
+                    this.$refs.multipleTable.clearSelection();
                     this.dialogFormVisiblechangtobuy = true;
                 }
             },
@@ -2157,6 +2163,8 @@ callback();
             },
             deletePay() {
                 this.actSchool.pay.pop();
+                this.changeReset1('method');
+                this.changeReset1('money')
             },
             resetAll(formName) {
                 this.contracts = [{
@@ -2209,6 +2217,8 @@ callback();
 
             },
             getPrice(data, index) {
+                if(index!==''){
+
                 let para = {
                     kcid: index
                 }
@@ -2230,7 +2240,16 @@ callback();
                         data.book_price = '';
                         data.study_money = '';
                     }
+                }).then(()=>{
+                    if(this.totalP3<=0){
+                        this.actSchool.pay[0].method ='7'
+                        this.actSchool.pay[0].money = this.totalP3.toFixed(2)
+                    }else if(this.multipleSelection&&(this.totalP3>0)){
+                        this.actSchool.pay[0].method ='1'
+                        this.actSchool.pay[0].money =''
+                    }
                 })
+                }
             },
             addCon(index) {
                 this.contracts.push({
@@ -2249,7 +2268,11 @@ callback();
             delCon(index) {
                 //删除某个课程
                 this.stopchange = true;
-                this.contracts.splice(index, 1)
+                this.contracts.splice(index, 1);
+                let that = this;
+                setTimeout(function () {
+                    that.stopchange = false;
+                }, 1);
             },
             getNowFormatDate(date) {
                 var day = new Date(date);
@@ -2299,7 +2322,7 @@ callback();
             },
 
             editReturn(index, item) { //点击修改回访记录
-                console.log(Object.is(item.tags,null))
+                // console.log(Object.is(item.tags,null))
                 this.returnform.tags = [];
                 this.returnform.id = item.id;
                 
@@ -2330,51 +2353,40 @@ callback();
             commuFormSubmit(formName) { //提交回访记录
                 this.$refs[formName].validate((valid) => { //替换提交服务
                     if (valid) {
+                        this.writeL = true;
                         this.returnform.uid = this.$route.params.uid
                         //可能要送 用户名
                         if (this.in) {
                             put_returnList(this.returnform, token).then((res) => {
                                 if (res.code == 0) {
                                     this.$message.success('修改成功')
-                                    let p = {
-                                        page: '1',
-                                        uid: this.$route.params.uid
-                                    }
-                                    getVisitList(token, p).then(res => {
-                                        this.number = res.data.total;
-                                        this.items = res.data.data;
-                                        let c = res.data.last_page * this.pagesize;
-                                        this.total = parseInt(c);
-                                    })
                                     this.currentPage = 1;
-                                    this.dialogFormVisible = false
+                                    this.getReturn();
+                                    this.dialogFormVisible = false;
+                                    this.writeL = false;
 
+                                }else{
+                                    this.$message.error(res.data);
+                                    this.writeL = false;
                                 }
                             }).catch(() => {
-                                this.$message.error('该用户未授权');
-                                this.dialogFormVisible = false
+                                // this.$message.error('该用户未授权');
+                                // this.dialogFormVisible = false;
+                                this.writeL = false;
                             })
                         } else {
                             create_returnList(this.returnform, token).then((res) => {
                                 if (res.code == 0) {
-
                                     this.$message.success('添加成功')
-                                    let p = {
-                                        page: '1',
-                                        uid: this.$route.params.uid
-                                    }
-                                    getVisitList(token, p).then(res => {
-                                        this.number = res.data.total;
-                                        this.items = res.data.data;
-                                        let c = res.data.last_page * this.pagesize;
-                                        this.total = parseInt(c);
-                                    })
                                     this.currentPage = 1;
-                                    this.dialogFormVisible = false
+                                    this.getReturn()
+                                    this.dialogFormVisible = false;
+                                    this.writeL = false;
                                 }
                             }).catch(() => {
-                                this.$message.error('该用户未授权');
-                                this.dialogFormVisible = false
+                                // this.$message.error('该用户未授权');
+                                // this.dialogFormVisible = false;
+                                this.writeL = false;
                             })
                         }
                     } else {
@@ -2392,6 +2404,7 @@ callback();
                     let data = res.data;
                     // console.log(data)
                     this.signform = {
+                        id:data.info.uid,
                         names: data.info.child_name,
                         sex: data.info.sex === '男' ? '1' : '2',
                         age: data.info.age + '',
@@ -2411,55 +2424,140 @@ callback();
             },
             handleCurrentChange: function (val) { //回访记录变更页数
                 this.currentPage = val;
+                this.getReturn()
+            },
+            handleCurrentChange1: function (val) { //签到变更页数
+                this.currentPage1 = val;
+                this.getSignList()
+            },
+            getStudentD(){
+                let para = {
+                uid: this.$route.params.uid
+            }
+            returnVisitDetail(token, para).then(res => { //获取用户资料
+                let data = res.data.info;
+                this.student = {
+                    name: data.child_name,
+                    head_img:data.head_img,
+                    age: data.age,
+                    id_number: data.id_number ? data.id_number : '无',
+                    sex: data.sex,
+                    birthday: data.birthday,
+                    school: data.school_name,
+                    channel: data.source_name,
+                    cc_name:data.cc_name,
+                    fullAddress: data.fullAddress,
+                    time: data.regtime,
+                    parent: res.data.famliys[0].uname + '(' + res.data.famliys[0].relation + ')',
+                    parent_phone: res.data.famliys[0].mobile,
+                    parent1: res.data.famliys[1] ? res.data.famliys[1].uname ? res.data.famliys[1].uname +
+                        '(' + res.data.famliys[1].relation + ')' : '' : '',
+                    parent1_phone: res.data.famliys[1] ? res.data.famliys[1].mobile || '' : '',
+                    teacher: data.cc_name,
+                    sour_id: data.sour_id,
+                    referral_name: data.referral ? data.referral.referral_name : '',
+                    teach_name: data.referral ? data.referral.teach_name : ''
+
+                }
+            }).catch(() => {
+                // console.log('No Data')
+            })
+            },
+            getReturn(){
                 let p = {
                     page: this.currentPage,
-                    customer_id: this.$route.params.uid
+                    uid: this.$route.params.uid
                 }
-                getVisitList(token, p).then(res => {
+                getVisitList(token, p).then(res => { //获取回访记录
                     this.number = res.data.total;
                     this.items = res.data.data;
+                    // console.log(this.items)
                     let c = res.data.last_page * this.pagesize;
                     this.total = parseInt(c);
                 })
             },
-            handleCurrentChange1: function (val) { //签到变更页数
-                this.currentPage1 = val;
-                let p = {
+            getSignList(){
+                let para = {
                     page: this.currentPage1,
+                    course_id: this.valueR,
+                    teacher_uid: this.value1,
                     uid: this.$route.params.uid
+            }
+            getMyStudentSign(token, para).then(res => {//获取考勤记录
+                this.tableData = res.data.data;
+                let c = res.data.last_page * this.pagesize1;
+                this.total1 = parseInt(c);
+            })
+            },
+            getCon(){
+                let para = {
+                    uid: this.$route.params.uid
+            }
+                getMyStudentLessonDetail(token, para).then(res => { //合同课程
+                if (res.data.length != 0) {
+
+                    this.contractNumber = res.data.length
+                    this.students = res.data
+                } else {
+                    this.students = [{
+                        dataTable: [],
+                        sku: ''
+                    }]
                 }
-                getMyStudentSign(token, p).then(res => {
-                    this.tableData = res.data.data;
-                    let c = res.data.last_page * this.pagesize1;
-                    this.total1 = parseInt(c);
-                })
+                // console.log(res)
+            })
             },
         },
         computed: {
             tableTitle(){
                 if(this.step == 'changtobuy'){
-                    return  ['课时', '签单数', '学费', '教材费', '书本费', '优惠类型', '优惠金额', '转课补费额','实收总额', '操作']
+                    return  ['课时', '签单数', '学费', '教材费', '书本费', '课程金额','优惠类型', '优惠金额', '小计','转课补费额','实收总额', '操作']
                 }else{
-                    return  ['课时', '签单数', '学费', '教材费', '书本费', '优惠类型', '优惠金额','实收总额', '操作']
+                    return  ['课时', '签单数', '学费', '教材费', '书本费', '课程金额','优惠类型', '优惠金额','小计','实收总额', '操作']
                 }
             },
             fronzeContra(){
+                let b = []
                 if(this.step == 'transferClass'||this.step=='refund'){
-                    return this.students;
+                    this.students.map((item,index)=>{
+                        let a = item.dataTable.some(i=>{
+                           return i.status!='已结束'
+                        })
+                        if(a){
+                            b.push({sku:item.sku,ii:index})
+    
+                        }
+                    })
+                    return b
                 }else{
 
-                    let b = []
-                    this.students.map(item=>{
+                    this.students.map((item,index)=>{
                         let a = item.dataTable.some(i=>{
                            return i.status=='正常'&&i.kc_tid==1&&i.classTime!=''
                         })
                         if(a){
-                            b.push(item)
+                            b.push({sku:item.sku,ii:index})
     
                         }
                     })
                     return b
                 }
+                // if(this.step == 'transferClass'||this.step=='refund'){
+                //     return this.students;
+                // }else{
+
+                //     let b = []
+                //     this.students.map(item=>{
+                //         let a = item.dataTable.some(i=>{
+                //            return i.status=='正常'&&i.kc_tid==1&&i.classTime!=''
+                //         })
+                //         if(a){
+                //             b.push(item)
+    
+                //         }
+                //     })
+                //     return b
+                // }
             },
             continueClassCon(){
                 let b = []
@@ -2516,17 +2614,24 @@ callback();
                 return m
             },
             transOut() {
-                let a = this.students[this.classIndex].dataTable.filter(item => {
-                    return item.course_curr_num != 0
+                let a = []
+                this.students[this.classIndex].dataTable.map((item,index) => {
+                    if (item.course_curr_num != 0){
+                        a.push({i:index,title:item.title})
+                    }
                 })
                 return a
             },
             isEqual() {
-                if ((this.payTotal + (this.multipleSelection - 0)) >= this.totalP3) {
+                if (this.payTotal  == this.totalP3) {
                     return 1
-                } else {
+                }else {
                     return 0
                 }
+                //  else if(this.multipleSelection&&(this.payTotal + (this.multipleSelection - 0)) >= this.totalP3){
+                //     return 1
+                // }
+                
             },
             payTotal() {
                 let a = 0;
@@ -2550,8 +2655,7 @@ callback();
                 return a
             },
             totalP3() {
-
-                return this.totalP - this.totalP2
+                return (this.totalP - this.totalP2 - (this.multipleSelection-0)>0?this.totalP - this.totalP2 - (this.multipleSelection-0):0)
 
             },
             communityTitle() {
@@ -2573,103 +2677,47 @@ callback();
             document.body.scrollTop = 0
             this.userName = JSON.parse(user).uname;
             this.code = JSON.parse(user).job ? JSON.parse(user).job.code : '';
-            let para = {
-                uid: this.$route.params.uid
-            }
-            returnVisitDetail(token, para).then(res => { //获取用户资料
-                let data = res.data.info;
-                this.student = {
-                    name: data.child_name,
-                    age: data.age,
-                    id_number: data.id_number ? data.id_number : '无',
-                    sex: data.sex,
-                    birthday: data.birthday,
-                    school: data.school_name,
-                    channel: data.source_name,
-                    cc_name:data.cc_name,
-                    fullAddress: data.fullAddress,
-                    time: data.regtime,
-                    parent: res.data.famliys[0].uname + '(' + res.data.famliys[0].relation + ')',
-                    parent_phone: res.data.famliys[0].mobile,
-                    parent1: res.data.famliys[1] ? res.data.famliys[1].uname ? res.data.famliys[1].uname +
-                        '(' + res.data.famliys[1].relation + ')' : '' : '',
-                    parent1_phone: res.data.famliys[1] ? res.data.famliys[1].mobile || '' : '',
-                    teacher: data.cc_name,
-                    sour_id: data.sour_id,
-                    referral_name: data.referral ? data.referral.referral_name : '',
-                    teach_name: data.referral ? data.referral.teach_name : ''
-
-                }
-            }).catch(() => {
-                // console.log('No Data')
-            })
-            getMyStudentSign(token, para).then(res => {//获取考勤记录
-                this.tableData = res.data.data;
-                let c = res.data.last_page * this.pagesize1;
-                this.total1 = parseInt(c);
-            })
-            getMyStudentLessonDetail(token, para).then(res => { //合同课程
-                if (res.data.length != 0) {
-
-                    this.contractNumber = res.data.length
-                    this.students = res.data
-                } else {
-                    this.students = [{
-                        dataTable: [],
-                        sku: ''
-                    }]
-                }
-                // console.log(res)
-            }).then(() => {
-
-                let p = {
-                    page: this.currentPage,
-                    uid: this.$route.params.uid
-                }
-                getVisitList(token, p).then(res => { //获取回访记录
-                    this.number = res.data.total;
-                    this.items = res.data.data;
-                    // console.log(this.items)
-                    let c = res.data.last_page * this.pagesize;
-                    this.total = parseInt(c);
-                })
-            }).then(() => {
+            this.getStudentD();
+            this.getSignList();
+            this.getCon();
+            this.getReturn();
 
                 getClassKind(token).then((res) => { //获取课程分类
                     this.classkind = res.data
-                })
-                let si = {
-                    simple: 1,
-                    uid: this.$route.params.uid
-                }
-                getClassLibrary(token, si).then(res => { //考勤记录的全部课程
-                    this.allClass = res.data
-                })
-                getPromotionList(token, si).then((res) => { //获取优惠列表
+                }).then(()=>{
 
-                    this.couponsList = res.data;
+                    let p = {
+                        uid: this.$route.params.uid
+                    }
+                    getTeacherList(token, p).then((res) => { //获取老师
+                        this.teachersName = res.data;
+                    })
+                    let si = {
+                        simple: 1,
+                        uid: this.$route.params.uid
+                    }
+                    getClassLibrary(token, si).then(res => { //考勤记录的全部课程
+                        this.allClass = res.data
+                    })
+                    getPromotionList(token, si).then((res) => { //获取优惠列表
+    
+                        this.couponsList = res.data;
+                    })
+                    let sii = {
+                        simple: 1,
+                        uid: this.$route.params.uid,
+                        type: 'all'
+                    }
+                    campusList(sii, token).then((res) => { //获取校区
+                        let a = res.data;
+                        this.receiveSchool = a.map(item => {
+                            return {
+                                value: item.id,
+                                label: item.title
+                            };
+                        });
+                    })
                 })
-                let p = {
-                    uid: this.$route.params.uid
-                }
-                getTeacherList(token, p).then((res) => { //获取老师
-                    this.teachersName = res.data;
-                })
-                let sii = {
-                    simple: 1,
-                    uid: this.$route.params.uid,
-                    type: 'all'
-                }
-                campusList(sii, token).then((res) => { //获取校区
-                    let a = res.data;
-                    this.receiveSchool = a.map(item => {
-                        return {
-                            value: item.id,
-                            label: item.title
-                        };
-                    });
-                })
-            })
 
         },
         // watch:{
@@ -2824,8 +2872,8 @@ callback();
 
     .tableUserDSD .block {
         text-align: center;
-        position: absolute;
-        bottom: 10px;
+        /* position: absolute; */
+        /* bottom: 10px; */
         width: 100%;
     }
 
@@ -2863,7 +2911,7 @@ callback();
     }
 
     .signContactDialog .el-dialog--small {
-        width: 1086.75px;
+        width: 1286.75px;
     }
 
     .tableUserDSD .el-dialog .el-dialog__header {
@@ -3081,14 +3129,14 @@ callback();
     .refund199 {
         flex: 0 0 199px;
         text-align: center;
-        background: rgb(238, 246, 246);
+        /* background: rgb(238, 246, 246); */
         color: rgb(31, 61, 60);
         font-weight: bold;
     }
 
     .refundS {
         text-align: center;
-        background: rgb(238, 246, 246);
+        /* background: rgb(238, 246, 246); */
         color: rgb(31, 61, 60);
         font-weight: bold;
         border-right: 1px solid rgb(223, 236, 235);
@@ -3220,7 +3268,7 @@ callback();
         text-align: center;
         border-right: 1px solid gainsboro;
         border-bottom: 1px solid gainsboro;
-        flex: 0 0 145px;
+        flex: 0 0 146px;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -3229,7 +3277,9 @@ callback();
 
     .signContactMoney {
         line-height: 40px;
-        width: 67px;
+        /* width: 67px;
+         */
+         flex:0 0 67px;
         display: flex;
         align-items: stretch;
         flex-wrap: wrap
@@ -3288,7 +3338,7 @@ callback();
         background: #f3f3f3;
         border: 1px solid gainsboro;
         border-top: none;
-        flex: 0 0 260px;
+        flex: 0 0 280px;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -3297,13 +3347,13 @@ callback();
     .signContractDiv {
         font-size: 14px;
         display: flex;
-        width: 598px;
+        width: 684px;
     }
 
     .signContractTitle {
         line-height: 40px;
         background: white;
-        width: 598px;
+        width: 684px;
         display: flex;
         align-items: stretch;
         flex-wrap: wrap
@@ -3340,7 +3390,7 @@ callback();
         float: left;
         width: 30%;
         background-color: white;
-        height: 528px;
+        height: auto;
         border-radius: 5px;
         margin-right: 1%;
         position: relative
@@ -3379,7 +3429,7 @@ callback();
         float: left;
         width: 69%;
         background-color: white;
-        height: 528px;
+        /* height: 528px; */
         border-radius: 5px;
         position: relative
     }
@@ -3548,7 +3598,7 @@ callback();
         line-height: 40px;
         background: #f3f3f3;
         border: 1px solid gainsboro;
-        flex: 0 0 260px
+        flex: 0 0 280px
     }
 
     .SDw142 {
@@ -3581,7 +3631,7 @@ callback();
     }
 
     .SDw123 {
-        width: 123px
+        width: 155px
     }
 
     .SDml10 {
@@ -3605,5 +3655,8 @@ callback();
     .SDmt10 {
         margin-top: 10px
     }
-
+/* .hasClass .available{
+    border: 1px solid #1fb5ad;
+    border-radius: 50%;
+} */
 </style>

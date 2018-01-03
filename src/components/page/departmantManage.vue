@@ -10,7 +10,7 @@
           <h3 class='departH2'>部门管理</h3>
             <el-button type="primary" size="mid" class='DMbutton' @click="open3">创建部门</el-button>
         </div>
-        <el-table :data="tableData" border style="width: 100%;">
+        <el-table :data="tableData" border style="width: 100%;margin-bottom:10px;">
             <el-table-column prop="full_name" label="部门名称">
             <template scope="scope">
                         <span class='canC' @click='showD(scope.row.job_id)'>{{scope.row.full_name}}&nbsp&nbsp&nbsp({{scope.row.user_count}}人)</span>
@@ -127,7 +127,7 @@ export default {
                 this.$alert('当前部门有成员,无法删除部门', '删除部门', {
                     title: '删除部门',
                     type: 'warning',
-                    customClass: 'redwarn',
+                    customClass: 'DMredwarn',
                     confirmButtonText: '确定'
                 }).catch(() => {
                     // this.$message({
@@ -138,7 +138,7 @@ export default {
             } else {
                 this.$confirm('是否确定要删除部门?', '删除部门', {
                     title: '删除部门',
-                    customClass: 'redwarn',
+                    customClass: 'DMredwarn',
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
@@ -221,7 +221,7 @@ if(res.code==0){
         },
         open4(index, data) { //修改部门
             this.$confirm('若该部门有成员,修改后原部门所有成员将自动更新到新部门！', '修改提示', {
-                customClass: 'redwarn',
+                customClass: 'DMredwarn',
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
@@ -283,16 +283,16 @@ if(res.code==0){
     border-color: #32a4d3;
 }
 
-.redwarn .el-message-box__header {
+.DMredwarn .el-message-box__header {
     background-color: #e95c5c;
     padding: 20px 20px 20px;
 }
 
-.redwarn .el-message-box__title {
+.DMredwarn .el-message-box__title {
     color: white;
 }
 
-.redwarn .el-button--primary {
+.DMredwarn .el-button--primary {
     background-color: #e95c5c;
     border-color: #e95c5c;
 }

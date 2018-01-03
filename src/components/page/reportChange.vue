@@ -201,7 +201,7 @@
                     <div style='width: 50%;margin:30px auto 0 ;'>
                             <IEcharts :option="line2" style='height:400px;width:100%;' ></IEcharts>
                             <div style='display:flex;margin-top:10px'>
-                                <div style='width:50%'>
+                                <div style='width:47%'>
                                         <div id="tableRChange"  style='width: 90%;margin:0 auto;'>
                                                 <el-table :data="resourceData1" border show-summary style="width: 100%;height:120px">
                                                     <el-table-column prop="date" label="课程">
@@ -218,7 +218,7 @@
                                                 </div>
                                             </div>
                                 </div>
-                                <div style='width:50%'>
+                                <div style='width:52%'>
                                         <div id="tableRChange2"  style='width:90%;margin:0 auto;'>
                                                 <el-table :data="resourceData2" border show-summary style="width: 100%">
                                                     <el-table-column prop="date" label="日期">
@@ -277,7 +277,7 @@
                                 </div>
                             <IEcharts :option="line3" style='height:400px;width:100%;margin-top:30px' ></IEcharts>
                             <div style='display:flex;margin-top:10px'>
-                                    <div style='width:50%'>
+                                    <div style='width:47%'>
                                             <div id="tableRChange3"  style='width:90%;margin:0 auto;'>
                                                     <el-table :data="resourceData3" border show-summary style="width: 100%;height:120px">
                                                         <el-table-column prop="date" label="课程">
@@ -294,7 +294,7 @@
                                                     </div>
                                                 </div>
                                     </div>
-                                    <div style='width:50%'>
+                                    <div style='width:52%'>
                                             <div id="tableRChange4"  style='width: 90%;margin:0 auto;'>
                                                     <el-table :data="resourceData4" border show-summary style="width: 100%">
                                                         <el-table-column prop="date" label="日期">
@@ -350,7 +350,7 @@
     </template>
     <script>
         var token, user
-        import IEcharts from 'vue-echarts-v3';
+        import IEcharts from 'vue-echarts-v3/src/lite.js';
         import {
             getReport1,
             getReportSA,

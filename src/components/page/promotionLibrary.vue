@@ -1,5 +1,5 @@
 <template>
-    <div class='classLibrary'>
+    <div class='promoLi'>
         <!-- <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-my-richeng"></i> 课程管理</el-breadcrumb-item>
@@ -7,13 +7,15 @@
             </el-breadcrumb>
         </div> -->
         <div class='accouPL'>
-            <div class="h1">
-                <h3 class='accountH2'>
-               优惠库({{number}}个)
+            <div class="promoLiH1">
+                <h3 class='promoLiH2'>
+               优惠库
+               <span v-if="number==='0'" style="font-size:14px;color: #bdb8b8;">加载中...</span>
+               <span v-else>({{number}}个)</span>
                 </h3>
-                <el-button type="primary" size="mid" class='buttonAdd' @click="createCh('aform')">添加优惠类型</el-button>
+                <el-button type="primary" size="mid" class='promoLiH2ddB' v-if="!code.includes('school')" @click="createCh('aform')">添加优惠类型</el-button>
             </div>
-            <el-dialog :title="alter" :visible.sync="dialogFormVisible" :close-on-click-modal="no" custom-class='classLibraryDialog' top='25%' @close='resetD' size='tiny'>
+            <el-dialog :title="alter" :visible.sync="dialogFormVisible" :close-on-click-modal="no" custom-class='promoLiH2dd' top='25%' @close='resetD' size='tiny'>
                 <el-form :model="aform" :rules="rules2" ref="aform" style='padding-right:70px'>
                     <el-form-item label="优惠类型" :label-width="formLabelWidth" prop="title">
                         <el-input v-model="aform.title" placeholder='请输入优惠类型名称' :style='{width:inputLabelWidth}'></el-input>
@@ -24,7 +26,7 @@
                     </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer" style="text-align:center;margin-top:40px">
-                    <el-button type="primary" @click="addAccount('aform')">确 定</el-button>
+                    <el-button type="primary" :loading='writeL' @click="addAccount('aform')">确 定</el-button>
                     <el-button @click="dialogFormVisible = false">取 消</el-button>
                 </div>
             </el-dialog>
@@ -40,7 +42,7 @@
                 </el-table-column>
                 <el-table-column prop="sales_total" label="使用数" width='80'>
                     </el-table-column>
-                <el-table-column label="操作" width='280'>
+                <el-table-column label="操作" width='280' v-if="!code.includes('school')">
                     <template scope="scope">
                         <el-button type="text" size="small" @click="editCh(scope.$index, accountData)">修改</el-button>
                         <el-button type="text" size="small" @click="open2(scope.$index, accountData)" class='classDel'>删除</el-button>
@@ -55,7 +57,7 @@
     </div>
 </template>
 <script>
-var token
+var token,user
 import {
     getPromotionList,
     create_coupons,
@@ -65,13 +67,15 @@ import {
 export default {
     data() {
             return {
+                code:'',
+                writeL:false,
                 currentPage: 1, //页数
                 pagesize: 15, //默认每页
                 total: 0, //总页数
                 in : '', //修改时代表修改的index
                 no: false, //取消点击关闭
                 accountData: [],
-                number: 0,
+                number: '0',
                 aform: {
                     id: '',
                     title: '',
@@ -114,7 +118,7 @@ export default {
             },
             open2(index, data) { //删除课程
                 this.$confirm('是否确定要删除该优惠?', '删除优惠', {
-                        customClass: 'classredwarn',
+                        customClass: 'PLredwarn',
                         cancelButtonText: '取消',
                         confirmButtonText: '确定',
                         type: 'warning'
@@ -139,6 +143,7 @@ export default {
                     let i = this.in;
 
                     if (valid) {
+                        this.writeL = true;
                         if (i !== '') {
                             let para = f;
                             put_coupons(para, token).then(res => {
@@ -148,11 +153,13 @@ export default {
                                         type: 'success'
                                     });
                                     this.fetchData();
+                                    this.writeL = false;
                                 } else {
                                     this.$message({
                                         type: 'error',
                                         message: res.data
                                     });
+                                    this.writeL = false;
                                 }
                             }).then(() => {
                                 this.dialogFormVisible = false;
@@ -166,11 +173,13 @@ export default {
                                         type: 'success'
                                     });
                                     this.fetchData();
+                                    this.writeL = false;
                                 } else {
                                     this.$message({
                                         type: 'error',
                                         message: res.data
                                     });
+                                    this.writeL = false;
                                 }
                             }).then(() => {
                                 this.dialogFormVisible = false;
@@ -203,10 +212,11 @@ export default {
             },
         },
         beforeCreate() {
-            let user = sessionStorage.getItem('user');
+            user = sessionStorage.getItem('user');
             token = JSON.parse(user).token;
         },
         created() { //创建组件时
+            this.code = JSON.parse(user).job ? JSON.parse(user).job.code : '';
             this.fetchData();
         },
         computed: {
@@ -220,7 +230,7 @@ export default {
 }
 </script>
 <style>
-.h1 .el-button--primary {
+.promoLiH1 .el-button--primary {
     background-color: #32a4d3;
     border-color: #32a4d3;
 }
@@ -241,22 +251,22 @@ export default {
     color: #e95c5c;
 }
 
-.classredwarn .el-message-box__header {
+.PLredwarn .el-message-box__header {
     background-color: #e95c5c;
     padding: 20px 20px 20px;
 }
 
-.classredwarn .el-message-box__title {
+.PLredwarn .el-message-box__title {
     color: white;
 }
 
-.classredwarn .el-button--primary {
+.PLredwarn .el-button--primary {
     background-color: #e95c5c;
     border-color: #e95c5c;
     text-align: center;
 }
 
-.classredwarn .el-message-box__content {
+.PLredwarn .el-message-box__content {
     padding: 40px 20px;
 }
 
@@ -286,25 +296,25 @@ export default {
     border-radius: 5px;
 }
 
-.accountH2 {
+.promoLiH2 {
     display: inline-block;
-    /*margin-top: 20px;*/
+    margin-top: 5px;
     margin-bottom: 15px;
     padding-left: 10px
 }
 
 
-.buttonAdd {
+.promoLiH2ddB {
     position: absolute;
     right: 10px;
     top: 10px;
 }
 
-.classLibraryDialog .el-dialog__body {
+.promoLiH2dd .el-dialog__body {
     padding: 20px 20px 0 20px;
 }
 
-.classLibraryDialog .el-dialog__footer {
+.promoLiH2dd .el-dialog__footer {
     padding: 0 20px 15px;
 }
 </style>

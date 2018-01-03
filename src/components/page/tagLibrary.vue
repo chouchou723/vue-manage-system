@@ -9,7 +9,9 @@
         <div class='tagLi'>
             <div class="h1">
                 <h3 class='accountH2'>
-               标签库({{number}}个)
+               标签库
+               <span v-if="number==='0'" style="font-size:14px;color: #bdb8b8;">加载中...</span>
+               <span v-else>({{number}}个)</span>
                 </h3>
                 <div class='oneSelectTag'>
                     <el-select v-model="value" clearable placeholder="标签类型" filterable @change="updateList">
@@ -33,7 +35,7 @@
                     </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer" style="text-align:center;margin-top:40px">
-                    <el-button type="primary" @click="addAccount('aform')">确 定</el-button>
+                    <el-button type="primary" :loading='writeL' @click="addAccount('aform')">确 定</el-button>
                     <el-button @click="dialogFormVisible = false">取 消</el-button>
                 </div>
             </el-dialog>
@@ -84,13 +86,14 @@ export default {
                 }
             }
             return {
-                currentPage: 1, //页数
+                writeL:false,
+                currentPage: 1, //页数1
                 pagesize: 15, //默认每页
                 total: 0, //总页数
                 in : '', //修改时代表修改的index
                 no: false, //取消点击关闭
                 accountData: [],
-                number: 0,
+                number: '0',
                 value: '', //对应课程类型select的值
                 aform: {
                     title: '',
@@ -107,6 +110,7 @@ export default {
                     }],
                     type: [{
                         required: true,
+                        message: '请选择标签类型',
                         trigger: 'blur'
                     }]
                 }
@@ -136,7 +140,7 @@ export default {
                     this.$alert('当前标签已使用,无法修改', '修改标签', {
                         showConfirmButton: false,
                         type: 'warning',
-                        customClass: 'classredwarn',
+                        customClass: 'TLredwarn',
                         confirmButtonText: '确定'
                     });
                 }else{
@@ -156,13 +160,13 @@ export default {
                     this.$alert('当前标签已使用,无法删除', '删除标签', {
                         showConfirmButton: false,
                         type: 'warning',
-                        customClass: 'classredwarn',
+                        customClass: 'TLredwarn',
                         confirmButtonText: '确定'
                     });
                 } else {
                     this.$confirm('是否确定要删除该标签?', '删除标签', {
 
-                        customClass: 'classredwarn',
+                        customClass: 'TLredwarn',
                         cancelButtonText: '取消',
                         confirmButtonText: '确定',
                         type: 'warning'
@@ -177,7 +181,7 @@ export default {
                             message: '删除成功!'
                         })
                         }).catch((res) => {
-                            this.$message.error('该用户未授权')
+                            // this.$message.error('该用户未授权')
                         })
                     })
                 }
@@ -189,6 +193,7 @@ export default {
                     let i = this.in;
                     // console.log(valid)
                     if (valid) {
+                        this.writeL = true;
                         if (i !== '') {
                             let para = f;
                             create_tag(para, token).then(res => {
@@ -198,14 +203,19 @@ export default {
                                         type: 'success'
                                     });
                                     this.fetchData();
+                                    this.writeL = false;
                                 } else {
                                     this.$message({
                                         type: 'error',
                                         message: res.data
                                     });
+                                    this.writeL = false;
                                 }
-                            }).then(() => {
-                                this.dialogFormVisible = false;
+                                return res
+                            }).then((res) => {
+                                if(res.code==0){
+                                    this.dialogFormVisible = false;
+                                }
                             });
                         } else {
                             let para = f;
@@ -216,14 +226,19 @@ export default {
                                         type: 'success'
                                     });
                                     this.fetchData();
+                                    this.writeL = false;
                                 } else {
                                     this.$message({
                                         type: 'error',
-                                        message: res.data
+                                        message: res.message
                                     });
+                                    this.writeL = false;
                                 }
-                            }).then(() => {
-                                this.dialogFormVisible = false;
+                                return res
+                            }).then((res) => {
+                                if(res.code==0){
+                                    this.dialogFormVisible = false;
+                                }
                             });
                         }
                         this.in = '';
@@ -293,22 +308,22 @@ export default {
     color: #e95c5c;
 }
 
-.classredwarn .el-message-box__header {
+.TLredwarn .el-message-box__header {
     background-color: #e95c5c;
     padding: 20px 20px 20px;
 }
 
-.classredwarn .el-message-box__title {
+.TLredwarn .el-message-box__title {
     color: white;
 }
 
-.classredwarn .el-button--primary {
+.TLredwarn .el-button--primary {
     background-color: #e95c5c;
     border-color: #e95c5c;
     text-align: center;
 }
 
-.classredwarn .el-message-box__content {
+.TLredwarn .el-message-box__content {
     padding: 40px 20px;
 }
 

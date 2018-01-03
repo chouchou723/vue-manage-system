@@ -29,7 +29,7 @@
                 </el-form-item>
 
                 <el-form-item>
-                    <el-button type="primary" @click="handleSubmit2('ruleForm2')" class='edit100'>提交</el-button>
+                    <el-button type="primary" :loading='writeL' @click="handleSubmit2('ruleForm2')" class='edit100'>提交</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -96,6 +96,7 @@
             }
 
             return {
+                writeL:false,
                 clock:'',
                 a: 60,
                 canClick: false,
@@ -126,6 +127,7 @@
             handleSubmit2(formName) {
                 this.$refs.ruleForm2.validate((valid) => {
                     if (valid) {
+                        this.writeL = true;
                         editPass(token, this.ruleForm2).then(res => {
                             if (res.code == 0) {
 
@@ -133,7 +135,7 @@
                                     message: '修改成功',
                                     type: 'success'
                                 });
-                               
+                                this.writeL = false;
                             }
                             return res
                         }).then(res => {
@@ -142,12 +144,13 @@
                                 this.$message.success('修改成功');
                                 let _this = this;
                                 setTimeout(function(){
-                                    _this.$router.go();
+                                    // _this.$router.go();
                                     _this.$router.push('/login')
                                 },2000);
                             } else {
                                 this.$message.error(res.message);
                                 this.ruleForm2.code = '';
+                                this.writeL = false;
                             }
 
                         })

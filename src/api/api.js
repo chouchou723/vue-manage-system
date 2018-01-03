@@ -1,6 +1,26 @@
 import axios from 'axios';
-
+import { Message } from 'element-ui';
+import {router} from '../router';
+axios.interceptors.response.use(function (response) {
+    return response;
+  }, function (error) {
+    // 处理统一的验证失效错误
+    if(error.response.status==401){
+        Message.error('您的帐号已在其他地方登录,请重新登录');
+        router.push('/login')
+    }else if(error.response.status==405){
+            Message.error('请联系管理员确认您的权限')    
+        }else if(error.response.status==500){
+            Message.error('服务器内部错误,请联系管理员')        
+        }else{
+            Message.error('请联系管理员检查该问题')
+        }   
+    return Promise.reject(error);
+  });
+//   let base ='';
 let base = 'http://pandatest.dfth.com';
+// let base = 'http://panda.dfth.com';
+
 //登录页面
 export const requestLogin = params => {
     return axios.post(`${base}/api/v1/admin/login`, params).then(res => res.data); };
@@ -98,6 +118,11 @@ export const gettmkFormsSource = (token,params) => {
     axios.defaults.headers.common['Authorization'] = token.Authorization;
     return axios.get(`${base}/api/v1/reportForms/tmkFormsSource`, { params: params }).then(res => res.data);
 };
+//获取资源统计表饼图表格数据
+export const tmkFormsSourceTable = (token,params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/reportForms/tmkFormsSourceTable`, { params: params }).then(res => res.data);
+};
 //获取资源统计表销售经理查看TMK排行榜
 export const gettmkRankList = (token,params) => {
     axios.defaults.headers.common['Authorization'] = token.Authorization;
@@ -109,7 +134,31 @@ export const gettmkFormsDevelop = (token,params) => {
     axios.defaults.headers.common['Authorization'] = token.Authorization;
     return axios.get(`${base}/api/v1/reportForms/tmkFormsDevelop`, { params: params }).then(res => res.data);
 };
-
+//获取CC资源发展表折线图数据
+export const getccWorkloadPic = (token,params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/reportForms/ccWorkloadPic`, { params: params }).then(res => res.data);
+};
+//获取CC资源发展表漏斗图数据
+export const getccWorkloadFunnel = (token,params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/reportForms/ccWorkloadFunnel`, { params: params }).then(res => res.data);
+};
+//获取CC资源发展表两个饼图一个列表数据
+export const getccCourseOrder = (token,params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/reportForms/ccCourseOrder`, { params: params }).then(res => res.data);
+};
+//获取CC资源发展表大列表数据
+export const getccWorkloadList = (token,params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/reportForms/ccWorkloadList`, { params: params }).then(res => res.data);
+};
+//获取CC资源发展表排行榜数据
+export const getccWorkloadRank = (token,params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/reportForms/ccWorkloadRank`, { params: params }).then(res => res.data);
+};
 //获取教务报表折线图数据
 export const getteachFormsPic = (token,params) => {
     axios.defaults.headers.common['Authorization'] = token.Authorization;
@@ -126,6 +175,12 @@ export const getteachFormsList = (token,params) => {
 export const getteachFormsRank = (token,params) => {
     axios.defaults.headers.common['Authorization'] = token.Authorization;
     return axios.get(`${base}/api/v1/reportForms/teachFormsRank`, { params: params }).then(res => res.data);
+};
+
+//获取教务报表业绩指标数据
+export const getteachachievementForms = (token,params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/reportForms/achievementForms`, { params: params }).then(res => res.data);
 };
 
 //获取部门
@@ -200,6 +255,17 @@ export const campusList = (params, token) => {
     return axios.get(`${base}/api/v1/school/list`, { params: params }).then(res => res.data);
 };
 
+//校区详情
+export const schoolDetail = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/school/show`, { params: params }).then(res => res.data);
+};
+
+//添加学校
+export const add_school = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/school/store`, params).then(res => res.data);
+};
 // 帐号停用筛选
 // export const list_account = (token) => {
 //     axios.defaults.headers.common['Authorization'] = token.Authorization;
@@ -668,6 +734,12 @@ export const signContract = (params, token) => {
     return axios.post(`${base}/api/v1/cc/checkUser`, params).then(res => res.data);
 };
 
+//检查合同是否重复
+export const  checkOrderSku = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/public/checkOrderSku`, params).then(res => res.data);
+};
+
 //CC获取我的学员列表
 export const getMyStudent = (token, params) => {
     axios.defaults.headers.common['Authorization'] = token.Authorization;
@@ -902,6 +974,263 @@ export const getTeachIndex = (token, params) => {
 export const getTeachmyStudent = (token, params) => {
     axios.defaults.headers.common['Authorization'] = token.Authorization;
     return axios.get(`${base}/api/v1/teacher/myStudent`, { params: params }).then(res => res.data);
+};
+
+//熊猫到家产品库添加产品
+export const  productAdd = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/pandagohome/productAdd`, params).then(res => res.data);
+};
+//熊猫到家产品库列表
+export const productList = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/pandagohome/productList`, { params: params }).then(res => res.data);
+};
+//熊猫到家库存管理-添加产品库存
+export const  addStock = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/pandagohome/addStock`, params).then(res => res.data);
+};
+//熊猫到家订单管理-产品库-删除
+export const  productDel = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/pandagohome/productDel`, params).then(res => res.data);
+};
+//熊猫到家订单管理-添加订单合同
+export const  addOrders = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/pandagohome/addOrders`, params).then(res => res.data);
+};
+//熊猫到家订单管理-订单列表
+export const orderList = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/pandagohome/orderList`, { params: params }).then(res => res.data);
+};
+//熊猫到家发货报表-发货记录
+export const shipmentList = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/pandagohome/shipmentList`, { params: params }).then(res => res.data);
+};
+//熊猫到家销售报表-销售列表
+export const salesReport = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/pandagohome/salesReport`, { params: params }).then(res => res.data);
+};
+//熊猫到家订单管理-订单退订
+export const orderRefund = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/pandagohome/orderRefund`, { params: params }).then(res => res.data);
+};
+//熊猫到家物流-库存管理库存报表
+export const stockControl = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/pandagohome/stockControl`, { params: params }).then(res => res.data);
+};
+
+//熊猫到家采购管理-订单量
+export const orderCount = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/pandagohome/orderCount`, { params: params }).then(res => res.data);
+};
+
+//熊猫到家订单管理-详细
+export const orderInfo = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/pandagohome/orderInfo`, { params: params }).then(res => res.data);
+};
+//熊猫到家发货管理-获取本月发货单
+export const exportDelivery = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/pandagohome/exportDelivery`, { params: params }).then(res => res.data);
+};
+//熊猫到家库存管理-取得指定产品库存记录
+export const getProductStockLog = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/pandagohome/getProductStockLog`, { params: params }).then(res => res.data);
+};
+//熊猫到家订单管理订单报表-已发期数的获取月份
+export const orderShipmentList = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/pandagohome/orderShipmentList`, { params: params }).then(res => res.data);
+};
+//熊猫到家-物流订单查询
+export const getShipmentLogistics = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/pandagohome/getShipmentLogistics`, { params: params }).then(res => res.data);
+};
+
+
+//学员中心后台-校长信箱-列表
+export const emailboxlist = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/wxmanage/emailboxlist`, { params: params }).then(res => res.data);
+};
+//学员中心后台 校长信箱-处理
+export const  ProEmail = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/wxmanage/ProEmail`, params).then(res => res.data);
+};
+
+//学员中心后台-校长信箱-学员详细
+export const userinfo = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/wxmanage/userinfo`, { params: params }).then(res => res.data);
+};
+//学员中心后台-公告管理-公告列表
+export const schoolBulletinList = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/wxmanage/schoolBulletinList`, { params: params }).then(res => res.data);
+};
+
+//学员中心后台 公告管理-添加公告
+export const  schoolBulletinAdd = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/wxmanage/schoolBulletinAdd`, params).then(res => res.data);
+};
+
+//学员中心后台-微信管理-微信列表
+export const wxMsgList = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/wxmanage/wxMsgList`, { params: params }).then(res => res.data);
+};
+//学员中心后台 微信管理-群发消息
+export const  condMassWX = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/wxmanage/condMassWX`, params).then(res => res.data);
+};
+//学员中心后台-微信管理-失败列表
+export const WxFail = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/wxmanage/WxFail`, { params: params }).then(res => res.data);
+};
+
+//学员中心后台-短信管理-短信列表
+export const SmsMList = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/wxmanage/SmsMList`, { params: params }).then(res => res.data);
+};
+
+//学员中心后台 短信管理-发送消息
+export const  condMassSms = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/wxmanage/condMassSms`, params).then(res => res.data);
+};
+
+//学员中心后台-短信管理-短信失败列表
+export const smsFail = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/wxmanage/smsFail`, { params: params }).then(res => res.data);
+};
+//学员中心后台 短信管理-失败重发
+export const  smsResend = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/wxmanage/smsResend`, params).then(res => res.data);
+};
+
+//学员中心后台-画廊管理-画廊列表
+export const hualangList = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/wxmanage/hualangList`, { params: params }).then(res => res.data);
+};
+//学员中心后台 画廊管理-推荐作品
+export const  recomHualangWork = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/wxmanage/recomHualangWork`, params).then(res => res.data);
+};
+
+//官网后台管理-师资管理-老师列表
+export const teacherlist = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/pcmanage/teacherlist`, { params: params }).then(res => res.data);
+};
+//学员中心后台 师资管理-添加老师
+export const  addTeacher = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/pcmanage/addTeacher`, params).then(res => res.data);
+};
+//学员中心后台 师资管理-删除老师
+export const  delTeacher = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/pcmanage/delTeacher`, params).then(res => res.data);
+};
+//官网后台管理-根据省市城区筛选校区
+export const schoolArea = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/pcmanage/schoolArea`, { params: params }).then(res => res.data);
+};
+//批量排课学生 列表
+export const autoSyllabusStudentList = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/teacher/autoSyllabusStudentList`, { params: params }).then(res => res.data);
+};
+
+//批量排课学生 踢人
+export const removeSyllabusUser = (token, params) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/teacher/removeSyllabusUser`, { params: params }).then(res => res.data);
+};
+//学员中心后台 师资管理-批量确定
+export const  postSyllabusStudentList = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/teacher/autoSyllabusStudentList`, params).then(res => res.data);
+};
+
+//官网后台管理-校区管理
+export const schoolList = (params,token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/pcmanage/schoolList`, { params: params }).then(res => res.data);
+};
+//学员中心后台 校区管理-显示隐藏校区
+export const  hideSchool = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/school/delete`, params).then(res => res.data);
+};
+
+//官网后台管理-新闻管理-新闻列表
+export const newsList = (params,token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/pcmanage/newsList`, { params: params }).then(res => res.data);
+};
+//学员中心后台 -新闻管理-添加新闻
+export const  newsAdd = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/pcmanage/newsAdd`, params).then(res => res.data);
+};
+//官网后台管理-新闻管理-新闻详细
+export const newsDet = (params,token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/pcmanage/newsDet`, { params: params }).then(res => res.data);
+};
+//官网后台管理-授权合作-列表
+export const jiamengLIst = (params,token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/pcmanage/jiamengLIst`, { params: params }).then(res => res.data);
+};
+
+//官网后台管理-招聘管理-列表
+export const positionsList = (params,token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/pcmanage/positionsList`, { params: params }).then(res => res.data);
+};
+//学员中心后台 -招聘管理-添加职位
+export const  positionsAdd = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/pcmanage/positionsAdd`, params).then(res => res.data);
+};
+//学员中心后台 -招聘管理-删除职位
+export const  positionsDet = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/pcmanage/positionsDet`, params).then(res => res.data);
+};
+//官网后台管理-招聘管理-上海-上海的省市列表
+export const speciallyCityList = (params,token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/pcmanage/speciallyCityList`, { params: params }).then(res => res.data);
+};
+//官网后台管理-申请职位-列表
+export const positionsApply = (params,token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/pcmanage/positionsApply`, { params: params }).then(res => res.data);
 };
 // //code字段说明
 //     tmk_m:  tmk主管

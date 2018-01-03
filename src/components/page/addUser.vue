@@ -3,7 +3,7 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
-                    <i class="el-icon-moban"></i> 资源管理</el-breadcrumb-item>
+                    <i class="el-icon-my-moban"></i> 资源管理</el-breadcrumb-item>
                 <el-breadcrumb-item :to="{ path: '/myResource' }">我的资源</el-breadcrumb-item>
                 <el-breadcrumb-item class='ss'>录入资料</el-breadcrumb-item>
             </el-breadcrumb>
@@ -117,11 +117,11 @@
                         <el-cascader :options="source" :props="propsource" v-model="form.sour_id" :show-all-levels="false" placeholder="请选择渠道" @change="handleChange(form.sour_id)">
                         </el-cascader>
                     </el-form-item>
-                    <!-- <el-form-item prop='referee' class='AU172float'>
+                     <el-form-item prop='referral_uid' class='AU172float'>
                        
                         <el-select
                         v-if='this.form.sour_id == 4'
-                        v-model="form.referee"
+                        v-model="form.referral_uid"
                         filterable
                         remote
                         placeholder="请输入学员关键词"
@@ -134,15 +134,15 @@
                           :value="item.label.uid">
                         </el-option>
                       </el-select>
-                    </el-form-item> -->
-                    <!-- <el-form-item prop='familys_name' class='AUfloat'>
+                    </el-form-item> 
+                   <!-- <el-form-item prop='familys_name' class='AUfloat'>
                         <span v-if='this.form.sour_id == 4&&this.form.familys_name'>家长姓名:{{form.familys_name}}</span>
-                    </el-form-item> -->
+                    </el-form-item>  -->
 
-                    <!-- <span v-if='isWarning' class='AUwarn'> {{warning}}</span> -->
+                   <span v-if='isWarning' class='AUwarn'> {{warning}}</span> 
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="onSubmit('form')">确定</el-button>
+                    <el-button type="primary" :loading='writeL' @click="onSubmit('form')">确定</el-button>
                     <el-button @click="back">取消</el-button>
                 </el-form-item>
             </el-form>
@@ -248,11 +248,12 @@
                 }
             }
             return {
+                writeL:false,
                 maxlength: 11,
                 loading: false,
                 options4: [],
                 // nostudent: false,
-                warning: '*系统中没有该成员', //以后改成调服务显示
+                warning: '*请选择转介绍学员', //以后改成调服务显示
                 form: {
                     names: '',
                     sex: '',
@@ -269,10 +270,9 @@
                     address: '',
                     school_id: '',
                     sour_id: [],
-                    // referee: '',
-                    // familys_name: '',
-                    // referral_uid: '',
-                    // familys: ''
+                    referral_uid: '',
+                    familys_name: '',
+                    familys: ''
                 },
                 cities: [],
                 regions: [],
@@ -359,27 +359,27 @@
             }
         },
         methods: {
-            //         remoteMethod(query) {
-            //     if (query !== '') {
-            //       this.loading = true;
-            //       let para = {
-            //                 input: query
-            //             }
-            //             repeatStudentList(token, para).then(res => {
-            //                 if(res.data.length!=0){
-            //                     this.loading = false;
-            //                     this.options4 = res.data.filter(item => {
-            //           return item.label.nickname.toLowerCase()
-            //             .indexOf(query.toLowerCase()) > -1;
-            //         });
-            //                 }
-            //             })
-            //     } else {
-            //         // this.nostudent = true;
-            //         this.form.referee = ''
-            //       this.options4 = [];
-            //     }
-            //   },
+                    remoteMethod(query) {
+                if (query !== '') {
+                  this.loading = true;
+                  let para = {
+                            input: query
+                        }
+                        repeatStudentList(token, para).then(res => {
+                            if(res.data.length!=0){
+                                this.loading = false;
+                                this.options4 = res.data.filter(item => {
+                      return item.label.nickname.toLowerCase()
+                        .indexOf(query.toLowerCase()) > -1;
+                    });
+                            }
+                        })
+                } else {
+                    // this.nostudent = true;
+                    this.form.referral_uid = ''
+                  this.options4 = [];
+                }
+              },
             // changerule(){
             //     let that= this;
             //     setTimeout(function() {
@@ -395,9 +395,10 @@
             //     }, 0);
             // },
             handleChange(val) {
-                this.$refs['form'].validate((valid) => {})
+                this.$refs['form'].validateField('referral_uid');
+                // this.$refs['form'].validate((valid) => {})
                 // if(val!=4){
-                //     this.form.referee = ''
+                //     this.form.referral_uid = ''
                 // }
             },
             // querySearchAsync(queryString, cb) {
@@ -466,6 +467,7 @@
                 })
             },
             onSubmit(formName) {
+                // console.log(this.form)
                 this.$refs[formName].validate((valid) => {
                     if (valid && this.isWarning === false) {
                         if (this.form.parent1 || this.form.con1 || this.form.phone1) {
@@ -476,6 +478,7 @@
                         }
                         let para = JSON.parse(JSON.stringify(this.form));
                         para.sour_id = para.sour_id.join(',');
+                        this.writeL = true;
                         create_student(para, token).then(res => {
                             // console.log('succ')
                             if (res.code == 0) {
@@ -484,8 +487,10 @@
                                     type: 'success'
                                 });
                                 this.$refs.form.resetFields();
+                                this.writeL = false;
                             } else {
                                 this.$message.error(res.data);
+                                this.writeL = false;
                                 this.form.phone = '';
                                 this.$refs.parentPhone.$refs.input.focus();
                                 this.$refs.parentPhone.$refs.input.blur();
@@ -494,7 +499,7 @@
                             }
                         })
                     } else {
-                        // if(this.form.referee==''){
+                        // if(this.form.referral_uid==''){
                         //     this.$message.info('还有未填写项目')
                         // }
                         console.log('error submit!!');
@@ -506,8 +511,8 @@
         },
         computed: {
             isWarning() {
-                return false
-                // return this.form.sour_id == 4&&this.form.referee==""
+                // return false
+                return this.form.sour_id == 4&&this.form.referral_uid==""
             },
             // secondRule(){
             //     if(this.form.parent1&&this.form.phone1&&this.form.con1){
@@ -528,11 +533,11 @@
             cityList(token).then((res) => {
                 // console.log(res)
                 this.cities = res.data
+            }).then(()=>{
+                this.form.city_id = 31
             })
             sourceList(token).then(res => {
-                this.source = res.data.filter(item => {
-                    return item.id != 4
-                })
+                this.source = res.data
             })
         }
     }

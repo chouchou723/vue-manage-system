@@ -43,13 +43,15 @@ const router = new Router({
                         keepAlive: true // 不需要被缓存
                     },
                     component: resolve => require(['../components/page/Wechat.vue'], resolve) //微信绑定
-                }, {
-                    path: '/message',
-                    meta: {
-                        keepAlive: true // 不需要被缓存
-                    },
-                    component: resolve => require(['../components/page/Message.vue'], resolve) //消息设置
-                }, {
+                }, 
+                // {
+                //     path: '/message',
+                //     meta: {
+                //         keepAlive: true // 不需要被缓存
+                //     },
+                //     component: resolve => require(['../components/page/Message.vue'], resolve) //消息设置
+                // }, 
+                {
                     path: '/searchResult',
                     meta: {
                         keepAlive: true // 不需要被缓存
@@ -93,13 +95,15 @@ const router = new Router({
                         keepAlive: true // 不需要被缓存
                     },
                     component: resolve => require(['../components/page/departmantManage.vue'], resolve) //部门管理
-                },  {
-                    path: '/schoolManage',
-                    meta: {
-                        keepAlive: true // 不需要被缓存
-                    },
-                    component: resolve => require(['../components/page/schoolManage.vue'], resolve) //校区管理
-                }, {
+                },
+                //  {
+                //     path: '/schoolManage',
+                //     meta: {
+                //         keepAlive: true // 不需要被缓存
+                //     },
+                //     component: resolve => require(['../components/page/schoolManage.vue'], resolve) //校区管理
+                // }, 
+                {
                     path: '/api/v1/module',
                     meta: {
                         keepAlive: true // 不需要被缓存
@@ -153,22 +157,16 @@ const router = new Router({
                     component: resolve => require(['../components/page/invalidResource.vue'], resolve), //无效资源
                 },
                 {
-                    path: '/userDetail',
-                    children: [
-                        { name: "userDetailList",
-                        path: "/userDetail/:uid/:status/:resource", 
-                        params: {
-                            uid: 'rd',
-                            status: '0',
-                            resource: 0
-                        },
-                        component: resolve => require(['../components/page/userDetail.vue'], resolve), //客户详情
-                    }  
-                    ],
+                    name:"userDetailList",
+                    path: '/userDetail/:uid/:status/:resource',
                     meta: {
                         keepAlive: true // 不需要被缓存
                     },
-                    
+                    params: {
+                        uid: 'rd',
+                        status: '0',
+                        resource: 0
+                    },
                     component: resolve => require(['../components/page/userDetail.vue'], resolve) // 客户详情
 
                 },{
@@ -214,21 +212,15 @@ const router = new Router({
                     component: resolve => require(['../components/page/tagLibrary.vue'], resolve), //标签库
 
                 },{
-                    path: '/customerDetail',
-                    children: [
-                        { name: "customerDetailList",
-                        path: "/customerDetail/:uid/:status", 
-                        params: {
-                            uid: 'rd',
-                            status: '0'
-                        },
-                        component: resolve => require(['../components/page/customerDetail.vue'], resolve), //客户详细
-                    }  
-                    ],
+                    name: "customerDetailList",
+                    path: '/customerDetail/:uid/:status',
                     meta: {
                         keepAlive: true // 不需要被缓存
                     },
-                    
+                    params: {
+                        uid: 'rd',
+                        status: '0'
+                    },
                     component: resolve => require(['../components/page/customerDetail.vue'], resolve), //客户详细
 
                 }, {
@@ -287,14 +279,16 @@ const router = new Router({
                     },
                     component: resolve => require(['../components/page/personnelAssignTMK.vue'], resolve), //人员调配TMK
 
-                }, {
-                    path: '/personnelAssignEdu',
-                    meta: {
-                        keepAlive: true // 不需要被缓存
-                    },
-                    component: resolve => require(['../components/page/personnelAssignEDU.vue'], resolve), //学员调配教务
+                },
+                //  {
+                //     path: '/personnelAssignEdu',
+                //     meta: {
+                //         keepAlive: true // 不需要被缓存
+                //     },
+                //     component: resolve => require(['../components/page/personnelAssignEDU.vue'], resolve), //学员调配教务
 
-                }, {
+                // }, 
+                {
                     path: '/api/v1/Travel/tplList',
                     meta: {
                         keepAlive: true // 不需要被缓存
@@ -368,7 +362,28 @@ const router = new Router({
                     meta: {
                         keepAlive: true // 不需要被缓存
                     },
-                    component: resolve => require(['../components/page/reportSale.vue'], resolve), //cc工作量,tmk资源发展报表
+                    component: resolve => require(['../components/page/reportSale.vue'], resolve), //cc工作量
+                    // 报表统计
+                },{
+                    path: '/reportFormDevelopment',
+                    meta: {
+                        keepAlive: true // 不需要被缓存
+                    },
+                    component: resolve => require(['../components/page/reportDevelopment.vue'], resolve), //tmk资源发展报表
+                    // 报表统计
+                },{
+                    path: '/reportFormTmkTotal',
+                    meta: {
+                        keepAlive: true // 不需要被缓存
+                    },
+                    component: resolve => require(['../components/page/reportFormTmkTotal.vue'], resolve), //销售经理看TMK工作量报表
+                    // 报表统计
+                },{
+                    path: '/reportFormCcTotal',
+                    meta: {
+                        keepAlive: true // 不需要被缓存
+                    },
+                    component: resolve => require(['../components/page/reportFormCcTotal.vue'], resolve), //销售经理看cc工作量
                     // 报表统计
                 },{
                     path: '/inventoryTable',
@@ -430,7 +445,109 @@ const router = new Router({
                         keepAlive: true // 不需要被缓存
                     },
                     component: resolve => require(['../components/page/approvalManage.vue'], resolve), //审批管理
+                },{
+                    path: '/principalMailbox',
+                    meta: {
+                        keepAlive: true // 不需要被缓存
+                    },
+                    component: resolve => require(['../components/page/principalMailbox.vue'], resolve), //校长信箱
+                },{
+                    path: '/noticeManage',
+                    meta: {
+                        keepAlive: true // 不需要被缓存
+                    },
+                    component: resolve => require(['../components/page/noticeManage.vue'], resolve), //公告管理
+                },{
+                    path: '/wechatManage',
+                    meta: {
+                        keepAlive: true // 不需要被缓存
+                    },
+                    component: resolve => require(['../components/page/wechatManage.vue'], resolve), //微信消息管理
+                },{
+                    path: '/smsManage',
+                    meta: {
+                        keepAlive: true // 不需要被缓存
+                    },
+                    component: resolve => require(['../components/page/smsManage.vue'], resolve), //短信消息管理
+                },{
+                    path: '/galleryManage',
+                    meta: {
+                        keepAlive: true // 不需要被缓存
+                    },
+                    component: resolve => require(['../components/page/galleryManage.vue'], resolve), //画廊管理
+                },{
+                    path: '/galleryDetail/:uid',
+                    meta: {
+                        keepAlive: true // 不需要被缓存
+                    },
+                    params: {
+                        uid: 'ud'
+                    },
+                    component: resolve => require(['../components/page/galleryDetail.vue'], resolve), //学员画廊详细
+
+                },{
+                    path: '/jobApplication',
+                    meta: {
+                        keepAlive: true // 不需要被缓存
+                    },
+                    component: resolve => require(['../components/page/jobApplication.vue'], resolve), //职位申请
+                },{
+                    path: '/authorizedCooperation',
+                    meta: {
+                        keepAlive: true // 不需要被缓存
+                    },
+                    component: resolve => require(['../components/page/authorizedCooperation.vue'], resolve), //授权合作
+                },{
+                    path: '/schoolManageMent',
+                    meta: {
+                        keepAlive: true // 不需要被缓存
+                    },
+                    component: resolve => require(['../components/page/schoolManageMent.vue'], resolve), //新学校管理
+                },{
+                    path: '/teachersManage',
+                    meta: {
+                        keepAlive: true // 不需要被缓存
+                    },
+                    component: resolve => require(['../components/page/teachersManage.vue'], resolve), //师资管理
+                },{
+                    path: '/newsManage',
+                    meta: {
+                        keepAlive: true // 不需要被缓存
+                    },
+                    component: resolve => require(['../components/page/newsManage.vue'], resolve), //新闻管理
+                },{
+                    path: '/recruitmentManagement',
+                    meta: {
+                        keepAlive: true // 不需要被缓存
+                    },
+                    component: resolve => require(['../components/page/recruitmentManagement.vue'], resolve), //职位管理
+                },{
+                    path: '/addStudents',
+                    meta: {
+                        keepAlive: true // 不需要被缓存
+                    },
+                    component: resolve => require(['../components/page/addStudents.vue'], resolve), //批量排课
+                },{
+                    path: '/resourceManage',
+                    meta: {
+                        keepAlive: true // 不需要被缓存
+                    },
+                    component: resolve => require(['../components/page/resourceManage.vue'], resolve), //资源管理
+                },{
+                    path: '/channelManage',
+                    meta: {
+                        keepAlive: true // 不需要被缓存
+                    },
+                    component: resolve => require(['../components/page/channelManage.vue'], resolve), //渠道管理
+                },{
+                    path: '/activityManage',
+                    meta: {
+                        keepAlive: true // 不需要被缓存
+                    },
+                    component: resolve => require(['../components/page/activityManage.vue'], resolve), //活动管理
                 },
+                
+                
             ]
         },
         {
@@ -439,13 +556,7 @@ const router = new Router({
                 keepAlive: true // 不需要被缓存
             },
             component: resolve => require(['../components/page/Login.vue'], resolve)
-        }, {
-            path: '/forgetPassword',
-            meta: {
-                keepAlive: true // 不需要被缓存
-            },
-            component: resolve => require(['../components/page/forgetPassword.vue'], resolve) //忘记密码
-        },
+        }
     ],
     // scrollBehavior (to, from, savedPosition) {
     //     console.log(savedPosition)
@@ -454,86 +565,41 @@ const router = new Router({
 })
 router.beforeEach((to, from, next) => {
     let user = sessionStorage.getItem('user');
-//    if(!user&&to.path!=="/login"){
-//         next('/login')
-//     }else if(user&&to.path=="/login"){
-//         let data =  JSON.parse(user);
-//         if(data.job && data.job.code == 'hr'){
-//             next('/api/v1/admin');
-//        }else if(!data.wechat){
-//        next('/wechat');
-//        }else{
-//           next('/Index');
-//        }
-//     }else if(user&&to.path!=="/login"){
-//         let token = JSON.parse(user).token?JSON.parse(user).token:'';
-//         let para = {
-//             path: to.path
-//         };
-//         getAccess(token,para).then((res) => {
-//             if(res.data==1){
-                
-//                 next()
-//                 // document.body.scrollTop = 0
-//             }else{
-//                 Vue.prototype.$message.error('对不起,您无权限访问此页面')
-//                 // next('/login')
-//             }
-//             return res
-//         }).then(res=>{
-//             if(res.data!==1){
-//             setTimeout(function() {
-//                     next('/login')
-//                 }, 1000);
-//             }
-//         }).catch(()=>{
-//             Vue.prototype.$message.error('对不起,您无权限访问此页面')
-//         })
-//     }else{
-//         sessionStorage.removeItem('user');
-//         next()
-//     }
-        if(!user&&to.path!=="/login"){
-            next('/login'); 
-        }else if(user&&to.path!=="/login"){
-            let token = JSON.parse(user).token?JSON.parse(user).token:'';
-            let para = {
-                path: to.path
-            };
-            getAccess(token,para).then((res) => {
-                if(res.data==1){
-                    
-                    next()
-                    // document.body.scrollTop = 0
-                }else{
-                    Vue.prototype.$message.error('对不起,您无权限访问此页面')
-                    // next('/login')
-                }
-                return res
-            }).then(res=>{
-                if(res.data!==1){
-                setTimeout(function() {
-                        next('/login')
-                    }, 1000);
-                }
-            }).catch(()=>{
-                Vue.prototype.$message.error('对不起,您无权限访问此页面')
-            })
-            // getUserinfo(token).then(u => {
-            //     let {
-            //         data
-            //     } = u;
-            //     data.token = token;
-            //     sessionStorage.setItem('user', JSON.stringify(data));
-            // }).then(()=>{
-                
-               
-            // })
-       
+    let token = user?JSON.parse(user).token:'';
+    if(!user&&to.path!=="/login"){
+        next('/login'); 
+    }else if(user&&to.path!=="/login"){
+        next()
+        // let para = {
+        //     path: to.path
+        // };
+        // getAccess(token,para).then((res) => {
+        //     if(res.data==1){
+        //         next()
+        //     }else{
+        //         if(from.path!='/'){
+        //             Vue.prototype.$message.error('对不起,您无权限访问此页面');
+        //             setTimeout(function(){window.location.reload();},1000)
+        //         }else{
+        //             let data = JSON.parse(user);
+        //             // console.log(data)
+        //             if(data.job && data.job.code.includes('hr')){
+        //                 next('/api/v1/admin');
+        //             }else if(data.job.code=='cc_c'){
+        //                 next('/reportFormTmkTotal');
+        //             }else{
+        //                 next('/Index');
+        //             }
+        //         }
+        //     }
+        // }).catch(()=>{
+        //     Vue.prototype.$message.error('对不起,您无权限访问此页面');
+        //     setTimeout(function(){window.location.reload();},1000)
+        // })
     }else{
         sessionStorage.removeItem('user');        
         next();
-    }
-  })
+    }       
+})
 export {router}
 

@@ -6,7 +6,7 @@
             </el-breadcrumb>
         </div> -->
         <div class='editPassCald'>
-            <h3 class='editPassH3'>任务提醒({{number}})</h3>
+            <h3 class='editPassH3'>任务提醒(今日:{{number}})</h3>
         </div>
         <vue-event-calendar :events="demoEvents"  @month-changed="handleMonthChanged">
             <template scope="props" class="event-item1">
@@ -43,7 +43,7 @@ export default {
             return {
                 // dialogFormVisibleCal:false,
                 demoEvents: [],
-                number: '',
+                number: '0',
                 // no:false
             }
         },
@@ -68,20 +68,24 @@ export default {
                     date: date
                 }
                 getTask(para, token).then(res => {
-                    this.demoEvents = res.map(item => {
-                        // if(item.length !=0){
+                    // console.log(res)
+                    if(Array.isArray(res)){
 
-                        return {
-                            date: item.remind_time.substring(0, 10).replace(/-/g, '/'),
-                            title: item.topic,
-                            desc: item.remark,
-                            creat: item.create_at.substring(0, 16),
-                            uname:item.customer_name,
-                            // id:item.uid
-                            url:item.url
-                        }
-                        // }
-                    })
+                        this.demoEvents = res.map(item => {
+                            // if(item.length !=0){
+    
+                            return {
+                                date: item.remind_time.substring(0, 10).replace(/-/g, '/'),
+                                title: item.topic,
+                                desc: item.remark,
+                                creat: item.create_at.substring(0, 16),
+                                uname:item.customer_name,
+                                // id:item.uid
+                                url:item.url
+                            }
+                            // }
+                        })
+                    }
 
                 })
             }
@@ -96,21 +100,25 @@ export default {
                 date: new Date().toLocaleDateString()
             }
             getTask(para, token).then(res => {
-                this.demoEvents = res.map(item => {
-                    return {
-                        date: item.remind_time.substring(0, 10).replace(/-/g, '/'),
-                        title: item.topic,
-                        desc: item.remark,
-                        creat: item.create_at.substring(0, 16),
-                        uname:item.customer_name,
-                        // id:item.uid
-                        url:item.url
-                    }
-                })
-                let arr = this.demoEvents.filter(item => {
-                    return item.date == new Date().toLocaleDateString()
-                })
-                this.number = arr.length
+                // console.log(res)
+                if(Array.isArray(res)){
+
+                    this.demoEvents = res.map(item => {
+                        return {
+                            date: item.remind_time.substring(0, 10).replace(/-/g, '/'),
+                            title: item.topic,
+                            desc: item.remark,
+                            creat: item.create_at.substring(0, 16),
+                            uname:item.customer_name,
+                            // id:item.uid
+                            url:item.url
+                        }
+                    })
+                    let arr = this.demoEvents.filter(item => {
+                        return item.date == new Date().toLocaleDateString()
+                    })
+                    this.number = arr.length
+                }
             }).then(() => {
                 let a = new Date().toLocaleDateString().replace(/-/g, '/');
                 this.$EventCalendar.toDate(a)

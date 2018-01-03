@@ -3,11 +3,12 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-my-tongzhi"></i> 活动管理</el-breadcrumb-item>
-                <el-breadcrumb-item class='ss'>已发起活动</el-breadcrumb-item>
+                <el-breadcrumb-item :to="{ path: '/api/v1/Travel/activityList'}">已发起活动</el-breadcrumb-item>
+                <el-breadcrumb-item class='ss'>{{this.$route.params.type!=='生日会'?activity.names:activityB.names}}</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div style="float:left;width:49.5%;background-color:white;height:auto;border-radius:5px;margin-right:1%;position:relative"
-            v-if="this.$route.params.type=='亲子俱乐部'">
+            v-if="this.$route.params.type!=='生日会'">
             <div class='aDetailTitle'>
                 <!--  <i class=el-icon-my-tongxunlu style="font-size:31px"></i> -->
                 <span style="font-weight:600;font-size:22px">活动详情</span>
@@ -44,14 +45,14 @@
                     <span>{{activity.address}}</span>
                 </el-form-item>
                 <el-form-item label="活动介绍:" prop='content'>
-                    <div v-html="activity.content" class='actImg'></div>
+                    <div v-html="activity.content" class='actImg ql-editor'></div>
                 </el-form-item>
                 <el-form-item label="创建时间:" prop='created'>
                     <span>{{activity.created}}</span>
                 </el-form-item>
                 <div style="position: absolute;top: 32px;right: 2px;width: 300px;text-align: center;">
                     <div style="position: absolute;top: 20px;width: 100%;font-size: 14px;color: rgb(72, 106, 106);"> 封面图片</div>
-                    <img :src="activity.images" alt="" width='178' height="100" style="margin-top:40px">
+                    <img :src="activity.images" alt="" width='178' height="134" style="margin-top:40px">
                 </div>
             </el-form>
         </div>
@@ -65,8 +66,8 @@
                 <el-form-item label="生日会主题:" prop='names'>
                     <span>{{activityB.names}}</span>
                 </el-form-item>
-                <el-form-item label="生日月份:" prop='type_id'>
-                    <span>{{activityB.type_id}}</span>
+                <el-form-item label="生日月份:" prop='age'>
+                    <span>{{activityB.age}}</span>
                 </el-form-item>
                 <el-form-item label="举办校区:" prop='school_name'>
                     <span>{{activityB.schoolName}}</span>
@@ -84,14 +85,14 @@
                     <span>{{activityB.address}}</span>
                 </el-form-item>
                 <el-form-item label="活动介绍:" prop='content'>
-                    <div v-html="activityB.content" class='actImg'></div>
+                    <div v-html="activityB.content" class='actImg ql-editor'></div>
                 </el-form-item>
                 <el-form-item label="创建时间:" prop='created'>
                     <span>{{activityB.created}}</span>
                 </el-form-item>
                 <div style="position: absolute;top: 32px;right: 2px;width: 300px;text-align: center;">
                     <div style="position: absolute;top: 20px;width: 100%;font-size: 14px;color: rgb(72, 106, 106);"> 封面图片</div>
-                    <img :src="activityB.images" alt="" width='178' height="100" style="margin-top:40px">
+                    <img :src="activityB.images" alt="" width='178' height="134" style="margin-top:40px">
                 </div>
             </el-form>
         </div>
@@ -102,7 +103,7 @@
                 <span style="font-weight:600;font-size:22px">报名列表({{number}})</span>
             </div>
             <div id="tableact">
-                <el-table :data="noActData" style="width: 100%" >
+                <el-table :data="noActData" style="width: 95%;margin:0 auto" >
                     <el-table-column prop="child_name" label="姓名">
                         <template scope="scope">
                             <span>{{scope.row.child_name}}</span>
@@ -124,22 +125,12 @@
 <script>
     var token, user
     import {
-        cityList,
-        put_community,
-        create_community,
-        activateResource,
-        campusList,
-        getUserList,
-        getUserCommList,
-        getTMK,
-        sourceList,
-        repeatStudentList,
-        getUserInviteList,
-        put_student,
-        getTplInfo,
         getActivityOrderList,
         getBirthdayInfo
     } from '../../api/api';
+    import 'quill/dist/quill.core.css'
+// import 'quill/dist/quill.snow.css'
+// import 'quill/dist/quill.bubble.css'
     export default {
         data() {
             return {
@@ -147,7 +138,7 @@
                 loading: false,
                 activity: {},
                 activityB: {},
-                number: 0,
+                number: '0',
                 currentPage: 1, //页数
                 pagesize: 15, //默认每页
                 total: 0,
@@ -183,7 +174,7 @@
                 page: this.currentPage
             }
             getBirthdayInfo(token, para).then(res => {
-                console.log(res)
+                // console.log(res)
                 if (this.$route.params.type == '亲子俱乐部') {
 
                     this.activity = res.data
@@ -220,7 +211,7 @@
     .aTitle {
         position: relative;
         padding: 10px 10px 10px 10px;
-        border-bottom: 1px solid #e8e8e8;
+        /* border-bottom: 1px solid #e8e8e8; */
     }
 
     #aform .el-form-item {
@@ -257,7 +248,8 @@
     }
 
     .actImg img {
-        width: 100%
+        width: auto;
+        max-width: 100%;
     }
 
 </style>

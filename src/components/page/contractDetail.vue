@@ -72,9 +72,9 @@
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="course_curr_num" label="课时" width='50'>
+                    <el-table-column prop="course_num" label="课时" width='50'>
                         <template scope="scope">
-                            <div v-for='(item,index) in scope.row.course_curr_num' :class="index != (scope.row.title.length-1)?'CDtableTime':'CDtableTime1'">
+                            <div v-for='(item,index) in scope.row.course_num' :class="index != (scope.row.title.length-1)?'CDtableTime':'CDtableTime1'">
                                 {{item}}</div>
                         </template>
                     </el-table-column>
@@ -118,7 +118,7 @@
                                 {{item}}</div>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="bufei_money" label="转课补费额" width='80' v-if='contract.bufei_money!=0'>
+                    <el-table-column prop="bufei_money" label="转课补费额" width='80' v-if='contract.bufei_money-0!=0'>
                         <template scope="scope">
                             <div>{{contract.bufei_money}}</div>
                         </template>
@@ -134,7 +134,11 @@
                                 <div>{{item.first_time}} 开课</div>
                                 <div>{{item.week_num}} {{item.schooltime.substring(0,5)}} {{item.class_name}} {{item.teacher_name}}</div>
                             </div>
-                            <div v-else :class="index != (scope.row.title.length-1)?'gotoS':'gotoS1'" >还未排班</div>
+                            <div v-else :class="index != (scope.row.title.length-1)?'gotoS':'gotoS1'" >
+                                <span  style='color: rgb(226, 26, 89)' v-if="scope.row.course_curr_num[index]==='0'">已结束</span>
+                                <span  style='color: #dba31c' v-else>未排班</span>
+                                <!-- {{ scope.row.course_curr_num[index]==='0'?'已结束':'还未排班'}} -->
+                            </div>
                             <!-- <div v-else :class="index != (scope.row.title.length-1)?'gotoS':'gotoS1'" @click='gotoS'>还未排班</div> -->
                         </template>
                     </el-table-column>
@@ -163,17 +167,27 @@
                         <span>{{contract.datatable[0].collectMoney}}元</span>
                     </el-form-item>
                 </el-form>
-                <div class="CDupload">
-                    <div class="addphoto" v-if="!code.includes('_c')">添加纸质合同</div>
-                    <el-upload v-if="!code.includes('_c')"  action="http://pandatest.dfth.com/api/v1/order/uploadOrderImg" :headers='headers'
-                        list-type="picture-card" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-success='handleSuccess'
-                        :on-error='handleError' :before-upload="beforeAvatarUpload" :on-progress='onChange' :file-list="fileList2"
-                        name='orderImg' :data="upData">
-                        <i class="el-icon-plus"></i>
+                <div class="CDupload" v-if="!code.includes('_c')">
+                    <el-upload   :action="action" :headers='headers'
+                    list-type="picture-card" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-success='handleSuccess'
+                    :on-error='handleError' :before-upload="beforeAvatarUpload" :on-progress='onChange' :file-list="fileList2"
+                    name='orderImg' :data="upData">
+                    <i class="el-icon-plus" style='position:relative'>
+                            <span class='addphoto'>上传纸质合同</span>
+                        <!-- <div class="addphoto" v-if="!code.includes('_c')">添加纸质合同</div> -->
+                    </i>
                     </el-upload>
-                    <el-dialog v-model="dialogVisible" size="small" top='17%'>
+                    <el-dialog v-model="dialogVisible" size="small" top='5%'>
                         <img width="100%" :src="dialogImageUrl" alt="">
                     </el-dialog>
+                </div>
+                <div v-else style='display:flex;width:300px;justify-content: flex-end;padding:10px'>
+                    <div v-for="item in fileList2" class="canClickCD" @click='clickImg(item.url)'>
+                        <img :src="item.url" alt="" width="148px" height="148px">
+                    </div>
+                    <el-dialog v-model="dialogVisible1" size="small" top='5%'>
+                            <img width="100%" :src="dialogImageUrl1" alt="">
+                        </el-dialog>
                 </div>
                 <div class='CDsign'>
                     <div class="CDmargin10">
@@ -220,12 +234,12 @@
         </div>
 
         <!-- 修改合同 -->
-        <el-dialog title="修改合同" :visible.sync="dialogFormVisible3" :close-on-click-modal="no" top='7%' show-close class='signContactDialog'
+        <el-dialog title="修改合同" :visible.sync="dialogFormVisible3" :close-on-click-modal="no" top='7%' show-close class='signContactDialogA'
             @close="resetAll('actSchool')">
-            <el-form :model="actSchool" id='actSchool1' :rules='ruleActSchool' ref="actSchool" label-width='82px'>
+            <el-form :model="actSchool" id='actSchool1' :rules='ruleActSchool' ref="actSchool" >
                 <div class="CDflex">
                     <div class="CDdialogC">课程</div>
-                    <div v-for='item in tableTitle' :class="[item!='优惠类型'?item=='转课补费额'?'eee':'ccc':'ddd']">{{item}}</div>
+                    <div v-for='item in tableTitle' :class="[item!='优惠类型'?item=='转课补费额'?'aeee':'accc':'addd']">{{item}}</div>
                 </div>
                 <div class='CDdialogT'>
                     <div class='CDdialogTitle'>
@@ -238,7 +252,7 @@
                                     </el-select>
                                 </div>
                                 <div style="margin-left:10px">
-                                    <el-select v-model="i.course_id" clearable placeholder="课程名称" size='small' class="CD123" @change='getPrice(i,i.course_id)'>
+                                    <el-select v-model="i.course_id"  placeholder="课程名称" size='small' class="CD143" @change='getPrice(i,i.course_id)'>
                                         <el-option v-for="item in i.courseName1" :key="item.kcid" :label="item.title" :value="item.kcid">
                                         </el-option>
                                     </el-select>
@@ -259,6 +273,9 @@
                             <div class='editDiv'>
                                 <span>{{i.book_price}}</span>
                             </div>
+                            <div class='editDiv' style="background:#ffffff">
+                                <span>{{i.study_money}}</span>
+                            </div>
                         </div>
 
                     </div>
@@ -275,7 +292,12 @@
                             </div>
                         </div>
                     </div>
-                    <div class='totalP3zhuan' v-if="contract.bufei_money!=0">{{contract.bufei_money}}</div>
+                    <div class='editPromtion' >
+                        <div v-for='i in contracts' class='editCouponesMoney'  style="background:#ffffff">
+                            <span>{{i.study_money-(i.coupons_money-0)}}</span>
+                        </div>
+                    </div>
+                    <div class='totalP3zhuan' v-if="contract.bufei_money-0!=0">{{contract.bufei_money}}</div>
                     <div class='totalP3'>{{totalP3}}</div>
                     <!-- 总额用法 -->
                     <div class='payMethod'>
@@ -295,7 +317,7 @@
                     <el-form-item label="合同编号" prop='sku'>
                         <el-input v-model="actSchool.sku" placeholder='请输入合同编号' class="CD142"></el-input>
                     </el-form-item>
-                    <el-form-item label="试听老师" prop='teacher_uid' v-if='contract.new_order_id==1'>
+                    <el-form-item label="试听老师" prop='teacher_uid' required v-if='contract.new_order_id==1'>
                         <el-select v-model="actSchool.teacher_uid" placeholder="请选择试听老师" class="CD142">
                             <el-option v-for="item in teachersName" :key="item.aid" :label="item.uname" :value="item.aid">
                             </el-option>
@@ -307,16 +329,16 @@
                             <el-option label="无" value="0"></el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="付款方式" class="CDposition" required>
+                    <el-form-item label="付款方式" class="CDposition" prop="method">
                         <div v-for="(a, index) in actSchool.pay" :class="[index !=0?'CDmale':'']">
-                            <el-form-item prop="method" class="CD142float">
-                                <el-select v-model="a.method" clearable placeholder="请选择方式" @change='changeReset'>
+                            <el-form-item  class="CD142float">
+                                <el-select v-model="a.method"  placeholder="请选择方式" @change='changeReset1("method")'>
                                     <el-option v-for="item in payMethods" :key="item.id" :label="item.name" :value="item.id">
                                     </el-option>
                                 </el-select>
                             </el-form-item>
                             <el-form-item prop="money" class="CDfloat">
-                                <el-input v-model.number="a.money" placeholder='请输入金额'></el-input>
+                                <el-input v-model="a.money" placeholder='请输入金额' @change='changeReset1("money")'></el-input>
                             </el-form-item>
                             <span @click='addPay' class='addPayC' v-if='index==0'>添加付款方式</span>
                             <span @click='deletePay' class='deletePayC' v-else>删除</span>
@@ -326,7 +348,7 @@
 
                     <el-form-item label="付款总额">
                         {{payTotal}}元
-                        <span v-if='this.payTotal +(this.contract.bufei_money-0) != this.totalP3' class='CDred'>*付款总额与实收总额不符*</span>
+                        <!-- <span v-if='this.payTotal +(this.contract.bufei_money-0) != this.totalP3' class='CDred'>*付款总额与实收总额不符*</span> -->
                     </el-form-item>
                     <!-- <el-form-item label="签约时间" prop='created'>
                         <el-date-picker v-model="actSchool.created" type="date">
@@ -336,7 +358,7 @@
                 </div>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="nextToLast('actSchool')">确定</el-button>
+                <el-button type="primary" :loading='writeL' @click="nextToLast('actSchool')">确定</el-button>
                 <el-button @click="dialogFormVisible3 =false">取消</el-button>
                 <br>
             </div>
@@ -356,7 +378,8 @@
         returnVisitDetail,
         getMyContractDetail,
         put_contract,
-        deleteContractImg
+        deleteContractImg,
+        checkOrderSku
     } from '../../api/api';
     export default {
         data() {
@@ -372,7 +395,7 @@
                     return item.method != ''
                 })
                 if (!a) {
-                    callback('请选择支付方式')
+                    callback('请选择付款方式')
                 } else {
                     callback();
                 }
@@ -380,8 +403,17 @@
             var isMoney = (rule, value, callback) => {
                 let a = 0
                 this.actSchool.pay.map(item => {
-                    a += item.money
+                    a += item.money-0
                 })
+                if (this.contract.bufei_money!=0&&(a  != this.totalP3)) {
+                    callback('付款金额不正确')
+                }else if(a  != this.totalP3){
+                    callback('付款总额与实收总额不等')
+                }else{
+                    callback();
+                }
+
+
                 if (a != this.totalP3) {
                     callback('付款总额与实收总额不等')
                 } else {
@@ -395,10 +427,25 @@
                 } else if (!myreg.test(value)) {
                     callback('请输入有效合同编号');
                 } else {
-                    callback();
+                    let para={
+                        orderid:this.$route.params.order_id,
+                        sku:value
+                    }
+                    checkOrderSku(para,token).then(res=>{
+                        // console.log(res)
+                        if(res.data.repeat===0){
+
+                            callback();
+                        }else{
+                            callback('合同编号已存在')
+                        }
+                    })
                 }
             }
             return {
+                // action:'http://pandatest.dfth.com/api/v1/order/uploadOrderImg',
+                aciton:'/api/v1/order/uploadOrderImg',
+                writeL:false,
                 headers: {
                     Authorization: token.Authorization
                 },
@@ -416,7 +463,9 @@
                 teachersName: [],
                 canUpload: true,
                 dialogImageUrl: '',
+                dialogImageUrl1: '',                
                 dialogVisible: false,
+                dialogVisible1: false,                
                 contract: {
                     datatable: [{
                         collectMoney: 0
@@ -476,12 +525,12 @@
                         // message: '请输入合同编号',
                         trigger: 'blur'
                     }, ],
-                    // teacher_uid: [{
-                    //     required: true,
-                    //     message: '请选择试听老师',
-                    //     validator: nan,
-                    //     trigger: 'change'
-                    // }],
+                    teacher_uid: [{
+                        required: true,
+                        message: '请选择试听老师',
+                        validator: nan,
+                        trigger: 'change'
+                    }],
                     panda_gohome: [{
                         required: true,
                         message: '请选择是否有熊猫到家',
@@ -492,11 +541,11 @@
                         validator: isPay,
                         trigger: 'change'
                     }],
-                    // money: [{
-                    //     required: true,
-                    //      validator: isMoney,
-                    //     trigger: 'blur'
-                    // }],
+                    money: [{
+                        required: true,
+                         validator: isMoney,
+                        trigger: 'blur'
+                    }],
                     // created: [{
                     //     required: true,
                     //     type: 'date',
@@ -509,6 +558,17 @@
             }
         },
         methods: {
+            clickImg(data){
+                this.dialogImageUrl1 = data;
+                this.dialogVisible1 = true;
+            },
+            changeReset1(val){
+                if(val==='money'){
+                    this.$refs['actSchool'].validate((valid) => {})
+                }else{
+                    this.$refs['actSchool'].validateField(val);
+                }
+            },
             onChange(event, file, fileList) {
                 // console.log(file)
                 let a = document.getElementsByClassName('el-upload--picture-card')[0];
@@ -522,8 +582,7 @@
 
                 if (!isJPG) {
                     this.$message.error('上传图片只能是 JPG或者PNG 格式!');
-                }
-                if (!isLt2M) {
+                }else if (!isLt2M) {
                     this.$message.error('上传图片大小不能超过10MB!');
                 }
                 return isJPG && isLt2M;
@@ -531,7 +590,7 @@
             gotoS() {
                 this.$router.push('/studentDetail/' + this.$route.params.uid);
             },
-            handleSuccess(response, file, fileList) { //上传图片成功
+            handleSuccess(response, file, fileList) {//上传图片成功
                 this.$message.success('上传成功')
                 file.id = response.data.id
                 let a = document.getElementsByClassName('el-upload--picture-card')[0];
@@ -544,40 +603,38 @@
             handleError(err, file, fileList) {
                 this.$message.error(error.message)
             },
-            handleRemove(file, fileList) { //移除图片
-                let para = {
-                    order_id: this.$route.params.order_id,
-                    img_id: file.id
+            handleRemove(file, fileList) {//移除图片
+                // console.log(fileList)
+                if(file.id){
+
+                    let para = {
+                        order_id: this.$route.params.order_id,
+                        img_id: file.id
+                    }
+                    deleteContractImg(para, token).then(res => {
+                        if (res.code == 0) {
+                            this.$message.success('删除成功')
+                        }
+                    }).then(() => {
+                        let a = document.getElementsByClassName('el-upload--picture-card')[0];
+                        if (fileList.length < 2) {
+                            setTimeout(() => {
+                                
+                                a.style.display = 'inline-block'
+                            }, 850);
+                        }
+                    })
                 }
-                deleteContractImg(para, token).then(res => {
-                    if (res.code == 0) {
-                        this.$message.success('删除成功')
-                    }
-                }).then(() => {
-                    let a = document.getElementsByClassName('el-upload--picture-card')[0];
-                    if (fileList.length < 2) {
-                        a.style.display = 'inline-block'
-                    }
-                })
             },
             handlePictureCardPreview(file) { //图片预览
                 this.dialogImageUrl = file.url;
                 this.dialogVisible = true;
             },
             editContract(data) { //修改合同
-                let that = this;
-                this.actSchool = {
-                    sku: data.sku,
-                    teacher_uid: data.baomingTeachName ? data.baoming_teach.aid : '',
-                    panda_gohome: data.panda_gohome,
-                    pay: data.pay.filter(item => {
-                        return item.method != ''
-                    }),
-                    created: '' //,
-                }
-                requestAnimationFrame(function () {
-                    that.d = 2
-                }, 0);
+                
+            setTimeout(() => {
+                this.d = 2
+            }, 500);
                 this.coupons = data.datatable[0].coupons.map(item => {
                     return item.id
                 })
@@ -596,23 +653,41 @@
                     }
                 })
                 arr.map((item, index, arr) => {
-                    let that = this;
+                    // let that = this;
                     let a = item.kc_tid
                     this.getClassName(a, arr[index])
-                    requestAnimationFrame(function () {
+                    setTimeout(function () {
 
                         arr[index].course_id = data.order_item[index].course_id - 0
-                        that.getPrice(arr[index], arr[index].course_id)
-                    }, 0);
+                        // that.getPrice(arr[index], arr[index].course_id)
+                    }, 200);
 
                     // let b = item.course_id
                 })
                 this.contracts = [...arr]
+                let pa = {
+                order_id: this.$route.params.order_id
+            }
+            getMyContractDetail(token, pa).then(res => {
+                // console.log(res)
+                // let that = this;
+                let data = res.data;
+                this.actSchool = {
+                    sku: data.sku,
+                    teacher_uid: data.baomingTeachName ? data.baoming_teach.aid : '',
+                    panda_gohome: data.panda_gohome,
+                    pay: data.pay.filter(item => {
+                        return item.method != ''
+                    }),
+                    created: '' //,
+                }
+            }).then(()=>{
                 this.dialogFormVisible3 = true
+            })
             },
             nextToLast(formName) { //提交修改合同
                 this.$refs[formName].validate((valid) => {
-                    if (valid && this.isEqual === 1) {
+                    if (valid && this.isEqual === 1&&this.contracts.every(item=>{return item.course_id})) {
                         let para = {}
                         para.order = { ...this.actSchool
                         }
@@ -620,7 +695,8 @@
                         para.order.kecheng = [...this.contracts]
                         para.order.coupons = this.coupons
                         para.order_id = this.$route.params.order_id
-                        para.order = JSON.stringify(para.order)
+                        para.order = JSON.stringify(para.order);
+                        this.writeL = true;
                         put_contract(para, token).then(res => {
                             // console.log(res)
                             if (res.code == 0) {
@@ -633,12 +709,22 @@
                                     this.contract = res.data
                                 })
                                 this.dialogFormVisible3 = false;
+                                this.writeL = false;
                             } else {
-                                this.$message.error(res.data)
+                                this.$message.error(res.data);
+                                this.writeL = false;
                             }
+                        }).catch((res)=>{
+                            // this.$message.error('该用户未授权');
+                                this.writeL = false;
                         })
                     } else {
-                        this.$message.error('付款总额与实收总额不符')
+                        // this.$message.error('付款总额与实收总额不符')
+                        if(!this.contracts.every(item=>{return item.course_id})){
+                            this.$message.info('课程还未选择')
+                        }else{
+                            this.$message.info('请确认所有项目填写正确')      
+                        }
                     }
                 })
             },
@@ -650,6 +736,8 @@
             },
             deletePay() {
                 this.actSchool.pay.pop();
+                this.changeReset1('method');
+                this.changeReset1('money')
             },
             resetAll(formName) {
                 this.contracts = [{
@@ -663,51 +751,59 @@
                     coupons_money: '',
                     courseName1: []
                 }]
+                this.actSchool = {
+                    sku: '',
+                    teacher_uid: '',
+                    panda_gohome: '',
+                    pay: [{
+                        method: '',
+                        money: ''
+                    }],
+                    created: '',
+                },
                 this.coupons = []
                 this.d = 0
                 this.$refs[formName].resetFields();
             },
             getClassName(data, i) { //获取课程名称
-                let that = this;
-                if (!this.stopchange) {
+                if (!this.stopchange&&data) {
                     i.course_id = ''
                     let para = {
                         pid: data,
                         simple: 1
                     }
                     getClassLibrary(token, para).then((res) => {
-
                         i.courseName1 = res.data;
                     })
                 }
-                requestAnimationFrame(function () {
-                    that.stopchange = false;
-                }, 0);
             },
             getPrice(data, index) { //调详细获取价格
-                let para = {
-                    kcid: index
-                }
-                getLessonDetail(token, para).then((res) => {
-                    let a = res.data
-                    // console.log(a)
-                    if (data.course_id !== '') {
-                        data.year_num = a.year_num;
-                        data.head_count = a.head_count;
-                        data.tuition_price = a.tuition_price;
-                        data.teaching_price = a.teaching_price;
-                        data.book_price = a.book_price;
-                        data.study_money = (a.year_num - 0) + (a.head_count - 0) + (a.tuition_price - 0) + (a.teaching_price -
-                            0) + (a.book_price - 0);
-                    } else {
-                        data.year_num = '';
-                        data.head_count = '';
-                        data.tuition_price = '';
-                        data.teaching_price = '';
-                        data.book_price = '';
-                        data.study_money = '';
+                if(index){
+
+                    let para = {
+                        kcid: index
                     }
-                })
+                    getLessonDetail(token, para).then((res) => {
+                        let a = res.data
+                        // console.log(a)
+                        if (data.course_id !== '') {
+                            data.year_num = a.year_num;
+                            data.head_count = a.head_count;
+                            data.tuition_price = a.tuition_price;
+                            data.teaching_price = a.teaching_price;
+                            data.book_price = a.book_price;
+                            data.study_money = (a.tuition_price - 0) + (a.teaching_price -
+                                0) + (a.book_price - 0);
+                        } else {
+                            data.year_num = '';
+                            data.head_count = '';
+                            data.tuition_price = '';
+                            data.teaching_price = '';
+                            data.book_price = '';
+                            data.study_money = '';
+                        }
+                    })
+                }
             },
             addCon(index) { //添加课程
                 this.contracts.push({
@@ -725,7 +821,12 @@
             },
             delCon(index) { //删除某个课程
                 this.stopchange = true;
-                this.contracts.splice(index, 1)
+                let that =this;
+                this.contracts.splice(index, 1);
+                setTimeout(function () {
+                    that.stopchange = false;
+                }, 0);
+               
             },
             changeReset(val) {
                 if (val != '') {
@@ -736,10 +837,10 @@
         },
         computed: {
             tableTitle() {
-                if (this.contract.bufei_money != 0) {
-                    return ['课时', '签单数', '学费', '教材费', '书本费', '优惠类型', '优惠金额', '转课补费额', '实收总额', '操作']
+                if (this.contract.bufei_money-0 != 0) {
+                    return ['课时', '签单数', '学费', '教材费', '书本费', '课程金额','优惠类型', '优惠金额', '小计','转课补费额', '实收总额', '操作']
                 } else {
-                    return ['课时', '签单数', '学费', '教材费', '书本费', '优惠类型', '优惠金额', '实收总额', '操作']
+                    return ['课时', '签单数', '学费', '教材费', '书本费', '课程金额','优惠类型', '优惠金额','小计', '实收总额', '操作']
                 }
             },
             payMethods() {
@@ -779,7 +880,7 @@
                 }
             },
             isEqual() {
-                if ((this.payTotal + (this.contract.bufei_money - 0)) >= this.totalP3) {
+                if (this.payTotal  == this.totalP3) {
                     return 1
                 } else {
                     return 0
@@ -792,13 +893,22 @@
                 })
                 return a;
             },
-            totalP3() {
-                let a = 0
+            totalP() {
+                let a = 0;
                 this.contracts.map(item => {
-                    a += ((item.tuition_price - 0) + (item.teaching_price - 0) + (item.book_price - 0) - (item.coupons_money -
+                    a +=((item.tuition_price - 0) + (item.teaching_price - 0) + (item.book_price - 0) - (item.coupons_money -
                         0))
                 })
                 return a
+            },
+            totalP3() {
+                return (this.totalP  - (this.contract.bufei_money-0)>0?this.totalP - (this.contract.bufei_money-0):0)
+                // let a = 0
+                // this.contracts.map(item => {
+                //     a += ((item.tuition_price - 0) + (item.teaching_price - 0) + (item.book_price - 0) - (item.coupons_money -
+                //         0))
+                // })
+                // return a
             },
         },
         beforeCreate() {
@@ -941,7 +1051,7 @@
         border-radius: 25px;
     }
 
-    .signContactDialog .el-dialog--small {
+    .signContactDialogA .el-dialog--small {
         width: 1256.75px;
     }
 
@@ -954,7 +1064,7 @@
         color: white;
     }
 
-    .ccc {
+    .accc {
         text-align: center;
         height: 40px;
         line-height: 40px;
@@ -965,7 +1075,7 @@
         border-top: 1px solid gainsboro
     }
 
-    .ddd {
+    .addd {
         text-align: center;
         height: 40px;
         line-height: 40px;
@@ -976,7 +1086,7 @@
         border-top: 1px solid gainsboro
     }
 
-    .eee {
+    .aeee {
         text-align: center;
         height: 40px;
         line-height: 40px;
@@ -988,14 +1098,14 @@
     }
 
     .CDmale {
-        /* margin-left: 76px; */
+        margin-left: 76px;
         margin-top: 22px;
     }
 
     .addPayC {
-        position: absolute;
-        top: 0;
-        left: 333px;
+        float: left;
+        /* color: #f29c9c; */
+        margin-left: 20px;
         color: #1fb5ad
     }
 
@@ -1046,12 +1156,12 @@
     .gotoS {
         border-bottom: 1px solid rgb(223, 236, 235);
         line-height: 42px;
-        color: #f29c9c
+        /* color: #dba31c */
     }
 
     .gotoS1 {
         line-height: 42px;
-        color: #f29c9c
+        /* color: #dba31c */
     }
 
     /* .gotoS:hover,
@@ -1341,7 +1451,7 @@
     .CDdialogTitle {
         line-height: 40px;
         background: white;
-        width: 617px;
+        width:684px;
         display: flex;
         align-items: stretch;
         flex-wrap: wrap
@@ -1350,7 +1460,7 @@
     .CDlessonhover {
         font-size: 14px;
         display: flex;
-        width: 617px;
+        width: 684px;
     }
 
     .CDlessonD {
@@ -1365,9 +1475,11 @@
     }
 
     .CD123 {
-        width: 123px
+        width: 103px
     }
-
+    .CD143 {
+        width: 163px
+    }
     .CD131 {
         width: 131px;
         margin-left: 7px
@@ -1398,13 +1510,25 @@
     }
 
     .addphoto {
-        position: absolute;
+        /* position: absolute;
         font-size: 14px;
         top: -21px;
         left: 33px;
-        color: rgb(72, 106, 106)
+        color: rgb(72, 106, 106) */
+        position: absolute;
+        top: -38px;
+        left: -42px;
+        font-size: 18px;
+        font-weight: 600;
+        width: 110px;
     }
-.CDupload .el-icon-close{
+.CDupload li .el-icon-close{
     display: none;
+}
+.canClickCD{
+    padding-right: 10px;
+}
+.canClickCD:hover{
+cursor: pointer
 }
 </style>

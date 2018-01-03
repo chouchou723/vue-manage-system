@@ -30,6 +30,7 @@ const state = {
     myContractS:{},
     myTeachS:{},
     myActS:{},
+    myGal:'',
     
 }
 
@@ -61,6 +62,9 @@ const mutations = {
     },
     SENDMYACT(state,data){
         state.myActS = data;
+    },
+    SENDMYGAL(state,data){
+        state.myGal = data;
     },
     // INCREMENT(state) {
     //     state.count++

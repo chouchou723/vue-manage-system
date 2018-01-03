@@ -2,7 +2,7 @@
     <div class="tableUserDTSD">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item id='canHover' to="/teachStudentManage"><i class="el-icon-my-kaoqinliuchengtongji"></i> 学员管理</el-breadcrumb-item>
+                <el-breadcrumb-item id="canHover" :to="{ path: '/teachStudentManage'}"><i class="el-icon-my-yonhu"></i> 学员管理</el-breadcrumb-item>
                 <el-breadcrumb-item class='ss'>{{student.name}}</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
@@ -54,7 +54,7 @@
                 </el-form-item>
             </el-form>
             <div style="position:absolute;top:60px;right:15px">
-                <img style='border-radius:50%' width="100" height="100" alt="">
+                <img :src='student.head_img' style='border-radius:50%' width="100" height="100" alt="">
             </div>
         </div>
         <!-- 考勤记录 -->
@@ -91,11 +91,11 @@
                     <el-table-column prop="course_time" label="签到时间">
                     </el-table-column>
                 </el-table>
-                <!-- <div class="block">
-                <span class="demonstration"></span>
+                <div class="block">
+                  <!-- <span class="demonstration"></span> -->
                 <el-pagination layout="prev, pager, next" :total="total" :current-page="currentPage" :page-size="pagesize" @current-change="handleCurrentChange">
                 </el-pagination>
-            </div> -->
+            </div>
             </div>
             <div class="block">
                 <el-pagination layout="prev, pager, next" :total="total1" :current-page="currentPage1" :page-size="pagesize1" @current-change="handleCurrentChange1">
@@ -149,12 +149,12 @@
                     <div class='table4Div'>
                         <div style="display:flex;align-items:center;margin-left:10px">
                             <div style="font-size:16px;margin-left:10px">
-                                <span style='font-weight:bold;' class='skuJump'>
+                                <span style='font-weight:bold;'>
                           合同编号:  {{item.sku}}  
                         </span>
-                                <span :style="item.order_status=='待审核'?'color:blue':item.order_status=='审核通过'?'color:#18c318':item.order_status=='被退回'?'color:#e4a821':'color:red'">
+                                <!-- <span :style="item.order_status=='待审核'?'color:blue':item.order_status=='审核通过'?'color:#18c318':item.order_status=='被退回'?'color:#e4a821':'color:red'">
                            ({{item.order_status}}) 
-                        </span>
+                        </span> -->
                             </div>
                         </div>
                         <div style="margin-right:10px;color:grey;font-size:16px">
@@ -232,10 +232,11 @@
                     channel: '',
                     school: '',
                     time: '',
-                    teacher: ''
+                    teacher: '',
+                    head_img:''
                 },
                 code: '',
-                contractNumber: 0,
+                contractnumber: '0',
                 students: [{
                     dataTable: [],
                     sku: ''
@@ -324,6 +325,7 @@
                 let data = res.data.info;
                 this.student = {
                     name: data.child_name,
+                    head_img:data.head_img,
                     age: data.age,
                     sex: data.sex,
                     birthday: data.birthday,

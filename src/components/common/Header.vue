@@ -3,7 +3,7 @@
         <!-- <div class="logobg" style="width: 183px;height: 70px;background-color: #2b3a40;float: left;">
         <div class="logo"><img src="../../../static/img/topic_03.png"  width="170"  @click='refresh'></div> 
         </div>   -->
-        <div class="hoverbg" v-if="this.code != 'hr'">
+        <div class="hoverbg" v-if="this.code.includes('cc')||this.code.includes('tmk')||this.code.includes('teach')">
             <div class='search'>
                 <el-input placeholder="请输入完整的姓名或手机号" icon="search" clearable v-model="input2" :on-icon-click="handleIconClick" @keyup.enter.native='handleIconClick'>
                 </el-input>
@@ -34,7 +34,7 @@
         </el-dropdown>
     </div>
     <div class='messageAmount'>
-        <el-dropdown @command="handleCommand" style="height:48px" @visible-change="getData" class='scaleMess rotateInUpRight'>
+        <el-dropdown @command="handleCommand" style="height:48px" @visible-change="getData">
             <div >
                 <a href="javascript:;"><img src="../../../static/img/mess.png" width="30" alt="" style="padding-top:32%"  @click="goSystem" class='rotateInUpRight'></a>
             </div>
@@ -47,7 +47,7 @@
             <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item v-for='item in notifyMessage' style='width:300px;' v-loading="loading" @click.native="goSystem" v-if='notifyMessage.length!=0'>
                     <div style="text-align:left;font-size:14px;font-weight:600">{{item.type}}通知</div>
-                    <div style="text-align:left;font-size:14px;color:#666666;line-height:20px" v-if='item.type=="转校"'> 学生:{{ item.content.child}}的转校申请,请您确认</div>
+                    <!-- <div style="text-align:left;font-size:14px;color:#666666;line-height:20px" v-if='item.type=="转校"'> 学生:{{ item.content.child}}的转校申请,请您确认</div>                   -->
                 </el-dropdown-item>
                 <el-dropdown-item style='width:300px' @click.native="goSystem" v-if='notifyMessage.length==0'>
                     暂无未读消息
@@ -140,6 +140,9 @@
                 }
                 this.searchKey(this.input2);
                 this.$router.push('/searchResult')
+                setTimeout(() => {
+                    this.input2 = '';
+                }, 1);
             },
             gotoAdd() {
                 if(this.code.includes('tmk')){
@@ -201,7 +204,7 @@
             //     // console.log(user);
                 this.username = user1.uname || '';
                 this.agetSrc = user1.avatar || '';
-                this.duty = user1.job ? user1.job.full_name : ''
+                this.duty = user1.department ? user1.department : ''//要改部门名称
 
             // }
              this.contGet = setInterval(this.getM,600000)
@@ -219,7 +222,6 @@
             // this.$router.go();
         },
     }
-
 </script>
 <style>
     .hoverbg{
@@ -227,7 +229,7 @@ width: 245px;height: 48px;float: left; padding-left:183px
 	} 
 
     .hoverrt {
-        background: #6daba8;float:left;margin-left:25px;width: 55px;height: 48px;display:flex;justify-content: center;align-items: center;
+        background: #6daba8;float:left;margin-left:35px;width: 55px;height: 48px;display:flex;justify-content: center;align-items: center;
     }
 
     .hoverrt:hover {

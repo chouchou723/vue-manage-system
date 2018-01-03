@@ -6,13 +6,15 @@
         </el-breadcrumb> -->
         <div class='accouMyresourece'>
             
-            <h2 class="mydataReturn">
-               我的资源({{number}}人)
+            <h3 class="mydataReturn">
+               我的资源
+               <span v-if="number==='0'" style="font-size:14px;color: #bdb8b8;">加载中...</span>
+               <span v-else>({{number}}人)</span>
                <!-- <el-button type="primary" size="mid" class='myresourceButton' @click="goToAdd" v-if="!code.includes('_c')">添加资源</el-button> -->
-      </h2>
+      </h3>
         <div class="MRtitle">
             
-            <div class='studentReturnThreeNew' v-if="code =='tmk_m'||code=='cc_c'">
+            <div class='studentReturnThreeNew' v-if="code =='tmk_m'||code.includes('cc_c')">
                 <el-select v-model="valueT"  placeholder="选择TMK" @change="updateList" >
                     <el-option v-for="item in optionsTMK" :key="item.key" :label="item.label" :value="item.key">
                     </el-option>
@@ -43,11 +45,11 @@
   </el-cascader>
             </div>
             <div class='studentReturnThreeN'>
-                <el-date-picker v-model="value3" type="daterange" placeholder="录入时间" @change="updateList" >
+                <el-date-picker v-model="value3" type="daterange" placeholder="录入时间" @change="updateList" :picker-options="pickerOptions0">
                 </el-date-picker>
             </div>
             <div class='studentReturnThreeN'>
-                <el-date-picker v-model="value4" type="daterange" placeholder="最近联系时间" @change="updateList" >
+                <el-date-picker v-model="value4" type="daterange" placeholder="最近联系时间" @change="updateList" :picker-options="pickerOptions0">
                 </el-date-picker>
             </div>
             <div class='studentReturnThreeNew'>
@@ -99,7 +101,7 @@
                 </el-table-column>
             </el-table>
             <div class="block">
-                <span class="demonstration"></span>
+                  <!-- <span class="demonstration"></span> -->
                 <el-pagination layout="prev, pager, next" :total="total" :current-page="currentPage" :page-size="pagesize" @current-change="handleCurrentChange">
                 </el-pagination>
             </div>
@@ -121,12 +123,17 @@ import {
 export default {
     data() {
             return {
+                pickerOptions0: {
+                        disabledDate(time) {
+                            return time.getTime() > Date.now();
+                        }
+                    },
                 code: '',
                 currentPage: 1, //页数
                 pagesize: 15, //默认每页
                 total: 0, //总页数
                 tableData: [],
-                number: '',
+                number: '0',
                 optionsTMK: [], //TMK SELECT
                 options: [], //表单上方的select
                 options2: [], //渠道来源
@@ -137,7 +144,7 @@ export default {
                 value4: '',
                 value5: '',
                 valueR: '',
-                valueT: '0',
+                valueT: '',
                 sortName:'',
                 sortOrder:'',
                  propsource:{
@@ -188,7 +195,9 @@ export default {
                     input_start_date: this.value3,
                     last_start_date:this.value4,
                     sortName:this.sortName,
-                    sortOrder:this.sortOrder
+                    sortOrder:this.sortOrder,
+                    optionsTMK: this.optionsTMK
+                    
                 }
                 this.setMyResourceS(d)
                 this.$router.push({ name: 'userDetailList', params: { uid: row.id,status: row.status,resource:1}});
@@ -211,6 +220,7 @@ export default {
                     this.value4 =  this.getMyResourceS.last_start_date;
                     this.sortName =  this.getMyResourceS.sortName;
                     this.sortOrder =  this.getMyResourceS.sortOrder;
+                    this.optionsTMK= this.getMyResourceS.optionsTMK;
                 }
                 let para = {
                     tmk_id: this.valueT, //TMK
@@ -252,14 +262,46 @@ export default {
 
         created() {
             this.code = JSON.parse(user).job ? JSON.parse(user).job.code : ''; //获取职位code
-            
-                this.fetchData(); //获取表格数据
-            if (this.code == 'tmk_m'||this.code=='cc_c') {
-                getTMK(token).then((res) => {
+            // if(this.code=='tmk'){
+                if(Object.keys(this.getMyResourceS).length==0){
+                    if(this.code == 'tmk_m'){
+                        getTMK(token).then((res) => {
                     this.optionsTMK = res.data
-                    this.optionsTMK.unshift({key:'0',label:'全部TMK'})
+                    this.optionsTMK.unshift({key:0,label:'全部TMK'})
+                    this.valueT=JSON.parse(user).aid+''
                 })
-            }
+                    }else if(this.code.includes('_c')){
+                        getTMK(token).then((res) => {
+                    this.optionsTMK = res.data
+                    this.optionsTMK.unshift({key:0,label:'全部TMK'})
+                    this.valueT= 0
+                })
+                    }else{
+                this.fetchData(); //获取表格数据
+                        
+                    }
+                }else{
+
+                this.fetchData(); //获取表格数据
+                }
+            // }
+            // if(this.code == 'tmk_m'){
+            //     getTMK(token).then((res) => {
+            //         this.optionsTMK = res.data
+            //         this.optionsTMK.unshift({key:'0',label:'全部TMK'})
+            //         this.valueT=JSON.parse(user).aid+''
+            //     })
+            // }
+            // if(this.code.includes('_c')){
+
+            //     getTMK(token).then((res) => {
+            //         this.optionsTMK = res.data
+            //         this.optionsTMK.unshift({key:'0',label:'全部TMK'})
+            //         this.valueT= '0'
+            //     })
+            //         // this.fetchData(); //获取表格数据
+            // }
+          
             let cam = {
                 simple: '1'
             };
