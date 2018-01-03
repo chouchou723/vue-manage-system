@@ -545,6 +545,12 @@ const router = new Router({
                         keepAlive: true // 不需要被缓存
                     },
                     component: resolve => require(['../components/page/activityManage.vue'], resolve), //活动管理
+                },{
+                    path: '/corSchoolManage',
+                    meta: {
+                        keepAlive: true // 不需要被缓存
+                    },
+                    component: resolve => require(['../components/page/corSchoolManage.vue'], resolve), //活动管理
                 },
                 
                 

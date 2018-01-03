@@ -50,7 +50,7 @@
                         <el-form-item label="校区名" :label-width="formLabelWidth" prop="title">
                             <el-input v-model="aform.title" placeholder='请输入校区名' style='width:182px;float:left;margin-right:10px;'></el-input>
                             <el-checkbox-group v-model="aform.direct_accredit"  >
-                                    <el-checkbox label="合作校" key='1'></el-checkbox>
+                                    <!-- <el-checkbox label="合作校" key='1'></el-checkbox> -->
                                     <el-checkbox label="授权考点" key='2'></el-checkbox>
                                   </el-checkbox-group>
                         </el-form-item>
@@ -438,7 +438,7 @@
                         page: this.currentPage,
                         type:'all',
                         city_id:this.value3.length!==0?this.value3[this.value3.length-1]:'',
-                        direct:this.value1?this.value1:'all',
+                        direct:1,
                         accredit:this.value2?this.value2:'all',
                         title: this.input2,
                         per_page:15

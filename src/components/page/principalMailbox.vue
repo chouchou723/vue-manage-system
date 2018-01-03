@@ -26,7 +26,7 @@
             <el-dialog title="信件处理" :visible.sync="dialogFormVisible" :close-on-click-modal="no" custom-class='prinMailboXDD' top='29%' @close='resetD' size='tiny'>
                 <el-form :model="aform" ref="aform" :rules="rules2">
                         <el-form-item label="" prop='contents'>
-                                <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 8}" placeholder="输入要备注的内容(选填)" v-model="aform.contents">
+                                <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 8}" placeholder="输入要回复给家长的内容" v-model="aform.contents">
                                 </el-input>
                             </el-form-item>
                 </el-form>
@@ -48,7 +48,7 @@
                 </el-table-column>
                 <el-table-column prop="created" label="发送时间" width='150px'>
                 </el-table-column>
-                <el-table-column prop="answer" label="备注">
+                <el-table-column prop="answer" label="校长回复">
                 </el-table-column>
                 <el-table-column prop="status" label="处理状态" width='120px'>
                         <template scope="scope">
@@ -115,9 +115,9 @@ export default {
             var myreg = /^.{1,100}$/;
             var myreg1 = /^\s/;
             if(value==''){
-                callback()
+                callback('请输入要回复给家长的内容')
             }else if (myreg1.test(value)) {
-                callback('请输入有效内容')
+                callback('请输入有效的内容')
             } else {
                 callback();
             }
@@ -147,7 +147,7 @@ export default {
                 // inputLabelWidth: '200px',
                 rules2: {
                     contents: [{
-                        // required: true,
+                        required: true,
                         // message: '请输入标签内容',
                         validator: isSpace,
                         trigger: 'blur'
