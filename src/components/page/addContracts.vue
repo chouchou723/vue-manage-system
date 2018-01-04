@@ -8,9 +8,9 @@
             </div> -->
             <div class='myACH'>
                 <h3 class="myACH1">
-                    批量修改合同
-                    <span v-if="number==='0'" style="font-size:14px;color: #bdb8b8;">加载中...</span>
-                   <span v-else>({{number}}个)</span>
+                    合同修复
+                    <!-- <span v-if="number==='0'" style="font-size:14px;color: #bdb8b8;">加载中...</span>
+                   <span v-else>({{number}}个)</span> -->
                 </h3>
                 <div class="MCtitle">
                     <!-- <div class='studentReturnThreeNewCon' v-if="code.includes('_c')">
@@ -71,8 +71,8 @@
                         <el-form-item label="剩余课时" :label-width="formLabelWidth" prop="course_curr_num">
                                 <el-input v-model="aform.course_curr_num" placeholder='请输入正确的剩余课时' style='width:220px;float:left;margin-right:10px;'></el-input>
                             </el-form-item>
-                                    <el-form-item label="有效期" :label-width="formLabelWidth" prop="expired">
-                                            <el-date-picker v-model="aform.expired" type="daterange" placeholder="签约时间" @change="updateList" :picker-options="pickerOptions0">
+                                    <el-form-item label="有效期" :label-width="formLabelWidth" prop="expData">
+                                            <el-date-picker v-model="aform.expData" type="daterange" placeholder="签约时间" @change="updateList" :picker-options="pickerOptions0">
                                                 </el-date-picker>
                                         </el-form-item>
                     </el-form>
@@ -82,19 +82,19 @@
                     </div>
                 </el-dialog> -->
             <div id="myContracttable" v-loading="loading2">
-                <div v-for="item1 in students" class="MC1">
+                <div v-for="item in students" class="MC1">
                     <div class="MC2">
                         <div class="MC3">
                             <div class="MC4">
                                 <span >
-                              合同编号:  {{item1.sku}}  
+                              合同编号:  {{item.sku}}  
                             </span>
-                            <span style="padding-left:5px;border-left: 1px solid gainsboro;">学员:{{item1.users}}</span>
+                            <span style="padding-left:5px;border-left: 1px solid gainsboro;">学员:{{item.users}}</span>
                             </div>
                         </div>
                     </div>
                     <div id='myContracts'>
-                        <el-table :data="item1.tabledata" border style="width: 100%;">
+                        <el-table :data="item.tabledata" border style="width: 100%;">
                             <el-table-column prop="title" label="课程">
                             </el-table-column>
                             <el-table-column prop="course_num" label="课时" >
@@ -103,21 +103,21 @@
                             <el-table-column prop="course_curr_num" label="剩余课时" >
                                     <template scope="scope">
                                          <div  v-if="!scope.row.canEdit" >{{scope.row.course_curr_num}}</div>
-                                         <el-input v-if="scope.row.canEdit"  v-model='scope.row.course_curr_num' class='ACinput'></el-input> 
+                                         <el-input v-if="scope.row.canEdit"  :disabled='writeL' v-model='scope.row.course_curr_num' class='ACinput'></el-input> 
                                     </template>
                                 </el-table-column>
-                            <el-table-column prop="expired" label="有效期">
+                            <el-table-column prop="expData" label="有效期">
                                 <template scope="scope">
-                                    <div  v-if="!scope.row.canEdit" >{{scope.row.expired[0]}}-{{scope.row.expired[1]}}</div>
-                                    <el-date-picker v-if="scope.row.canEdit" :clearable="no" v-model="scope.row.expired"  type="daterange" >
+                                    <div  v-if="!scope.row.canEdit" >{{scope.row.expData[0]}}-{{scope.row.expData[1]}}</div>
+                                    <el-date-picker v-if="scope.row.canEdit" :disabled='writeL' :clearable="no" v-model="scope.row.expData"  type="daterange" >
                                     </el-date-picker>
                                     <!-- <el-input v-if="scope.row.canEdit" style="width:80%" v-model='scope.row.course_curr_num'></el-input>  -->
                                </template>
                             </el-table-column>
                             <el-table-column label="操作" width='80'>
                                     <template scope="scope">
-                                            <el-button  v-if="!scope.row.canEdit" type="text" size="small" @click="editCh(scope.row,index)">编辑</el-button>   
-                                            <el-button   v-if="scope.row.canEdit" type="text" size="small" @click="subEdit(scope.row,index)">提交</el-button>  
+                                            <el-button  v-if="!scope.row.canEdit" type="text" size="small" @click="editCh(scope.row)">编辑</el-button>   
+                                            <el-button   v-if="scope.row.canEdit" type="text" size="small" @click="subEdit(scope.row)">提交</el-button>  
                                             <el-button   v-if="scope.row.canEdit" type="text" size="small" style='color:red' @click="editCh(scope.row,index)">取消</el-button> 
                                             
                                     </template>
@@ -149,9 +149,8 @@
     <script>
         var token, user
         import {
-            getAllCCList,
-            getMyContract,
-            campusList
+            repairOrderList,
+            editOrderList
         } from '../../api/api';
         import {
         mapActions,mapGetters
@@ -167,15 +166,16 @@
                     valueR: '',
                     aform:{
                         course_curr_num:'',
-                        expired:[],
+                        expData:[],
                     },
                     dialogFormVisible:false,
                     no:false,
+                    writeL:false,
                     formLabelWidth:'80px',
                     optionR: [],
                     remainTime: '',
                     isActive: false,
-                    students: [],
+                    students: [{tabledata:[]}],
                     loading2: false,
                     currentPage: 1, //页数
                     pagesize: 15, //默认每页
@@ -207,9 +207,9 @@
                 Day = day.getDate();
                 CurrentDate += Year+'.';
                 if (Month >= 10) {
-                    CurrentDate += Month+'.';
+                    CurrentDate += Month+'-';
                 } else {
-                    CurrentDate += "0" + Month+'.';
+                    CurrentDate += "0" + Month+'-';
                 }
                 if (Day >= 10) {
                     CurrentDate += Day;
@@ -224,33 +224,52 @@
                                 this.$message.error('剩余课时仅限输入数字')
                             }else if(data.course_num-data.course_curr_num<0){
                                 this.$message.error('剩余课时不能大于课程课时')
-                            }else if(data.expired[0]-0==0||data.expired.length==0){
-                                // console.log(data.expired);                                
+                            }else if(data.expData[0]-0==0||data.expData.length==0){
+                                // console.log(data.expData);                                
                                 this.$message.error('请选择有效期时间')
 
                             }else{
-                                data.expired_start = new Date(data.expired[0]).toLocaleDateString();
-                                data.expired_end =  new Date(data.expired[1]).toLocaleDateString();
-                                // console.log(data.expired);
-                                data.expired = [this.getNowFormatDate(data.expired_start),this.getNowFormatDate(data.expired_end)]
-                                data.canEdit = false;
-                                this.$message.success('修改成功')
+                                data.first_time = new Date(data.expData[0]).toLocaleDateString();
+                                data.over_time =  new Date(data.expData[1]).toLocaleDateString();
+                                // console.log(data.expData);
+                                this.writeL = true;
+                                let para={
+                                    order_item_id:data.order_item_id,
+                                    course_curr_num:data.course_curr_num,
+                                    first_time:data.first_time,
+                                    over_time:data.over_time
+                                }
+                                editOrderList(para,token).then(res=>{
+                                    if(res.code==0){
+                                        // data.expData = [this.getNowFormatDate(data.first_time),this.getNowFormatDate(data.over_time)]
+                                        // data.canEdit = false;
+                                        this.fetchData()
+                                        this.$message.success('修改成功');
+                                        this.writeL = false;                                        
+                                    }else{
+                                        this.$message.error(res.data);
+                                        this.editCh(data);
+                                        this.writeL = false;
+                                    }
+                                }).catch(()=>{
+                                    this.writeL = false;
+                                })
                             }
                 },
                 // resetD(){
                 //     this.aform = {
                 //         course_curr_num:'',
-                //         expired:[],
+                //         expData:[],
                 //     }
                 // },
-                editCh(item,index){
+                editCh(item){
                     if(item.canEdit){
                         item.canEdit = false;
                         item.course_curr_num = item.backI                        
-                        item.expired = [...item.back]
+                        item.expData = [...item.back]
                     }else{
                         item.backI = item.course_curr_num
-                        item.back = [...item.expired]
+                        item.back = [...item.expData]
                         item.canEdit = true;
                     }
                 },
@@ -325,26 +344,27 @@
                         // scheduling_status:this.value5,
                         input: this.input2
                     }
-                    this.students  = [{sku:'12321',users:'张文顺',tabledata:[{order_item_id:12,title:'art1',course_num:48,course_curr_num:16,expired:['2017.01.01','2018.01.01'],canEdit:false},
-                    {order_item_id:123,title:'art2',course_num:48,course_curr_num:16,expired:[],canEdit:false}]}]
-                    // getMyContract(token, para).then((res) => { //替换服务
-                    //     this.number = res.data.total;
-                    //     let a = res.data.data;
-                    //     let c = res.data.last_page * this.pagesize;
+                    // this.students  = [{sku:'12321',users:'张文顺',tabledata:[{order_item_id:12,title:'art1',course_num:48,course_curr_num:16,expData:['2018-01-24','2019-01-24'],canEdit:false},
+                    // {order_item_id:123,title:'art2',course_num:48,course_curr_num:16,expData:[],canEdit:false}]}]
+                    repairOrderList(para,token).then((res) => { //替换服务
+                        // this.number = res.data.total;
+                        let a = res.data.data;
+                        let c = res.data.last_page * this.pagesize;
     
-                    //     // console.log(a)
-                    //     this.students = a;
-                    //     this.total = parseInt(c);
-                    // }).then(() => {
-                    //     this.loading2 = false;
-                    // }).catch(() => {
-                    //     // this.$message.error('该用户未授权');
-                    //     this.loading2 = false
-                    // })
+                        this.students = [...a];
+                        // console.log(this.students);
+                        this.total = parseInt(c);
+                    }).then(() => {
+                        this.loading2 = false;
+                    }).catch(() => {
+                        // this.$message.error('该用户未授权');
+                        this.loading2 = false
+                    })
                 },
                 handleCurrentChange: function (val) {
                     this.currentPage = val;
                     this.fetchData();
+                    document.scrollTop(0)
                 }
             },
             beforeCreate() {

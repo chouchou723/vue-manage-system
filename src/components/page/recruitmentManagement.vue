@@ -24,7 +24,7 @@
                     </el-table-column>
                     <el-table-column prop="requires" label="职位描述" >
                             <template scope="scope">
-                                   <span v-html="scope.row.requires"></span>
+                                   <div v-html="scope.row.requires" style='text-align:left'></div>
                               </template>
                     </el-table-column>
                     <el-table-column prop="area_name" label="工作城市" width="80">

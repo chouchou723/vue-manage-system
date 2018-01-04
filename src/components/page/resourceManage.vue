@@ -52,9 +52,7 @@
                     <el-option label="已到访" value="5"></el-option>
                     <el-option label="已签约" value="6"></el-option>
                     <el-option label="无效" value="7"></el-option>
-                    <el-option label="垃圾资源" value="8"></el-option>
-                    
-                    
+                    <el-option label="垃圾资源" value="8"></el-option>   
                 </el-select>
             </div>
             <!-- <div class="MRinput">

@@ -78,7 +78,7 @@
                 </el-dialog>
             <div id="table2NDRWM">
                 <el-table :data="noEffData"  style="width: 100%"   >
-                    <el-table-column prop="title" label="消息标题" width='120'>
+                    <el-table-column prop="title" label="消息标题" >
                     </el-table-column>
                     <el-table-column prop="content" label="消息内容" >
                             <template scope="scope">

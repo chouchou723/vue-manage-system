@@ -17,8 +17,8 @@ axios.interceptors.response.use(function (response) {
         }   
     return Promise.reject(error);
   });
-//   let base ='';
-let base = 'http://pandatest.dfth.com';
+  let base ='';
+// let base = 'http://pandatest.dfth.com';
 // let base = 'http://panda.dfth.com';
 
 //登录页面
@@ -1231,6 +1231,16 @@ export const speciallyCityList = (params,token) => {
 export const positionsApply = (params,token) => {
     axios.defaults.headers.common['Authorization'] = token.Authorization;
     return axios.get(`${base}/api/v1/pcmanage/positionsApply`, { params: params }).then(res => res.data);
+};
+//合同修复-列表
+export const repairOrderList = (params,token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/order/repairOrderList`, { params: params }).then(res => res.data);
+};
+//合同修复-提交
+export const  editOrderList = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/order/repairOrders`, params).then(res => res.data);
 };
 // //code字段说明
 //     tmk_m:  tmk主管

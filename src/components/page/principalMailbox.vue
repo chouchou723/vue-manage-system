@@ -45,10 +45,16 @@
                             </template>
                 </el-table-column>
                 <el-table-column prop="ask" label="内容">
+                        <template scope="scope">
+                                <div style="text-align:left">{{scope.row.ask}}</div>
+                            </template>
                 </el-table-column>
                 <el-table-column prop="created" label="发送时间" width='150px'>
                 </el-table-column>
                 <el-table-column prop="answer" label="校长回复">
+                        <template scope="scope">
+                                <div style="text-align:left">{{scope.row.answer}}</div>
+                            </template>
                 </el-table-column>
                 <el-table-column prop="status" label="处理状态" width='120px'>
                         <template scope="scope">
