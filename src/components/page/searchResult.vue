@@ -4,7 +4,7 @@
             <el-breadcrumb-item><i class="el-icon-my-sousuo"></i> 搜索结果</el-breadcrumb-item>
         </el-breadcrumb> -->
         <div class='accouSearch'>
-            <h2 class="mydataReturnSearch">
+            <h2 class="mySSearch">
                搜索到的相关的结果有{{number}}条
       </h2>
         </div>
@@ -196,7 +196,7 @@ export default {
     border-radius: 5px;
 }
 
-.mydataReturnSearch {
+.mySSearch {
     float: left;
     padding-left: 15px;
 }

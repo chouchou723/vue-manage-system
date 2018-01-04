@@ -89,7 +89,9 @@
                                                 <el-input v-model="aform.tel" placeholder='输入联系电话' style='width:182px;'></el-input>
                                             </el-form-item>
                                             <el-form-item label="地图坐标" :label-width="formLabelWidth" prop="maps">
-                                                    <div @click='openLoc' class='setHover'>设置坐标</div>
+                                                    <div >
+                                                        <span @click='openLoc' class='setHover'>设置坐标</span>
+                                                    </div>
                                                     <div v-if="aform.maps">
 
                                                         <span>坐标值:</span><span>{{aform.maps}}</span>
@@ -332,8 +334,8 @@
                 },
                 closeD(data){
                     this.aform.maps = data;
-                    // console.log(data)
-                    this.dialogFormVisibleL = false;                    
+                    this.dialogFormVisibleL = false;
+                    this.$refs['aform'].validateField('maps');                 
                 },
                 openLoc(){
                     this.dialogFormVisibleL = true;

@@ -7,7 +7,7 @@
             </el-breadcrumb>
         </div> -->
         <div class='accouMyresoureCon'>
-            <h3 class="mydataReturn">
+            <h3 class="myContH">
                 合同
                 <span v-if="number==='0'" style="font-size:14px;color: #bdb8b8;">加载中...</span>
                <span v-else>({{number}}个)</span>
@@ -472,7 +472,7 @@
         border-radius: 5px;
     }
 
-    .mydataReturn {
+    .myContH {
         /*display: block;*/
         margin-top: 5px;
         margin-bottom: 15px;

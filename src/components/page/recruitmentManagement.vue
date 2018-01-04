@@ -6,8 +6,7 @@
             </el-breadcrumb> -->
             <div class='recuManageH'>
                 <h3 class="recuManageH1">
-    
-                    招聘管理
+                    职位管理
                 </h3>
                 <!-- <div class='studentReturnNoneed' v-if="code =='cc_m'">
                     <el-select v-model="valueT" clearable placeholder="选择CC" @change="updateList">
@@ -30,11 +29,11 @@
                     </el-table-column>
                     <el-table-column prop="area_name" label="工作城市" width="80">
                     </el-table-column>
-                    <el-table-column prop="area_det" label="工作区域" >
+                    <el-table-column prop="area_det" label="工作区域" width='160'>
                         </el-table-column>
                         <el-table-column prop="is_active" label="职位状态" width="80">
                             </el-table-column>
-                            <el-table-column prop="create_time" label="发布时间" >
+                            <el-table-column prop="create_time" label="发布时间" width='140'>
                                 </el-table-column>
                     <el-table-column label="操作" width='140'>
                         <template scope="scope">

@@ -2,13 +2,6 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import * as actions from './actions'
 import * as getters from './getters'
-// let user = sessionStorage.getItem('user');
-// if(user){
-// var user1 = JSON.parse(user);
-// var avatar = user1.avatar; 
-// }else{
-// var avatar = ''
-// }
 Vue.use(Vuex)
 
 // 应用初始状态

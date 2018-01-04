@@ -6,14 +6,14 @@
         </el-breadcrumb> -->
         <div class='accouMyresourece'>
             
-            <h3 class="mydataReturn">
+            <h3 class="remH">
                资源管理
                <span v-if="number==='0'" style="font-size:14px;color: #bdb8b8;">加载中...</span>
                <span v-else>({{number}}人)</span>
                <!-- <el-button type="primary" size="mid" class='myresourceButton' @click="goToAdd" v-if="!code.includes('_c')">添加资源</el-button> -->
       </h3>
         <div class="MRtitle">
-                <div class='studentReturnThreeNew'>
+                <!-- <div class='studentReturnThreeNew'>
                         <el-select v-model="value5" clearable placeholder="资源等级" @change="updateList" >
                             <el-option label="A" value="0"></el-option>
                             <el-option label="B" value="1"></el-option>
@@ -21,7 +21,7 @@
                             <el-option label="D" value="3"></el-option>
                             <el-option label="E" value="4"></el-option>
                         </el-select>
-                    </div>
+                    </div> -->
             <div class='studentReturnThreeNew'>
             <el-cascader
     :options="options2"
@@ -45,21 +45,35 @@
             <div class='studentReturnThreeNew'>
                 <el-select v-model="value5" clearable placeholder="资源状态" @change="updateList" >
                     <el-option label="待认领" value="0"></el-option>
-                    <el-option label="已认领" value="1"></el-option>
-                    <el-option label="已邀约" value="2"></el-option>
-                    <el-option label="已到访" value="3"></el-option>
+                    <el-option label="tmk已认领" value="1"></el-option>
+                    <el-option label="CC已认领" value="2"></el-option>
+                    <el-option label="已邀约" value="3"></el-option>
                     <el-option label="未到访" value="4"></el-option>
+                    <el-option label="已到访" value="5"></el-option>
+                    <el-option label="已签约" value="6"></el-option>
+                    <el-option label="无效" value="7"></el-option>
+                    <el-option label="垃圾资源" value="8"></el-option>
+                    
+                    
                 </el-select>
             </div>
             <!-- <div class="MRinput">
                 <el-input placeholder="输入手机号或姓名" icon="search" v-model="input2" @keyup.enter.native="updateList" :on-icon-click="updateList"  > </el-input>
             </div> -->
             <div class="MRadd">
-            <el-button type="primary" size="mid" class='myresourceButton' @click="goToAdd">导入资源</el-button>
+            <!-- <el-button type="primary" size="mid" class='myresourceButton' @click="goToAdd">导入资源</el-button> -->
+            <el-upload
+            class="rmu"
+            :action="Iaction" :headers='headers' :show-file-list='no'
+            name='file' :data="upData"
+            :on-success='handleSuccess' :on-error='handleError'
+            :before-upload="beforeAvatarUpload1aa">
+            <el-button type="primary" >导入资源</el-button>
+          </el-upload>
             </div>
         </div>
         </div>
-        <el-dialog title="导入资源" :visible.sync="dialogFormVisibleEdit" size="tiny" :close-on-click-modal="no" top='13%'  show-close custom-class='wechaManageBDD' @close='resetFail'>
+        <!-- <el-dialog title="导入资源" :visible.sync="dialogFormVisibleEdit" size="tiny" :close-on-click-modal="no" top='13%'  show-close custom-class='wechaManageBDD' @close='resetFail'>
             <div style='text-align:center'>
 
                 <el-select v-model="value6"  placeholder="请选择导入的资源等级"  >
@@ -79,13 +93,12 @@
                     :on-success='handleSuccess' :on-error='handleError'>
                     <el-button type="primary" :disabled='value6==""' :loading='writeL' @click='toBeLoading'>下一步</el-button>
                   </el-upload>
-                    <!-- <el-button type="primary" @click="distributeResource">下一步</el-button> -->
                 </div>
-            </el-dialog>
+            </el-dialog> -->
         <div id="table1MR">
             <el-table :data="tableData"  style="width: 100%" @sort-change='sortChange'>
-                    <el-table-column prop="sex" label="资源等级" width='80'>
-                        </el-table-column>
+                    <!-- <el-table-column prop="sex" label="资源等级" width='80'>
+                        </el-table-column> -->
                         <el-table-column prop="sour_name" label="所属渠道来源">
                         </el-table-column>
                         <el-table-column prop="names" label="姓名" width='80'>
@@ -186,6 +199,16 @@ export default {
                 this.$message.success('上传成功')
                 this.dialogFormVisibleEdit = false; 
                 this.writeL = false;                
+            },
+            handleError(err, file, fileList) {
+                this.$message.error(error.message)
+            },
+            beforeAvatarUpload1aa(file, fileList){
+                const isJPG =  file.name.includes('.xl');
+                if (!isJPG) {
+                    this.$message.error('必须上传excel文件');
+                }
+                return isJPG;
             },
             resetFail(){
                 this.value6 = '';
@@ -434,7 +457,7 @@ export default {
   border-radius: 5px;
 }
 
-.mydataReturn {
+.remH {
    /*display: block;*/
     margin-top: 5px;
     /* margin-bottom: 15px; */
@@ -481,10 +504,10 @@ position:absolute;right:10px;top:10px
         }
         .resouceManage .rmu .el-upload--text{
         height: 36px;
-    width: 108px;
+    width: 95px;
     margin-top:0;
     margin-left: 0;
-    left:20%;
+    left:0;
     }
     .rmu{
         height: 36px;

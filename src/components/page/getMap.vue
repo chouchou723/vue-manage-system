@@ -1,31 +1,26 @@
 <template>
     <div>
-        <div style="z-index:1;background:white;width:100%;">
-
-                <el-input placeholder="搜索地址" icon="search" v-model="location" @keyup.enter.native="aa" :on-icon-click="aa" style='width:250px;float:left;margin-right:5px;' > </el-input>
-                <span style='float:left;line-height:36px;margin-right:5px;'>坐标:</span>    <div style='width:200px;float:left;line-height:36px;' id="aa"></div>
-                <el-button type="primary" size="mid" style="float:right" @click="closeD">确定</el-button>
+        <div style="background:white;position:relative">
+                <el-input placeholder="搜索地址" icon="search" v-model="location" @keyup.enter.native="aa" :on-icon-click="aa" style='width:500px;float:left;margin-right:5px;' > </el-input>
+                <div style='float:left;margin-left:5px;width:200px;margin-bottom:5px;'>坐标:
+                        <span style='line-height:36px;' id="aa"></span>
+                </div>    
+                <el-button type="primary" size="mid" style="position:absolute;top:0;right:3px" @click="closeD">确定</el-button>
         </div>
-            <!-- <button @click="aa">aaa</button> -->
-           
         <div id="container">
+        <div id="r-result"></div>
         </div>
     </div>
   </template>
   
   <script>
-      import {
-    mapActions
-} from 'vuex';
   export default {
     props: {
   	location:''
   },
     data () {
       return {
-        msg: '',
         map:{},
-        aab:''
       }
     },
     mounted(){
@@ -33,15 +28,11 @@
         this.aa();
     },
     methods:{
-        ...mapActions([
-                'setLC'
-            ]),
         closeD(){
             if(document.getElementById("aa").innerHTML!=''){
 
             let a = document.getElementById("aa").innerHTML;
             // console.log(a)
-            // this.setLC(this.aab)
             this.$emit('closeD',a)
             }else{
                 this.$message.info('请选择地点')
@@ -50,13 +41,19 @@
         aa(){   
             let map = this.map;
             var local =new BMap.LocalSearch(map, {
-                renderOptions:{map: map}
+                renderOptions:{map: map,panel: "r-result"}
             });
             let aa = local.search(this.location);
             local.setSearchCompleteCallback(rs=>{
-                let b = rs.getPoi(0);
-                let p = b.point;
-            document.getElementById("aa").innerHTML = p.lng+" , "+p.lat;
+                if(rs){
+                    let b = rs.getPoi(0);
+                    if(b){
+                        let p = b.point;
+                        document.getElementById("aa").innerHTML = p.lng+" , "+p.lat;
+                    }else{
+                        this.$message.info('未找到该地址,请更换关键字')
+                    }
+                }
             })        
             
         },
@@ -78,11 +75,10 @@
                 //点击地图，获取经纬度坐标
             map.addEventListener("click",function(e){
                 document.getElementById("aa").innerHTML = e.ab.point.lng+" , "+e.ab.point.lat;
-                // this.aab = e.point.lng+" , "+e.point.lat;
                 // console.log(e)
                 
             });
-           var content = '上海'           //开启窗口
+        //    var content = '上海'           //开启窗口
             //   map.addOverlay(marker);               // 将标注添加到地图中
             //   addClickHandler(content,marker);
         //    function addClickHandler(content,marker){
@@ -113,6 +109,6 @@
   <style scoped>
           /* html{height:100%}  
           body{height:100%;margin:0px;padding:0px}   */
-          #container{height: 500px;width: 100%;}  
+          #container{height: 500px;width: 100%;margin-bottom:10px;}  
   </style>
   

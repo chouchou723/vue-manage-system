@@ -47,6 +47,7 @@
                                                                     class="upload-demo"
                                                                     :action="Iaction" :headers='headers' :show-file-list='no'
                                                                     name='file'
+                                                                    :before-upload="beforeAvatarUpload1aa"
                                                                     :on-success='handleSuccess' :on-error='handleError'>
                                                                     <el-button type="primary" size="mid" style='width:470px'>文件导入</el-button>
                                                                   </el-upload>
@@ -244,14 +245,24 @@
                     }
                 },
                 handleSuccess(response, file, fileList) {//上传图片成功
-                this.$message.success('上传成功');
-                // this.fetchData();
-                if(this.resourceSchool.mobile){
+                    if(response.code==0){
 
-                    this.resourceSchool.mobile += ','+response.data;
-                }else{
-                    this.resourceSchool.mobile = response.data;                    
+                        this.$message.success('上传成功');
+                    // this.fetchData();
+                    if(this.resourceSchool.mobile){
+    
+                        this.resourceSchool.mobile += ','+response.data;
+                    }else{
+                        this.resourceSchool.mobile = response.data;                    
+                    }
+                    }
+            },
+            beforeAvatarUpload1aa(file, fileList){
+                const isJPG =  file.name.includes('.xl');
+                if (!isJPG) {
+                    this.$message.error('必须上传excel文件');
                 }
+                return isJPG;
             },
             handleError(err, file, fileList) {
                 this.$message.error(error.message)

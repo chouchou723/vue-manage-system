@@ -180,72 +180,28 @@ export default {
 
             },
             addAccount(formName) { //处理
-                let para ={
-                    id:this.mailId,
-                    note:this.aform.contents
-                }
-                this.writeL = true;
-                ProEmail(para,token).then(res=>{
-                    // console.log(res)
-                    if(res.code==0){
-                        this.$message.success('已处理');
-                        this.dialogFormVisible = false;
-                        this.writeL = false;
-                        this.fetchData();
-                    }else{
-                        this.$message.error(res.data);
-                        this.writeL = false;                        
+                this.$refs[formName].validate((valid) => {
+                    if(valid){
+
+                        let para ={
+                            id:this.mailId,
+                            note:this.aform.contents
+                        }
+                        this.writeL = true;
+                        ProEmail(para,token).then(res=>{
+                            // console.log(res)
+                            if(res.code==0){
+                                this.$message.success('已处理');
+                                this.dialogFormVisible = false;
+                                this.writeL = false;
+                                this.fetchData();
+                            }else{
+                                this.$message.error(res.data);
+                                this.writeL = false;                        
+                            }
+                        })
                     }
                 })
-                // this.$refs[formName].validate((valid) => {
-                //     let f = {...this.aform};
-                //     let i = this.in;
-                //     // console.log(valid)
-                //     if (valid) {
-                //         if (i !== '') {
-                //             let para = f;
-                //             create_tag(para, token).then(res => {
-                //                 if (res.code == 0) {
-                //                     this.$message({
-                //                         message: '修改成功',
-                //                         type: 'success'
-                //                     });
-                //                     this.fetchData();
-                //                 } else {
-                //                     this.$message({
-                //                         type: 'error',
-                //                         message: res.data
-                //                     });
-                //                 }
-                //             }).then(() => {
-                //                 this.dialogFormVisible = false;
-                //             });
-                //         } else {
-                //             let para = f;
-                //             create_tag(para, token).then(res => {
-                //                 if (res.code == 0) {
-                //                     this.$message({
-                //                         message: '创建成功',
-                //                         type: 'success'
-                //                     });
-                //                     this.fetchData();
-                //                 } else {
-                //                     this.$message({
-                //                         type: 'error',
-                //                         message: res.data
-                //                     });
-                //                 }
-                //             }).then(() => {
-                //                 this.dialogFormVisible = false;
-                //             });
-                //         }
-                //         this.in = '';
-
-                //     } else {
-                //         console.log('error submit!!');
-                //         return false;
-                //     }
-                // });
             },
             fetchData() {
                 let para = {

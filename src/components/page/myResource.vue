@@ -6,7 +6,7 @@
         </el-breadcrumb> -->
         <div class='accouMyresourece'>
             
-            <h3 class="mydataReturn">
+            <h3 class="myREStH">
                我的资源
                <span v-if="number==='0'" style="font-size:14px;color: #bdb8b8;">加载中...</span>
                <span v-else>({{number}}人)</span>
@@ -392,7 +392,7 @@ export default {
   border-radius: 5px;
 }
 
-.mydataReturn {
+.myREStH {
    /*display: block;*/
     /*margin-top: 20px;*/
     margin-bottom: 15px;
