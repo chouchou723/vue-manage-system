@@ -732,7 +732,7 @@
                     //切换不同的标签来获取最新数据
                 },
                 handleCurrentChange: function (val) { //变更页数
-                    this.currentPage = val;
+                    this.currentPage = val;this.backToTop();
                     // this.fetchData();
                 },
                 handleCurrentChange2: function (val) { //变更页数

@@ -79,7 +79,7 @@
                 <div class='TeachcustomerDiv'>
                     <div style="display:flex">
                         <div @click='gotoDetail(item)' class='myStudentsSpan'>
-                            <img :src="item.head_img" width='38' height='38' alt="" style='border-radius:50%;'>
+                            <img :src="item.head_img" width='38' height='38' alt="" style='border-radius:50%;border: 1px solid gainsboro;'>
                             <div style="color:#1fb5ad;font-size:18px;margin-left:10px">{{item.child_name}}</div>
                         </div>
                     </div>
@@ -333,7 +333,7 @@
                 })
             },
             handleCurrentChange: function (val) {
-                this.currentPage = val;
+                this.currentPage = val;this.backToTop();
                 this.fetchData();
             }
         },

@@ -2,7 +2,7 @@
     <div class="tableReturn">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item ><i class="el-icon-my-tongxunlu"></i>学员回访</el-breadcrumb-item>
+                <el-breadcrumb-item ><i class="icon-tongxunlu iconfont"></i>学员回访</el-breadcrumb-item>
                 <el-breadcrumb-item class='ss'>{{student.name}}</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
@@ -10,6 +10,7 @@
 
             <div class="RDtitle">
                 <div class='UserTitle'>
+                        <i class="iconfont icon-tongxunlu1 fz25"></i>
                     <span class="RDinfo">用户资料</span>
                 </div>
                 <el-form ref="form" :model="form" label-width="102px" label-position='left' id='returnform'>
@@ -50,10 +51,10 @@
             </div>
             <div class="RD1">
                 <div class='addreturnTitle'>
-                    <!--  <i class=el-icon-my-tongxunlu style="font-size:31px"></i> -->
+                     <i class="iconfont icon-shangchuanmoban fz40"></i>
                     <span class="RD2">回访记录({{number}})</span>
                     <div class="RD3">
-                        <div class='addR' @click='addReturn' v-if="!code.includes('_c')"></div>
+                        <div class='addR' @click='addReturn' v-if="!code.includes('readonly')"><i class='iconfont icon-group-add fz30 fzh'></i></div>
                     </div>
                 </div>
                 <div class="RD4">
@@ -72,7 +73,9 @@
                                 <div class="RD7">
                                     <el-tag type='success' v-for='t in item.tags' class='tagTag'>{{t}}</el-tag>
                                 </div>
-                                <div class='editSpan' @click='editReturn(item.id,item)' v-if="new Date().getTime()-new Date(item.created_at).getTime()<7200000 && item.tmk.uname == userName"></div>
+                                <div class='editSpan' @click='editReturn(item.id,item)' v-if="new Date().getTime()-new Date(item.created_at).getTime()<7200000 && item.tmk.uname == userName">
+                                        <i class="iconfont icon-icon07 fz30 fzh fgrey"></i>
+                                </div>
                             </div>
                         </el-col>
                     </el-row>
@@ -311,7 +314,7 @@
 
             },
             handleCurrentChange: function (val) { //变更页数
-                this.currentPage = val;
+                this.currentPage = val;this.backToTop();
                 let p = {
                     page: this.currentPage,
                     uid: this.$route.params.post
@@ -405,20 +408,33 @@
     .tableReturn .UserTitle {
         padding: 10px;
         position: relative;
-        background: url(../../../static/img/contact.png) left center/25px no-repeat;
-        padding-left: 27px;
-        margin-left: 12px
+        /* background: url(../../../static/img/contact.png) left center/25px no-repeat; */
+        /* padding-left: 27px; */
+        /* margin-left: 12px; */
+        display: flex;
     }
+.fz25{
+    font-size: 25px;
+    line-height: 29px;
+}
 
     .tableReturn .addreturnTitle {
         padding: 10px;
         position: relative;
-        background: url(../../../static/img/custService.png) left center/40px no-repeat;
-        padding-left: 40px;
-        margin-left: 12px
+        display: flex;
+        border-bottom: 1px solid gainsboro;
+        /* background: url(../../../static/img/custService.png) left center/40px no-repeat; */
+        /* padding-left: 40px; */
+        /* margin-left: 12px */
     }
-
-
+.fz40{
+    font-size: 40px;
+    line-height: 29px;
+}
+.fz30{
+    font-size:30px;
+    line-height: 29px;
+}
     .tagDialog .el-dialog .el-dialog__header {
         background-color: #1fb5ad;
         padding: 20px 20px 20px;
@@ -462,25 +478,25 @@
         width: 30px;
         float: right;
         height: 30px;
-        background: url(../../../static/img/edit.png) right/30px 30px no-repeat;
+        /* background: url(../../../static/img/edit.png) right/30px 30px no-repeat; */
         cursor: pointer;
     }
 
-    .tableReturn .editSpan:hover {
+    /* .tableReturn .editSpan:hover {
         background-image: url(../../../static/img/edit_h.png);
-    }
+    } */
 
     .tableReturn .addR {
         width: 30px;
         height: 30px;
-        background-image: url(../../../static/img/addR.png);
-        background-size: 30px 30px;
+        /* background-image: url(../../../static/img/addR.png); */
+        /* background-size: 30px 30px; */
         cursor: pointer;
     }
 
-    .tableReturn .addR:hover {
+    /* .tableReturn .addR:hover {
         background-image: url(../../../static/img/addR_h.png);
-    }
+    } */
 
     .tableReturn .block {
         text-align: center;
@@ -499,7 +515,7 @@
         background-color: white;
         /* min-height: 476px; */
         border-radius: 5px;
-        margin-right: 30px
+        margin-right: 1%
     }
 
     .RDinfo {
@@ -534,7 +550,7 @@
         min-height: 290px;
         width: 90%;
         margin: 0 auto;
-        border-top: 1px solid gainsboro;
+       
         padding-bottom:30px;
     }
 
@@ -579,5 +595,10 @@
         float: left;
         margin-bottom: 8px
     }
-
+    .fzh:hover{
+        color: #1fb5ad
+    }
+    .fgrey{
+        color: #cacaca
+    }
 </style>

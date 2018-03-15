@@ -23,7 +23,7 @@
                 <el-table :data="publicData"  style="width: 100%">
                     <el-table-column prop="title" label="新闻标题" >
                     </el-table-column>
-                    <el-table-column prop="img" label="封面图" width='220'>
+                    <el-table-column prop="img" label="封面图" width='280'>
                             <template scope="scope">
                                     <!-- <div style='display:flex;justify-content: center;'> -->
 
@@ -31,7 +31,7 @@
                                     <!-- </div> -->
                                     </template>
                     </el-table-column>
-                    <el-table-column prop="created" label="发布时间" width='250'>
+                    <el-table-column prop="created" label="发布时间" >
                     </el-table-column>
                     <el-table-column label="操作" width='140'>
                         <template scope="scope">
@@ -83,7 +83,7 @@
                     </el-form-item>
                 </el-form>
                         <div slot="footer" class="dialog-footer" style='text-align:center'>
-                            <el-button type="primary" @click="onSubmit('form')">确定</el-button>
+                            <el-button type="primary" :loading='loading2' @click="onSubmit('form')">确定</el-button>
                             <el-button @click="dialogFormVisible = false">取消</el-button>
                         </div>
             </el-dialog>
@@ -239,7 +239,6 @@
                     // this.imageUrl =URL.createObjectURL(file.raw);
                     // console.log(d)
                 },
-                handleAvatarSuccess(){},
                 onSubmit(form){
                     this.countImg = 1;
                     // console.log(this.form.content)
@@ -258,7 +257,8 @@
                             this.dialogFormVisible = false;
                             this.fetchData();
                         }else{
-                            this.$message.error(res.data)
+                            this.$message.error(res.data);
+                            this.loading2 = false;                            
                         }
                         // console.log(res)
     
@@ -272,8 +272,7 @@
                             this.fetchData();
                         }else{
                             this.$message.error(res.data);
-                            this.loading2 = false;
-                            
+                            this.loading2 = false;      
                         }
                         // console.log(res)
     
@@ -291,7 +290,7 @@
                     this.dialogFormVisible = true;
                 },
                 handleCurrentChange: function (val) { //换页
-                    this.currentPage = val;
+                    this.currentPage = val;this.backToTop();
                     this.fetchData();
                 },
                 fetchData() {

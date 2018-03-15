@@ -51,6 +51,7 @@
                                                 v-model="resourceSchool.keyword3"
                                                 type="daterange"
                                                 :clearable='no'
+                                                :editable="no"
                                                 placeholder="选择时间"
                                                 :picker-options="pickerOptions0">
                                               </el-date-picker>
@@ -78,28 +79,30 @@
                 </el-dialog>
             <div id="table2NDRWM">
                 <el-table :data="noEffData"  style="width: 100%"   >
-                    <el-table-column prop="title" label="消息标题" >
+                    <el-table-column prop="title" label="消息标题"  width='120'>
                     </el-table-column>
-                    <el-table-column prop="content" label="消息内容" >
+                    <el-table-column prop="content" label="消息内容" width='280'>
                             <template scope="scope">
-                                    <div v-html='scope.row.content' style="text-align:left;padding-left:10px;"></div>
+                                    <!-- <div  style='margin:0 auto;width:auto'> -->
+                                        <div v-html='scope.row.content' style="text-align:left;"></div>
+                                    <!-- </div> -->
                                 </template>
                     </el-table-column>
                     <el-table-column prop="sender" label="发送方" width='90'>
                     </el-table-column>
-                    <el-table-column prop="child_name" label="接收人" width='90'>
+                    <el-table-column prop="child_name" label="接收人" >
                     </el-table-column>
-                    <el-table-column prop="school" label="接收人校区" width='150'>
+                    <el-table-column prop="school" label="接收人校区" >
                     </el-table-column>
-                    <el-table-column prop="send_time" label="发送时间"  width='150'>
+                    <el-table-column prop="send_time" label="发送时间"  width='120'>
                     </el-table-column>
-                    <el-table-column prop="succ" label="发送状态" width='90'>
+                    <el-table-column prop="succ" label="发送状态">
                             <template scope="scope">
-                                <div v-if="scope.row.succ>1">{{scope.row.succ}}条发送成功</div>
-                                <div v-if="scope.row.succ==1">发送成功</div>
-                                <div v-if="scope.row.faild==1" style='color:#e95c5c'>发送失败</div>
-                                <div style='color:#e95c5c' v-if="scope.row.faild>1" class='WMAhover' @click='getFailList(scope.row.id)'>{{scope.row.faild}}条发送失败  <span style='color:gainsboro'>></span></div>
-                                </template>
+                                <div v-if="scope.row.wait>=1" style="color:#ada5a5">待发送({{scope.row.wait}})</div>
+                                <div v-if="scope.row.succ>=1">发送成功({{scope.row.succ}})</div>
+                                <div v-if="scope.row.faild==1" style='color:#e95c5c'>发送失败(1)</div>
+                                <div v-if="scope.row.faild>1" style='color:#e95c5c'  class='WMAhover' @click='getFailList(scope.row.id)'>发送失败({{scope.row.faild}})  <span style='color:gainsboro'>></span></div>
+                            </template>
                     </el-table-column>
                     <el-table-column prop="message_type" label="消息类型" width='80'>
                         </el-table-column>
@@ -314,7 +317,7 @@
                     this.dialogFormVisible = true
                 },
                 handleCurrentChange: function (val) { //换页
-                    this.currentPage = val;
+                    this.currentPage = val;this.backToTop();
                     this.fetchData();
                 },
                 updateList() {

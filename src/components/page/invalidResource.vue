@@ -7,7 +7,7 @@
         </el-breadcrumb> -->
         <div class='noInvalid'>
             <h3 class="studentinvalid">
-                无效资源
+                暂不联系
                 <span v-if="number==='0'" style="font-size:14px;color: #bdb8b8;">加载中...</span>
                <span v-else>({{number}}人)</span>
             </h3>
@@ -119,7 +119,7 @@
                 }
             },
             handleCurrentChange: function (val) {
-                this.currentPage = val;
+                this.currentPage = val;this.backToTop();
                 this.fetchData();
             },
             switchDetail(row) {

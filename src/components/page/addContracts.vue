@@ -8,7 +8,7 @@
             </div> -->
             <div class='myACH'>
                 <h3 class="myACH1">
-                    合同修复
+                    合同校正
                     <!-- <span v-if="number==='0'" style="font-size:14px;color: #bdb8b8;">加载中...</span>
                    <span v-else>({{number}}个)</span> -->
                 </h3>
@@ -100,16 +100,16 @@
                             <el-table-column prop="course_num" label="课时" >
                                
                             </el-table-column>
-                            <el-table-column prop="course_curr_num" label="剩余课时" >
+                            <!-- <el-table-column prop="course_curr_num" label="剩余课时" >
                                     <template scope="scope">
                                          <div  v-if="!scope.row.canEdit" >{{scope.row.course_curr_num}}</div>
                                          <el-input v-if="scope.row.canEdit"  :disabled='writeL' v-model='scope.row.course_curr_num' class='ACinput'></el-input> 
                                     </template>
-                                </el-table-column>
+                                </el-table-column> -->
                             <el-table-column prop="expData" label="有效期">
                                 <template scope="scope">
                                     <div  v-if="!scope.row.canEdit" >{{scope.row.expData[0]}}-{{scope.row.expData[1]}}</div>
-                                    <el-date-picker v-if="scope.row.canEdit" :disabled='writeL' :clearable="no" v-model="scope.row.expData"  type="daterange" >
+                                    <el-date-picker v-if="scope.row.canEdit" :editable='no' :disabled='writeL' :clearable="no" v-model="scope.row.expData"  type="daterange" >
                                     </el-date-picker>
                                     <!-- <el-input v-if="scope.row.canEdit" style="width:80%" v-model='scope.row.course_curr_num'></el-input>  -->
                                </template>
@@ -176,7 +176,7 @@
                     remainTime: '',
                     isActive: false,
                     students: [{tabledata:[]}],
-                    loading2: false,
+                    loading2: true,
                     currentPage: 1, //页数
                     pagesize: 15, //默认每页
                     total: 0,
@@ -205,7 +205,7 @@
                 Year = day.getFullYear();
                 Month = day.getMonth() + 1;
                 Day = day.getDate();
-                CurrentDate += Year+'.';
+                CurrentDate += Year+'-';
                 if (Month >= 10) {
                     CurrentDate += Month+'-';
                 } else {
@@ -241,9 +241,9 @@
                                 }
                                 editOrderList(para,token).then(res=>{
                                     if(res.code==0){
-                                        // data.expData = [this.getNowFormatDate(data.first_time),this.getNowFormatDate(data.over_time)]
-                                        // data.canEdit = false;
-                                        this.fetchData()
+                                        data.expData = [this.getNowFormatDate(data.first_time),this.getNowFormatDate(data.over_time)]
+                                        data.canEdit = false;
+                                        // this.fetchData()
                                         this.$message.success('修改成功');
                                         this.writeL = false;                                        
                                     }else{
@@ -362,9 +362,8 @@
                     })
                 },
                 handleCurrentChange: function (val) {
-                    this.currentPage = val;
+                    this.currentPage = val;this.backToTop();
                     this.fetchData();
-                    document.scrollTop(0)
                 }
             },
             beforeCreate() {

@@ -10,14 +10,14 @@
                 <span v-if="number==='0'" style="font-size:14px;color: #bdb8b8;">加载中...</span>
                <span v-else>({{number}}人)</span>
             </h3>
-            <div class='studentReturnNoneed' v-if="code =='tmk_m'||code.includes('cc_c')">
+            <div class='studentReturnNoneed' v-if="code.includes('tmk_m')||code.includes('cc_c')">
                 <el-select v-model="valueT"  placeholder="选择TMK" @change="updateList">
                     <el-option v-for="item in optionsTMK" :key="item.key" :label="item.label" :value="item.key">
                     </el-option>
                 </el-select>
             </div>
             <div class="NDRdis">
-                <el-button type="success" @click="openResource" :disabled="this.multipleSelection==''" v-if="code =='tmk_m'">资源分配</el-button>
+                <el-button type="success" @click="openResource" :disabled="this.multipleSelection==''" v-if="code.includes('tmk_m')">资源分配</el-button>
             </div>
         </div>
         <el-dialog title="资源分配" :visible.sync="dialogFormVisible" :close-on-click-modal="no" top='33%' size='tiny' show-close custom-class='resourceSchoolDD'>
@@ -36,7 +36,7 @@
         </el-dialog>
         <div id="table2NDR">
             <el-table :data="noEffData"  style="width: 100%"   @sort-change='sortChange' @selection-change="handleSelectionChange" @select-all='saaa'>
-                <el-table-column type="selection" width="55" v-if="code =='tmk_m'">
+                <el-table-column type="selection" width="55" v-if="code.includes('tmk_m')">
                 </el-table-column>
                 <el-table-column prop="names" label="姓名" width='80'>
                     <template scope="scope">
@@ -139,7 +139,7 @@
                 this.multipleSelection = val
             },
             handleCurrentChange: function (val) { //换页
-                this.currentPage = val;
+                this.currentPage = val;this.backToTop();
                 this.fetchData();
             },
             handleSizeChange :function (val) { //换页
@@ -233,7 +233,7 @@
             // this.fetchData();
             // if(this.code=='tmk'){
                 if(Object.keys(this.getmyNoDemandS).length==0){
-                    if(this.code == 'tmk_m'){
+                    if(this.code.includes('tmk_m')){
                         getTMK(token).then((res) => {
                     this.optionsTMK = res.data
                     this.optionsTMK.unshift({key:'no',label:'无TMK'})                    

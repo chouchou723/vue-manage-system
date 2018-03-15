@@ -284,7 +284,7 @@
                 })
             },
             handleCurrentChange: function (val) { //改页数
-                this.currentPage = val;
+                this.currentPage = val;this.backToTop();
                 this.fetchData();
             },
             // settingTag() {

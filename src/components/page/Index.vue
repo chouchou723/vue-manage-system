@@ -685,29 +685,35 @@
                     
                 </div>
                 <div style='display:flex;width:100%;height:380px;align-items:center;flex-wrap:wrap;justify-content: center;'>
-                        <div  class="cancanHover" @click="thunderTo('/api/v1/admin')">
+                        <div  id="q1" class="cancanHover" @click="thunderTo('/api/v1/admin')" draggable="true"
+                        @drop="drop($event)" @dragstart="drag($event)" @dragover="allowDrop($event)">
                                 <i style="font-size:50px;" class="el-icon-my-shezhi"></i>
                                 <div>帐号管理</div>
                         </div>
-                        <div class="cancanHover" @click="thunderTo('/myStudents')">
-                            <i style="font-size:50px;" class="el-icon-my-gerenxinxi"></i>
-                            <div>我的学员</div>
+                        <div id="q2" class="cancanHover" @click="thunderTo('/reportMarket')" draggable="true"
+                        @drop="drop($event)" @dragstart="drag($event)" @dragover="allowDrop($event)">
+                            <i style="font-size:50px;" class="icon-tongjifenxi iconfont"></i>
+                            <div>报表统计</div>
                     </div>
-                    <div  class="cancanHover" @click="thunderTo('/myResource')">
+                    <div id="q3" class="cancanHover" @click="thunderTo('/myResource')"  draggable="true"
+                    @drop="drop($event)" @dragstart="drag($event)" @dragover="allowDrop($event)">
                             <i style="font-size:50px" class="el-icon-my-moban"></i>
                             <div>我的资源</div>
                     </div>
-                    <div  class="cancanHover" @click="thunderTo('/galleryManage')">
-                            <i style="font-size:50px" class="el-icon-my-tongxunlu"></i>
-                            <div>画廊管理</div>
+                    <div id="q4" class="cancanHover" @click="thunderTo('/resourceManage')"  draggable="true"
+                    @drop="drop($event)" @dragstart="drag($event)" @dragover="allowDrop($event)">
+                            <i style="font-size:50px" class="icon-moban iconfont"></i>
+                            <div>资源管理</div>
                     </div>
-                        <div  class="cancanHover" @click="thunderTo('/schoolManageMent')">
-                                <i style="font-size:50px" class="el-icon-my-ziyuanxinxipingtai"></i>
-                                <div>校区管理</div>
+                        <div id="q5" class="cancanHover" @click="thunderTo('/channelManage')"  draggable="true"
+                        @drop="drop($event)" @dragstart="drag($event)" @dragover="allowDrop($event)">
+                                <i style="font-size:50px" class="icon-chengyuanguanli iconfont"></i>
+                                <div>渠道管理</div>
                         </div>
-                    <div  class="cancanHover" @click="thunderTo('/newsManage')">
-                            <i style="font-size:50px" class="el-icon-my-ziyuanxinxipingtai"></i>
-                            <div>新闻管理</div>
+                    <div id="q6" class="cancanHover" @click="thunderTo('/activityManage')"  draggable="true"
+                    @drop="drop($event)" @dragstart="drag($event)" @dragover="allowDrop($event)">
+                            <i style="font-size:50px" class="icon-tongzhi iconfont"></i>
+                            <div>活动管理</div>
                     </div>
                         
                 </div>
@@ -827,11 +833,9 @@
     </div>
 </template>
 <script>
-    var token, user
-    import {
-        mapActions
-    } from 'vuex';
+    var token, user;
     import IEcharts from 'vue-echarts-v3/src/lite.js';
+    import {mapActions} from 'vuex';
     import {
         getTMK,getAllCCList,getIndexData,getDayTask,getMessage,getCCindex,campusList,getTeacherList,getDateClass,getTeachIndex
     } from '../../api/api';
@@ -887,39 +891,39 @@
                         show: false
                     }
                 },
-
-
-                // backgroundColor:'white'
             },
-            // lineTeacher: {
-            //     color: ["#F7BA2A", "#16b8be", "#ed42b3"],
-            //     title: {
-            //         // text: '客户发展趋势图',
-            //         // padding: [15, 5, 5, 5]
-            //     },
-            //     tooltip: {
-            //         trigger: 'axis'
-            //     },
-            //     xAxis: {
-            //         axisTick: {
-            //             alignWithLabel: true
-            //         },
-            //         data: []
-
-            //     },
-            //     yAxis: {
-            //         splitLine: {
-            //             show: false
-            //         }
-            //     },
-            // },
             contGet: '',
+            drag1:'',
             teachIndex:{day:{},week:{},month:{}},
             teachIndex1:{day:{},week:{},month:{}}
             
         }),
 
         methods: {
+            allowDrop(ev){//阻止默认拖拽行为
+                ev.preventDefault();
+            },
+            drag(ev){//开始拖动时记录id
+                this.drag1 = ev.target.id
+            },
+            drop(ev){//放下时进行交换
+            ev.preventDefault();
+            // var data=ev.dataTransfer.getData("Text");
+            // ev.target.appendChild(document.getElementById(data));
+            let a = document.getElementById(this.drag1);
+            let c = ev.target.id||ev.path[1].id
+            let b = document.getElementById(c);   
+            this.exchange(a,b);
+            },
+            exchange(el1, el2){//交换节点
+                // console.log(el1,el2)
+            let ep1 = el1.parentNode//获取节点的父级
+            // ep2 = el2.parentNode,//如果不是在同一个父级里
+            let index1 = Array.prototype.indexOf.call(ep1.children, el1);//el1在父级里的index
+            let index2 = Array.prototype.indexOf.call(ep1.children, el2);//el2在父级里的index
+            // ep2.insertBefore(el1,ep2.children[index2]);
+             ep1.insertBefore(el2,el1);//因为是同一个父级ep1,所以直接在父级ep1里,把el2插到el1前面
+            },
             thunderTo(path){
                 this.$router.push(path)
             },
@@ -994,17 +998,6 @@
                     }]
                     this.valueCC= 0;
                 }
-                // .then(()=>{
-
-                // let para1 = {
-                //     school_id:this.valueR,
-                //     cc_id: this.valueCC
-                // }
-                // getCCindex(token,para1).then(res => {
-                //     this.changeNumberCC(res)
-                //     this.changeChart(res)
-                // })
-                // })
             },
             changeNumber(data) { //TMK
                 let a = data.data
@@ -1038,28 +1031,6 @@
                 // console.log(a)
                 this.ccindex = a
             },
-            // changeChartCC(data) {
-            //     this.line.xAxis.data = data.data.weekList.week;
-            //     this.line.series = [{ //以后改成动态获取
-            //         name: "已邀约",
-            //         type: "line",
-            //         data: data.data.weekList.invitation
-            //     }, {
-            //         name: "已到访",
-            //         type: "line",
-            //         data: data.data.weekList.visiting
-            //     }, {
-            //         name: "已签单",
-            //         type: "line",
-            //         data: data.data.weekList.member
-            //     }];
-            //     this.line.legend = {
-            //         orient: 'horizontal',
-            //         bottom: 10,
-            //         data: ["已邀约", "已到访", "已签单"],
-            //         // backgroundColor:'white'
-            //     };
-            // },
             updateListGetTeach() {
                 // this.valueTeach='';
                 if(this.valueTeachR!=''){
@@ -1599,7 +1570,7 @@ font-weight:500;color:#1fb5ad
     color:#666666
 }
 .indexC26{
-    width: 50%;float:right;margin-top:20px;height:451px;background-color:white
+    width: 50%;float:right;margin-top:20px;height:451px;background-color:white;overflow: hidden;
 }
 .indexC27{
     color:#666666;min-height:19px

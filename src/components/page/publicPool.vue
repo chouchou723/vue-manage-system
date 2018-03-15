@@ -114,7 +114,7 @@
                 }
             },
             handleCurrentChange: function (val) { //换页
-                this.currentPage = val;
+                this.currentPage = val;this.backToTop();
                 this.fetchData();
             },
             fetchData() {

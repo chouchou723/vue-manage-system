@@ -53,7 +53,6 @@
                             <el-option v-for="item in teachersName" :key="item.aid" :label="item.uname" :value="item.aid">
                             </el-option>
                         </el-select>
-                        <span>(选填)</span>
                     </el-form-item>
                     <el-form-item label="上课时间" required>
                         <el-form-item prop="week" class='CT142I'>
@@ -68,7 +67,7 @@
                             </el-select>
                         </el-form-item>
                         <el-form-item prop="class_time" class='CT142I'>
-                            <el-time-picker v-model="classform.class_time" format="HH:mm" class='CT142' placeholder="请选择具体时间" popper-class='top55'>
+                            <el-time-picker v-model="classform.class_time" format="HH:mm" class='CT142' :editable="no" :clearable="no" placeholder="请选择具体时间" popper-class='top55'>
                             </el-time-picker>
                         </el-form-item>
                     </el-form-item>
@@ -247,6 +246,12 @@
                     classroom_id: [{
                         required: true,
                         message: '请选择教室',
+                        validator: nan,
+                        trigger: 'change'
+                    }],
+                    teacher_id: [{
+                        required: true,
+                        message: '请选择老师',
                         validator: nan,
                         trigger: 'change'
                     }],

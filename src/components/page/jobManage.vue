@@ -215,7 +215,7 @@
                 })
             },
             handleCurrentChange(val){
-                this.currentPage = val;
+                this.currentPage = val;this.backToTop();
                 this.showD(this.searchId);
             },
             resetD(formName) { //重置表单

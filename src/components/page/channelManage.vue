@@ -6,189 +6,172 @@
                          <el-breadcrumb-item class='ss'>菜单管理</el-breadcrumb-item>
                     </el-breadcrumb>
           </div> -->
-                <div  class='addMenuTitle' >
-                <h3 class='menuH2'>渠道管理</h3>
-                 <el-button type="primary" size="mid" class='menubuttonAdd' @click="addMenu('aform')">添加渠道</el-button>
+                <div  class='channelM2' >
+                <h3 class='channelM3'>渠道管理
+                    <span v-if="number==='0'" style="font-size:14px;color: #bdb8b8;">加载中...</span>
+                    <span v-else>({{number}})</span>
+                </h3>
+                 <el-button type="primary" size="mid" class='channelM1' @click="addMenu('aform')">添加渠道</el-button>
                  </div>
-          <div>
+       
           <el-dialog class='dialog' :title="alTitle" :visible.sync="dialogFormVisible"  :close-on-click-modal="no"  @close = 'resetLevel' size='tiny' top="20%">
-          <el-form ref="dynamicValidateForm" :model="dynamicValidateForm"   label-width="100px">
-          <el-form-item label="渠道名称" prop='menu_name' >
-            <el-input v-model="dynamicValidateForm.menu_name" placeholder='请输入渠道名称'  class="MM180" ></el-input>
+          <el-form ref="dynamicValidateForm" :model="dynamicValidateForm" :rules='drule' label-width="100px">
+          <el-form-item label="渠道名称" prop='names' >
+            <el-input v-model="dynamicValidateForm.names" placeholder='请输入渠道名称'  class="channelM5" ></el-input>
           </el-form-item>
-          <el-form-item label="直属渠道" prop='level' >
-            <el-select v-model="dynamicValidateForm.level" placeholder="请选择" class="MM180"  @change='changeDisplay'>
-              <el-option label="无" value="0"></el-option>
-              <el-option label="二级菜单" value="1"></el-option>
-              <el-option label="三级菜单" value="2"></el-option>
-            </el-select>
+          <el-form-item label="直属渠道" prop='pid' >
+              <el-cascader
+              :options="options2"
+              :props="propsource"
+              v-model="dynamicValidateForm.pid"
+               change-on-select
+              placeholder="选择渠道" >
+            </el-cascader>
           </el-form-item>
           <el-form-item >
-            <el-button type="primary" @click="onSubmit('form')">确定</el-button>
+            <el-button type="primary" @click="onSubmit('dynamicValidateForm')">确定</el-button>
             <el-button @click='dialogFormVisible = false'>取消</el-button>
           </el-form-item>
         </el-form>
         
           </el-dialog>
-          <div style='background:white;height:40px;line-height:40px;border: 1px solid rgb(209, 229, 229);border-bottom:none;'>
-              <span style="font-weight:600;margin-left:25px;">渠道名称</span>
-              <span style='float:right;margin-right:65px;font-weight:600'>操作</span>
-              <span style='float:right;margin-right:222px;font-weight:600;width:130px;text-align:center'>创建时间</span>
-              <span style='float:right;margin-right:200px;font-weight:600;width:70px;text-align:center'>资源量</span>
+          <div >
+
+            <div style='background:white;height:40px;line-height:40px;border: 1px solid rgb(209, 229, 229);border-bottom:none;'>
+                <span style="margin-left:25px;">渠道名称</span>
+                <span style='float:right;margin-right:55px;'>操作</span>
+                <span style='float:right;margin-right:212px;width:130px;text-align:center'>创建时间</span>
+                <span style='float:right;margin-right:200px;  width:70px;text-align:center'>资源量</span>
+            </div>
+          <el-tree
+          id='channelMt'
+          accordion
+            :data="data2"
+            :props="defaultProps"
+            @node-click = "cc"
+            node-key="id"
+            :expand-on-click-node="cando"
+            :render-content="renderContent">
+          </el-tree>
           </div>
-        <el-tree
-        id='MMtree'
-          :data="data2"
-          :props="defaultProps"
-          @node-click = "cc"
-          node-key="module_id"
-          default-expand-all
-          :expand-on-click-node="false"
-          :render-content="renderContent">
-        </el-tree>
-                </div>
           </div>
         </template>
         <script>
         var token
-        import { rangeList,create_menuList,put_menuList,delete_menuList,get_level,detail_level} from '../../api/api';
+        import { delChannel,addChannel,channelList} from '../../api/api';
           export default {
             data() {
-              return {
-                no:false,
-                in:'',
-                dialogFormVisible:false,
-                iconDisplay:false,
-                icDisplay:false,
-                icTop:false,
-                icTop1:false,
-                dynamicValidateForm: {
-                  module_id:'',
-                  menu_name:'',
-                  icon:'',
-                  sort_code:'',
-                  location:'',
-                  status:'1',
-                  level:'0',
-                  kid:'',
-                  pid:''
-                },
-                upMenus:[],
-                  upMenus1:[],
-                data2:[],
-                defaultProps: {
-                  label: 'menu_name',
-                  children: '_child',
+              var isName = (rule, value, callback) => {
+                var myreg = /^[\u4e00-\u9fa5a-zA-Z0-9()]+$/;
+                if (value == '') {
+                    callback('请输入渠道名称')
+                } else if (!myreg.test(value)) {
+                    callback('请输入有效的渠道名称');
+                } else {
+                    callback();
                 }
+            }
+            var isArr = (rule, value, callback) => {
+                if (value.length == 0) {
+                    callback('请选择直属上级')
+                }else {
+                    callback();
+                }
+            }
+              return {
+                drule: {
+                    names: [{
+                        required: true,
+                        validator: isName,
+                        // message: '请输入姓名',
+                        trigger: 'blur'
+                    }],
+                    pid: [{
+                        required: true,
+                        message: '请选择直属上级',
+                        validator: isArr,
+                        trigger: 'change'
+                    }]
+                  },
+                no:false,
+                cando:true,
+                in:'',
+                number: '0',
+                options2:[],
+                dialogFormVisible:false,
+                dynamicValidateForm: {
+                  names:'',
+                  pid:[],
+                },
+                data2:[],
+                propsource:{
+          value: 'id',
+          label:'names',
+          children: 'children'
+        },
+                defaultProps: {
+                  // key: 'id',
+                  label: 'names',
+                  children: 'children',
+                  total:'total'
+                },
+                
               }
             },
             methods: {
               resetLevel(){
-                this.dynamicValidateForm.level = '';
+                // this.false = true;
+                this.cando = true;
                 this.in = '';
                 this.dynamicValidateForm = {
-                                                module_id:'',
-                                                menu_name:'',
-                                                icon:'',
-                                                id:'',
-                                                location:'',
-                                                status:'',
-                                                level:'',
-                                                kid:'',
-                                                pid:''},
-                    this.dynamicValidateForm.status = '1';
-              },
-              getSecond(){ //获取二级菜单
-                get_level({pid:this.dynamicValidateForm.kid},token).then(res=>{
-                    this.upMenus1 = res.data;
-                   })
-              },
-              changeDisplay(){//显示隐藏直属上级
-                if(this.dynamicValidateForm.level == 0){
-                  this.icTop = false;
-                 this.icTop1 = false;
-                 this.dynamicValidateForm.kid = '';
-                 this.dynamicValidateForm.pid = '';
-                   if(this.dynamicValidateForm.module_id){
-        
-                 detail_level({module_id:this.dynamicValidateForm.module_id},token).then(res=>{
-                 
-                       this.dynamicValidateForm.sort_code = res.data.sort_code;
-                    })
-                   }
-                 this.icDisplay = true
-                }else if(this.dynamicValidateForm.level == 1){
-                   this.icDisplay = false
-                   this.icTop1 = false;
-                   this.dynamicValidateForm.pid = '';
-                   this.dynamicValidateForm.icon = '';
-                   if(this.dynamicValidateForm.module_id){
-        
-                   detail_level({module_id:this.dynamicValidateForm.module_id},token).then(res=>{
-                      this.dynamicValidateForm.kid = res.data.pid;
-                       this.dynamicValidateForm.sort_code = res.data.sort_code;
-                    })
-                   }
-                   this.icTop = true;
-                }else if(this.dynamicValidateForm.level == 2){
-                   this.icDisplay = false;
-                   this.dynamicValidateForm.kid = '';
-                   this.dynamicValidateForm.icon = '';
-                     if(this.dynamicValidateForm.module_id){
-        
-                   detail_level({module_id:this.dynamicValidateForm.module_id},token).then(res=>{
-                      this.dynamicValidateForm.kid = res.data.one_level;
-                      this.dynamicValidateForm.pid = res.data.pid;
-                      this.dynamicValidateForm.sort_code = res.data.sort_code;
-                    })
-                     }
-                   this.icTop = true;
-                   this.icTop1 = true;
-                }
-              },
-              cc(a,b,c){//点击节点时赋值
-                
-                if(b.level == 1){
-                  this.dynamicValidateForm.level = '0';
-        
-                }else if(b.level == 2){
-                  this.dynamicValidateForm.level = '1';
-                }
-                else if(b.level == 3){
-                  this.dynamicValidateForm.level = '2';
-                }
+                  names:'',
+                  pid:[],
+                id:''
+              }
+              this.$refs['dynamicValidateForm'].resetFields();
               },
         
               remove(store, data) {//删除
                 // console.log(data);
-                if(data._child){
+                this.cando = false;
+                if(data.source_total>0){
                     this.$alert('该渠道已经被使用,无法删除该渠道', '删除渠道', {
-                         title:'删除渠道',
                          type: 'warning',
-                         customClass:'MMredwarn',
+                         customClass:'channelM4',
                          confirmButtonText: '确定'
+                }).then(()=>{
+                this.cando = true;                  
+                }).catch(()=>{
+                this.cando = true;                  
                 });
                 }
                 else{
                     this.$confirm('是否确定要删除该渠道?', '删除渠道', {
-                          title:'删除渠道',
-                          customClass:'MMredwarn',
+                          customClass:'channelM4',
                           confirmButtonText: '确定',
                           cancelButtonText: '取消',
                           type: 'warning'
                 }).then(() => {
-                  let para = {module_id:data.module_id}
-                delete_menuList(para,token).then(()=>{
-                  rangeList(token).then(res=>{
-                      this.data2 = res.data
-                })
-                })
-                  this.$message({
+                  let para = {id:data.id}
+                  delChannel(para,token).then((res)=>{
+                    if(res.code==0){
+                      this.$message({
                     type: 'success',
                     message: '删除成功!'
                   });
-                  
-                }).catch(() => {
+                  this.cando = true;
+                  channelList(token).then(res => {
+                              this.data2 = res.data.list;
+                              this.number = res.data.total;
+                          })
+
+                    }else{
+                      this.$message.error(res.data);
+                      this.cando = true;
+                    }
+                })
+             }).catch(() => {
+                  this.cando = true; 
                 //   this.$message({
                 //     type: 'info',
                 //     message: '已取消删除'
@@ -197,23 +180,23 @@
               }
               },
               edit(store,data){//修改
-                if(data._child){
+                this.cando = false;
+                // console.log(data)
+                if(data.source_total>0){
                     this.$alert('该渠道已经被使用,请先解除使用', '修改提示', {
                          type: 'warning',
-                         customClass:'MMredwarn',
+                         customClass:'channelM4',
                          confirmButtonText: '确定'
+                }).then(()=>{
+                this.cando = true;   
+                }).catch(()=>{
+                this.cando = true;                  
                 });
-                }
-                else{
-
+                }else{
                     this.dialogFormVisible = true;
-                    this.dynamicValidateForm.menu_name = data.menu_name;
-                     this.dynamicValidateForm.full_name = data.menu_name;
-                    this.dynamicValidateForm.module_id = data.module_id;
-                    this.dynamicValidateForm.location = data.location;
-                    this.dynamicValidateForm.icon = data.icon;
-                   this.dynamicValidateForm.status = data.status;
-                   this.dynamicValidateForm.sort_code = data.sort_code;
+                    this.dynamicValidateForm.names = data.names;
+                     this.dynamicValidateForm.pid = data.source_path.split(',');
+                    this.dynamicValidateForm.id = data.id;
                    this.in = '1';
                 }
               },
@@ -221,99 +204,77 @@
                     this.dialogFormVisible = true;
                   },
               onSubmit(formName) {
-                let para = {...this.dynamicValidateForm};
-                if(this.dynamicValidateForm.level ==1){
-                  para.pid = para.kid
-                }
-                if(this.in !=0){
-                        put_menuList(para,token).then((res)=>{
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                      let para = {...this.dynamicValidateForm};
+                      para.pid = para.pid[para.pid.length-1]
+                      if(this.in !=0){
+                        this.writeL = true;
+                        addChannel(para,token).then(res=>{
                           if(res.code==0){
-                            this.$message.success('修改成功')
-                            rangeList(token).then(res=>{
-                            this.data2 = res.data
+                            this.$message.success('修改成功');
+                            this.writeL = false;
+                            this.cando = true;
+                            this.dialogFormVisible = false;                            
+                            channelList(token).then(res => {
+                              this.data2 = res.data.list;
+                              this.number = res.data.total;
                           })
+                          }else{
+                            this.$message.error(res.data);
+                            this.writeL = false;
+                            this.cando = true;    
                           }
-                          return res
-                                }).then((res)=>{
-                                  if(res.code==0){
-                                    this.dialogFormVisible = false;
-                                    this.$router.go();
-        
-                                  }else{
-                                    this.$message.error(res.message)
-                                  }
-                                })
-                }else{
-                      create_menuList(para,token).then((res)=>{
-                        if(res.code==0){
-                          this.$message.success('创建成功')
-                          rangeList(token).then(res=>{
-                        this.data2 = res.data
                         })
-                        }  
-                        return res
-                              }).then((res)=>{
-                                if(res.code==0){
-                                  this.dialogFormVisible = false;
-                                  this.$router.go();
-                                }else{
-                                  this.$message.error(res.message)
-                                }
-                              })
-                }
+                      }else{
+                        this.writeL = true;
+                        addChannel(para,token).then(res=>{
+                          if(res.code==0){
+                            this.$message.success('添加成功');
+                            this.writeL = false;
+                            this.cando = true;    
+                            this.dialogFormVisible = false;
+                            channelList(token).then(res => {
+                              this.data2 = res.data.list;
+                              this.number = res.data.total;
+                          })
+                          }else{
+                            this.$message.error(res.data);
+                            this.writeL = false;
+                            this.cando = true;    
+                          }
+                        })
+                      }
+                    }
+                })
         },
               renderContent(h, { node, data, store }) {
-                //   console.log(node)
+                  // console.log(node)
                 return (
-                  <span >
+                  <span style='font-size:14px;'>
                     <span >
                       <span>{node.label}
-                        {node.key==1?
-                            <span style="color:#1fb5ad">(10)</span>
+                        {node.data.total?
+                            <span style="color:#1fb5ad">({node.data.total})</span>
                             :
                             <span ></span>
                         }
                         </span>
                     </span>
                     <span style="float: right; margin-right: 20px">
-                        <el-button type="primary" size="mini" on-click={ () => this.edit(store, data) }>修改</el-button>
-                        <el-button type="danger" size="mini" on-click={ () => this.remove(store, data) }>删除</el-button>
+                        <el-button type="text" size="mini" on-click={ () => this.edit(store, data) }>修改</el-button>
+                        <el-button type="text" style='color:red; 'size="mini" on-click={ () => this.remove(store, data) }>删除</el-button>
                         </span>
                         <span  style="float: right; margin-right: 200px;width:130px;text-align:center">
-                          <span>2017-02-03 11:13</span>
+                          <span>{node.data.created_at}</span>
                         </span>  
                         <span  style="float: right; margin-right: 200px;width:70px;text-align:center">
-                          <span>3000</span>
+                          <span>{node.data.source_total}</span>
                         </span>
                   </span>);
               }
             },
             computed:{
-               cssClass(){
-                let a = ['el-icon-my-shouye','el-icon-my-shezhi','el-icon-my-shoujianxiang',
-                        'el-icon-my-xiaoxi','el-icon-my-wendang','el-icon-my-shangchu','el-icon-my-sousuo',
-                        'el-icon-my-xieyoujian','el-icon-my-jichubangong','el-icon-my-jihua','el-icon-my-hetongguanli',
-                        'el-icon-my-shengpi','el-icon-my-daiban','el-icon-my-tongzhi','el-icon-my-baobiaoguanli',
-                        'el-icon-my-yewuzhongxin','el-icon-my-guanliyuancaozuo','el-icon-my-xitongguanli',
-                        'el-icon-my-caidan','el-icon-my-xiugai',
-                       'el-icon-my-tongxunlu','el-icon-my-guanliyuan','el-icon-my-yonhu',
-                        'el-icon-my-tongjifenxi','el-icon-my-gerenxinxi','el-icon-my-tongzhigonggao','el-icon-my-zhuanxierizhi',
-                        'el-icon-my-rizhi','el-icon-my-chayuerizhi','el-icon-my-chengyuanguanli','el-icon-my-wodericheng',
-                        'el-icon-my-richenganpai','el-icon-my-richeng','el-icon-my-chayuericheng','el-icon-my-huiyijiyao',
-                        'el-icon-my-qita','el-icon-my-yibanrenwu','el-icon-my-daibanrenwu','el-icon-my-cailiaopinpai',
-                        'el-icon-my-chengyuanyingyonchakanqi','el-icon-my-chuchai','el-icon-my-yonhuxinxipingtai',
-                        'el-icon-my-xitonggongju','el-icon-my-zaixianyonhu','el-icon-my-xuexiyuandi','el-icon-my-gongsilei',
-                        'el-icon-my-zidian','el-icon-my-weituoguanxiguanli','el-icon-my-kuaijieyingyon','el-icon-my-yoncheguanli',
-                        'el-icon-my-kaoqinliuchengtongji','el-icon-my-yingyonchengxumuban','el-icon-my-jiaban','el-icon-my-weizhi',
-                        'el-icon-my-tongyi','el-icon-my-jujue','el-icon-my-xingzhengbangongguanli',
-                        'el-icon-my-dayinchulijian','el-icon-my-zidianxinxipingtai','el-icon-my-gongwen','el-icon-my-xiangmu',
-                        'el-icon-my-cailiaochangjia','el-icon-my-mima','el-icon-my-wodejihua',
-                        'el-icon-my-huiyijiyao1','el-icon-my-ziyuanxinxipingtai','el-icon-my-liuchengchaoqitongji','el-icon-my-zhiduliucheng',
-                        'el-icon-my-moban','el-icon-my-moban1']
-               return   a.map(item=>{
-                  return {value:item}
-                })
-               },
                alTitle(){
                    if(this.in==''){
                        return '添加渠道'
@@ -327,27 +288,31 @@
                     token =  JSON.parse(user).token;
                 },
             created(){
-              rangeList(token).then(res=>{
-        this.data2 = res.data
-                }).then(()=>{
-                  get_level({pid:0},token).then(res=>{
-                    this.upMenus = res.data;
-                   })
-                })
+              channelList(token).then(res => {
+                this.data2 = res.data.list;
+                this.number = res.data.total;
+                this.options2 = [...res.data.list]
+                this.options2.unshift({id:'0',names:'无'})
+            })
+
+        //       rangeList(token).then(res=>{
+        // this.data2 = res.data
+        //         }).then(()=>{
+        //           get_level({pid:0},token).then(res=>{
+        //             this.upMenus = res.data;
+        //            })
+        //         })
               
             }
           }
         </script>
         <style>
-        .addUserTitle{
-          padding:10px 10px 30px 10px;
-        }
-        .menubuttonAdd{
+        .channelM1{
           position:absolute;
           right:10px;
           top:16%;
         }
-        .addMenuTitle{
+        .channelM2{
           width: 100%;
           position:relative;
           height:40px;
@@ -357,30 +322,26 @@
           margin-bottom: 5px;
           border-radius: 5px;
         }
-        .addMenuTitle .el-button--primary{
+        .channelM2 .el-button--primary{
             background-color: #32a4d3;
             border-color: #32a4d3;
         }
-        .menuH2{
+        .channelM3{
            padding-left: 10px
         }
         .dialog .el-dialog--small{
           width:50%
         }
-        .MMredwarn .el-message-box__header{
+        .channelM4 .el-message-box__header{
             background-color: #e95c5c;
             padding: 20px 20px 20px;
         }
-        .MMredwarn .el-message-box__title{
+        .channelM4 .el-message-box__title{
             color:white;
         }
-        .MMredwarn .el-button--primary{
+        .channelM4 .el-button--primary{
             background-color: #e95c5c;
             border-color: #e95c5c;
-        }
-        
-        .menuIcon li{
-          display: list-item;
         }
         .el-dialog .el-dialog__header {
             background-color: #1fb5ad;
@@ -390,16 +351,16 @@
         .el-dialog .el-dialog__title {
             color: white;
         }
-        .MM180{
+        .channelM5{
         width:180px
         }
-        .MM60{
-        margin-top:60px
+        #channelMt{
+padding-bottom:10px;
         }
-        #MMtree .el-tree-node{
+        #channelMt .el-tree-node{
           white-space: normal;
         }
-        .el-tree-node__content{
+        #channelMt .el-tree-node__content{
             border-bottom: 1px solid gainsboro;
     margin-left: 20px;;
     margin-right:20px;

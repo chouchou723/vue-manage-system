@@ -1,15 +1,13 @@
 <template>
     <div class="header">
-        <!-- <div class="logobg" style="width: 183px;height: 70px;background-color: #2b3a40;float: left;">
-        <div class="logo"><img src="../../../static/img/topic_03.png"  width="170"  @click='refresh'></div> 
-        </div>   -->
+            <!-- <div class="logo" ><img src="../../../static/img/topic_03.png"  width="170" style="margin-top:8px;margin-left:7px;" ></div>  -->
         <div class="hoverbg" v-if="this.code.includes('cc')||this.code.includes('tmk')||this.code.includes('teach')">
             <div class='search'>
                 <el-input placeholder="请输入完整的姓名或手机号" icon="search" clearable v-model="input2" :on-icon-click="handleIconClick" @keyup.enter.native='handleIconClick'>
                 </el-input>
             </div>
         </div>
-        <div class="hoverrt" v-if="code.includes('tmk')||code=='cc'||code=='cc_m'" @click="gotoAdd" >
+        <div class="hoverrt" v-if="code.includes('tmk')||code=='cc'||code.includes('cc_m')" @click="gotoAdd" >
             <img id='addUser' src="../../../static/img/add.png" height="30" width="28" >
             </div>
         <div class="user-info">
@@ -100,15 +98,11 @@
                         this.messageAmount = res.data.total;
                 this.setMessNumber(this.messageAmount)
                     })
-                    // this.loading= false;
                 }
             },
             goSystem() {
                 this.$router.push('/systemMessage')
             },
-            // refresh() {
-            //     this.$router.go();
-            // },
             gotoSetting(){
                 this.$router.push('/setting');
             },
@@ -146,37 +140,21 @@
             },
             gotoAdd() {
                 if(this.code.includes('tmk')){
-
                     this.$router.push('/addUser')
                 }else{
                     this.$router.push('/addCustomer')
-                    
                 }
             },
             getM(){//计时器使用
-                let p ={
-                    
+                let p ={ 
                 }
                 getMessage(p,token).then(res=>{
-                // console.log(res);
                 this.messageAmount = res.data.total;
                 this.setMessNumber(this.messageAmount)
             })
             }
         },
         computed: {
-            // code(){
-            //   return JSON.parse(user).job ? JSON.parse(user).job.code?JSON.parse(user).job.code : '':''; //获取职位code  
-            // },
-            // username(){
-            //     return JSON.parse(user).uname
-            // },
-            // agetSrc(){
-            //     return JSON.parse(user).avatar
-            // },
-            // duty(){
-            //     return JSON.parse(user).job.full_name
-            // },
             finalNumber() {
                 if (this.getMessNumber !== '') {
                     return this.getMessNumber;
@@ -184,9 +162,6 @@
                     return this.messageAmount;
                 }
             },
-            // userAvatar(){
-            //     return this.agetSrc
-            // },
             ...mapGetters([
                 'getMessNumber'
                 // ...
@@ -204,7 +179,7 @@
             //     // console.log(user);
                 this.username = user1.uname || '';
                 this.agetSrc = user1.avatar || '';
-                this.duty = user1.department ? user1.department : ''//要改部门名称
+                this.duty = user1.department ? user1.department : ''//部门名称
 
             // }
              this.contGet = setInterval(this.getM,600000)
@@ -219,13 +194,18 @@
         },
         beforeDestroy() {
             clearInterval(this.contGet);
-            // this.$router.go();
         },
     }
 </script>
 <style>
+    /* .logo{
+        background-color: #2b3a40;
+        width:183px;
+        float: left;
+      
+    } */
     .hoverbg{
-width: 245px;height: 48px;float: left; padding-left:183px
+width: 245px;height: 48px;float: left;
 	} 
 
     .hoverrt {
@@ -258,6 +238,7 @@ width: 245px;height: 48px;float: left; padding-left:183px
         font-size: 22px;
         line-height: 48px;
         color: #000000;
+        background-color: #fff
     }
     /*.header .logo{
         float: left;
@@ -337,19 +318,9 @@ width: 245px;height: 48px;float: left; padding-left:183px
             transform: rotate(360deg);
         }
     }
-
-    .scaleMess {
-        transition: all 1s ease-in-out
-    }
-
-    .scaleMess:hover {
-        transform: scale(1.5) rotate(360deg)
-    }
-
     .el-dropdown-menu__item {
         text-align: center;
     }
-
     .counterdiv {
         background-color: #d08124;
         border-radius: 50%;
@@ -360,11 +331,9 @@ width: 245px;height: 48px;float: left; padding-left:183px
         width: 17px;
         text-align: center;
     }
-
     .hidden {
         display: none
     }
-
     /* #addUser {
         margin-left: 13px;
         margin-top: 22px;

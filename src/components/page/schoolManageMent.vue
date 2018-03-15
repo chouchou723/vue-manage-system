@@ -101,7 +101,7 @@
                         </el-form-item>
                     </el-form>
                     <div slot="footer" class="dialog-footer">
-                        <el-button type="primary" @click="addAccount('aform')">确 定</el-button>
+                        <el-button type="primary"  :loading="writeL" @click="addAccount('aform')">确 定</el-button>
                         <el-button @click="dialogFormVisible = false">取 消</el-button>
                     </div>
                 </el-dialog>
@@ -109,9 +109,9 @@
            
             <div id="tableSM123">
                 <el-table :data="accountData" border style='width:100%'>
-                    <el-table-column prop="title" label="校区名">
+                    <el-table-column prop="title" label="校区名"  width='200'>
                         <template scope="scope">
-                            <span style='font-weight:600'>{{scope.row.title}}</span>
+                            <div style='font-weight:600;text-align:left;padding-left:10px;'>{{scope.row.title}}</div>
                         </template>
                     </el-table-column>
                     <el-table-column prop="code" label="校区编号" width='90'>
@@ -121,14 +121,17 @@
                     <el-table-column prop="area" label="所在地区" width='80'>
                     </el-table-column>
                     <el-table-column prop="addr" label="校区地址" >
+                            <template scope="scope">
+                                    <div style="text-align:left;padding-left:10px;">{{scope.row.addr}}</div>
+                                </template>
                         </el-table-column>
                         <el-table-column prop="direct_store" label="校区类型" width='80'>
                             </el-table-column>
                             <el-table-column prop="accredit" label="授权考点" width='80'>
                             </el-table-column>
-                            <el-table-column prop="tel" label="联系电话" >
+                            <el-table-column prop="tel" label="联系电话" width='120'>
                                 </el-table-column>
-                                <el-table-column prop="created" label="创建时间" >
+                                <el-table-column prop="created" label="创建时间" width='120'>
                                     </el-table-column>
                     <el-table-column label="操作" width='80'>
                         <template scope="scope">
@@ -216,6 +219,7 @@
                 // }
                 return {
                     map:{},
+                    writeL:false,
                     direct_accredit:[],
                     currentPage: 1, //页数
                     pagesize: 15, //默认每页
@@ -367,6 +371,7 @@
                         direct_accredit:[],
                     };
                     this.$refs['aform'].resetFields();
+                    this.writeL = false;
                 },
                 editCh(id,data) { //点击就修改
                     this.in = id;
@@ -395,6 +400,7 @@
                         if (valid) {
                             if (i !== '') {
                                 f.id =this.in;
+                                this.writeL = true;
                                 add_school(f, token).then(res => {
                                     if(res.code ==0){
                                      this.$message({
@@ -402,16 +408,19 @@
                                         type: 'success'
                                     });   
                                     this.fetchData();
+                                    this.writeL = false;
                                     }else{
                                         this.$message({
                                     type: 'error',
                                     message: res.data
                                 });
+                                this.writeL = false;                                
                                     }
                                 }).then(()=>{
                                      this.dialogFormVisible = false;
                                 });
                             }else {
+                                this.writeL = true;
                                 add_school(f, token).then(res => {
                                    if(res.code ==0){
                                      this.$message({
@@ -419,11 +428,13 @@
                                         type: 'success'
                                     });   
                                     this.fetchData();
+                                    this.writeL = false;                                    
                                     }else{
                                         this.$message({
                                     type: 'error',
                                     message: res.data
                                 });
+                                this.writeL = false;                                
                                     }
                                 }).then(()=>{
                                      this.dialogFormVisible = false;
@@ -459,7 +470,7 @@
     
                 },
                 handleCurrentChange: function(val) { //变更页数
-                    this.currentPage = val;
+                    this.currentPage = val;this.backToTop();
                     this.fetchData();
                 },
             },

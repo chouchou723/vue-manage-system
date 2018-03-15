@@ -63,11 +63,11 @@
                 </el-form-item>
                 <el-form-item label="">
                     <el-form-item prop="parent1" class='AC142float'>
-                        <el-input v-model="form.parent1" placeholder='请输入家长姓名'></el-input>
+                        <el-input v-model="form.parent1" placeholder='请输入家长姓名' @blur='checkP1'></el-input>
                     </el-form-item>
                     <!-- <div style='position:absolute;color:#ff4949;bottom:-26px;font-size:12px;left:184px' v-if="secondRule">第二家长信息如若填写,必须填写完全,不然将不予保存</div> -->
                     <el-form-item prop="con1" class='AC142float'>
-                        <el-select v-model="form.con1" clearable placeholder="请选择关系">
+                        <el-select v-model="form.con1" clearable placeholder="请选择关系" @change='checkP1'>
                             <el-option label="妈妈" value="妈妈"></el-option>
                             <el-option label="爸爸" value="爸爸"></el-option>
                             <el-option label="爷爷" value="爷爷"></el-option>
@@ -77,7 +77,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item prop="phone1" class='ACfloat'>
-                        <el-input v-model="form.phone1" placeholder='请输入手机号' :maxlength='maxlength'></el-input>
+                        <el-input v-model="form.phone1" placeholder='请输入手机号' :maxlength='maxlength' @blur='checkP1'></el-input>
                     </el-form-item>
                     <el-col :span="2">
                         <span class='ACalter'> (选填)</span>
@@ -107,7 +107,7 @@
                         </el-option>
                     </el-select> -->
                 </el-form-item>
-                <el-form-item label="来源渠道" prop='sour_id'>
+                <el-form-item label="来源渠道" required>
                     <el-form-item prop='sour_id' class='AC142float'>
                         <el-cascader :options="source" :props="propsource" v-model="form.sour_id" :show-all-levels="false" placeholder="请选择渠道"  @change="handleChange(form.sour_id)">
                         </el-cascader>
@@ -189,7 +189,22 @@
                 } else if (!myreg.test(value)) {
                     callback('请输入有效的家长姓名');
                 } else {
-                    callback();
+                    if(this.form.phone1&&this.form.con1){
+                        callback();
+                        }else{
+                        callback('必须填写全第二家长信息');
+                        }
+                }
+            }
+            var iscon1 = (rule, value, callback) => {//修改用户
+                if (value == '') {
+                    callback()
+                }else{
+                    if(this.form.phone1&&this.form.parent1){
+                        callback();
+                        }else{
+                        callback('必须填写全第二家长信息');
+                        }
                 }
             }
             var nan = (rule, value, callback) => {
@@ -233,20 +248,23 @@
                 } else if (!myreg.test(value)) {
                     callback('请输入有效手机号');
                 }else if(this.form.phone==value){
-callback('不要输入重复的手机号');
-}else {
-let para = {
-search: value
-}
-searchResource(para, token).then(res => {
-if(res.data.data.length!=0){
-callback('此手机号码已存在');
-}else{
-callback();
-
-}
-})
-}
+                        callback('不要输入重复的手机号');
+                        }else {
+                        let para = {
+                        search: value
+                        }
+                        searchResource(para, token).then(res => {
+                        if(res.data.data.length!=0){
+                        callback('此手机号码已存在');
+                        }else{
+                            if(this.form.parent1&&this.form.con1){
+                                callback();
+                                }else{
+                                callback('必须填写全第二家长信息');
+                                }
+                        }
+                        })
+                        }
             }
             return {
                 writeL:false,
@@ -317,7 +335,12 @@ callback();
                         required: true,
                         message: '请选择关系',
                         trigger: 'change'
-                    }, ],
+                    }],
+                    con1: [{
+                        required: true,
+                        validator: iscon1,
+                        trigger: 'change'
+                    }],
                     phone: [{
                         required: true,
                         validator: isPhone,
@@ -355,6 +378,11 @@ callback();
             }
         },
         methods: {
+            checkP1(){
+                this.$refs['form'].validateField('parent1');
+                this.$refs['form'].validateField('con1');
+                this.$refs['form'].validateField('phone1');                
+            },
             remoteMethod(query) {
         if (query !== '') {
           this.loading = true;
@@ -440,7 +468,7 @@ callback();
                 this.$refs[formName].validate((valid) => {
                     if (valid&&this.isWarning===false) {
                         this.writeL = true;
-                        if (this.form.parent1 || this.form.con1 || this.form.phone1) {
+                        if (this.form.parent1) {
                             this.form.familys = this.form.parent + '|' + this.form.con + '|' + this.form.phone +
                                 ',' + this.form.parent1 + '|' + this.form.con1 + '|' + this.form.phone1
                         } else {

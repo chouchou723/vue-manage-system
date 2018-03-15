@@ -3,11 +3,12 @@ const webpack = require('webpack');
 
 module.exports = {
   entry: {
-    vendor: ['vue/dist/vue.common.js','vue-router', 'babel-polyfill','axios','element-ui','echarts/lib/chart/funnel','echarts/lib/chart/line','echarts/lib/chart/pie','echarts/lib/component/legend','echarts/lib/component/tooltip',]
+    vendor: ['vue/dist/vue.common.js','vue-router', 'babel-polyfill','axios','element-ui','quill','echarts/lib/chart/funnel','echarts/lib/chart/line','echarts/lib/chart/pie','echarts/lib/component/legend','echarts/lib/component/tooltip']
   },
+  // vendor: ['vue/dist/vue.common.js','vue-router', 'babel-polyfill','axios','element-ui','quill','echarts/lib/chart/funnel','echarts/lib/chart/line','echarts/lib/chart/pie','echarts/lib/component/legend','echarts/lib/component/tooltip']  
   output: {
     path: path.join(__dirname, '../static/js'),
-    filename: '[name].dll.js',
+    filename: '[name].dll2.js',
     library: '[name]_library'
   },
   plugins: [

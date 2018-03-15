@@ -58,3 +58,12 @@ export const getmyActS = state => {
 export const getmyGal = state => {
     return state.myGal
 }
+export const getmyReview = state => {
+    return state.myReview
+}
+export const getMymarket= state => {
+    return state.myMarket
+}
+export const getMyF= state => {
+    return state.myF
+}

@@ -12,9 +12,14 @@
                    发货管理
                     </h3>
                     <div class='deliveryManageS'>
-                            <el-date-picker v-model="value2" type="month" placeholder="月份选择" @change="updateList" :picker-options="pickerOptions0">
+                            <el-date-picker v-model="value2" type="month" placeholder="月份选择"  :editable='no' @change="updateList" :picker-options="pickerOptions0">
                                 </el-date-picker>
                     </div>
+                    <div class='deliveryManageS1'>
+                        <el-input placeholder="请输入产品型号" v-model="input5" width='120'>
+                          <el-button slot="append"  @click="outputD1">导出</el-button>
+                        </el-input>
+                      </div>
                     <div class='deliveryManageSb'>
 
                         <el-upload
@@ -33,21 +38,29 @@
                 <el-table :data="accountData" border style='width:100%'>
                     <el-table-column prop="schoolName" label="校区">
                     </el-table-column>
-                    <el-table-column prop="child_name" label="学员">
+                    <el-table-column prop="child_name" label="学员" width='80'>
                     </el-table-column>
-                    <el-table-column prop="user_name" label="收件人">
+                    <el-table-column prop="user_name" label="收件人" width='80'>
                     </el-table-column>
-                    <el-table-column prop="mobile" label="联系方式">
+                    <el-table-column prop="mobile" label="联系方式" width='120'>
                     </el-table-column>
-                    <el-table-column prop="address" label="收货地址">
+                    <el-table-column prop="address" label="收货地址" >
                     </el-table-column>
                     <el-table-column prop="goods_sku" label="产品型号">
+                            <template scope="scope">
+                                <div><span style='height:18px;line-height:18px;margin-right:8px;width:40px;display:inline-block;color:white;background:#3fcc30;border-radius:5px;'>实发</span>{{scope.row.goods_sku||'暂无'}}</div>                                   
+                                   <div><span style='height:18px;line-height:18px;margin-right:8px;width:40px;display:inline-block;color:white;background:black;border-radius:5px;'>应发</span>{{scope.row.goods_sku||'暂无'}}</div>
+                                </template>
                     </el-table-column>
                     <el-table-column prop="goods_name" label="产品名称">
+                            <template scope="scope">
+                                    <div><span style='height:18px;line-height:18px;margin-right:8px;width:40px;display:inline-block;color:white;background:#3fcc30;border-radius:5px;'>实发</span>{{scope.row.goods_name||'暂无'}}</div>                                   
+                                    <div><span style='height:18px;line-height:18px;margin-right:8px;width:40px;display:inline-block;color:white;background:black;border-radius:5px;'>应发</span>{{scope.row.goods_name||'暂无'}}</div>
+                                 </template>
                     </el-table-column>
-                    <el-table-column prop="create_at" label="发货时间">
+                    <el-table-column prop="updated" label="发货时间" >
                     </el-table-column>
-                    <el-table-column prop="express_id" label="物流单号">
+                    <el-table-column prop="express_id" label="物流单号"  width='120'>
                             <template scope="scope">
                                     <span  @click='openInfo(scope.row.id)' class='deliveryManagec'>{{scope.row.express_id}}</span>
                                 </template>
@@ -100,7 +113,8 @@
     import {
         shipmentList,
         exportDelivery,
-        getShipmentLogistics
+        getShipmentLogistics,
+        getProductShippingList
     } from '../../api/api';
     export default {
         data() {
@@ -130,6 +144,7 @@
                     f:false,
                     dialogFormVisibleInfo:false,
                     no:false,
+                    input5:'',
                     headers: {
                     Authorization: token.Authorization
                 },
@@ -171,6 +186,17 @@
                         window.open( a+res.data.name)
                     })
                 },
+                outputD1(){
+                    let para = {
+                        sku:this.input5
+                    }
+                    getProductShippingList(para,token).then((res)=>{
+                        let a = 'http://pandatest.dfth.com/download/stream?name=';
+                        // let a = '/download/stream?name=';
+                        window.open( a+res.data.name)
+                        console.log(res)
+                    })
+                },
                 fetchData() {
                     let para = {
                         page: this.currentPage,
@@ -186,7 +212,7 @@
     
                 },
                 handleCurrentChange: function(val) { //变更页数
-                    this.currentPage = val;
+                    this.currentPage = val;this.backToTop();
                     this.fetchData();
                 },
             },
@@ -249,10 +275,25 @@
     .deliveryManageS .el-date-editor.el-input{
         width:120px;
     }
+    .deliveryManageS1{
+        position: absolute;
+        right: 270px;
+        top: 10px;
+        width: 320px;
+       
+    }
+    .deliveryManageS1 .el-input-group__append{
+        background: #1fb5ad;
+        color:white;
+    }
     .deliveryManageSb {
         position: absolute;
         right: 130px;
         top: 10px;
+    }
+    .deliveryManageSb .upload-demo{
+        width:130px;
+        display: inline-block;
     }
     .deliveryManageSbb {
         position: absolute;
@@ -262,10 +303,10 @@
     }
     .upload-demo .el-upload--text{
         height: 36px;
-    width: 166px;
-    margin-right: 115px;
+    width: 140px;
+    /* margin-right: 115px; */
     margin-top:0;
-    margin-left: 0
+    margin-left: -60px
     }
     .deliveryManagec{
         cursor: pointer;

@@ -56,3 +56,12 @@ export const setmyActS = ({commit},data) =>{
 export const setmyGAL = ({commit},data) =>{
 	commit('SENDMYGAL',data)
 }
+export const setmyReview = ({commit},data) =>{
+	commit('SENDMYREVIEW',data)
+}
+export const setMyMarket = ({commit},data) =>{
+	commit('SENDMYMARKET',data)
+}
+export const setMyF = ({commit},data) =>{
+	commit('SENDMYF',data)
+}

@@ -24,6 +24,12 @@
                         <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 6}" placeholder="请输入优惠理由" v-model="aform.remark">
                         </el-input>
                     </el-form-item>
+                    <el-form-item label="使用状态" :label-width="formLabelWidth" prop="stop">
+                            <el-select v-model="aform.stop"  placeholder="选择状态"  >
+                        <el-option label="启用" value="0"></el-option>
+                        <el-option label="停用" value="1"></el-option>
+                        </el-select>
+                    </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer" style="text-align:center;margin-top:40px">
                     <el-button type="primary" :loading='writeL' @click="addAccount('aform')">确 定</el-button>
@@ -42,6 +48,8 @@
                 </el-table-column>
                 <el-table-column prop="sales_total" label="使用数" width='80'>
                     </el-table-column>
+                    <el-table-column prop="status" label="使用状态" width='80'>
+                        </el-table-column>
                 <el-table-column label="操作" width='280' v-if="!code.includes('school')">
                     <template scope="scope">
                         <el-button type="text" size="small" @click="editCh(scope.$index, accountData)">修改</el-button>
@@ -80,6 +88,7 @@ export default {
                     id: '',
                     title: '',
                     remark: '',
+                    stop:'0'
                 },
                 dialogFormVisible: false,
                 formLabelWidth: '100px',
@@ -103,7 +112,8 @@ export default {
                 this.in = '';
                 this.aform.id = '';
                 this.aform.title = '';
-                this.aform.remark = ''
+                this.aform.remark = '';
+                this.aform.stop = '0'
                 this.dialogFormVisible = true;
             },
             resetD() {
@@ -113,7 +123,8 @@ export default {
                 this.in = index;
                 this.aform.id = data[index].id;
                 this.aform.title = data[index].title;
-                this.aform.remark = data[index].remark
+                this.aform.remark = data[index].remark;
+                this.aform.stop = data[index].stop+'';
                 this.dialogFormVisible = true;
             },
             open2(index, data) { //删除课程
@@ -196,6 +207,7 @@ export default {
             fetchData() {
                 let para = {
                     page: this.currentPage,
+                    type:'all'
                 }
                 getPromotionList(token,para).then((res) => {
                     this.number = res.data.total;
@@ -207,7 +219,7 @@ export default {
 
             },
             handleCurrentChange: function(val) { //变更页数
-                this.currentPage = val;
+                this.currentPage = val;this.backToTop();
                 this.fetchData();
             },
         },

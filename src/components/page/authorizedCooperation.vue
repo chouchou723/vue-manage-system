@@ -7,8 +7,7 @@
             </el-breadcrumb> -->
             <div class='authCooAH'>
                 <h3 class="authCooAH1">
-    
-                   授权合作
+                   授权申请
                 </h3>
                 <!-- <div class="IRtitle">
                     <div class='studentReturnThreeNoEff'>
@@ -82,7 +81,7 @@
                     this.fetchData()
                 },
                 handleCurrentChange: function (val) {
-                    this.currentPage = val;
+                    this.currentPage = val;this.backToTop();
                     this.fetchData();
                 },
                 // updateList() {
@@ -136,9 +135,8 @@
     
         .authCooAH1 {
             float: left;
-            margin-right: 5px;
             padding-left: 10px;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             margin-top: 5px;
         }
     

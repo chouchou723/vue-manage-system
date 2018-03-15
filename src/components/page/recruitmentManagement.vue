@@ -80,7 +80,7 @@
                                     </el-form-item>
                 </el-form>
                         <div slot="footer" class="dialog-footer" style='text-align:center'>
-                            <el-button type="primary" @click="onSubmit('form')">确定</el-button>
+                            <el-button type="primary" :loading="writeL" @click="onSubmit('form')">确定</el-button>
                             <el-button @click="dialogFormVisible = false">取消</el-button>
                         </div>
             </el-dialog>
@@ -136,6 +136,7 @@
                     //         return time.getTime() < Date.now() - 8.64e7;
                     //     }
                     // },
+                    writeL:false,
                     in:'',
                     cities:[],
                     propsource:{
@@ -231,6 +232,7 @@
                     } 
                     this.in='';                         
                     this.$refs['form'].resetFields();
+                    this.writeL = false;
                 },
                 onSubmit(form){
                     // console.log(this.form.requires.replace(/\n/g,'<br/>'));  
@@ -242,37 +244,38 @@
                             
                     if(this.in!=''){
                         para.id = this.in;
+                        this.writeL = true;
                         positionsAdd(para,token).then(res=>{
                         if(res.code==0){
                             this.$message.success('修改成功');
                             this.dialogFormVisible = false;
                             this.fetchData();
+                        this.writeL = false;                            
                         }else{
-                            this.$message.error(res.data)
+                            this.$message.error(res.data);
+                            this.writeL = false; 
                         }
                         // console.log(res)
     
                     })
                     }else{
+                        this.writeL = true;                        
                         positionsAdd(para,token).then(res=>{
                         if(res.code==0){
                             this.$message.success('添加成功')
                             this.dialogFormVisible = false;
                             this.fetchData();
+                            this.writeL = false; 
                         }else{
                             this.$message.error(res.data);
-                            
+                            this.writeL = false; 
                         }
-                        // console.log(res)
-    
                     })
-                    }       
-                    
+                    }
                         }else{
                             this.$message.info('还有项目未填写')
                         }
                     })
-                    
                 },
                 createActivity() {
                     this.in = '';
@@ -287,7 +290,7 @@
                 //     }
                 // },
                 handleCurrentChange: function (val) { //换页
-                    this.currentPage = val;
+                    this.currentPage = val;this.backToTop();
                     this.fetchData();
                 },
                 fetchData() {

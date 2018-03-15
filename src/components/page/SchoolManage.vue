@@ -411,7 +411,7 @@ export default {
 
             },
             handleCurrentChange: function(val) { //变更页数
-                this.currentPage = val;
+                this.currentPage = val;this.backToTop();
                 this.fetchData();
             },
         },

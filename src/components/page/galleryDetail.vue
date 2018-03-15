@@ -4,7 +4,7 @@
                     <div class="crumbs">
                             <el-breadcrumb separator="/">
                                 <el-breadcrumb-item>
-                                    <i class="el-icon-my-tongxunlu"></i> 学员中心</el-breadcrumb-item>
+                                    <i class="icon-tongxunlu iconfont"></i> 学员中心</el-breadcrumb-item>
                                 <el-breadcrumb-item to='/galleryManage'>画廊管理</el-breadcrumb-item>
                                 <el-breadcrumb-item class='ss'>{{student.child_name}}</el-breadcrumb-item>
                             </el-breadcrumb>
@@ -152,7 +152,7 @@
                         this.fetchData()
                     },
                     handleCurrentChange: function (val) {
-                        this.currentPage = val;
+                        this.currentPage = val;this.backToTop();
                         this.fetchData();
                     },
                     fetchData() {

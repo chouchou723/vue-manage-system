@@ -74,7 +74,9 @@
                 };
                 //点击地图，获取经纬度坐标
             map.addEventListener("click",function(e){
-                document.getElementById("aa").innerHTML = e.ab.point.lng+" , "+e.ab.point.lat;
+                if(e.ab){
+                    document.getElementById("aa").innerHTML = e.ab.point.lng+" , "+e.ab.point.lat;
+                }
                 // console.log(e)
                 
             });

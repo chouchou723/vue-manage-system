@@ -50,7 +50,7 @@
                                            订单量
                                             </h3>
                                             <div class='purchaseMangeS'>
-                                                    <el-date-picker v-model="value2" type="year" :clearable='no' placeholder="年份选择" @change="updateList1" :picker-options="pickerOptions0">
+                                                    <el-date-picker v-model="value2" type="year" :editable="no" :clearable="no" placeholder="年份选择" @change="updateList1" :picker-options="pickerOptions0">
                                                         </el-date-picker>
                                             </div>
                                             <div class='purchaseMangeS'>
@@ -183,7 +183,7 @@
     
                 },
                 handleCurrentChange: function(val) { //变更页数
-                    this.currentPage = val;
+                    this.currentPage = val;this.backToTop();
                     let para = {
                         page: this.currentPage,
                         level:this.value1

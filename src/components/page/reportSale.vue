@@ -6,62 +6,39 @@
             </el-breadcrumb>
         </div> -->
         <!-- 工作量统计 -->
-        <div style="width: 100%;float:left;background: white;position:relative;height:auto;border-radius:5px;margin-bottom:10px;">
-            <div class="newResourceAn" style="position:relative;padding-top:10px;height:45px;border-bottom:1px solid gainsboro;background:#fafafa">
-                <div style='margin-left:10px;width:100px;float:right;margin-right:5px' v-if='code.includes("_m")'>
+        <div class="rcc1">
+            <div  class="rcc2">
+                <div class="rcc3" v-if='code.includes("_m")'>
                     <el-select class='circleSelect' v-model="valueCM1" size='small'  :placeholder="code.includes('cc')?'选择CC':code.includes('tmk')?'选择TMK':'选择老师'" @change="updateListCM(4)">
                         <el-option v-for="item in ccs" :key="item.aid" :label="item.uname" :value="item.aid">
                         </el-option>
                     </el-select>
                 </div>
-                <div style='margin-left:10px;width:100px;float:right;margin-right:5px' v-if='code.includes("_c")'>
+                <div class="rcc3" v-if='code.includes("_c")'>
                     <el-select class='circleSelect' v-model="valueCM5" size='small'  placeholder="选择校区" @change="updateListCM(4)">
                         <el-option v-for="item in schoolList" :key="item.id" :label="item.title" :value="item.id">
                         </el-option>
                     </el-select>
                 </div>
                 <div style='float:left;'>
-                    <h4 style='margin-bottom:20px;padding-top:5px;padding-left:10px'>
+                    <h4 class="rcc4">
                         <span v-if='code.includes("cc")'>工作量</span>
                         <span v-if='code.includes("tmk")'>资源发展</span>
                     </h4>
                 </div>
-                <div style='margin-left:10px;width:110px;float:left'>
+                <div class="rcc5">
                     <el-select v-model="valueCM6" size='small'  placeholder="最近一周" @change="updateListCM(1)">
                             <el-option label="最近一周" value="lastweek"></el-option>
                             <el-option label="最近一个月" value="lastmonth"></el-option>
                     </el-select>
                 </div>
-                <!-- <div class='drop' style='float:left;width:111px;margin-top:4px;margin-left:4px'>
-                    <el-dropdown @command="handleCommandCM">
-                        <span class="el-dropdown-link">
-        [{{titleCM}}<i class="el-icon-caret-bottom el-icon--right"></i>]
-      </span>
-                        <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item command="最近一周">最近一周</el-dropdown-item>
-                            <el-dropdown-item command="最近一个月">最近一个月</el-dropdown-item>
-                        </el-dropdown-menu>
-                    </el-dropdown>
-                </div> -->
-                <!-- <div style='margin-left:10px;width:140px;float:left'>
-                        <el-select v-model="value6" size='small' clearable placeholder="选择校区" @change="updateList4">
-                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
-                            </el-option>
-                        </el-select>
-                    </div>
-                    <div style='width:140px;float:left;margin-left:10px'>
-                        <el-select v-model="value7" size='small' clearable placeholder="渠道来源" @change="updateList4">
-                            <el-option v-for="item in options1" :key="item.id" :label="item.names" :value="item.id">
-                            </el-option>
-                        </el-select>
-                    </div> -->
-                <div style='width:140px;float:left;margin-left:10px' v-if='code.includes("teach")'>
+                <div class="rcc6" v-if='code.includes("teach")'>
                     <el-select v-model="valueCM4" size='small' clearable placeholder="课程选择" @change="updateListCM(4)"  >
                         <el-option v-for="item in options1" :key="item.id" :label="item.names" :value="item.id">
                         </el-option>
                     </el-select>
                 </div>
-                <div style='width:75px;float:left;margin-left:10px' >
+                <div class="rcc7" >
                         <el-select v-model="valueCM3" size='small' placeholder="切换日周月" style='width:75px' @change="updateListCM(3)">
                                 <el-option label="按日" value="day"></el-option>
                                 <el-option label="按周" value="week"></el-option>
@@ -69,51 +46,41 @@
                         </el-select>
                     </div>
                 <div class='dateReportS' style='float:left;'>
-                   
                     <el-date-picker v-model="valueCM2" type="daterange" size='small' :picker-options="pickerOptions1" :clearable='backface' placeholder="选择日期范围" @change="updateListCM(2)">
                     </el-date-picker>
                 </div>
             </div>
-            <div style="width:90%;position:absolute;top:62px;left:30px;z-index:100;font-size:12px">
-                <span style="display:inline-block;vertical-align: middle;"><img src="../../../static/img/info.png" width='20'alt=""></span>
-                <span style="color:grey;line-height:20px;">根据发展客户的次数绘制</span>
+            <div class="rcc8">
+                <span class="rcc9"><img src="../../../static/img/info.png" width='20'alt=""></span>
+                <span class="rcc10">根据发展客户的次数绘制</span>
             </div>
-            <div style="position:absolute;top:62px;right:10px;z-index:100;font-size:12px;">
+            <div class="rcc11">
                 <span class='canD' @click='getDownload'> <img src="../../../static/img/output.png" width='35'alt=""></span>
             </div>
             <IEcharts :option="line" style='height:400px;width:60%;position:absolute;left:0;margin-bottom:10px;'></IEcharts>
-            <div style="float:right;width:39%">
-                <div style='height:400px;width:100%;float:left;position:relative;margin-bottom:10px;'>
+            <div class="rcc12">
+                <div class="rcc13">
                     <IEcharts :option="funnel" style="height:400px;width:100%">
                     </IEcharts>
-                    <div style="position:absolute;bottom:-20px;left:0;width:80%;height:66px;font-size:22px;text-align:center;display:flex;justify-content:center">
+                    <div class="rcc14">
                         <div style="flex:auto">
                             <div>{{funnelR.invitationRatio}}</div>
-                            <div style="color:grey">邀约率</div>
+                            <div class="rcc16">邀约率</div>
                         </div>
-                        <div style="flex:auto;border-left: 1px solid gainsboro;border-right: 1px solid gainsboro;">
+                        <div class="rcc15">
                             <div>{{funnelR.visitRatio}}</div>
-                            <div style="color:grey">到访率</div>
+                            <div class="rcc16">到访率</div>
                         </div>
                         <div style="flex:auto">
                             <div>{{funnelR.addOrderRatio}}</div>
-                            <div style="color:grey">签单率</div>
+                            <div class="rcc16">签单率</div>
                         </div>
-
                     </div>
-
                 </div>
-                <!-- <div style='height:400px;width:50%;float:left;display:flex;justify-content: center;align-items: center;flex-direction: column;'>
-                            <div style='width: 100%;display: flex;justify-content: space-around;align-items: baseline;padding:5px' v-for='item in frozenlist'>
-                                <span style="color:#20a0ff">{{item.title}}</span>
-                                <span>{{item.num}}</span>
-                                <span>{{item.rate}}</span>
-                            </div>
-                        </div> -->
             </div>
             <div style="clear:both"></div>
-            <div id="tableSale2" style='width: 90%;margin:30px auto 0 '>
-                    <el-table :data="resourceData" border  style="width: 100%" :show-summary='currentPage2==1'  :summary-method='allTotal'>
+            <div id="tableSale2" class="rcc17">
+                    <el-table :data="resourceData" border :show-summary='currentPage2==1'  :summary-method='allTotal'>
                         <el-table-column prop="day" label="日期">
                         </el-table-column>
                         <el-table-column prop="newResources" label="客户认领量">
@@ -152,219 +119,94 @@
                         </el-pagination>
                     </div>
                 </div>
-            <!-- <div style="float:left;width:32%" v-if='code.includes("cc")'>
-                <div style='height:600px;width:100%;float:left;position:relative'>
-                    <IEcharts :option="pie_radius" >
-                    </IEcharts>
-                    <div style="position:absolute;top:0;bottom:5%;left:0;right:0;margin:auto;width:90px;height:95px;font-size:35px;color:#20a0ff;text-align:center">
-                        <div>合同</div>
-                        <div>类型</div>
-                    </div>
-
-                </div>
-            </div>
-            <div style="float:left;width:32%" v-if='code.includes("cc")'>
-                <div style='height:600px;width:100%;float:left;position:relative'>
-                    <IEcharts :option="pie_radius2" >
-                    </IEcharts>
-                    <div style="position:absolute;top:0;bottom:5%;left:0;right:0;margin:auto;width:90px;height:95px;font-size:35px;color:#13CE66;text-align:center">
-                        <div>课程</div>
-                        <div>类型</div>
-                    </div>
-
-                </div>
-            </div>
-            <div style="float:left;width:36%" v-if='code.includes("cc")'>
-
-                <div style='height:600px;width:100%;float:left;display:flex;justify-content: center;align-items: center;flex-direction: column;'>
-                    <div style='width: 100%;display: flex;justify-content: space-around;align-items: baseline;padding:5px;text-align:center;'>
-                        <span style='flex:0 0 160px;text-align:left'>课程名称</span>
-                        <span style='flex:0 0 80px'>签单人头数</span>
-                        <span style='flex:0 0 80px'>所占比率</span>
-                    </div>
-                    <div style='width: 100%;display: flex;justify-content: space-around;align-items: baseline;padding:5px;text-align:center;' v-for='item in frozenlist' v-if='frozenlist.length!=0'>
-                            <span style='flex:0 0 160px;color:#4e5f70;text-align:left;white-space: nowrap;'> <span style="color:#26987b;font-size:20px;margin-right:5px;">●</span>{{item.name}}</span>
-                            <span style='flex:0 0 80px;color:#4e5f70'>{{item.person}}</span>
-                            <span style='flex:0 0 80px;color:#4e5f70'>{{item.rate}}%</span>
-                        </div>
-                        <div style='width: 100%;display: flex;justify-content: space-around;align-items: baseline;padding:5px;text-align:center;' v-if='frozenlist.length==0'>
-                            <span style='flex:0 0 80px;color:#4e5f70'>暂无数据</span>
-                        </div>
-                </div>
-            </div> -->
-            
-
         </div>
         <!-- 销售报表 -->
-        <div style="width: 100%;float:left;background: white;position:relative;height:auto;border-radius:5px" v-if='code.includes("cc")'>
-                <div class="newResourceAn" style="position:relative;padding-top:10px;height:45px;border-bottom:1px solid gainsboro;background:#fafafa">
-                    <div style='margin-left:10px;width:100px;float:right;margin-right:5px' v-if='code.includes("_m")'>
+        <div class="rcc18" v-if='code.includes("cc")'>
+                <div  class="rcc2">
+                    <div class="rcc3" v-if='code.includes("_m")'>
                         <el-select class='circleSelect' v-model="valueSS1" size='small'  :placeholder="code.includes('cc')?'选择CC':code.includes('tmk')?'选择TMK':'选择老师'" @change="updateListSS(4)">
                             <el-option v-for="item in ccs" :key="item.aid" :label="item.uname" :value="item.aid">
                             </el-option>
                         </el-select>
                     </div>
-                    <div style='margin-left:10px;width:100px;float:right;margin-right:5px' v-if='code.includes("_c")'>
+                    <div class="rcc3" v-if='code.includes("_c")'>
                         <el-select class='circleSelect' v-model="valueSS5" size='small'  placeholder="选择校区" @change="updateListSS(4)">
                             <el-option v-for="item in schoolList" :key="item.id" :label="item.title" :value="item.id">
                             </el-option>
                         </el-select>
                     </div>
                     <div style='float:left;'>
-                        <h4 style='margin-bottom:20px;padding-top:5px;padding-left:10px'>
+                        <h4 class="rcc4">
                             <span >销售报表</span>
                         </h4>
                     </div>
-                    <div style='margin-left:10px;width:110px;float:left'>
+                    <div class="rcc5">
                         <el-select v-model="valueSS6" size='small'  placeholder="最近一周" @change="updateListSS(1)">
                                 <el-option label="最近一周" value="lastweek"></el-option>
                                 <el-option label="最近一个月" value="lastmonth"></el-option>
                         </el-select>
                     </div>
-                    <!-- <div class='drop' style='float:left;width:111px;margin-top:4px;margin-left:4px'>
-                        <el-dropdown @command="handleCommandCM">
-                            <span class="el-dropdown-link">
-            [{{titleCM}}<i class="el-icon-caret-bottom el-icon--right"></i>]
-          </span>
-                            <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item command="最近一周">最近一周</el-dropdown-item>
-                                <el-dropdown-item command="最近一个月">最近一个月</el-dropdown-item>
-                            </el-dropdown-menu>
-                        </el-dropdown>
-                    </div> -->
-                    <!-- <div style='margin-left:10px;width:140px;float:left'>
-                            <el-select v-model="value6" size='small' clearable placeholder="选择校区" @change="updateList4">
-                                <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
-                                </el-option>
-                            </el-select>
-                        </div>
-                        <div style='width:140px;float:left;margin-left:10px'>
-                            <el-select v-model="value7" size='small' clearable placeholder="渠道来源" @change="updateList4">
-                                <el-option v-for="item in options1" :key="item.id" :label="item.names" :value="item.id">
-                                </el-option>
-                            </el-select>
-                        </div> -->
-                    <!-- <div style='width:140px;float:left;margin-left:10px' v-if='code.includes("teach")'>
-                        <el-select v-model="valueCM4" size='small' clearable placeholder="课程选择" @change="updateListCM(4)"  >
-                            <el-option v-for="item in options1" :key="item.id" :label="item.names" :value="item.id">
-                            </el-option>
-                        </el-select>
-                    </div> -->
-                    <!-- <div style='width:75px;float:left;margin-left:10px' >
-                            <el-select v-model="valueSS3" size='small' placeholder="切换日周月" style='width:75px' @change="updateListSS(3)">
-                                    <el-option label="按日" value="day"></el-option>
-                                    <el-option label="按周" value="week"></el-option>
-                                    <el-option label="按月" value="month"></el-option>
-                            </el-select>
-                        </div> -->
                     <div class='dateReportS' style='float:left;margin-left:10px'>
-                       
                         <el-date-picker v-model="valueSS2" type="daterange" size='small' :picker-options="pickerOptions1" :clearable='backface' placeholder="选择日期范围" @change="updateListSS(2)">
                         </el-date-picker>
                     </div>
                 </div>
-                <div style="width:90%;position:absolute;top:62px;left:30px;z-index:100;font-size:12px">
-                    <span style="display:inline-block;vertical-align: middle;"><img src="../../../static/img/info.png" width='20'alt=""></span>
-                    <span style="color:grey;line-height:20px;">根据发展客户的次数绘制</span>
+                <div class="rcc8">
+                    <span class="rcc9"><img src="../../../static/img/info.png" width='20'alt=""></span>
+                    <span class="rcc10">根据发展客户的次数绘制</span>
                 </div>
-                <!-- <div style="position:absolute;top:62px;right:10px;z-index:100;font-size:12px;">
+                <!-- <div class="rcc11">
                     <span class='canD' @click='getDownload1'> <a :href="downloadA1"><img src="../../../static/img/output.png" width='35'alt="">
                        </a></span>
                 </div> -->
                 <div style="display:flex">
-
                     <div style="width:31%" >
-                        <div style='height:600px;width:100%;float:left;position:relative'>
+                        <div class="rcc19">
                             <IEcharts :option="pie_radius" >
                             </IEcharts>
-                            <div style="position:absolute;top:0;bottom:5.2%;left:0;right:0;margin:auto;width:90px;height:95px;font-size:35px;color:#20a0ff;text-align:center">
+                            <div class="rcc20">
                                 <div>合同</div>
                                 <div>类型</div>
                             </div>
-        
                         </div>
                     </div>
                     <div style="width:31%" >
-                        <div style='height:600px;width:100%;float:left;position:relative'>
+                        <div class="rcc19">
                             <IEcharts :option="pie_radius2" >
                             </IEcharts>
-                            <div style="position:absolute;top:0;bottom:5.2%;left:0;right:0;margin:auto;width:90px;height:95px;font-size:35px;color:#13CE66;text-align:center">
+                            <div class="rcc21">
                                 <div>课程</div>
                                 <div>类型</div>
                             </div>
-        
                         </div>
                     </div>
                     <div style="width:36%" >
-        
-                        <div style='height:600px;width:100%;float:left;display:flex;justify-content: center;align-items: center;flex-direction: column;flex-wrap:wrap'>
-                            <div style='width: 100%;display: flex;justify-content: space-around;align-items: baseline;padding:5px;text-align:center;'>
+                        <div class="rcc22">
+                            <div class="rcc23">
                                 <span style='flex:0 0 160px;text-align:left'>课程名称</span>
                                 <span style='flex:0 0 80px'>签单人头数</span>
                                 <span style='flex:0 0 80px'>所占比率</span>
                             </div>
-                            <div style='width: 100%;display: flex;justify-content: space-around;align-items: baseline;padding:5px;text-align:center;' v-for='item in frozenlist' v-if='frozenlist.length!=0'>
-                                    <span style='flex:0 0 160px;color:#4e5f70;text-align:left;white-space: nowrap;overflow:hidden'> <span style="color:#26987b;font-size:20px;margin-right:5px;">●</span>{{item.name}}</span>
+                            <div class="rcc23" v-for='item in frozenlist' v-if='frozenlist.length!=0'>
+                                    <span class="rcc25"> <span class="rcc26">●</span>{{item.name}}</span>
                                     <span style='flex:0 0 80px;color:#4e5f70'>{{item.person}}</span>
                                     <span style='flex:0 0 80px;color:#4e5f70'>{{item.rate}}%</span>
                                 </div>
-                                <div style='width: 100%;display: flex;justify-content: space-around;align-items: baseline;padding:5px;text-align:center;' v-if='frozenlist.length==0'>
+                                <div class="rcc23" v-if='frozenlist.length==0'>
                                     <span style='flex:0 0 80px;color:#4e5f70;padding-left: 65px;'>暂无数据</span>
                                 </div>
-                            <!-- <div style='overflow:hidden;width:100%;height:60%;'>
-        
-                                <div style='height:100%;overflow-x:hidden;overflow-y:auto;width:104.3%;text-align:center'>
-                <div style='width: 100%;display: flex;justify-content: space-around;align-items: baseline;padding:5px' v-for='item in frozenlist'>
-                    <span style='flex:0 0 80px'> <span style="color:#48d4ab;">●</span>{{item.title}}</span>
-                    <span style='flex:0 0 80px'>{{item.num}}</span>
-                    <span style='flex:0 0 80px'>{{item.rate}}</span>
-                </div>
-            </div>
-                            </div> -->
                         </div>
                     </div>
                 </div>
-                
-    
             </div>
         <!-- 课耗排行榜 -->
-        <div style="width: 100%;float:left;background: white;margin-top:10px;height:auto;border-radius:5px;position:relative">
-            <div class="newResourceAn" style="position:relative;padding-top:10px;height:45px;border-bottom:1px solid gainsboro;background:#fafafa">
-
+        <div class="rcc24">
+            <div  class="rcc2">
                 <div style='float:left;'>
-                    <h4 style='margin-bottom:20px;padding-top:5px;padding-left:10px'>
+                    <h4 class="rcc4">
                         业绩排行榜
                     </h4>
                 </div>
-                <!-- <div class='drop' style='float:left;width:111px;margin-top:4px;margin-left:4px'>
-                            <el-dropdown @command="handleCommandCM">
-                                <span class="el-dropdown-link">
-            [{{titleSA}}<i class="el-icon-caret-bottom el-icon--right"></i>]
-          </span>
-                                <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item command="最近一周">最近一周</el-dropdown-item>
-                                    <el-dropdown-item command="最近一个月">最近一个月</el-dropdown-item>
-                                </el-dropdown-menu>
-                            </el-dropdown>
-                        </div> -->
-                <!-- <div style='margin-left:10px;width:140px;float:left'>
-                            <el-select v-model="value6" size='small' clearable placeholder="选择校区" @change="updateList4">
-                                <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
-                                </el-option>
-                            </el-select>
-                        </div>
-                        <div style='width:140px;float:left;margin-left:10px'>
-                            <el-select v-model="value7" size='small' clearable placeholder="渠道来源" @change="updateList4">
-                                <el-option v-for="item in options1" :key="item.id" :label="item.names" :value="item.id">
-                                </el-option>
-                            </el-select>
-                        </div> -->
-                <!-- <div style='width:140px;float:left;margin-left:10px'>
-                                <el-select v-model="valueCM4" size='small' clearable placeholder="课程选择" @change="updateList4">
-                                    <el-option v-for="item in options1" :key="item.id" :label="item.names" :value="item.id">
-                                    </el-option>
-                                </el-select>
-                            </div>  -->
                 <div style='float:left;margin-left:10px'>
                     <el-select v-model="valueSA1" size='small'  placeholder="切换日周月" style='width:115px' @change="updateListSA(1)">
                         <el-option label="本日" value="day"></el-option>
@@ -377,36 +219,25 @@
                         <el-date-picker v-model="valueSA2" type="month" size='small' :picker-options="pickerOptions1" :clearable='backface' placeholder="选择月份" @change="updateListSA(2)" style='width:100px'>
                         </el-date-picker>
                     </div>
-                <!-- <div style='width:100px;float:right;margin-right:10px'>
-                                <el-select v-model="valueSA4" size='small' clearable placeholder="选择老师" @change="updateList4">
-                                    <el-option v-for="item in options1" :key="item.id" :label="item.names" :value="item.id">
-                                    </el-option>
-                                </el-select>
-                            </div>  -->
             </div>
-            <div style="width:90%;font-size:12px;height:50px;margin:10px auto">
-                <span style="display:inline-block;vertical-align: middle;"><img src="../../../static/img/info.png" width='20'alt=""></span>
-                <span style="color:grey;line-height:20px;" v-if='code.includes("cc")'>根据签单人头数排列</span>
-                <span style="color:grey;line-height:20px;" v-if='code.includes("tmk")'>根据到访人数排列</span>
-                <div style="margin-top:10px" v-if='!code.includes("_c")'> <span style="display:inline-block;vertical-align: middle;"><img src="../../../static/img/rank.png" width='20'alt=""></span>
-                    <span style="color:grey;line-height:20px;">我的排名:第{{myRank}}名</span></div>
+            <div class="rcc27">
+                <span class="rcc9"><img src="../../../static/img/info.png" width='20'alt=""></span>
+                <span class="rcc10" v-if='code.includes("cc")'>根据签单人头数排列</span>
+                <span class="rcc10" v-if='code.includes("tmk")'>根据到访人数排列</span>
+                <div style="margin-top:10px" v-if='!code.includes("_c")'> <span class="rcc9"><img src="../../../static/img/rank.png" width='20'alt=""></span>
+                    <span class="rcc10">我的排名:第{{myRank}}名</span></div>
             </div>
-            <div style="position:absolute;top:62px;right:10px;z-index:100;font-size:12px;">
+            <div class="rcc11">
                 <span class='canD' @click='getDownload2'><img src="../../../static/img/output.png" width='35'alt="">
                    </span>
             </div>
-            <div id="tableRSale" style="width:96%;margin:0 auto;position:relative">
+            <div id="tableRSale" class="rcc28">
                 <el-radio-group v-model="radio3" @change='updateListSA(3)' style="position:absolute;top:-55px;left:45%" v-if="code.includes('_c')">
                     <el-radio-button label='teach'>按CC</el-radio-button>
                     <el-radio-button label='school'>按校区</el-radio-button>
                 </el-radio-group>
                 <div style='display:flex;width:100%'>
-
-                    <!-- <el-table :data="code.includes('cc')?titleData2:code.includes('tmk')?titleData3:titleData" border style="width: 10%;" :show-header='backface'>
-                        <el-table-column prop="title" label="日期">
-                        </el-table-column>
-                    </el-table> -->
-                    <el-table :data="SAData1" border y style="width: 100%;" :show-header='backface' >
+                    <el-table :data="SAData1" border  :show-header='backface' >
                             <el-table-column prop="title" >
                                 </el-table-column>
                         <el-table-column prop="val1" >
@@ -465,9 +296,7 @@
                             <el-pagination layout="prev, pager, next" :total="total" :current-page="currentPage" :page-size="pagesize" @current-change="handleCurrentChange">
                             </el-pagination>
                         </div>
-                <!-- <div style="clear:both"></div> -->
             </div>
-
         </div>
 
     </div>
@@ -1132,7 +961,7 @@
                     this.getSAData();                    
                 }
             },
-            getSAData() {
+            getSAData() {//排名
                 let para = {
                     view:this.radio3,
                     column:this.valueSA1,
@@ -1461,10 +1290,6 @@
         color: rgb(31, 181, 173);
     }
 
-    .newResourceAn .drop .el-dropdown {
-        color: rgb(31, 181, 173);
-    }
-
     .backfa {
         transform: rotateY(180deg);
         backface-visibility: hidden;
@@ -1479,5 +1304,89 @@
 }
 .canD:hover{
     cursor: pointer
+}
+.rcc1{
+    width: 100%;float:left;background: white;position:relative;height:auto;border-radius:5px;margin-bottom:10px;
+}
+.rcc2{
+    position:relative;padding-top:10px;height:45px;border-bottom:1px solid gainsboro;background:#fafafa
+}
+.rcc3{
+    margin-left:10px;width:100px;float:right;margin-right:5px
+}
+.rcc4{
+    margin-bottom:20px;padding-top:5px;padding-left:10px
+}
+.rcc5{
+    margin-left:10px;width:110px;float:left
+}
+.rcc6{
+    margin-left:10px;width:110px;float:left
+}
+.rcc7{
+    width:75px;float:left;margin-left:10px
+}
+.rcc8{
+    width:90%;position:absolute;top:62px;left:30px;z-index:100;font-size:12px
+}
+.rcc9{
+    display:inline-block;vertical-align: middle;
+}
+.rcc10{
+    color:grey;line-height:20px;
+}
+.rcc11{
+    position:absolute;top:62px;right:10px;z-index:100;font-size:12px;
+}
+.rcc12{
+    float:right;width:39%
+}
+.rcc13{
+    height:400px;width:100%;float:left;position:relative;margin-bottom:10px;
+}
+.rcc14{
+    position:absolute;bottom:-20px;left:0;width:80%;height:66px;font-size:22px;text-align:center;display:flex;justify-content:center
+}
+.rcc15{
+    flex:auto;border-left: 1px solid gainsboro;border-right: 1px solid gainsboro;
+}
+.rcc16{
+    color:grey
+}
+.rcc17{
+    width: 90%;margin:30px auto 0
+}
+.rcc18{
+    width: 100%;float:left;background: white;position:relative;height:auto;border-radius:5px
+}
+.rcc19{
+    height:600px;width:100%;float:left;position:relative
+}
+.rcc20{
+    position:absolute;top:0;bottom:5.2%;left:0;right:0;margin:auto;width:90px;height:95px;font-size:35px;color:#20a0ff;text-align:center
+}
+.rcc21{
+    position:absolute;top:0;bottom:5.2%;left:0;right:0;margin:auto;width:90px;height:95px;font-size:35px;color:#13CE66;text-align:center
+}
+.rcc22{
+    height:600px;width:100%;float:left;display:flex;justify-content: center;align-items: center;flex-direction: column;flex-wrap:wrap
+}
+.rcc23{
+    width: 100%;display: flex;justify-content: space-around;align-items: baseline;padding:5px;text-align:center;
+}
+.rcc24{
+    width: 100%;float:left;background: white;margin-top:10px;height:auto;border-radius:5px;position:relative
+}
+.rcc25{
+    flex:0 0 160px;color:#4e5f70;text-align:left;white-space: nowrap;overflow:hidden
+}
+.rcc26{
+    color:#26987b;font-size:20px;margin-right:5px;
+}
+.rcc27{
+    width:90%;font-size:12px;height:50px;margin:10px auto
+}
+.rcc28{
+    width:96%;margin:0 auto;position:relative
 }
 </style>

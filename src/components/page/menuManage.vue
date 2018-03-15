@@ -46,7 +46,7 @@
   <el-form-item label="菜单图标" prop='icon' v-if='dynamicValidateForm.level==="0"'>
     <el-select v-model="dynamicValidateForm.icon" placeholder="请选择图标" class="MM180"   popper-class='menuIcon'>
     
-      <el-option :class='item.value' v-for="(item,index) in cssClass" :label="index+1" :value='item.value' ></el-option>
+      <el-option :class='[item.value,"iconfont"]'  style='font-size:20px' v-for="(item,index) in cssClass" :label="index+1" :value='item.value' ></el-option>
       <!-- <el-option label="" value="el-icon-my-shouye"><i class="el-icon-my-shouye"></i></el-option> -->
     </el-select>
   </el-form-item>
@@ -301,26 +301,26 @@ import { rangeList,create_menuList,put_menuList,delete_menuList,get_level,detail
     },
     computed:{
        cssClass(){
-        let a = ['el-icon-my-shouye','el-icon-my-shezhi','el-icon-my-shoujianxiang',
-                'el-icon-my-xiaoxi','el-icon-my-wendang','el-icon-my-shangchu','el-icon-my-sousuo',
-                'el-icon-my-xieyoujian','el-icon-my-jichubangong','el-icon-my-jihua','el-icon-my-hetongguanli',
-                'el-icon-my-shengpi','el-icon-my-daiban','el-icon-my-tongzhi','el-icon-my-baobiaoguanli',
-                'el-icon-my-yewuzhongxin','el-icon-my-guanliyuancaozuo','el-icon-my-xitongguanli',
-                'el-icon-my-caidan','el-icon-my-xiugai',
-               'el-icon-my-tongxunlu','el-icon-my-guanliyuan','el-icon-my-yonhu',
-                'el-icon-my-tongjifenxi','el-icon-my-gerenxinxi','el-icon-my-tongzhigonggao','el-icon-my-zhuanxierizhi',
-                'el-icon-my-rizhi','el-icon-my-chayuerizhi','el-icon-my-chengyuanguanli','el-icon-my-wodericheng',
-                'el-icon-my-richenganpai','el-icon-my-richeng','el-icon-my-chayuericheng','el-icon-my-huiyijiyao',
-                'el-icon-my-qita','el-icon-my-yibanrenwu','el-icon-my-daibanrenwu','el-icon-my-cailiaopinpai',
-                'el-icon-my-chengyuanyingyonchakanqi','el-icon-my-chuchai','el-icon-my-yonhuxinxipingtai',
-                'el-icon-my-xitonggongju','el-icon-my-zaixianyonhu','el-icon-my-xuexiyuandi','el-icon-my-gongsilei',
-                'el-icon-my-zidian','el-icon-my-weituoguanxiguanli','el-icon-my-kuaijieyingyon','el-icon-my-yoncheguanli',
-                'el-icon-my-kaoqinliuchengtongji','el-icon-my-yingyonchengxumuban','el-icon-my-jiaban','el-icon-my-weizhi',
-                'el-icon-my-tongyi','el-icon-my-jujue','el-icon-my-xingzhengbangongguanli',
-                'el-icon-my-dayinchulijian','el-icon-my-zidianxinxipingtai','el-icon-my-gongwen','el-icon-my-xiangmu',
-                'el-icon-my-cailiaochangjia','el-icon-my-mima','el-icon-my-wodejihua',
-                'el-icon-my-huiyijiyao1','el-icon-my-ziyuanxinxipingtai','el-icon-my-liuchengchaoqitongji','el-icon-my-zhiduliucheng',
-                'el-icon-my-moban','el-icon-my-moban1']
+        let a = ['icon-shouye','icon-shezhi','icon-shoujianxiang',
+                'icon-xiaoxi','icon-wendang','icon-shangchu','icon-sousuo',
+                'icon-xieyoujian','icon-jichubangong','icon-jihua','icon-hetongguanli',
+                'icon-shengpi','icon-daiban','icon-tongzhi','icon-baobiaoguanli',
+                'icon-yewuzhongxin','icon-guanliyuancaozuo','icon-xitongguanli',
+                'icon-caidan','icon-xiugai',
+               'icon-tongxunlu','icon-guanliyuan','icon-yonhu',
+                'icon-tongjifenxi','icon-gerenxinxi','icon-tongzhigonggao','icon-zhuanxierizhi',
+                'icon-rizhi','icon-chayuerizhi','icon-chengyuanguanli','icon-wodericheng',
+                'icon-richenganpai','icon-richeng','icon-chayuericheng','icon-huiyijiyao',
+                'icon-qita','icon-yibanrenwu','icon-daibanrenwu','icon-cailiaopinpai',
+                'icon-chengyuanyingyonchakanqi','icon-chuchai','icon-yonhuxinxipingtai',
+                'icon-xitonggongju','icon-zaixianyonhu','icon-xuexiyuandi','icon-gongsilei',
+                'icon-zidian','icon-weituoguanxiguanli','icon-kuaijieyingyon','icon-yoncheguanli',
+                'icon-kaoqinliuchengtongji','icon-yingyonchengxumuban','icon-jiaban','icon-weizhi',
+                'icon-tongyi','icon-jujue','icon-xingzhengbangongguanli',
+                'icon-dayinchulijian','icon-zidianxinxipingtai','icon-gongwen','icon-xiangmu',
+                'icon-cailiaochangjia','icon-mima','icon-wodejihua',
+                'icon-huiyijiyao1','icon-ziyuanxinxipingtai','icon-liuchengchaoqitongji','icon-zhiduliucheng',
+                'icon-moban','icon-moban1','icon-fapiao']
        return   a.map(item=>{
           return {value:item}
         })

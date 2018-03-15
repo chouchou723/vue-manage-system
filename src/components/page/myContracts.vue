@@ -115,9 +115,9 @@
                                 <div v-for='(item,index) in scope.row.tuition_money' :class="index != (scope.row.title.length-1)?'MC12':'MC13'">{{item}}</div>
                             </template>
                         </el-table-column>
-                        <el-table-column prop="unit_price" label="教材费" width='60'>
+                        <el-table-column prop="teaching_money" label="教材费" width='60'>
                             <template scope="scope">
-                                <div v-for='(item,index) in scope.row.unit_price' :class="index != (scope.row.title.length-1)?'MC12':'MC13'">{{item}}</div>
+                                <div v-for='(item,index) in scope.row.teaching_money' :class="index != (scope.row.title.length-1)?'MC12':'MC13'">{{item}}</div>
                             </template>
                         </el-table-column>
                         <el-table-column prop="book_money" label="书本费" width='60'>
@@ -157,7 +157,7 @@
                         </el-table-column>
                         <el-table-column prop="panda_gohome" label="熊猫到家" width='65'>
                             <template scope="scope">
-                                <div>{{item.panda_gohome==1?'有':'无'}}</div>
+                                <div>{{item.panda_gohome==1?'12期':item.panda_gohome==2?'24期':'无'}}</div>
                             </template>
                         </el-table-column>
                         <el-table-column prop="expired" label="有效期" width='180'>
@@ -355,7 +355,7 @@
                 })
             },
             handleCurrentChange: function (val) {
-                this.currentPage = val;
+                this.currentPage = val;this.backToTop();
 
                 this.fetchData();
             }

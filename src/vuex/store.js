@@ -24,6 +24,9 @@ const state = {
     myTeachS:{},
     myActS:{},
     myGal:'',
+    myReview:'',
+    myMarket:'',
+    myF:'',
     
 }
 
@@ -58,6 +61,15 @@ const mutations = {
     },
     SENDMYGAL(state,data){
         state.myGal = data;
+    },
+    SENDMYREVIEW(state,data){
+        state.myReview = data;
+    },
+    SENDMYMARKET(state,data){
+        state.myMarket = data;
+    },
+    SENDMYF(state,data){
+        state.myF = data;
     },
     // INCREMENT(state) {
     //     state.count++

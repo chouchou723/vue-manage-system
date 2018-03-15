@@ -17,8 +17,8 @@ axios.interceptors.response.use(function (response) {
         }   
     return Promise.reject(error);
   });
-//   let base ='';
-let base = 'http://pandatest.dfth.com';
+let base ='';
+// let base = 'http://pandatest.dfth.com';
 // let base = 'http://panda.dfth.com';
 
 //登录页面
@@ -1241,6 +1241,170 @@ export const repairOrderList = (params,token) => {
 export const  editOrderList = (params, token) => {
     axios.defaults.headers.common['Authorization'] = token.Authorization;
     return axios.post(`${base}/api/v1/order/repairOrders`, params).then(res => res.data);
+};
+//发票列表
+export const invoiceList = (params,token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/invoice/invoiceList`, { params: params }).then(res => res.data);
+};
+//导出发票
+export const exportInvoice = (params,token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/invoice/exportInvoice`, { params: params }).then(res => res.data);
+};
+//教务签到记录列表
+export const getSignList = (params,token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/teacher/checkList`, { params: params }).then(res => res.data);
+};
+//教务签到记录详细
+export const checkListInfo = (params,token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/teacher/checkListInfo`, { params: params }).then(res => res.data);
+};
+//市场资源列表
+export const mksourceList = (params,token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/market/mksourceList`, { params: params }).then(res => res.data);
+};
+//市场渠道列表
+export const channelList = (token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/market/channelList`).then(res => res.data);
+};
+//市场添加渠道
+export const  addChannel = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/market/addChannel`, params).then(res => res.data);
+};
+//市场删除渠道
+export const  delChannel = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/market/delChannel`, params).then(res => res.data);
+};
+//市场活动列表
+export const GetactivityList = (params,token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/market/activityList`,{ params: params }).then(res => res.data);
+};
+//市场添加活动
+export const  activityAdd = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/market/activityAdd`, params).then(res => res.data);
+};
+//市场二维码列表
+export const  qrcodeList = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/market/qrcodeList`, params).then(res => res.data);
+};
+//市场二维码下载
+export const  qrcodeDownload = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/market/qrcodeDownload`, params).then(res => res.data);
+};
+//市场活动删除
+export const activityDel = (params,token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/market/activityDel`,{ params: params }).then(res => res.data);
+};
+//市场添加二维码
+export const qrcodeAdd = (params,token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/market/qrcodeAdd`,{ params: params }).then(res => res.data);
+};
+//财务合同审核列表
+export const getcheckorder = (params,token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/order/checkorder`,{ params: params }).then(res => res.data);
+};
+//财务合同审核操作
+export const  orderAudit = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/order/orderAudit`, params).then(res => res.data);
+};
+//财务导出签到
+export const  signinListExport = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/order/signinListExport`, { params: params }).then(res => res.data);
+};
+//财务导出销售
+export const  salesDetailExport = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/order/salesDetailExport`, { params: params }).then(res => res.data);
+};
+
+//tmk认领资源列表
+export const  marketClaim = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/cc/marketClaim`, { params: params }).then(res => res.data);
+};
+//tmk提交认领
+export const  marketClaimPost = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/cc/marketClaimPost`, params).then(res => res.data);
+};
+//tmk待定资源列表
+export const  tmkmyResource = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/cc/myResource`, { params: params }).then(res => res.data);
+};
+//tmk待定资源详细
+export const  marketUserInfo = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/cc/marketUserInfo`, { params: params }).then(res => res.data);
+};
+//tmk认领更新状态
+export const  setResourceType = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/cc/setResourceType`, params).then(res => res.data);
+};
+
+//市场报表
+export const  marketPic = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/market/marketPic`, { params: params }).then(res => res.data);
+};
+//市场报表表格
+export const  marketTable = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/market/marketTable`, { params: params }).then(res => res.data);
+};
+//市场资源详情
+export const  mksourceInfoe = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/market/mksourceInfo`, { params: params }).then(res => res.data);
+};
+//知言平台跳转
+export const  yifengke = (token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/public/yifengke`).then(res => res.data);
+};
+//熊猫到家导出产品
+export const  getProductShippingList = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/pandagohome/getProductShippingList`, { params: params }).then(res => res.data);
+};
+//冻结列表
+export const  freezeList = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/freeze/freezeList`, { params: params }).then(res => res.data);
+};
+
+//提前开课
+export const  editCourseStartTime = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/order/editCourseStartTime`, params).then(res => res.data);
+};
+//产品库详情
+export const  productInfo = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/pandagohome/productInfo`, { params: params }).then(res => res.data);
+};
+
+//产品库更新产品
+export const  iterationProduct = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/pandagohome/iterationProduct`, params).then(res => res.data);
 };
 // //code字段说明
 //     tmk_m:  tmk主管

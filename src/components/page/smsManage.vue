@@ -105,10 +105,9 @@
                     </el-table-column>
                     <el-table-column prop="status" label="发送状态" width='100'>
                         <template scope="scope">
-                            <div v-if="scope.row.succ>1">{{scope.row.succ}}条发送成功</div>
-                            <div v-if="scope.row.succ==1">发送成功</div>
+                            <div v-if="scope.row.succ>=1">发送成功({{scope.row.succ}})</div>
                             <div v-if="scope.row.faild==1" class='SMSAHover' @click='getFailList(scope.row.id)' style='color:#e95c5c'>发送失败   <span style='color:gainsboro'>></span></div>
-                            <div style='color:#e95c5c' v-if="scope.row.faild>1" class='SMSAHover' @click='getFailList(scope.row.id)'>{{scope.row.faild}}条发送失败  <span style='color:gainsboro'>></span></div>
+                            <div style='color:#e95c5c' v-if="scope.row.faild>1" class='SMSAHover' @click='getFailList(scope.row.id)'>发送失败({{scope.row.faild}})  <span style='color:gainsboro'>></span></div>
                             </template>
                     </el-table-column>
                     <el-table-column prop="message_type" label="消息类型"  width='100'>
@@ -159,7 +158,7 @@
                     
                 }
             }
-            var isPhone = (rule, value, callback) => {//签合同
+            var isPhone = (rule, value, callback) => {//手机号
                 // var myreg = /^(((1[0-9]{1}))+\d{9})$/;
                 var myreg = /^1[34578]\d{9}$/
                 if (value == '') {
@@ -333,7 +332,7 @@
                 }, 1);
                 },
                 handleCurrentChange: function (val) { //换页
-                    this.currentPage = val;
+                    this.currentPage = val;this.backToTop();
                     this.fetchData();
                 },
                 updateList() {

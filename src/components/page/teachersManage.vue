@@ -41,6 +41,9 @@
                                             </template>
                                 </el-table-column>
                                 <el-table-column prop="other" label="教育格言" >
+                                        <template scope="scope">
+                                                <div style="text-align:left">{{scope.row.other}}</div>
+                                            </template>
                                     </el-table-column>
                                     <el-table-column prop="code_num" label="认证编号" >
                                         </el-table-column>
@@ -116,7 +119,7 @@
                                         <el-input v-model="form.code" placeholder='请输入认证编号' style="width:172px"></el-input>
                                     </el-form-item>
                                     <el-form-item label="认证时间" prop='code_date' >
-                                            <el-date-picker v-model="form.code_date" format="yyyy-MM-dd" type="date" :clearable="no" :picker-options="pickerOptions0" placeholder="请选择认证时间" style="width:172px">
+                                            <el-date-picker v-model="form.code_date" format="yyyy-MM-dd" type="date" :clearable='no' :editable='no' :picker-options="pickerOptions0" placeholder="请选择认证时间" style="width:172px">
                                              </el-date-picker>
                                          
                                          </el-form-item>
@@ -156,7 +159,7 @@
                 </div>
             </el-form>
                     <div slot="footer" class="dialog-footer" style='text-align:center'>
-                        <el-button type="primary" @click="onSubmit('form')">确定</el-button>
+                        <el-button type="primary" :loading="loading2" @click="onSubmit('form')">确定</el-button>
                         <el-button @click="dialogFormVisible = false">取消</el-button>
                     </div>
         </el-dialog>
@@ -213,7 +216,7 @@
                     callback('请输入教育格言')
                 }else if (myreg1.test(value)) {
                     callback('请输入有效的教育格言')
-                } else if (!myreg.test(value)) {
+                } else if (value.length>50) {
                     callback('内容不得超过50字');
                 } else {
                     callback();
@@ -502,10 +505,15 @@
                         this.dialogFormVisible = false;
                         this.fetchData();
                     }else{
-                        this.$message.error(res.data)
+                        this.$message.error(res.data);
+                        this.loading2 = false;
+                        
                     }
                     // console.log(res)
 
+                }).catch(()=>{
+                    this.loading2 = false;
+                    
                 })
                 }else{
                     addTeacher(para,token).then(res=>{
@@ -543,8 +551,9 @@
             //     }
             // },
             handleCurrentChange: function (val) { //换页
-                this.currentPage = val;
+                this.currentPage = val;this.backToTop();
                 this.fetchData();
+                
             },
             fetchData() {
                 let para = {

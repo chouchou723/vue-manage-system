@@ -119,7 +119,7 @@ export default {
                 })
             },
             handleCurrentChange(val){
-                this.currentPage = val;
+                this.currentPage = val;this.backToTop();
                 this.showD(this.searchId);
             },
         open2(index, data) { //删除部门

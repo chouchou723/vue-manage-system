@@ -10,15 +10,17 @@ body{
 a{text-decoration: none}
 .content{
     background: none repeat scroll 0 0  #f3f3f3;
-    position: absolute;
-    left: 185px;
+    /* position: absolute;
+    left: 183px;
     right: 0;
     top: 48px;
-    bottom:0;
-    width: auto;
+    bottom:0; */
+    flex: auto;
     padding:17px;
     box-sizing: border-box;
     overflow-y: scroll;
+    height: 100%;
+    width: 100%;
     /*background-color: #f3f3f3;*/
 }
 .crumbs{
@@ -52,40 +54,23 @@ a{text-decoration: none}
     opacity: 0;
 }
 /*BaseForm*/
-.form-box{
+/* .form-box{
     width:600px;
 }
 .form-box .line{
     text-align: center;
-}
+} */
 /* .el-time-panel__content::after, .el-time-panel__content::before {
     margin-top: -7px;
 } */
 /*Readme*/
-.ms-doc .el-checkbox__input.is-disabled+.el-checkbox__label{
+/* .ms-doc .el-checkbox__input.is-disabled+.el-checkbox__label{
     color: #333;
     cursor: pointer;
-}
+} */
 /*Upload*/
-.pure-button{
-    width:90px;
-    height:40px;
-    line-height: 36px;
-    text-align: center;
-    color: #fff;
-    border-radius: 3px;
-    font-size: 14px;
-    margin-bottom: 10px;
-    margin-left: 10px
-
-}
-.g-core-image-corp-container .info-aside{
-    height:45px;
-}
 .el-upload--text {
     background-color: #fff;
-    /*border: 1px dashed #967171;*/
-    /*border-radius:50%;*/
     box-sizing: border-box;
     width: 260px;
     height: 512px;
@@ -97,20 +82,6 @@ a{text-decoration: none}
     margin-top: 50px;
     margin-left: -128px
 }
-.el-upload--text .el-icon-upload {
-    font-size: 67px;
-    color: #97a8be;
-    margin: 40px 0 16px;
-    line-height: 50px;
-}
-.el-upload--text {
-    color: #97a8be;
-    font-size: 14px;
-    text-align: center;
-}
-.el-upload--text em {
-    font-style: normal;
-}
 /*VueEditor*/
 .ql-container{
     min-height: 400px;
@@ -120,4 +91,24 @@ a{text-decoration: none}
 }
 .editor-btn{
     margin-top: 20px;
+}
+.iconfont{
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1;
+    display: inline-block;
+    vertical-align: baseline;
+    /* margin-right: 10px; */
+}
+.login-wrap{
+    background: #062734;
+}
+.plugins-tips{
+    background: #eef1f6;
+}
+.plugins-tips a{
+    color: #20a0ff;
+}
+.el-upload--text em {
+    color: #20a0ff;
 }

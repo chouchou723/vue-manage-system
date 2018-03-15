@@ -2,7 +2,7 @@
     <div class="tableUserDSD">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-my-gerenxinxi"></i> 学员管理</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="iconfont icon-gerenxinxi"></i> 学员管理</el-breadcrumb-item>
                 <el-breadcrumb-item to="/myStudents">我的学员</el-breadcrumb-item>
                 <el-breadcrumb-item class='ss'>{{student.name}}</el-breadcrumb-item>
             </el-breadcrumb>
@@ -11,13 +11,15 @@
         <div style='display:flex'>
  <!-- 用户资料 -->
  <div class="SDtitle">
-    <div class='UserDetailTitle'>
-        <!--  <i class=el-icon-my-tongxunlu style="font-size:31px"></i> -->
+    <div class='UserDetailTitleSD'>
+            <i class="iconfont icon-tongxunlu1 fz25"></i>
         <span class="SDtitle1">学员资料</span>
         <div class="SDtitle2">
             <div class="SDtitle3">
             </div>
-            <div class='addU' @click='addU' v-if="!code.includes('_c')"></div>
+            <div class='addU' @click='addU' v-if="!code.includes('readonly')">
+                    <i class="iconfont icon-1 fz30 fzh"></i>
+            </div>
         </div>
     </div>
     <el-form id='customerDeatilForm' label-width="102px" label-position='left'>
@@ -74,13 +76,13 @@
     <div class='AttRecord'>
         <!--  <i class=el-icon-my-tongxunlu style="font-size:31px"></i> -->
         <i class='el-icon-my-richeng' style="font-size:24px"></i><span class="SDsign600">考勤记录</span>
-        <div class='studentDetailThreeNew'>
+        <div class='studentDetailThreeNewsd'>
             <el-select v-model="valueR" clearable placeholder="全部课程" @change="updateListR">
                 <el-option v-for="item in allClass" :key="item.kcid" :label="item.title" :value="item.kcid">
                 </el-option>
             </el-select>
         </div>
-        <div class='studentDetailThreeNew'>
+        <div class='studentDetailThreeNewsd'>
             <el-select v-model="value1" clearable placeholder="选择老师" filterable @change="updateList1">
                 <el-option v-for="item in teachersName" :key="item.aid" :label="item.uname" :value="item.aid">
                 </el-option>
@@ -88,7 +90,7 @@
         </div>
     </div>
     <div id="table1">
-        <el-table :data="tableData" border style="width: 95%;margin:0 auto">
+        <el-table :data="tableData" border style="width: 95%;margin:10px auto 0">
             <el-table-column prop="course_id" label="课程">
             </el-table-column>
             <el-table-column prop="course_time" label="上课时间">
@@ -99,6 +101,8 @@
                 <template scope="scope">
                     <span :style="scope.row.checkin_types=='出勤'?'color:#18c318': scope.row.checkin_types=='请假'? 'color:#e4a821' :'color:red' ">{{scope.row.checkin_types}}</span>
                 </template>
+            </el-table-column>
+            <el-table-column prop="class_hour" label="消耗课时">
             </el-table-column>
             <el-table-column prop="course_time" label="签到时间">
             </el-table-column>
@@ -132,14 +136,14 @@
         <el-dialog title="续接课程选择" :visible.sync="dialogFormVisibleContinue" :close-on-click-modal="no" top='23%' show-close>
             <el-form :model="continueform" :rules='continueformrule' ref="continueform" label-width="80px" label-position='left'>
                 <el-form-item prop='contract' label='合同号'>
-                    <el-select v-model="continueform.contract" clearable placeholder="选择合同" filterable @change='getContClass'>
-                        <el-option v-for="(item,index) in this.continueClassCon" :key="item.order_id" :label="item.sku" :value="index">
+                    <el-select v-model="continueform.contract"  placeholder="选择合同" filterable @change='getContClass'>
+                        <el-option v-for="(item,index) in this.continueClassCon" :key="item.i.order_id" :label="item.i.sku" :value="item.index">
                         </el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item prop='title' label='课程名称' v-show="continueform.contract!==''">
-                    <el-select v-model="continueform.title" placeholder="请选择续接课程" style="width:185px" clearable>
-                        <el-option v-for="(item,index) in continueClass1" :key="index" :label="item.title" :value="index">
+                    <el-select v-model="continueform.title" placeholder="请选择续接课程" style="width:185px" @change='getContClass1'>
+                        <el-option v-for="(item,index) in continueClass1"  :label="item.title" :value="item.i">
                         </el-option>
                         <!-- <el-option v-for="item in contClass" :key="item.key" :label="item.label" :value="item.key"> -->
                         </el-option>
@@ -194,7 +198,7 @@
                          <el-option v-for="item in receiveSchool" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                     </el-select> -->
-                    <el-date-picker v-model="transferOrUpform.time" type="date" placeholder="选择日期" :picker-options="pickerOptions0"  @change='getClassRoom(transferOrUpform.time,transferOrUpform)'>
+                    <el-date-picker v-model="transferOrUpform.time" type="date" placeholder="选择日期" :picker-options="pickerOptions0" :editable="no" :clearable="no"  @change='getClassRoom(transferOrUpform.time,transferOrUpform)'>
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item prop='class' class='selectClass SDselect' v-if="selectionClass !=''">
@@ -248,7 +252,7 @@
                     </el-select>
                 </el-form-item> -->
                 <el-form-item prop='Ftime' label='冻结时间'>
-                    <el-date-picker v-model="frozeform.Ftime" type="daterange" placeholder="起止时间" :picker-options="pickerOptions0">
+                    <el-date-picker v-model="frozeform.Ftime" type="daterange" placeholder="起止时间" :editable="no" :clearable="no" :picker-options="pickerOptions2">
                     </el-date-picker>
                 </el-form-item>
             </el-form>
@@ -260,6 +264,23 @@
                 <br>
             </div>
         </el-dialog>
+         <!-- 提前开课 -->
+         <el-dialog title="提前开课" :visible.sync="dialogFormVisibleAdv" :close-on-click-modal="no" top='33%' size='tiny' show-close @close='resetAdv'
+         class='advDialog'>
+         <el-form :model="advform"  ref="advform" :rules="advrule" label-width="80px">
+             <el-form-item prop='Ftime' label='开课时间'>
+                 <el-date-picker v-model="advform.Ftime" type="date" placeholder="开课时间" :editable="no" :clearable="no" :picker-options="pickerOptions3">
+                 </el-date-picker>
+             </el-form-item>
+         </el-form>
+         <div slot="footer" class="dialog-footer SDtuc">
+             <el-button type="primary" :loading='writeL' class="SDm30" @click='advSubmit'>确定</el-button>
+             <el-button @click="dialogFormVisibleFroze = false">取消</el-button>
+             <br>
+             <br>
+             <br>
+         </div>
+     </el-dialog>
         <!-- 退费试算 -->
         <el-dialog :title="'退费试算清单(合同'+students[classIndex].sku +')'" :visible.sync="dialogFormVisibleRefund" :close-on-click-modal="no"
             top='10%' size='large' show-close class='refundDialog'>
@@ -323,8 +344,8 @@
         </el-dialog>
         <!-- 合同课程 -->
         <div class="SDcon">
-            <div class='contractClass'>
-                <!--  <i class=el-icon-my-tongxunlu style="font-size:31px"></i> -->
+            <div class='contractClassSD'>
+                    <i class="iconfont icon-contract fz25"></i>
                 <span class="SDcon1">合同课程({{contractNumber}}个)</span>
                 <div class="SDconfloat" v-if="!code.includes('_c')">
                     <el-button type="success" size="small" @click='continueClass'>
@@ -373,9 +394,9 @@
                             </el-table-column>
                             <el-table-column prop="classTime" label="排班管理">
                                 <template scope="scope">
-                                    <!-- <img class='imgEdit' src="../../../static/img/editClass.png" width='16' alt="" @click='arrangeClass(scope.row)'> -->
+                                    <!-- <img v-if="new Date(scope.row.expired[0])>new Date()&&!code.includes('_c')" class='imgEdit' src="../../../static/img/editClass.png" width='16' alt="" @click='advClass(scope.row)'> -->
                                     <span v-if="scope.row.classTime">{{scope.row.classTime}}</span>
-                                    <span v-else-if="!scope.row.classTime&&scope.row.course_curr_num!=0&&code.includes('_c')" class='arrangeClass22' >-</span>
+                                    <span v-else-if="!scope.row.classTime&&scope.row.course_curr_num!=0&&code.includes('readonly')" class='arrangeClass22' >-</span>
                                     <span v-else-if="!scope.row.classTime&&scope.row.course_curr_num!=0" class='arrangeClass' @click='arrangeClass(item,scope.row)'>立即排班</span>
                                     <span v-else-if='!scope.row.classTime&&scope.row.course_curr_num==0'>无</span>
                                 </template>
@@ -437,7 +458,7 @@
                     <el-input v-model="signform.id_number" placeholder='请输入身份证号' style="width:193px"></el-input>
                 </el-form-item>
                 <el-form-item label="出生日期" prop='birthday'>
-                    <el-date-picker v-model="signform.birthday" type="date" placeholder="选择日期" class="SDw142" :picker-options="pickerOptions1">
+                    <el-date-picker v-model="signform.birthday" type="date" placeholder="选择日期" :editable="no" :clearable="no" class="SDw142" :picker-options="pickerOptions1">
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item label="登录密码" prop='pass'>
@@ -465,11 +486,11 @@
                 </el-form-item>
                 <el-form-item label="">
                     <el-form-item prop="parent1" class="SD142float">
-                        <el-input v-model="signform.parent1" placeholder='请输入家长姓名'></el-input>
+                        <el-input v-model="signform.parent1" placeholder='请输入家长姓名' @blur='checkP1'></el-input>
                     </el-form-item>
                     <!-- <div style='position:absolute;color:#ff4949;bottom:-26px;font-size:12px;left:184px' v-if="secondRule">第二家长信息如若填写,必须填写完全,不然将不予保存</div> -->
                     <el-form-item prop="con1" class="SD142float">
-                        <el-select v-model="signform.con1" clearable placeholder="请选择关系">
+                        <el-select v-model="signform.con1" clearable placeholder="请选择关系" @change='checkP1'>
                             <el-option label="妈妈" value="妈妈"></el-option>
                             <el-option label="爸爸" value="爸爸"></el-option>
                             <el-option label="爷爷" value="爷爷"></el-option>
@@ -479,7 +500,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item prop="phone1" class="SDfloat">
-                        <el-input v-model="signform.phone1" placeholder='请输入手机号' :maxlength='maxlength'></el-input>
+                        <el-input v-model="signform.phone1" placeholder='请输入手机号' :maxlength='maxlength' @blur='checkP1'></el-input>
                     </el-form-item>
                     <el-col :span="2">
                         <span class="SDaltergrey"> (选填)</span>
@@ -576,7 +597,7 @@
                     <!--  <div style="background:#ffffff;text-align:center;border-right:1px solid gainsboro;border-bottom:1px solid gainsboro;flex:0 0 66px;display:flex;flex-direction: column;justify-content: center;height:auto">{{totalP}}</div> -->
                     <!-- 总额用法 -->
                     <div class="signContactCoupons">
-                        <el-select v-model="coupons" clearable multiple placeholder="请选择" size='mini' class="SD131">
+                        <el-select v-model="coupons" clearable multiple placeholder="请选择" size='mini' class="SD131" @change='checkCou1(contracts)'>
                             <el-option v-for="item in couponsList" :key="item.id" :label="item.title" :value="item.id">
                             </el-option>
                         </el-select>
@@ -584,7 +605,7 @@
                     <div class='signContactMoney'>
                         <div v-for='i in contracts' class='signContactMoneyDiv'>
                             <div class="signContactCouponsDiv">
-                                <el-input v-model="i.coupons_money" class='promotionMoney'></el-input>
+                                <el-input v-model="i.coupons_money" class='promotionMoney' @blur="checkCou(contracts,i.coupons_money,i.study_money)"></el-input>
                             </div>
                         </div>
                     </div>
@@ -604,6 +625,16 @@
                     </div> -->
                     <div class="signContactzhuan" v-if='this.step=="changtobuy"'>{{multipleSelection.toFixed(2)}}</div>
                     <div class="signContactPay">{{totalP3}}</div>
+                    <!-- <div class='signContactMoney'>
+                        <div v-for='i in contracts' class='signContactMoneyDiv'>
+                            <div class="signContactCouponsDiv">
+                                <el-select v-model="i.panda_gohome"  placeholder="请选择"  >
+                                    <el-option label="有" value="1" v-if="i.kc_tid==1"></el-option>
+                                    <el-option label="无" value="0"></el-option>
+                                </el-select>
+                            </div>
+                        </div>
+                    </div> -->
                     <!-- 总额用法 -->
                     <div class="signContactPayDiv">
                         <div v-for='(i,index) in contracts' class='signContactMoneyDiv'>
@@ -629,8 +660,9 @@
                     </el-form-item> -->
                     <el-form-item label="熊猫到家" prop='panda_gohome'>
                         <el-select v-model="actSchool.panda_gohome" placeholder="请选择" class="SDw142">
-                            <el-option label="有" value="1"></el-option>
-                            <el-option label="无" value="0"></el-option>
+                                <el-option label="无" value="0"></el-option>
+                                <el-option label="12期" value="1"></el-option>
+                                <el-option label="24期" value="2"></el-option>       
                         </el-select>
                     </el-form-item>
                     <el-form-item label="付款方式" class="SDpr"  prop="method">
@@ -676,7 +708,7 @@
                     <span slot="label"><i class="el-icon-star-on" v-if="item.isR=='yes'"></i> {{item.name}}</span>
                     <el-form :model="art[index]" :ref="artName[index]" :rules='artRules' label-width="80px">
                         <el-form-item label="开课日期" prop='time'>
-                            <el-date-picker v-model="art[index].time" type="date" :picker-options="pickerOptions0" @change='getClassRoomByTime(art[index].time,index,item)'>
+                            <el-date-picker v-model="art[index].time" type="date" :picker-options="pickerOptions0" :editable="no" :clearable="no" @change='getClassRoomByTime(art[index].time,index,item)'>
                             </el-date-picker>
                         </el-form-item>
                         <el-form-item prop='syllabus_id' class='selectClass SDselect'>
@@ -699,10 +731,10 @@
             </div>
         </el-dialog>
         <!-- 立即排班按钮 -->
-        <el-dialog :title="arrangeTitle" :visible.sync="dialogFormVisibleArrange" :close-on-click-modal="no" top='7%' show-close>
+        <el-dialog :title="arrangeTitle" :visible.sync="dialogFormVisibleArrange" :close-on-click-modal="no" top='7%' show-close @close="resetArr">
             <el-form :model="arrange" ref="arrange" :rules='arrangeRules' label-width="80px">
                 <el-form-item label="开课日期" prop='time'>
-                    <el-date-picker v-model="arrange.time" type="date" :picker-options="pickerOptions0" popper-class='hasClass' @change='getClassRoomArrange(arrange.time)' >
+                    <el-date-picker v-model="arrange.time" type="date" :editable="no" :clearable="no" :picker-options="pickerOptions0" popper-class='hasClass' @change='getClassRoomArrange(arrange.time)' >
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item prop='syllabus_id' class='selectClass SDselect'>
@@ -725,10 +757,11 @@
         <!-- 回访记录 -->
         <div id='communityTitle'>
             <div class='communityTitle'>
+                    <i class='iconfont icon-xueyuangoutongguanli fz30' ></i>
                 <!--  <i class=el-icon-my-tongxunlu style="font-size:31px"></i> -->
                 <span class="SDct1">回访记录({{number}})</span>
                 <div class="SDct2">
-                    <div class='addR' @click='addComm' v-if="!code.includes('_c')"></div>
+                    <div class='addR' @click='addComm' v-if="!code.includes('readonly')"><i class='iconfont icon-group-add fz30 fzh'></i></div>
                 </div>
             </div>
             <div class="SDct3">
@@ -747,7 +780,9 @@
                             <div class="SDct10">
                                 <el-tag type='success' v-for='t in item.tags' class='tagTag'>{{t}}</el-tag>
                             </div>
-                            <div class='editSpan' @click='editReturn(item.id,item)' v-if="new Date().getTime()-new Date(item.created_at).getTime()<7200000 && item.tmk.uname == userName"></div>
+                            <div class='editSpan' @click='editReturn(item.id,item)' v-if="new Date().getTime()-new Date(item.created_at).getTime()<7200000 && item.tmk.uname == userName">
+                                    <i class="iconfont icon-icon07 fz30 fzh fgrey"></i>
+                            </div>
                         </div>
                     </el-col>
                 </el-row>
@@ -808,7 +843,8 @@
         transferClass,
         frozenClass,
         searchResource,
-        checkOrderSku
+        checkOrderSku,
+        editCourseStartTime
     } from '../../api/api';
 
     export default {
@@ -824,6 +860,7 @@
             // }
             var nan = (rule, value, callback) => {
                 if (value === '') {
+                    // console.log(1)
                     callback('请选择')
                 } else if (typeof value == 'number') {
                     callback();
@@ -856,7 +893,22 @@
                 } else if (!myreg.test(value)) {
                     callback('请输入有效的家长姓名');
                 } else {
-                    callback();
+                    if(this.signform.phone1&&this.signform.con1){
+                        callback();
+                        }else{
+                        callback('必须填写全第二家长信息');
+                        }
+                }
+            }
+            var iscon1 = (rule, value, callback) => {//修改用户
+                if (value == '') {
+                    callback()
+                }else{
+                    if(this.signform.phone1&&this.signform.parent1){
+                        callback();
+                        }else{
+                        callback('必须填写全第二家长信息');
+                        }
                 }
             }
             // var isValue = (rule, value, callback) => {
@@ -909,7 +961,11 @@
                     if(res.data.data.length!=0&&res.data.data[0].id!=this.signform.id){
                     callback('此手机号码已存在');
                     }else{
-                    callback();
+                        if(this.signform.parent1&&this.signform.con1){
+                                callback();
+                                }else{
+                                callback('必须填写全第二家长信息');
+                                }
 
                     }
                     })
@@ -995,6 +1051,18 @@
                         return time.getTime() < Date.now() - 8.64e7;
                     }
                 },
+                pickerOptions2: {
+                    disabledDate(time) {
+                        return time.getTime() < Date.now();
+                    }
+                },
+                pickerOptions3: {
+                    // disabledDate(time) {
+                    //     return new Date(this.overTime)<time.getTime()||time.getTime() < Date.now();
+                    //     // return new Date('2018-4-1')<time.getTime() < Date.now();
+                    // }
+                },
+                overTime:'',
                 continueClass1: [],
                 listCC: [],
                 contClass: [],
@@ -1038,12 +1106,27 @@
                     sku: ''
                 }],
                 tableData: [],
-                artName: ['art0', 'art1', 'art2', 'art3', 'art4'],
+                artName: ['art0', 'art1', 'art2', 'art3', 'art4','art5','art6','art7','art8','art9'],
                 tabClass: [],
                 selectionClass1: ['', '', '', '', ''],
                 selectionClassArrange: [],
                 activeName: '1',
                 art: [{
+                    time: '',
+                    syllabus_id: ''
+                }, {
+                    time: '',
+                    syllabus_id: ''
+                }, {
+                    time: '',
+                    syllabus_id: ''
+                }, {
+                    time: '',
+                    syllabus_id: ''
+                }, {
+                    time: '',
+                    syllabus_id: ''
+                },{
                     time: '',
                     syllabus_id: ''
                 }, {
@@ -1074,6 +1157,7 @@
                     book_price: '',
                     study_money: '',
                     coupons_money: '',
+                    // panda_gohome:'0',
                     courseName1: []
                 }],
                 // tableTitle: ['课时', '签单数', '学费', '教材费', '书本费', '优惠类型', '优惠金额', '转课补费额','实收总额', '操作'],
@@ -1122,6 +1206,14 @@
                         validator: isSpace,
                         // message: '请输入内容',
                         trigger: 'blur'
+                    }],
+                },
+                advrule: {
+                    Ftime: [{
+                        required: true,
+                        type: 'date',
+                        trigger: 'change',
+                        message: '请输入选择开课日期',
                     }],
                 },
                 actSchool: {
@@ -1232,6 +1324,11 @@
                         message: '请选择关系',
                         trigger: 'change'
                     }],
+                    con1: [{
+                        required: true,
+                        validator: iscon1,
+                        trigger: 'change'
+                    }],
                     phone: [{
                         required: true,
                         validator: isPhone,
@@ -1294,6 +1391,11 @@
                 dialogFormVisibletransferOrUp: false,
                 dialogFormVisiblechangtobuy: false,
                 dialogFormVisibleContinue: false,
+                dialogFormVisibleAdv:false,
+                advform: {
+                    // class: '',
+                    Ftime: '',
+                },
                 firstform: {
                     contract: ''
                 },
@@ -1402,7 +1504,8 @@
                 contractnumber: '0',
                 transClass: [],
                 stopchange: false,
-                
+                secondO:true,
+                advData:'',
             }
         },
         methods: {
@@ -1419,6 +1522,60 @@
             //         }
             //      })
             // },
+            advClass(data){//提前开课
+                this.dialogFormVisibleAdv = true;
+                this.pickerOptions3={
+                    disabledDate(time) {
+                        return new Date(data.expired[0])- 8.64e7<time.getTime()||time.getTime() < Date.now();
+                    }
+                }
+                this.advData = data.order_item_id
+                // console.log(data)
+            },
+            checkCou1(data){
+                if(data.some(item=>{return item.coupons_money-0})){
+                    if(this.coupons.length===0){
+                        this.$message.error('优惠类型为必选项，请选择后再提交');
+                        this.secondO = false; 
+                    }else{
+                        this.secondO = true;
+                    }
+                }else{
+                    if(this.coupons.length==0){
+                        this.secondO = true; 
+                    }else{
+                        this.$message.error('请输入对应的优惠金额');
+                    this.secondO = false; 
+                    }
+                }
+            },
+            checkCou(data,money,smoney){
+                if(data.some(item=>{return item.coupons_money-0})){
+                    if(this.coupons.length==0){
+                        this.$message.error('优惠类型为必选项，请选择后再提交');
+                    this.secondO = false;
+                    }else{
+                        this.secondO = true;
+                    }
+                }else{
+                    if(this.coupons.length==0){
+                        this.secondO = true;
+                    }else{
+                        this.$message.error('请输入对应的优惠金额');                    
+                    this.secondO = false;
+                    }
+                }
+                
+                if(money>smoney){
+                    this.$message.error('优惠金额不得大于课程金额');
+                    this.secondO = false;
+                }
+            },
+            checkP1(){
+                this.$refs['signform'].validateField('parent1');
+                this.$refs['signform'].validateField('con1');
+                this.$refs['signform'].validateField('phone1');                
+            },
             resetFroze(){
                 this.frozeform.Ftime =[];
                 this.$refs['frozeform'].resetFields();
@@ -1436,7 +1593,7 @@
             },
             getTransClass(i) { //转升班
                 this.transferOrUpform.school = '';
-                console.log(i)
+                // console.log(i)
                 if (i !== '') {
 
                     let para = {
@@ -1465,6 +1622,30 @@
                         });
                     })
                 }
+            },
+            advSubmit(){
+                this.$refs['advform'].validate((valid) => {
+                    if (valid) {
+                        let para = {
+                            order_item_id: this.advData,
+                            first_time:this.advform.Ftime
+                        }
+                        // console.log(para)
+                        this.writeL = true;
+                        editCourseStartTime(para, token).then(res => {
+                            if (res.code == 0) {
+                                this.$message.success('操作成功');
+                                this.getCon();
+                                this.dialogFormVisibleAdv = false;
+                                this.writeL = false;
+                            } else {
+                                this.$message.error(res.data);
+                                this.writeL = false;
+
+                            }
+                        })
+                    }
+                })
             },
             forzenSubmit() { //冻结提交
                 this.$refs['frozeform'].validate((valid) => {
@@ -1571,23 +1752,31 @@
                 // console.log(para)
             },
             getContClass() { //续费选合同change
+                this.$refs['continueform'].validateField('contract');
                 this.continueform.title = '';
                 this.continueClass1 = []
                 if (this.continueform.contract !== '') {
-
                     this.classIndex = this.continueform.contract;
-                    this.continueClass1 = this.students[this.classIndex].dataTable.filter(item => {
-                        return item.kc_tid == 1
+                    // console.log(this.classIndex)
+                    this.students[this.classIndex].dataTable.map((item,index) => {
+                        if(item.kc_tid == 1){
+                            this.continueClass1.push({title:item.title,i:index})
+                        }
                     })
                 }
             },
-            arrangeClass(item, data) { //点击立即排班操作
-                // console.log(data)
+            getContClass1() {
+                this.$refs['continueform'].validateField('title');
+            },
+            resetArr(){
                 this.arrange = {
                     time: '',
                     syllabus_id: ''
                 }
-
+                this.$refs['arrange'].resetFields();
+            },
+            arrangeClass(item, data) { //点击立即排班操作
+                // console.log(data)
                 this.arrangeTitle = '[' + data.title + ']' + '排班';
                 this.arrangeCourseId = data.course_id;
                 this.arrangeOrderId = data.order_item_id;
@@ -1626,11 +1815,9 @@
                         })
                     } else {
                         if (this.arrange.time&&this.selectionClassArrange==0) {
-
                             this.$message.info('该日没有此课程班级,请重新选择')
                         }
                         if (this.arrange.time&&this.selectionClassArrange!=0) {
-
                             this.$message.info('请选择具体班级')
                         }
                         // this.activeName = b;
@@ -1640,7 +1827,13 @@
             },
             getClassName(data, i) { //获取课程名称
                 if (!this.stopchange&&data) {
-                    i.course_id = ''
+                    i.course_id = '';
+                    i.year_num = '';
+                        i.head_count = '';
+                        i.tuition_price = '';
+                        i.teaching_price = '';
+                        i.book_price = '';
+                        i.study_money = '';
                     let para = {
                         pid: data,
                         simple: 1
@@ -1653,7 +1846,7 @@
                
             },
             nextToSignContract() { //续费到下一步
-                // console.log(this.$refs)
+                // console.log(this.continueform)
                 this.$refs['continueform'].validate((valid) => {
                     if (valid) {
                         this.dialogFormVisibleContinue = false;
@@ -1704,7 +1897,6 @@
                     // this.selectionClass[index].splice(0, this.selectionClass[index].length);
                     getDateClass(token, para).then(res => {
                         if (res.data.length != 0) {
-
                             that.selectionClass1[index] = res.data
                             that.art[index].syllabus_id = time
                             that.art[index].syllabus_id = ''
@@ -1714,13 +1906,9 @@
                             that.art[index].syllabus_id = '';
                             this.$message.info('该日没有此课程班级')
                         }
-                    })
-
-                    // console.log(that.selectionClass[index])
+                    })// console.log(that.selectionClass[index])
                 } else {
-                    that.selectionClass1[index].splice(0, this.selectionClass1[index].length);
-
-                    // this.art[index] = {time:'',class:''}
+                    that.selectionClass1[index].splice(0, this.selectionClass1[index].length);// this.art[index] = {time:'',class:''}
                 }
             },
             getClassRoom(time, data) { //转升班用 选班级 出时间表
@@ -1734,7 +1922,6 @@
                     }
                     getDateClass(token, para).then(res => {
                         if (res.data.length != 0) {
-
                             that.selectionClass = res.data
                             that.transferOrUpform.syllabus_id = time
                             that.transferOrUpform.syllabus_id = ''
@@ -1787,7 +1974,7 @@
                                     order_id: this.students[this.classIndex].order_id
                                 }
                                 getRefund(para, token).then(res => {
-                                    console.log(res)
+                                    // console.log(res)
                                     this.refun = res.data
                                 })
                                 this.dialogFormVisibleRefund = true;
@@ -1836,12 +2023,6 @@
                 this.getSignList()
 
             },
-            // changeReset(val) {
-            //     if (val != ''&&this.actSchool.sku&&this.actSchool.panda_gohome) {
-
-            //         this.$refs['actSchool'].validate((valid) => {})
-            //     }
-            // },
             continueClass() { //续费
                 this.continueform.contract = ''
                 this.step = 'continueClass';
@@ -1873,7 +2054,7 @@
                 })
                 this.step = 'changtobuy';
             },
-            upClass() { //升班
+            upClass() { //转升班
                 this.firstform.contract = ''
                 this.transferOrUpform = {
                     class: '',
@@ -1929,12 +2110,11 @@
                 let count = []
                 if (a.length != 0) {
                     a.map((item) => {
-
                         let n = 'art' + item;
                         this.$refs[n][0].validate((valid) => {
                             if (valid && c[item].syllabus_id) {
                                 count.push(item);
-                                if (count.length == a.length) {
+                                if (count.length >=1) {
                                 let para = {}
                                 para.assigns = c
                                 para.assigns = JSON.stringify(para.assigns)
@@ -1960,26 +2140,23 @@
                             }
                             }else{
                                 if(c[item].time&&this.selectionClass1[item].length!=0){
-
                                 this.$message.info('请选择具体班级')
-                                }
-                                if(c[item].time&&this.selectionClass1[item].length==0){
+                                }else if(c[item].time&&this.selectionClass1[item].length==0){
                                     this.$message.info('该日没有此课程班级,请重新选择')
                                 }
                             }
                         })
                     })
-                    if (c.length != a.length) {
+                    if (c.length != a.length&&count.length==0) {//全部c和必填a
                         // console.log(count)
                         // console.log(a)
 
-                        let o = new Set(count); //[]
-                        let p = new Set(a); //[0,1,2]
-                        let r = new Set([...p].filter(x => !o.has(x))); //1,2
+                        let o = new Set(count); //[2]已经填的必填
+                        let p = new Set(a); //[0,1,2]//全部必填
+                        let r = new Set([...p].filter(x => !o.has(x))); //0,1剩余未填的必填
                         // console.log([...r][0])
-                        this.activeName = [...r][0] + 1 + '';
+                        this.activeName = [...r][0] + 1 + '';//跳转到未填
                         if (this.art[[...r][0]].time&&this.selectionClass1[[...r][0]].length!=0) {
-
                             this.$message.info('请选择具体班级')
                         }
                         if (this.art[[...r][0]].time&&this.selectionClass1[[...r][0]].length==0){
@@ -2025,7 +2202,7 @@
             nextToSign(formName) { //提交修改学员资料
                 this.$refs[formName].validate((valid) => { //替换提交服务
                     if (valid) {
-                        if (this.signform.parent1 || this.signform.con1 || this.signform.phone1) {
+                        if (this.signform.parent1) {
                             this.signform.familys = this.signform.parent + '|' + this.signform.con + '|' + this
                                 .signform.phone +
                                 ',' + this.signform.parent1 + '|' + this.signform.con1 + '|' + this.signform.phone1
@@ -2068,7 +2245,7 @@
             },
             submitCon(formName) { //最后提交合同
                 this.$refs[formName].validate((valid) => {
-                    if (valid && this.isEqual === 1&&this.contracts.every(item=>{return item.course_id})) {
+                    if (valid && this.isEqual === 1&& this.secondO &&this.contracts.every(item=>{return item.course_id})) {
                         let para = {
                             // order_id: this.step == 'continueClass' ? this.students[this.classIndex].order_id :'',
                             order_item_id: this.step == 'continueClass' ? this.students[this.classIndex].dataTable[
@@ -2107,7 +2284,7 @@
                             }
                             return res
                         }).then((res) => {
-                            // console.log(res)
+                            // console.log(this.tabClass)
                             if (res.code == 0) {
                                 this.dialogFormVisible3 = false;
                                 this.writeL = false;
@@ -2120,7 +2297,6 @@
                                     this.dialogFormVisibleLast = true;
                                 }).catch(() => {
                                     this.tabClass = [];
-
                                 });
                                 this.getCon();
                             } else {
@@ -2134,9 +2310,9 @@
                         // this.$message.error('付款总额与实收总额不符')
                         // }else 
                         if(!this.contracts.every(item=>{return item.course_id})){
-                            this.$message.info('课程还未选择')
+                            this.$message.error('课程还未选择')
                         }else{
-                            this.$message.info('请确认所有项目填写正确')      
+                            this.$message.error('请确认所有项目填写正确')      
                         }
                     }
                 })
@@ -2177,6 +2353,7 @@
                     book_price: '',
                     study_money: '',
                     coupons_money: '',
+                    // panda_gohome:'0',
                     courseName1: []
                 }]
                 this.actSchool = {
@@ -2198,27 +2375,42 @@
             resetClass(formName) {
                 this.art = [{
                     time: '',
-                    class: ''
+                    syllabus_id: ''
                 }, {
                     time: '',
-                    class: ''
+                    syllabus_id: ''
                 }, {
                     time: '',
-                    class: ''
+                    syllabus_id: ''
                 }, {
                     time: '',
-                    class: ''
+                    syllabus_id: ''
                 }, {
                     time: '',
-                    class: ''
+                    syllabus_id: ''
+                },{
+                    time: '',
+                    syllabus_id: ''
+                }, {
+                    time: '',
+                    syllabus_id: ''
+                }, {
+                    time: '',
+                    syllabus_id: ''
+                }, {
+                    time: '',
+                    syllabus_id: ''
+                }, {
+                    time: '',
+                    syllabus_id: ''
                 }]
+                this.tabClass = []
                 // this.$refs[formName].resetFields();
                 // this.selectionClass = [[],[],[],[],[]];
 
             },
             getPrice(data, index) {
                 if(index!==''){
-
                 let para = {
                     kcid: index
                 }
@@ -2241,12 +2433,14 @@
                         data.study_money = '';
                     }
                 }).then(()=>{
-                    if(this.totalP3<=0){
-                        this.actSchool.pay[0].method ='7'
-                        this.actSchool.pay[0].money = this.totalP3.toFixed(2)
-                    }else if(this.multipleSelection&&(this.totalP3>0)){
-                        this.actSchool.pay[0].method ='1'
-                        this.actSchool.pay[0].money =''
+                    if(this.step == 'changtobuy'){
+                        if(this.totalP3<=0){
+                            this.actSchool.pay[0].method ='7'
+                            this.actSchool.pay[0].money = this.totalP3.toFixed(2)
+                        }else if(this.multipleSelection&&(this.totalP3>0)){
+                            this.actSchool.pay[0].method ='1'
+                            this.actSchool.pay[0].money =''
+                        }
                     }
                 })
                 }
@@ -2262,6 +2456,7 @@
                     book_price: '',
                     study_money: '',
                     coupons_money: '',
+                    // panda_gohome:'0',
                     courseName1: []
                 })
             },
@@ -2423,7 +2618,7 @@
                 this.dialogFormVisibleSign = true;
             },
             handleCurrentChange: function (val) { //回访记录变更页数
-                this.currentPage = val;
+                this.currentPage = val;this.backToTop();
                 this.getReturn()
             },
             handleCurrentChange1: function (val) { //签到变更页数
@@ -2511,9 +2706,9 @@
         computed: {
             tableTitle(){
                 if(this.step == 'changtobuy'){
-                    return  ['课时', '签单数', '学费', '教材费', '书本费', '课程金额','优惠类型', '优惠金额', '小计','转课补费额','实收总额', '操作']
+                    return  ['课时', '签单数', '学费', '教材费', '书本费', '课程金额','优惠类型', '优惠金额', '小计','转课补费额','实收总额','操作']
                 }else{
-                    return  ['课时', '签单数', '学费', '教材费', '书本费', '课程金额','优惠类型', '优惠金额','小计','实收总额', '操作']
+                    return  ['课时', '签单数', '学费', '教材费', '书本费', '课程金额','优惠类型', '优惠金额','小计','实收总额',  '操作']
                 }
             },
             fronzeContra(){
@@ -2525,19 +2720,16 @@
                         })
                         if(a){
                             b.push({sku:item.sku,ii:index})
-    
                         }
                     })
                     return b
                 }else{
-
                     this.students.map((item,index)=>{
                         let a = item.dataTable.some(i=>{
                            return i.status=='正常'&&i.kc_tid==1&&i.classTime!=''
                         })
                         if(a){
                             b.push({sku:item.sku,ii:index})
-    
                         }
                     })
                     return b
@@ -2561,13 +2753,12 @@
             },
             continueClassCon(){
                 let b = []
-                this.students.map(item=>{
+                this.students.map((item,index)=>{
                     let a = item.dataTable.some(i=>{
                        return i.kc_tid==1
                     })
                     if(a){
-                        b.push(item)
-
+                        b.push({i:item,index:index})
                     }
                 })
                 return b
@@ -2734,27 +2925,29 @@
     pointer-events: none
 }*/
 
-    .UserDetailTitle {
+    .UserDetailTitleSD {
         position: relative;
-        background: url(../../../static/img/contact.png) left center/25px no-repeat;
-        padding: 10px 10px 10px 27px;
-        margin-left: 12px
+        /* background: url(../../../static/img/contact.png) left center/25px no-repeat; */
+        padding: 10px;
+        display: flex;
+        /* margin-left: 12px */
     }
 
-    .contractClass {
+    .contractClassSD {
         position: relative;
-        background: url(../../../static/img/contract.png) left center/25px no-repeat;
-        padding: 10px 10px 10px 27px;
-        margin-left: 12px
+        /* background: url(../../../static/img/contract.png) left center/25px no-repeat; */
+        padding: 10px;
+        /* display: flex; */
+        /* margin-left: 12px */
     }
 
-    .contractClass .el-button--success {
+    .contractClassSD .el-button--success {
         color: #fff;
         background-color: #13ce66;
         border-color: #13ce66;
     }
 
-    .contractClass .el-button--success:hover {
+    .contractClassSD .el-button--success:hover {
         background: #42d885;
         border-color: #42d885;
         color: #fff;
@@ -2763,16 +2956,20 @@
     .AttRecord {
         position: relative;
         /*background: url(../../../static/img/contact.png) left center/25px no-repeat;*/
-        padding: 10px 10px 10px 17px;
+        padding: 6px 10px 7px 17px;
+        border-bottom: 1px solid #e8e8e8;
+        display: flex;
+    align-items: center;
         /*margin-left: 12px*/
     }
 
     .communityTitle {
-        margin-left: 12px;
+        /* margin-left: 12px; */
         position: relative;
-        background: url(../../../static/img/comuni.png) left center/30px no-repeat;
-        padding: 10px 10px 10px 30px;
+        /* background: url(../../../static/img/comuni.png) left center/30px no-repeat; */
+        padding: 10px;
         border-bottom: 1px solid #e8e8e8;
+        display: flex;
     }
 
     #customerDeatilForm {
@@ -2833,42 +3030,42 @@
 
     .tableUserDSD .editSpan {
         height: 30px;
-        background: url(../../../static/img/edit.png) right/30px 30px no-repeat;
+        /* background: url(../../../static/img/edit.png) right/30px 30px no-repeat; */
         cursor: pointer;
         margin-top: 10px;
         width:30px;
         float:right;
     }
 
-    .tableUserDSD .editSpan:hover {
+    /* .tableUserDSD .editSpan:hover {
         background-image: url(../../../static/img/edit_h.png);
-    }
+    } */
 
     .tableUserDSD .addU {
         width: 30px;
         height: 30px;
-        background-image: url(../../../static/img/editU.png);
-        background-size: 30px 30px;
+        /* background-image: url(../../../static/img/editU.png); */
+        /* background-size: 30px 30px; */
         cursor: pointer;
         display: inline-block;
         margin-right: 5px;
     }
 
-    .tableUserDSD .addU:hover {
+    /* .tableUserDSD .addU:hover {
         background-image: url(../../../static/img/editU_h.png);
-    }
+    } */
 
     .tableUserDSD .addR {
         width: 30px;
         height: 30px;
-        background-image: url(../../../static/img/addR.png);
-        background-size: 30px 30px;
+        /* background-image: url(../../../static/img/addR.png); */
+        /* background-size: 30px 30px; */
         cursor: pointer;
     }
-
+/* 
     .tableUserDSD .addR:hover {
         background-image: url(../../../static/img/addR_h.png);
-    }
+    } */
 
     .tableUserDSD .block {
         text-align: center;
@@ -2931,11 +3128,6 @@
 
     .tableUserDSD .el-dialog .el-dialog__title {
         color: white;
-    }
-
-    .inviteRecord {
-        font-size: 14px;
-        margin: 10px;
     }
 
     .schoolDialog .el-dialog__body {
@@ -3016,14 +3208,14 @@
     .promotionMoney input {
         height: 22px;
         margin: 9px auto;
-        width: 80%;
+        width: 91%;
     }
 
     .selectClass .el-radio+.el-radio {
         margin-left: 0;
     }
 
-    #table1 .el-table td,
+    /* #table1 .el-table td,
     #table1 .el-table th:not(.gutter) {
         padding: 1px;
         text-align: center
@@ -3033,9 +3225,9 @@
     #table1 .el-table .cell {
         padding-left: 0;
         padding-right: 0;
-    }
+    } */
 
-    #table2 .el-table td,
+    /* #table2 .el-table td,
     #table2 .el-table th:not(.gutter) {
         padding: 1px;
         text-align: center
@@ -3081,13 +3273,13 @@
     #tablelesson .el-table .cell {
         padding-left: 0;
         padding-right: 0;
-    }
+    } */
 
-    .studentDetailThreeNew {
+    .studentDetailThreeNewsd {
         display: inline-block;
         width: 106px;
         /*margin-right: 10px;*/
-        margin-bottom: 10px;
+        /* margin-bottom: 10px; */
         margin-left: 10px
     }
 
@@ -3422,7 +3614,8 @@
     }
 
     .SDtitleimg img {
-        border-radius: 50%
+        border-radius: 50%;
+        border: 1px solid gainsboro;
     }
 
     .SDsign {
@@ -3436,7 +3629,7 @@
 
     .SDsign600 {
         font-weight: 600;
-        font-size: 22px
+        font-size: 22px;
     }
 
     .SDselect {
@@ -3498,7 +3691,7 @@
     .SDcon1 {
         font-weight: 600;
         font-size: 22px;
-       
+        margin-left:-5px;
     }
 
     .SDconfloat {
@@ -3580,7 +3773,7 @@
     .SDct9 {
         font-size: 14px;
         color: grey;
-        margin-top: 10px
+        margin: 10px 0;
     }
 
     .SDct10 {
@@ -3623,7 +3816,7 @@
     }
 
     .SDmb5 {
-        margin-bottom: 5p
+        margin-bottom: 5px
     }
 
     .SDw103 {
@@ -3654,6 +3847,21 @@
 
     .SDmt10 {
         margin-top: 10px
+    }
+    .fz30{
+        font-size: 30px;
+        line-height: 29px;        
+        /* vertical-align: sub; */
+    }
+    .fzh:hover{
+        color: #1fb5ad
+    }
+    .fz25{
+        font-size: 25px;
+        line-height: 29px;
+    }
+    .fgrey{
+        color: #cacaca
     }
 /* .hasClass .available{
     border: 1px solid #1fb5ad;

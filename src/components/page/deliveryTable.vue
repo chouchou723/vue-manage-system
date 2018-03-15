@@ -12,7 +12,7 @@
                    发货报表
                     </h3>
                     <div class='deliveryTableS'>
-                            <el-date-picker v-model="value2" type="month" placeholder="月份选择" @change="updateList" :picker-options="pickerOptions0">
+                            <el-date-picker v-model="value2" type="month" placeholder="月份选择" @change="updateList" :editable="no"  :picker-options="pickerOptions0">
                                 </el-date-picker>
                     </div>
                     <!-- <el-button type="primary" size="mid" class='buttonAdd' @click="createCh('aform')">导出表格</el-button> -->
@@ -20,23 +20,31 @@
             </div>
             <div id="deliveryTableT">
                 <el-table :data="accountData" border style='width:100%'>
-                    <el-table-column prop="schoolName" label="校区">
+                        <el-table-column prop="schoolName" label="校区">
+                            </el-table-column>
+                            <el-table-column prop="child_name" label="学员" width='80'>
+                            </el-table-column>
+                            <el-table-column prop="user_name" label="收件人" width='80'>
+                            </el-table-column>
+                            <el-table-column prop="mobile" label="联系方式" width='120'>
+                            </el-table-column>
+                            <el-table-column prop="address" label="收货地址" >
+                            </el-table-column>
+                            <el-table-column prop="goods_sku" label="产品型号">
+                                    <template scope="scope">
+                                        <div><span style='height:18px;line-height:18px;margin-right:8px;width:40px;display:inline-block;color:white;background:#3fcc30;border-radius:5px;'>实发</span>{{scope.row.goods_sku||'暂无'}}</div>                                   
+                                           <div><span style='height:18px;line-height:18px;margin-right:8px;width:40px;display:inline-block;color:white;background:black;border-radius:5px;'>应发</span>{{scope.row.goods_sku||'暂无'}}</div>
+                                        </template>
+                            </el-table-column>
+                            <el-table-column prop="goods_name" label="产品名称">
+                                    <template scope="scope">
+                                            <div><span style='height:18px;line-height:18px;margin-right:8px;width:40px;display:inline-block;color:white;background:#3fcc30;border-radius:5px;'>实发</span>{{scope.row.goods_name||'暂无'}}</div>                                   
+                                            <div><span style='height:18px;line-height:18px;margin-right:8px;width:40px;display:inline-block;color:white;background:black;border-radius:5px;'>应发</span>{{scope.row.goods_name||'暂无'}}</div>
+                                         </template>
+                            </el-table-column>
+                    <el-table-column prop="updated" label="发货时间">
                     </el-table-column>
-                    <el-table-column prop="child_name" label="学员">
-                    </el-table-column>
-                    <el-table-column prop="user_name" label="收件人">
-                    </el-table-column>
-                    <el-table-column prop="mobile" label="联系方式">
-                    </el-table-column>
-                    <el-table-column prop="address" label="收货地址">
-                    </el-table-column>
-                    <el-table-column prop="goods_sku" label="产品型号">
-                    </el-table-column>
-                    <el-table-column prop="goods_name" label="产品名称">
-                    </el-table-column>
-                    <el-table-column prop="create_at" label="发货时间">
-                    </el-table-column>
-                    <el-table-column prop="express_id" label="物流单号">
+                    <el-table-column prop="express_id" label="物流单号" width='120'>
                             <template scope="scope">
                                     <span  @click='openInfo(scope.row.id)' class='canClick'>{{scope.row.express_id}}</span>
                                 </template>
@@ -154,7 +162,7 @@
     
                 },
                 handleCurrentChange: function(val) { //变更页数
-                    this.currentPage = val;
+                    this.currentPage = val;this.backToTop();
                     this.fetchData();
                 },
             },

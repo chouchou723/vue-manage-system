@@ -216,7 +216,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="报名截至时间" prop='sign_time' >
-                   <el-date-picker v-model="formBirthday.sign_time" format="yyyy-MM-dd HH:mm" type="datetime" :clearable="no" popper-class='top55' :picker-options="pickerOptions0" placeholder="报名截至时间" style="width:172px">
+                   <el-date-picker v-model="formBirthday.sign_time" format="yyyy-MM-dd HH:mm" type="datetime" :editable="no" :clearable="no" popper-class='top55' :picker-options="pickerOptions0" placeholder="报名截至时间" style="width:172px">
                     </el-date-picker>
                 
                 </el-form-item>
@@ -225,14 +225,14 @@
                         v-model="formBirthday.start_end_time"
                         type="date"
                         placeholder="选择日期"
-                        :picker-options="pickerOptions0">
+                        :picker-options="pickerOptions0" :editable="no" :clearable="no">
                       </el-date-picker>
                       <el-time-picker
                       is-range
                       v-model="formBirthday.time"
                       popper-class='top55'
                       format="HH:mm"
-                      placeholder="选择时间范围">
+                      placeholder="选择时间范围" :editable="no" :clearable="no">
                     </el-time-picker>
                     <!-- <el-date-picker v-model="formBirthday.start_end_time" format="yyyy-MM-dd HH:mm" range-separator=" ~ " :clearable="no" type="datetimerange" placeholder="活动起止时间" style="width:285px" :picker-options="pickerOptions0">
                     </el-date-picker> -->
@@ -347,7 +347,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="报名截至时间" prop='sign_time' >
-                <el-date-picker v-model="formLaunch.sign_time" format="yyyy-MM-dd HH:mm" :clearable="no" type="datetime" placeholder="报名截至时间" popper-class='top55'  :picker-options="pickerOptions0" style="width:217px">
+                <el-date-picker v-model="formLaunch.sign_time" format="yyyy-MM-dd HH:mm" :editable="no" :clearable="no" type="datetime" placeholder="报名截至时间" popper-class='top55'  :picker-options="pickerOptions0" style="width:217px">
                 </el-date-picker>     
             </el-form-item>
                     <el-form-item label="活动地点" prop='address'>
@@ -356,9 +356,9 @@
             <el-form-item prop='form_time' label='活动起止时间' >
                 <!-- <el-date-picker v-model="formLaunch.start_end_time" format="yyyy-MM-dd HH:mm" :clearable="no" range-separator=" ~ " type="datetimerange" placeholder="活动起止时间" style="width:285px" :picker-options="pickerOptions0">
                 </el-date-picker> -->
-                <el-date-picker v-model="formLaunch.start_end_time" format="yyyy-MM-dd HH:mm" :clearable="no" @change="checkForm" type="datetime" placeholder="活动开始时间" popper-class='top55'  :picker-options="pickerOptions0" style="width:217px">
+                <el-date-picker v-model="formLaunch.start_end_time" format="yyyy-MM-dd HH:mm" :editable="no" :clearable="no" @change="checkForm" type="datetime" placeholder="活动开始时间" popper-class='top55'  :picker-options="pickerOptions0" style="width:217px">
                 </el-date-picker>  
-                <el-date-picker v-model="formLaunch.time" format="yyyy-MM-dd HH:mm" :clearable="no" @change="checkForm" type="datetime" placeholder="活动结束时间" popper-class='top55'  :picker-options="pickerOptions0" style="width:217px">
+                <el-date-picker v-model="formLaunch.time" format="yyyy-MM-dd HH:mm" :editable="no" :clearable="no" @change="checkForm" type="datetime" placeholder="活动结束时间" popper-class='top55'  :picker-options="pickerOptions0" style="width:217px">
                 </el-date-picker>  
             </el-form-item>
         </el-form>
@@ -493,7 +493,7 @@
                     teachid:'',
                     sign_time:'',
                     start_end_time:'',
-                    time:'',
+                    time:[],
                     address:'',
                     content:'',
                     images:''
@@ -992,7 +992,7 @@
                 this.dialogFormVisible = true;
             },
             handleCurrentChange: function (val) { //换页
-                this.currentPage = val;
+                this.currentPage = val;this.backToTop();
                 this.fetchData();
             },
             fetchData() {

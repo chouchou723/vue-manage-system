@@ -845,7 +845,7 @@
                     //切换不同的标签来获取最新数据
                 },
                 handleCurrentChange: function (val) { //变更页数
-                    this.currentPage = val;
+                    this.currentPage = val;this.backToTop();
                     let z = (val-1)*10
                     let b = Object.values(this.SADataD[0])
                     let d = Object.values(this.SADataD[1])

@@ -96,7 +96,7 @@ export default {
                 'setmyActS'
             ]),
             handleCurrentChange: function(val) {
-                this.currentPage = val;
+                this.currentPage = val;this.backToTop();
                 this.fetchData();
             },
             switchDetail(row) {

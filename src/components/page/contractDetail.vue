@@ -2,65 +2,20 @@
     <div class="tableUserDCD">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item>
-                    <i class="el-icon-my-gerenxinxi"></i> 学员合同</el-breadcrumb-item>
-                <el-breadcrumb-item to="/myContracts">我的合同</el-breadcrumb-item>
+                <el-breadcrumb-item v-if="!code.includes('teach')"><i class="iconfont icon-gerenxinxi"></i> 学员合同</el-breadcrumb-item>
+                <el-breadcrumb-item :to="code.includes('teach')?'/frozenList':'/myContracts'">{{code.includes('teach')?'冻结列表':'我的合同'}}</el-breadcrumb-item>
                 <el-breadcrumb-item class='ss'>合同编号:{{contract.sku}}</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
-        <!-- 用户资料 -->
-        <!-- <div style="background-color:white;height:auto;border-radius:5px;position:relative;margin-bottom:10px">
-            <div class='UserDetailTitle'>
-                <span style="font-weight:600;font-size:22px">学员资料</span>
-            </div>
-            <el-form id='contractDeatilForm' label-width="102px" label-position='left' style='border-top:1px solid #e8e8e8 ;padding-left:10px'>
-                <el-form-item label="姓名:" prop='name'>
-                    <span class='canToS' @click='gotoS'>{{student.name}}</span>
-                </el-form-item>
-                <el-form-item label="性别:" prop='sex'>
-                    <span>{{student.sex}}</span>
-                </el-form-item>
-                <el-form-item label="身份证号:" prop='id_number'>
-                    <span>{{student.id_number}}</span>
-                </el-form-item>
-                <el-form-item label="年龄:" prop='age'>
-                    <span>{{student.age}}</span>
-                </el-form-item>
-                <el-form-item label="家长:" prop='parent'>
-                    <span>{{student.parent}}</span>
-                </el-form-item>
-                <el-form-item label="第二家长:" prop='parent1'>
-                    <span>{{student.parent1}}</span>
-                </el-form-item>
-                <el-form-item label="手机:" prop='parent_phone'>
-                    <span>{{student.parent_phone}}</span>
-                </el-form-item>
-                <el-form-item label="第二手机:" prop='parent1_phone'>
-                    <span>{{student.parent1_phone}}</span>
-                </el-form-item>
-                <el-form-item label="渠道来源:" prop='channel'>
-                    <span>{{student.channel}}</span> -->
-        <!-- <span v-if="student.channel =='转介绍'">家长：{{student.channel}}</span> -->
-        <!-- </el-form-item>
-                <el-form-item label="录入时间:" prop='time'>
-                    <span>{{student.time}}</span>
-                </el-form-item>
-                <el-form-item label="校区:" prop='school'>
-                    <span>{{student.school}}</span>
-                </el-form-item>
-                <el-form-item label="课程顾问(CC):" prop='teacher'>
-                    <span>{{student.teacher}}</span>
-                </el-form-item>
-            </el-form>
-        </div> -->
         <!-- 合同信息 -->
         <div id='contractAll'>
             <div class='contractDetailTitle'>
+                <i class="iconfont icon-contract fz30"></i>
                 <span class='CDtitle'>合同</span>
-                <span class='canToS' @click='gotoS'>学员姓名:{{student.name}}</span>
+                <span :class='[code.includes("financial")?"":"canToS","canTS"]' @click='gotoS'>学员姓名:{{student.name}}</span>
                 <span class='CDgrey'>合同类型:{{contract.new_order}}</span>
                 <div class="CDbutton">
-                    <el-button type="primary" size="mid" @click="editContract(contract)" v-if="contract.order_status!='审核通过'&&!code.includes('_c')">修改合同</el-button>
+                    <el-button type="primary" size="mid" @click="editContract(contract)" v-if="contract.order_status!='审核通过'&&!code.includes('readonly')">修改合同</el-button>
                 </div>
             </div>
             <div id='contractDetail'>
@@ -128,6 +83,12 @@
                             <div>{{scope.row.collectMoney}}</div>
                         </template>
                     </el-table-column>
+                    <!-- <el-table-column prop="panda_gohome" label="熊猫到家" width='65'>
+                        <template scope="scope">
+                            <div v-for='(item,index) in scope.row.panda_gohome' :class="index != (scope.row.title.length-1)?'CDtableTime':'CDtableTime1'">
+                                {{item}}</div>
+                        </template>
+                    </el-table-column> -->
                     <el-table-column prop="assignClass" label="排班状态">
                         <template scope="scope">
                             <div v-for='(item,index) in scope.row.syllabus' v-if="item.teacher_name !=''" :class="index != (scope.row.title.length-1)?'CDtableArr':'CDtableArr1'">
@@ -137,17 +98,11 @@
                             <div v-else :class="index != (scope.row.title.length-1)?'gotoS':'gotoS1'" >
                                 <span  style='color: rgb(226, 26, 89)' v-if="scope.row.course_curr_num[index]==='0'">已结束</span>
                                 <span  style='color: #dba31c' v-else>未排班</span>
-                                <!-- {{ scope.row.course_curr_num[index]==='0'?'已结束':'还未排班'}} -->
                             </div>
-                            <!-- <div v-else :class="index != (scope.row.title.length-1)?'gotoS':'gotoS1'" @click='gotoS'>还未排班</div> -->
                         </template>
                     </el-table-column>
                 </el-table>
                 <el-form id='contractDeatilForm1' label-width="102px" label-position='left' class="CDform">
-                    <!-- <div label="转课补费额:" v-if="contract.bufei_money!=0" style='color:#1fb5ad;font-size:15px;margin-bottom:10px'>
-                               <span style='width:98px;display:inline-block'>
-                                    转课补费额: </span>  {{contract.bufei_money}}元
-                        </div> -->
                     <el-form-item label="合同编号:" prop='name'>
                         <span>{{contract.sku}}</span>
                     </el-form-item>
@@ -155,26 +110,22 @@
                         <span>{{contract.baomingTeachName?contract.baomingTeachName:'无'}}</span>
                     </el-form-item>
                     <el-form-item label="熊猫到家:" prop='age'>
-                        <span>{{contract.panda_gohome==1?'有':'无'}}</span>
+                        <span>{{contract.panda_gohome==1?'12期':contract.panda_gohome==2?'24期':'无'}}</span>
                     </el-form-item>
                     <el-form-item label="付款方式:" prop='money'>
                         <div v-for='item in contract.money'>{{item}}</div>
                     </el-form-item>
-                    <!-- <el-form-item label="转课补费额" v-if='contract.bufei_money!=0'>
-                        {{contract.bufei_money}}元
-                    </el-form-item> -->
                     <el-form-item label="付款总金额:" prop='online_money' style='margin-bottom:40px'>
                         <span>{{contract.datatable[0].collectMoney}}元</span>
                     </el-form-item>
                 </el-form>
-                <div class="CDupload" v-if="!code.includes('_c')">
+                <div class="CDupload" v-if="!code.includes('readonly')">
                     <el-upload   :action="action" :headers='headers'
                     list-type="picture-card" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-success='handleSuccess'
                     :on-error='handleError' :before-upload="beforeAvatarUpload" :on-progress='onChange' :file-list="fileList2"
                     name='orderImg' :data="upData">
                     <i class="el-icon-plus" style='position:relative'>
                             <span class='addphoto'>上传纸质合同</span>
-                        <!-- <div class="addphoto" v-if="!code.includes('_c')">添加纸质合同</div> -->
                     </i>
                     </el-upload>
                     <el-dialog v-model="dialogVisible" size="small" top='5%'>
@@ -198,9 +149,12 @@
                         签约时间: {{contract.created?contract.created.slice(0,10):''}}
                     </div>
                     <div class="CDpic">
-                        <img :src="approvalSrc" alt="" width="100" v-if="contract.order_status =='审核通过'">
-                        <img :src="approvalSrc1" alt="" width="100" v-if="contract.order_status =='审核失败'">
-                        <img :src="approvalSrc2" alt="" width="100" v-if="contract.order_status =='审核驳回'">
+                        <i class="iconfont icon-shenpitongguo fz100 fgreen" v-if="contract.order_status =='审核通过'"></i>
+                        <i class="iconfont icon-shenpituihui fz100 fyell"  v-if="contract.order_status =='审核失败'"></i>
+                        <i class="iconfont icon-shenpituihui fz100 fred" v-if="contract.order_status =='审核驳回'"></i>
+                        <!-- <img :src="approvalSrc" alt="" width="100" > -->
+                        <!-- <img :src="approvalSrc1" alt="" width="100" v-if="contract.order_status =='审核失败'">
+                        <img :src="approvalSrc2" alt="" width="100" v-if="contract.order_status =='审核驳回'"> -->
 
                     </div>
                 </div>
@@ -214,25 +168,24 @@
             <div class='record2' v-if='contract.order_logs.freeze.length!=0' v-for='item in contract.order_logs.freeze'>
                 <div class='recordTitle'>冻结记录</div>
                 <div class='recordTitleContent1'>{{item.content}}</div>
-                <div class='recordTitleContent3'>操作人:{{item.teach_uid}}</div>
+                <div class='recordTitleContent3'>操作人:{{item.teach_uid-0===0?'学员本人':item.teach_uid}}</div>
                 <div class='recordTitleContent2'>操作日期:{{item.created}}</div>
             </div>
             <div class='record3' v-if='contract.order_logs.thaw.length!=0' v-for='item in contract.order_logs.thaw'>
                 <div class='recordTitle'>解冻记录</div>
                 <div class='recordTitleContent1'>{{item.content}}
                 </div>
-                <div class='recordTitleContent3'>操作人:{{item.teach_uid}}</div>
+                <div class='recordTitleContent3'>操作人:{{item.teach_uid-0===0?'学员本人':item.teach_uid}}</div>
                 <div class='recordTitleContent2'>操作日期:{{item.created}}</div>
             </div>
             <div class='record4' v-if='contract.order_logs.modifyclass.length!=0' v-for='item in contract.order_logs.modifyclass'>
                 <div class='recordTitle'>转班记录</div>
                 <div class='recordTitleContent1'>{{item.content}}
                 </div>
-                <div class='recordTitleContent3'>操作人:{{item.teach_uid}}</div>
+                <div class='recordTitleContent3'>操作人:{{item.teach_uid-0===0?'学员本人':item.teach_uid}}</div>
                 <div class='recordTitleContent2'>操作日期:{{item.created}}</div>
             </div>
         </div>
-
         <!-- 修改合同 -->
         <el-dialog title="修改合同" :visible.sync="dialogFormVisible3" :close-on-click-modal="no" top='7%' show-close class='signContactDialogA'
             @close="resetAll('actSchool')">
@@ -246,13 +199,13 @@
                         <div v-for='i in contracts' class='CDlessonhover'>
                             <div class="CDlessonD">
                                 <div>
-                                    <el-select v-model="i.kc_tid"  placeholder="课程类型" size='small' class="CD123" @change='getClassName(i.kc_tid,i)'>
+                                    <el-select v-model="i.kc_tid"   :disabled="i.canEdit" placeholder="课程类型" size='small' class="CD123" @change='getClassName(i.kc_tid,i)'>
                                         <el-option v-for="item in classkind" :key="item.kc_tid" :label="item.kc_tname" :value="item.kc_tid">
                                         </el-option>
                                     </el-select>
                                 </div>
                                 <div style="margin-left:10px">
-                                    <el-select v-model="i.course_id"  placeholder="课程名称" size='small' class="CD143" @change='getPrice(i,i.course_id)'>
+                                    <el-select v-model="i.course_id"   :disabled="i.canEdit" placeholder="课程名称" size='small' class="CD143" @change='getPrice(i,i.course_id)'>
                                         <el-option v-for="item in i.courseName1" :key="item.kcid" :label="item.title" :value="item.kcid">
                                         </el-option>
                                     </el-select>
@@ -277,10 +230,9 @@
                                 <span>{{i.study_money}}</span>
                             </div>
                         </div>
-
                     </div>
                     <div class='editCoupons'>
-                        <el-select v-model="coupons" clearable multiple placeholder="请选择" size='mini' class='CD131'>
+                        <el-select v-model="coupons"  multiple placeholder="请选择"  class='CD131' @change='checkCou1(contracts)'>
                             <el-option v-for="item in couponsList" :key="item.id" :label="item.title" :value="item.id">
                             </el-option>
                         </el-select>
@@ -288,7 +240,7 @@
                     <div class='editPromtion'>
                         <div v-for='i in contracts' class='editPromtionDiv'>
                             <div class='editCouponesMoney'>
-                                <el-input v-model="i.coupons_money" class='promotionMoney'></el-input>
+                                <el-input v-model="i.coupons_money" class='CDTdpromotionMoney' @blur="checkCou(contracts,i.coupons_money,i.study_money)" ></el-input>
                             </div>
                         </div>
                     </div>
@@ -299,21 +251,28 @@
                     </div>
                     <div class='totalP3zhuan' v-if="contract.bufei_money-0!=0">{{contract.bufei_money}}</div>
                     <div class='totalP3'>{{totalP3}}</div>
+                    <!-- <div class='editPromtion'>
+                            <div v-for='i in contracts' class='editPromtionDiv'>
+                                <div class='editCouponesMoney'>
+                                        <el-select v-model="i.panda_gohome"  placeholder="请选择"  >
+                                                <el-option label="有" value="1" v-if="i.kc_tid==1"></el-option>
+                                                <el-option label="无" value="0"></el-option>
+                                            </el-select>
+                                </div>
+                            </div>
+                        </div> -->
                     <!-- 总额用法 -->
                     <div class='payMethod'>
                         <div v-for='(i,index) in contracts' class='payMethodDiv'>
                             <div class='editCouponesMoney'>
                                 <el-button type="text" size="small" @click="addCon(index)" :style="{color: index==0?'#1fb5ad':'red'}" v-if='index==0'>添加课程</el-button>
-                                <el-button type="text" size="small" @click="delCon(index)" :style="{color: index==0?'#1fb5ad':'red'}" v-if='index!=0'>删除</el-button>
+                                <el-button type="text" size="small" @click="delCon(index)" :style="{color: index==0?'#1fb5ad':'red'}" :disabled="i.canEdit" v-if='index!=0'>删除</el-button>
                             </div>
                         </div>
 
                     </div>
                 </div>
                 <div>
-                    <!-- <div label="抵扣的转课补费额" v-if='contract.bufei_money!=0' style='color:#1fb5ad;font-size:15px;margin-bottom:20px'>
-                               <span style='display:inline-block;width:128px'>抵扣的转课补费额:</span> {{contract.bufei_money}}元
-                        </div> -->
                     <el-form-item label="合同编号" prop='sku'>
                         <el-input v-model="actSchool.sku" placeholder='请输入合同编号' class="CD142"></el-input>
                     </el-form-item>
@@ -325,8 +284,9 @@
                     </el-form-item>
                     <el-form-item label="熊猫到家" prop='panda_gohome'>
                         <el-select v-model="actSchool.panda_gohome" placeholder="请选择" class="CD142">
-                            <el-option label="有" value="1"></el-option>
                             <el-option label="无" value="0"></el-option>
+                            <el-option label="12期" value="1"></el-option>
+                            <el-option label="24期" value="2"></el-option>                            
                         </el-select>
                     </el-form-item>
                     <el-form-item label="付款方式" class="CDposition" prop="method">
@@ -363,7 +323,6 @@
                 <br>
             </div>
         </el-dialog>
-
     </div>
 </template>
 <script>    
@@ -434,7 +393,6 @@
                     checkOrderSku(para,token).then(res=>{
                         // console.log(res)
                         if(res.data.repeat===0){
-
                             callback();
                         }else{
                             callback('合同编号已存在')
@@ -444,7 +402,7 @@
             }
             return {
                 // action:'http://pandatest.dfth.com/api/v1/order/uploadOrderImg',
-                aciton:'/api/v1/order/uploadOrderImg',
+                action:'/api/v1/order/uploadOrderImg',
                 writeL:false,
                 headers: {
                     Authorization: token.Authorization
@@ -452,9 +410,9 @@
                 upData: {
                     order_id: this.$route.params.order_id
                 },
-                approvalSrc: '../../../static/img/pass.png',
-                approvalSrc1: '../../../static/img/nopass.png',
-                approvalSrc2: '../../../static/img/nopass.png',
+                // approvalSrc: '../../../static/img/pass.png',
+                // approvalSrc1: '../../../static/img/nopass.png',
+                // approvalSrc2: '../../../static/img/nopass.png',
                 fileList2: [],
                 coupons: [],
                 courseName1: [],
@@ -467,6 +425,7 @@
                 dialogVisible: false,
                 dialogVisible1: false,                
                 contract: {
+                    order_status:'审核通过',
                     datatable: [{
                         collectMoney: 0
                     }],
@@ -485,24 +444,15 @@
                     tuition_price: '',
                     teaching_price: '',
                     book_price: '',
-                    study_money: '',
+                    study_money: 0,
                     coupons_money: '',
-                    courseName1: []
+                    courseName1: [],
+                    // panda_gohome:'0',
+                    canEdit:false
                 }],
                 // tableTitle: ['课时', '签单数', '学费', '教材费', '书本费', '优惠类型', '优惠金额', '实收总额', '操作'],
                 student: {
-                    name: '',
-                    sex: '',
-                    id_number: '',
-                    age: '',
-                    parent: '',
-                    parent_phone: '',
-                    parent1: '',
-                    parent1_phone: '',
-                    channel: '',
-                    school: '',
-                    time: '',
-                    teacher: ''
+                    name: ''
                 },
                 dialogFormVisible3: false, //填写合同内容
                 no: false,
@@ -555,9 +505,48 @@
                 },
                 d: 0,
                 stopchange: false,
+                secondO:true,
             }
         },
         methods: {
+            checkCou1(data){
+                if(data.some(item=>{return item.coupons_money-0})){
+                    if(this.coupons.length===0){
+                        this.$message.error('优惠类型为必选项，请选择后再提交');
+                        this.secondO = false; 
+                    }else{
+                        this.secondO = true;
+                    }
+                }else{
+                    if(this.coupons.length==0){
+                        this.secondO = true; 
+                    }else{
+                        this.$message.error('请输入对应的优惠金额');
+                    this.secondO = false; 
+                    }
+                }
+            },
+            checkCou(data,money,smoney){
+                if(data.some(item=>{return item.coupons_money-0})){
+                    if(this.coupons.length==0){
+                        this.$message.error('优惠类型为必选项，请选择后再提交');
+                    this.secondO = false;
+                    }else{
+                        this.secondO = true;
+                    }
+                }else{
+                    if(this.coupons.length==0){
+                        this.secondO = true;
+                    }else{
+                        this.$message.error('请输入对应的优惠金额');                    
+                    this.secondO = false;
+                    }
+                }
+                if(money>smoney){
+                    this.$message.error('优惠金额不得大于课程金额');
+                    this.secondO = false;
+                }
+            },
             clickImg(data){
                 this.dialogImageUrl1 = data;
                 this.dialogVisible1 = true;
@@ -588,7 +577,11 @@
                 return isJPG && isLt2M;
             },
             gotoS() {
-                this.$router.push('/studentDetail/' + this.$route.params.uid);
+                if(this.code.includes('cc')){
+                    this.$router.push('/studentDetail/' + this.$route.params.uid);
+                }else if(this.code.includes('teach')){
+                    this.$router.push('/teachstudentDetail/' + this.$route.params.uid);
+                }
             },
             handleSuccess(response, file, fileList) {//上传图片成功
                 this.$message.success('上传成功')
@@ -606,7 +599,6 @@
             handleRemove(file, fileList) {//移除图片
                 // console.log(fileList)
                 if(file.id){
-
                     let para = {
                         order_id: this.$route.params.order_id,
                         img_id: file.id
@@ -631,8 +623,7 @@
                 this.dialogVisible = true;
             },
             editContract(data) { //修改合同
-                
-            setTimeout(() => {
+            setTimeout(() => {//延迟载入支付方式
                 this.d = 2
             }, 500);
                 this.coupons = data.datatable[0].coupons.map(item => {
@@ -640,38 +631,31 @@
                 })
                 let arr = data.order_item.map(item => {
                     return {
+                        order_item_id:item.order_item_id,
                         kc_tid: item.kc_tid - 0,
-                        course_id: item.course_id - 0,
-                        year_num: '',
-                        head_count: '',
-                        tuition_price: '',
-                        teaching_price: '',
-                        book_price: '',
-                        study_money: '',
-                        coupons_money: parseInt(item.coupons_money),
-                        courseName1: []
+                        // course_id: item.course_id - 0,
+                        year_num: item.year_num,
+                        head_count: item.head_count,
+                        tuition_price: item.tuition_price,
+                        teaching_price: item.teaching_price,
+                        book_price: item.book_price,
+                        study_money:0,
+                        coupons_money: item.coupons_money-0,
+                        // panda_gohome:item.panda_gohome+'',
+                        courseName1: [],
+                        canEdit:item.syllabus_id==='0'?false:true,
                     }
                 })
                 arr.map((item, index, arr) => {
                     // let that = this;
-                    let a = item.kc_tid
-                    this.getClassName(a, arr[index])
-                    setTimeout(function () {
-
+                    let a = item.kc_tid;
+                    this.getClassName(a, arr[index])//根据kc获取到详细课程名
+                    setTimeout(() => {
                         arr[index].course_id = data.order_item[index].course_id - 0
-                        // that.getPrice(arr[index], arr[index].course_id)
                     }, 200);
-
                     // let b = item.course_id
                 })
-                this.contracts = [...arr]
-                let pa = {
-                order_id: this.$route.params.order_id
-            }
-            getMyContractDetail(token, pa).then(res => {
-                // console.log(res)
-                // let that = this;
-                let data = res.data;
+                this.contracts = [...arr];
                 this.actSchool = {
                     sku: data.sku,
                     teacher_uid: data.baomingTeachName ? data.baoming_teach.aid : '',
@@ -681,13 +665,11 @@
                     }),
                     created: '' //,
                 }
-            }).then(()=>{
                 this.dialogFormVisible3 = true
-            })
             },
             nextToLast(formName) { //提交修改合同
                 this.$refs[formName].validate((valid) => {
-                    if (valid && this.isEqual === 1&&this.contracts.every(item=>{return item.course_id})) {
+                    if (valid && this.isEqual === 1&& this.secondO&&this.contracts.every(item=>{return item.course_id})) {
                         let para = {}
                         para.order = { ...this.actSchool
                         }
@@ -721,9 +703,9 @@
                     } else {
                         // this.$message.error('付款总额与实收总额不符')
                         if(!this.contracts.every(item=>{return item.course_id})){
-                            this.$message.info('课程还未选择')
+                            this.$message.error('课程还未选择')
                         }else{
-                            this.$message.info('请确认所有项目填写正确')      
+                            this.$message.error('请确认所有项目填写正确')      
                         }
                     }
                 })
@@ -748,7 +730,9 @@
                     tuition_price: '',
                     teaching_price: '',
                     book_price: '',
+                    study_money:0,
                     coupons_money: '',
+                    // panda_gohome:'0',
                     courseName1: []
                 }]
                 this.actSchool = {
@@ -767,7 +751,13 @@
             },
             getClassName(data, i) { //获取课程名称
                 if (!this.stopchange&&data) {
-                    i.course_id = ''
+                    i.course_id = '';
+                    i.year_num = '';
+                        i.head_count = '';
+                        i.tuition_price = '';
+                        i.teaching_price = '';
+                        i.book_price = '';
+                        i.study_money = '';
                     let para = {
                         pid: data,
                         simple: 1
@@ -779,14 +769,12 @@
             },
             getPrice(data, index) { //调详细获取价格
                 if(index){
-
                     let para = {
                         kcid: index
                     }
                     getLessonDetail(token, para).then((res) => {
                         let a = res.data
-                        // console.log(a)
-                        if (data.course_id !== '') {
+                        // if (data.course_id !== '') {
                             data.year_num = a.year_num;
                             data.head_count = a.head_count;
                             data.tuition_price = a.tuition_price;
@@ -794,14 +782,14 @@
                             data.book_price = a.book_price;
                             data.study_money = (a.tuition_price - 0) + (a.teaching_price -
                                 0) + (a.book_price - 0);
-                        } else {
-                            data.year_num = '';
-                            data.head_count = '';
-                            data.tuition_price = '';
-                            data.teaching_price = '';
-                            data.book_price = '';
-                            data.study_money = '';
-                        }
+                        // } else {
+                        //     data.year_num = '';
+                        //     data.head_count = '';
+                        //     data.tuition_price = '';
+                        //     data.teaching_price = '';
+                        //     data.book_price = '';
+                        //     data.study_money = '';
+                        // }
                     })
                 }
             },
@@ -816,6 +804,7 @@
                     book_price: '',
                     study_money: '',
                     coupons_money: '',
+                    // panda_gohome:'0',
                     courseName1: []
                 })
             },
@@ -828,12 +817,6 @@
                 }, 0);
                
             },
-            changeReset(val) {
-                if (val != '') {
-
-                    this.$refs['actSchool'].validate((valid) => {})
-                }
-            }
         },
         computed: {
             tableTitle() {
@@ -959,7 +942,6 @@
                     }
                 })
             }).then(() => {
-
                 let a = document.getElementsByClassName('el-upload--picture-card')[0];
                 if (this.fileList2.length == 2) {
                     a.style.display = 'none'
@@ -1006,21 +988,18 @@
         border-color: #32a4d3;
     }
 
-    .UserDetailTitle {
-        position: relative;
-        background: url(../../../static/img/contact.png) left center/25px no-repeat;
-        padding: 10px 10px 10px 27px;
-        margin-left: 12px
-    }
 
     .contractDetailTitle {
         position: relative;
-        background: url(../../../static/img/contract.png) left center/30px no-repeat;
-        padding: 10px 10px 10px 30px;
-        margin-left: 12px
+        /* background: url(../../../static/img/contract.png) left center/30px no-repeat; */
+        padding: 10px 10px 10px 10px;
+        /* margin-left: 12px */
     }
-
-    #contractDeatilForm .el-form-item {
+    .fz30{
+        font-size: 30px;
+        vertical-align: sub;
+    }
+    /* #contractDeatilForm .el-form-item {
         margin-bottom: 12px
     }
 
@@ -1042,7 +1021,7 @@
 
     #contractDeatilForm .el-form-item__content {
         line-height: 30px
-    }
+    } */
 
     .tableUserDCD .el-tag--success {
         background-color: #1fb5ad;
@@ -1123,10 +1102,10 @@
         cursor: pointer;
     }
 
-    .promotionMoney input {
+    .CDTdpromotionMoney input {
         height: 22px;
         margin: 9px auto;
-        width: 80%;
+        width: 91%;
     }
 
     #contractDetail {
@@ -1137,7 +1116,7 @@
         position: relative
     }
 
-    #contractDetail .el-table td,
+    /* #contractDetail .el-table td,
     #contractDetail .el-table th:not(.gutter) {
         padding: 5px 0;
         text-align: center
@@ -1151,7 +1130,7 @@
 
     #contractDetail .el-table::before {
         height: 0;
-    }
+    } */
 
     .gotoS {
         border-bottom: 1px solid rgb(223, 236, 235);
@@ -1312,13 +1291,15 @@
         display: flex;
         flex: 0 0 66px;
     }
-
+.canTS{
+    margin-left: 5px;
+        padding-right: 5px;
+        border-right: 1px solid gainsboro ;
+        color: grey;
+}
     .canToS {
         font-weight: bold;
         color: #1fb5ad;
-        margin-left: 5px;
-        padding-right: 5px;
-        border-right: 1px solid gainsboro
     }
 
     .canToS:hover {
@@ -1327,7 +1308,8 @@
 
     .CDtitle {
         font-weight: 600;
-        font-size: 22px
+        font-size: 22px;
+        margin-left:-5px;
     }
 
     .CDgrey {
@@ -1530,5 +1512,17 @@
 }
 .canClickCD:hover{
 cursor: pointer
+}
+.fz100{
+    font-size: 100px;
+}
+.fgreen{
+    color:#4bc33a
+}
+.fyell{
+    color: #cbbc59;
+}
+.fred{
+   color: #d81e06;
 }
 </style>

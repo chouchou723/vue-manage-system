@@ -3,7 +3,7 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
-                    <i class="el-icon-my-moban"></i> 资源管理</el-breadcrumb-item>
+                    <i class="icon-moban iconfont"></i> 资源管理</el-breadcrumb-item>
                 <el-breadcrumb-item :to="{ path: resourcePath}">{{secondTitle}}</el-breadcrumb-item>
                 <el-breadcrumb-item class='ss'>{{student.name}}</el-breadcrumb-item>
             </el-breadcrumb>
@@ -11,16 +11,22 @@
         <div class="userDD22">
             <div  class="userDD2">
                 <div class='UserDetailTitle'>
+                    <i class="iconfont icon-tongxunlu1 fz25"></i>
                     <!--  <i class=el-icon-my-tongxunlu style="font-size:31px"></i> -->
                     <span  class="userDD4">用户资料</span>
                     <div  class="userDD5">
-                        <div class='addU' @click='addU' v-if="this.Uresourse==1&&this.Ustatus == '待认领'&&!code.includes('_c')"></div>
-                        <el-button v-if='this.Uresourse==2&&!code.includes("_c")' type="primary" size="mid" class='recognizeR' @click='recognizeResource'>
-                            <img src="../../../static/img/recognize.png" alt="" width='20'  class="userDD6">
+                        <div class='addU' @click='addU' v-if="this.Uresourse==1&&this.Ustatus == '待认领'&&!code.includes('readonly')">
+                            <i class="iconfont icon-1 fz30 fzh"></i>
+                        </div>
+                        <el-button v-if='this.Uresourse==2&&!code.includes("readonly")' type="primary" size="mid" class='recognizeR' @click='recognizeResource'>
+                            <!-- <img src="../../../static/img/recognize.png" alt="" width='20'  class="userDD6"> -->
+                            <i class="iconfont icon-gaizhangjilu"></i>
                             <span  class="userDD1">认证资源</span>
                         </el-button>
-                        <el-button v-if='this.Uresourse==3&&!code.includes("_c")' type="primary" size="mid" class='activateR' @click='activateResource'>
-                            <img src="../../../static/img/activate.png" alt="" width='20'  class="userDD6">
+                        <el-button v-if='this.Uresourse==3&&!code.includes("readonly")' type="primary" size="mid" class='activateR' @click='activateResource'>
+                            <!-- <img src="../../../static/img/activate.png" alt="" width='20'  class="userDD6">
+                             -->
+                             <i class="iconfont icon-ioscolorwand"></i>
                             <span  class="userDD1">激活资源</span>
                         </el-button>
                     </div>
@@ -67,11 +73,11 @@
             </div>
             <!-- 沟通记录 -->
             <div  class="userDD3">
-                <div class='communityTitle'>
-                    <!--  <i class=el-icon-my-tongxunlu style="font-size:31px"></i> -->
+                <div class='communityTitleUD'>
+                     <i class='iconfont icon-xueyuangoutongguanli fz30' ></i>
                     <span  class="userDD4">沟通记录({{number}})</span>
                     <div  class="userDD8">
-                        <div class='addR' @click='addComm' v-if="!code.includes('_c')"></div>
+                        <div class='addR' @click='addComm' v-if="!code.includes('readonly')"><i class='iconfont icon-group-add fz30 fzh'></i></div>
                     </div>
                 </div>
                 <div  class="userDD9">
@@ -89,7 +95,9 @@
                             </div>
                             <div>
                                 <div  class="userDD13" v-if="item.remind_time">下次跟进时间:{{item.remind_time}}</div>
-                                <div class='editSpan' @click='editReturn(item.index,item)' v-if="new Date().getTime()-new Date(item.create_at).getTime()<7200000 && item.tmk.uname == userName"></div>
+                                <div class='editSpanUD' @click='editReturn(item.index,item)' v-if="new Date().getTime()-new Date(item.create_at).getTime()<7200000 && item.tmk.uname == userName">
+                                    <i class="iconfont icon-icon07 fz30 fzh fgrey"></i>
+                                </div>
                             </div>
                         </el-col>
                     </el-row>
@@ -102,7 +110,7 @@
             <!-- 邀约记录 -->
             <div  class="userDD14">
                 <div class='inviteTitle'>
-                    <!--  <i class=el-icon-my-tongxunlu style="font-size:31px"></i> -->
+                     <i class="iconfont icon-5 fz30"></i>
                     <span style="font-weight:600;font-size:22px;">邀约记录({{number1}})</span>
                 </div>
                 <div style="min-height:298px;padding-bottom:30px;">
@@ -174,8 +182,6 @@
                             <el-option label="奶奶" value="奶奶"></el-option>
                             <el-option label="外公" value="外公"></el-option>
                             <el-option label="外婆" value="外婆"></el-option>
-                            <!--  <el-option :label="connect" value="1"></el-option>
-      <el-option :label="connect1" value="0"></el-option> -->
                         </el-select>
                     </el-form-item>
                     <el-form-item prop="phone" style="width:142px;float:left">
@@ -184,23 +190,21 @@
                 </el-form-item>
                 <el-form-item label="">
                     <el-form-item prop="parent1"  class="userDD15">
-                        <el-input v-model="form.parent1" placeholder='请输入家长姓名'></el-input>
+                        <el-input v-model="form.parent1" placeholder='请输入家长姓名' @blur='checkP1'></el-input>
                     </el-form-item>
                     <!-- <div style='position:absolute;color:#ff4949;bottom:-26px;font-size:12px;left:184px;' v-if="secondRule">第二家长信息如若填写,必须填写完全,不然将不予保存</div> -->
                     <el-form-item prop="con1"  class="userDD15">
-                        <el-select v-model="form.con1" clearable placeholder="请选择关系">
+                        <el-select v-model="form.con1" clearable placeholder="请选择关系" @change='checkP1'>
                             <el-option label="妈妈" value="妈妈"></el-option>
                             <el-option label="爸爸" value="爸爸"></el-option>
                             <el-option label="爷爷" value="爷爷"></el-option>
                             <el-option label="奶奶" value="奶奶"></el-option>
                             <el-option label="外公" value="外公"></el-option>
                             <el-option label="外婆" value="外婆"></el-option>
-                            <!--  <el-option :label="connect" value="1"></el-option>
-      <el-option :label="connect1" value="0"></el-option> -->
                         </el-select>
                     </el-form-item>
                     <el-form-item prop="phone1" style="width:142px;float:left">
-                        <el-input v-model="form.phone1" placeholder='请输入手机号' :maxlength='maxlength'></el-input>
+                        <el-input v-model="form.phone1" placeholder='请输入手机号' :maxlength='maxlength' @blur='checkP1'></el-input>
                     </el-form-item>
                     <el-col :span="2">
                         <span style="margin-left:10px;width:200px;color:grey"> (选填)</span>
@@ -247,22 +251,8 @@
                             </el-select>
                         </el-form-item>
                     </div>
-                    <!-- <el-form-item prop='familys_name' style='float:left;width:100px;'>
-                        <span v-if='this.form.sour_id == 4&&this.form.familys_name'>家长姓名:{{form.familys_name}}</span>
-                    </el-form-item> -->
-                    <!-- <el-form-item prop='referral_uid' style="display:none">
-                        <span>{{form.referral_uid}}</span>
-                    </el-form-item>
-                    <el-form-item prop='familys' style="display:none">
-                    </el-form-item> -->
                     <span v-if='isWarning' style="width:200px;color:red;float:left"> {{warning}}</span>
                 </el-form-item>
-                <!-- <el-form-item label="更换TMK" prop='tmk_id' v-if="this.Uresourse != '3' && code =='tmk_m'">
-                    <el-select v-model="form.tmk_id" placeholder="请选择TMK" style="width:142px">
-                        <el-option v-for="item in tmks" :key="item.key" :label="item.label" :value="item.key">
-                        </el-option>
-                    </el-select>
-                </el-form-item> -->
                 <el-form-item style='margin-top:20px'>
                     <el-button type="primary" :loading='writeL' @click="onSubmit('form')">确定</el-button>
                     <el-button @click="dialogFormVisibleAdd = false">取消</el-button>
@@ -270,24 +260,19 @@
             </el-form>
         </el-dialog>
         <el-dialog title="认证资源" :visible.sync="dialogFormVisible2" :close-on-click-modal="no" top='33%' size='tiny' show-close style='z-index:100'
-            class='schoolDialog'>
+            class='schoolDialogUD'>
             <div slot="footer" class="dialog-footer" style='text-align:center'>
-                <el-button :loading='writeL' @click="recoToNo">认证为无效</el-button>
-                <el-button :loading='writeL' type="primary" @click="restartResource">重新激活</el-button>
-                <br>
-                <br>
-                <br>
+                <div style='padding-bottom:40px;'>
+                    <el-button :loading='writeL' @click="recoToNo">设为暂不联系</el-button>
+                    <el-button :loading='writeL' type="primary" @click="restartResource">重新激活</el-button>
+                </div>
                 <span style="color:#ec6161;">*请在了解资源实际情况后做出判断</span>
             </div>
         </el-dialog>
         <el-dialog title="修改资源所属校区" :visible.sync="dialogFormVisible3" :close-on-click-modal="no" top='33%' size='tiny' show-close
-            style='z-index:100' class='schoolDialog' @close="resetD('actSchool')">
+            style='z-index:100' class='schoolDialogUD' @close="resetD('actSchool')">
             <el-form :model="actSchool" id='actSchool1' :rules='ruleActSchool' ref="actSchool">
                 <el-form-item label="激活资源到:" prop='actToSchool'>
-                    <!-- <el-select v-model="actSchool.actToSchool" placeholder="请选择校区" style="width:142px" >
-      <el-option label="徐锦江" value="1"></el-option>
-      <el-option label="刘青云" value="0"></el-option>
-    </el-select> -->
                     <el-select v-model="actSchool.actToSchool" filterable remote placeholder="请输入校区关键词" :remote-method="remoteMethod" :loading="loading"
                         prop="keySchool">
                         <el-option v-for="item in schools" :key="item.id" :label="item.title" :value="item.id">
@@ -302,7 +287,6 @@
                 <span style="color:#ec6161;">*请在了解资源实际情况后做出判断</span>
             </div>
         </el-dialog>
-
         <el-dialog :title="communityTitle" :visible.sync="dialogFormVisible" :close-on-click-modal="no" size='tiny' show-close style='z-index:100'
             class='tagDialog' @close="resetD('commuForm')">
             <el-form :model="commuForm" id='detailForm' :rules='rulecommuForm' ref="commuForm">
@@ -382,7 +366,11 @@
                 } else if (!myreg.test(value)) {
                     callback('请输入有效的家长姓名');
                 } else {
-                    callback();
+                    if(this.form.phone1&&this.form.con1){
+                        callback();
+                        }else{
+                        callback('必须填写全第二家长信息');
+                        }
                 }
             }
             var nan = (rule, value, callback) => {
@@ -419,6 +407,17 @@
                     })
                 }
             }
+            var iscon1 = (rule, value, callback) => {//修改用户
+                if (value == '') {
+                    callback()
+                }else{
+                    if(this.form.phone1&&this.form.parent1){
+                        callback();
+                        }else{
+                        callback('必须填写全第二家长信息');
+                        }
+                }
+            }
             var isPhone1 = (rule, value, callback) => {
                 var myreg = /^(((1[0-9]{1}))+\d{9})$/;
                 if (value == '') {
@@ -435,8 +434,11 @@
                 if(res.data.data.length!=0&&res.data.data[0].id!=this.form.id){
                 callback('此手机号码已存在');
                 }else{
-                callback();
-
+                    if(this.form.parent1&&this.form.con1){
+                        callback();
+                        }else{
+                        callback('必须填写全第二家长信息');
+                        }
                 }
                 })
                 }
@@ -575,7 +577,12 @@
                     }],
                     con: [{
                         required: true,
-                        trigger: 'blur'
+                        trigger: 'change'
+                    }],
+                    con1: [{
+                        required: true,
+                        validator: iscon1,
+                        trigger: 'change'
                     }],
                     phone: [{
                         required: true,
@@ -612,19 +619,22 @@
                     }]
                 },
                 options4: []
-
             }
         },
         methods: {
+            checkP1(){
+                this.$refs['form'].validateField('parent1');
+                this.$refs['form'].validateField('con1');
+                this.$refs['form'].validateField('phone1');                
+            },
             resetD(formName) {
                 this.$refs[formName].resetFields();
-
             },
             onSubmit(formName) { //修改用户资料提交
                 this.$refs[formName].validate((valid) => { //替换提交服务
                     if (valid && this.isWarning === false) {
                         let para ={...this.form}
-                        if (para.parent1&& para.con1 && para.phone1) {
+                        if (para.parent1) {
                             para.familys = para.parent + '|' + para.con + '|' + para.phone +
                                 ',' + para.parent1 + '|' + para.con1 + '|' + para.phone1
                         } else {
@@ -632,8 +642,6 @@
                         }
                         para.customer_id = this.$route.params.uid;
                         para.isActivate = this.isActivate;
-                        // let para = JSON.parse(JSON.stringify(this.form));
-
                         para.sour_id = para.sour_id.join(',');
                         this.writeL = true;
                         TMKput_customer(para, token).then(res => {
@@ -664,10 +672,6 @@
                             } else {
                                 this.$message.error(res.message);
                                 this.writeL = false;
-                                // this.form.phone = '';
-                                // this.$refs.parentPhone.$refs.input.focus();
-                                // this.$refs.parentPhone.$refs.input.blur();
-                                // this.form.sour_id = this.form.sour_id.split(',')
                             }
                         }).then(() => {
                             this.getUserData()
@@ -680,49 +684,7 @@
                         return false;
                     }
                 });
-
             },
-            // handleSelect(item) { //转介绍时 选择同名的人后
-            //     this.nostudent = false;
-            //     this.form.familys_name = item.familys_name;
-            //     this.form.referral_uid = item.referral_uid
-            // },
-            // querySearchAsync(queryString, cb) { //转介绍时 输入姓名 同步搜索
-            //     let para = {
-            //         input: queryString
-            //     }
-            //     repeatStudentList(token, para).then(res => {
-            //         // console.log(res.data)
-            //         if (res.data.length != 0) {
-            //             this.studentsList = res.data.map(item => {
-            //                 return {
-            //                     referral_uid: item.label.uid,
-            //                     value: item.label.nickname,
-            //                     familys_name: item.label.familys_name,
-            //                     mobile: item.label.mobile
-            //                 }
-            //             })
-            //             var studentsList = this.studentsList;
-            //             if (isNaN(queryString)) {
-
-            //                 var results = studentsList.filter(item => {
-            //                     return item.value.indexOf(queryString) > -1
-            //                 });
-            //             } else {
-            //                 var results = studentsList
-            //             }
-            //         } else {
-            //             var results = [];
-            //             this.nostudent = true;
-            //         }
-
-            //         clearTimeout(this.timeout);
-            //         this.timeout = setTimeout(() => {
-            //             cb(results);
-            //         }, 2000 * Math.random());
-            //     })
-
-            // },
             remoteMethod1(query) {
                 if (query !== '') {
                     this.loading = true;
@@ -762,17 +724,15 @@
                 this.$confirm('是否确认激活该资源?', '激活资源', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
-                    customClass: 'green',
+                    customClass: 'greenUD',
                 }).then(() => {
                     this.addU();
                     this.isActivate = '1';
                 })
             },
-
             recognizeResource() { //点击认证资源
                 this.dialogFormVisible2 = true;
             },
-
             restartResource() { //点击重新激活资源
                 this.dialogFormVisible3 = true;
                 this.dialogFormVisible2 = false;
@@ -813,17 +773,14 @@
                         return false;
                     }
                 });
-
             },
             recoToNo() { //确认无效
                 let para = {
                     option: '1',
                     customer_id: this.$route.params.uid
-
                 }
                 this.writeL = true;
                 activateResource(para, token).then(res => {
-
                     if (res.code == 0) {
                         let uid = {
                             u_resource: 3
@@ -837,7 +794,7 @@
                                 resource: 3
                             }
                         });
-                        this.$message.success('确认无效成功')
+                        this.$message.success('认证成功')
                         this.writeL = false;
                         this.dialogFormVisible2 = false;
                     } else {
@@ -875,14 +832,7 @@
                                     this.writeL = false;
                                 }
                             }).catch(error => {
-                                // if (error.response) {
-                                // this.$message({
-                                //     type: 'error',
-                                //     message: '该用户未授权'
-                                // });
                                 this.writeL = false;
-                                // console.log(error.response);
-                                // }
                             })
                         } else {
                             put_community(para, token).then((res) => {
@@ -897,15 +847,7 @@
                                     this.writeL = false;
                                 }
                             }).catch(error => {
-                                // console.log(error)
-                                // if (error) {
-                                    // this.$message({
-                                    //     type: 'error',
-                                    //     message: '该用户未授权'
-                                    // });
                                 this.writeL = false;
-                                // console.log(error.response);
-                                // }
                             })
                         }
                     } else {
@@ -974,25 +916,11 @@
                     this.getRegion();
                     this.form.area_id = data.area_id - 0
                     this.form.school_id = data.school_id - 0
-                    //     if (this.code == 'tmk_m') {
-
-                    // getTMK(token).then((res) => {
-                    //     this.tmks = res.data
-                    // })
-                    //     }
-
-
                 })
-
                 this.dialogFormVisibleAdd = true;
-                // if(this.code !='tmk_m' ){
-
-                // this.isread = true;
-                // }
-                // document.getElementById('sourceDiv').setAttribute('pointer-events', 'none'); 
             },
             handleCurrentChange: function (val) { //变更页数
-                this.currentPage = val;
+                this.currentPage = val;this.backToTop();
                 this.getCommlist()
             },
             handleCurrentChange1: function (val) { //变更页数
@@ -1012,41 +940,41 @@
                 let para = {
                 customer_id: this.$route.params.uid
             }
-            getUserList(token, para).then(res => {//获取用户资料
-                let data = res.data.info;
-                this.student = {
-                    name: data.names,
-                    age: data.age,
-                    sex: data.sex,
-                    school: data.school_name,
-                    channel: data.source_name,
-                    time: data.created,
-                    fullAddress: data.fullAddress,
-                    parent: data.customer_famliy[0].uname + '(' + data.customer_famliy[0].relation + ')',
-                    parent_phone: data.customer_famliy[0].mobile,
-                    parent1: data.customer_famliy[1] ? data.customer_famliy[1].uname + '(' + data.customer_famliy[
-                        1].relation + ')' : '',
-                    parent1_phone: data.customer_famliy[1] ? data.customer_famliy[1].mobile : '',
-                    teacher: data.cc_name,
-                    referral_name: data.referral ? data.referral.referral_name : '',
-                    teach_name: data.referral ? data.referral.teach_name : ''
+                getUserList(token, para).then(res => {//获取用户资料
+                    let data = res.data.info;
+                    this.student = {
+                        name: data.names,
+                        age: data.age,
+                        sex: data.sex,
+                        school: data.school_name,
+                        channel: data.source_name,
+                        time: data.created,
+                        fullAddress: data.fullAddress,
+                        parent: data.customer_famliy[0].uname + '(' + data.customer_famliy[0].relation + ')',
+                        parent_phone: data.customer_famliy[0].mobile,
+                        parent1: data.customer_famliy[1] ? data.customer_famliy[1].uname + '(' + data.customer_famliy[
+                            1].relation + ')' : '',
+                        parent1_phone: data.customer_famliy[1] ? data.customer_famliy[1].mobile : '',
+                        teacher: data.cc_name,
+                        referral_name: data.referral ? data.referral.referral_name : '',
+                        teach_name: data.referral ? data.referral.teach_name : ''
 
-                }
-            }).catch(() => {
-                console.log('No Data')
-            })
+                    }
+                }).catch(() => {
+                    console.log('No Data')
+                })
             },
             getCommlist(){
                 let p = {
                 page: this.currentPage,
                 customer_id: this.$route.params.uid
             }
-            getUserCommList(token, p).then(res => { //获取沟通记录
-                this.number = res.data.total;
-                this.items = res.data.data;
-                let c = res.data.last_page * this.pagesize;
-                this.total = parseInt(c);
-            })
+                getUserCommList(token, p).then(res => { //获取沟通记录
+                    this.number = res.data.total;
+                    this.items = res.data.data;
+                    let c = res.data.last_page * this.pagesize;
+                    this.total = parseInt(c);
+                })
             },
 
         },
@@ -1090,7 +1018,7 @@
                 } else if (this.Uresourse == '2') {
                     return '无需求资源'
                 } else if (this.Uresourse == '3') {
-                    return '无效资源'
+                    return '暂不联系'
                 }
             },
             resourcePath() {
@@ -1106,7 +1034,6 @@
                 if (this.in === '') {
                     return '添加沟通记录'
                 } else {
-
                     return '修改沟通记录'
                 }
 
@@ -1135,15 +1062,9 @@
             //     })
             // })
             let p = {
-                page: this.currentPage,
+                page: 1,
                 customer_id: this.$route.params.uid
             }
-            // getUserCommList(token, p).then(res => { //获取沟通记录
-            //     this.number = res.data.total;
-            //     this.items = res.data.data;
-            //     let c = res.data.last_page * this.pagesize;
-            //     this.total = parseInt(c);
-            // })
             getUserInviteList(token, p).then(res => { //获取邀约记录
                 this.number1 = res.data.total;
                 this.items1 = res.data.data;
@@ -1184,17 +1105,19 @@
 
     .UserDetailTitle {
         position: relative;
-        background: url(../../../static/img/contact.png) left center/25px no-repeat;
-        padding: 10px 10px 10px 27px;
-        margin-left: 12px
+        /* background: url(../../../static/img/contact.png) left center/25px no-repeat; */
+        padding: 10px;
+        display: flex;
+        /* margin-left: 12px */
     }
 
-    .communityTitle {
-        margin-left: 12px;
+    .communityTitleUD {
+        /* margin-left: 12px; */
         position: relative;
-        background: url(../../../static/img/comuni.png) left center/30px no-repeat;
-        padding: 10px 10px 10px 30px;
+        /* background: url(../../../static/img/comuni.png) left center/30px no-repeat; */
+        padding: 10px 10px 10px 12px;
         border-bottom: 1px solid #e8e8e8;
+        display: flex;
     }
 /* 
     .tableUserUDD .addUserTitle {
@@ -1203,11 +1126,12 @@
     } */
 
     .tableUserUDD .inviteTitle {
-        margin-left: 5px;
+        /* margin-left: 5px; */
         position: relative;
-        background: url(../../../static/img/invite.png) left center/30px no-repeat;
-        padding: 10px 10px 10px 30px;
+        /* background: url(../../../static/img/invite.png) left center/30px no-repeat; */
+        padding: 10px 10px 8px 5px;
         border-bottom: 1px solid #e8e8e8;
+        display: flex;
     }
 
     #aform .el-form-item {
@@ -1246,7 +1170,9 @@
         border-color: #dac779;
         height: 30px;
         line-height: 0;
-        width: 80px
+        width: 80px;
+        display: flex;
+        padding: 0
     }
 
     .recognizeR {
@@ -1254,48 +1180,50 @@
         border-color: #f29c9c;
         height: 30px;
         line-height: 0;
-        width: 80px
+        width: 80px;
+        display: flex;
+        padding: 0
     }
 
     .tableUserUDD .listUser:nth-child(6) {
         margin-left: 48px
     }
 
-    .tableUserUDD .editSpan {
+    .tableUserUDD .editSpanUD {
         height: 30px;
-        background: url(../../../static/img/edit.png) right/30px 30px no-repeat;
+        /* background: url(../../../static/img/edit.png) right/30px 30px no-repeat; */
         cursor: pointer;
         width: 30px;
         float: right;
     }
 
-    .tableUserUDD .editSpan:hover {
+    /* .tableUserUDD .editSpanUD:hover {
         background-image: url(../../../static/img/edit_h.png);
-    }
+    } */
 
     .tableUserUDD .addU {
         width: 30px;
         height: 30px;
-        background-image: url(../../../static/img/editU.png);
-        background-size: 30px 30px;
+        /* background-image: url(../../../static/img/editU.png); */
+        /* background-size: 30px 30px; */
         cursor: pointer;
     }
 
-    .tableUserUDD .addU:hover {
+    /* .tableUserUDD .addU:hover {
         background-image: url(../../../static/img/editU_h.png);
-    }
+    } */
 
     .tableUserUDD .addR {
         width: 30px;
         height: 30px;
-        background-image: url(../../../static/img/addR.png);
-        background-size: 30px 30px;
+        /* background-image: url(../../../static/img/addR.png); */
+        /* background-size: 30px 30px; */
         cursor: pointer;
     }
 
-    .tableUserUDD .addR:hover {
+    /* .tableUserUDD .addR:hover {
         background-image: url(../../../static/img/addR_h.png);
-    }
+    } */
 
     .tableUserUDD .block {
         text-align: center;
@@ -1330,17 +1258,17 @@
         margin: 10px;
     }
 
-    .schoolDialog .el-dialog__body {
+    .schoolDialogUD .el-dialog__body {
         text-align: center;
         /*color:#ec6161;*/
     }
 
-    .green .el-message-box__header {
+    .greenUD .el-message-box__header {
         background-color: #1fb5ad;
         padding: 20px 20px 20px;
     }
 
-    .green .el-message-box__title {
+    .greenUD .el-message-box__title {
         color: white;
     }
     .top55  .el-time-panel__content::after,.top55 .el-time-panel__content::before{
@@ -1393,5 +1321,20 @@
     }
     .userDD22{
         display:flex
+    }
+    .fz30{
+        font-size: 30px;
+        line-height: 29px;        
+        /* vertical-align: sub; */
+    }
+    .fzh:hover{
+        color: #1fb5ad
+    }
+    .fz25{
+        font-size: 25px;
+        line-height: 29px;
+    }
+    .fgrey{
+        color: #cacaca
     }
 </style>

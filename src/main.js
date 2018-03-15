@@ -6,8 +6,9 @@ import ElementUI from 'element-ui';
 // import 'element-ui/lib/theme-default/index.css';    // 默认主题
 import '../static/css/theme-green/index.css';       // 浅绿色主题
 import '../static/css/iconfont.css'
-import "babel-polyfill";
 
+import "babel-polyfill";
+import IEcharts from 'vue-echarts-v3/src/lite.js'
 import store from './vuex/store'
 import Vuex from 'vuex'
 import 'echarts/lib/component/legend';
@@ -18,21 +19,21 @@ import 'echarts/lib/chart/pie';
 import quillEditor  from 'vue-quill-editor';
 import 'vue-event-calendar/dist/style.css' //^1.1.10, CSS has been extracted as one file, so you can easily update it.
 import vueEventCalendar from 'vue-event-calendar'
-Vue.use(vueEventCalendar, {locale: 'zh',color:'#1fb5ad'}) //locale can be 'zh' or 'en'
-
+import VuePreview from 'vue-preview'
 // import './mock/index.js';
 // import Mock from './mock'
 // Mock.bootstrap();
-import VuePreview from 'vue-preview'
 // import 'quill/dist/quill.snow.css'
 Vue.use(VuePreview)
 Vue.use(ElementUI);
 Vue.use(quillEditor);
-// console.log(Vue.vueScrollBehavior)
+Vue.use(vueEventCalendar, {locale: 'zh',color:'#1fb5ad'}) //locale can be 'zh' or 'en'
 Vue.use(Vuex);
 
 Vue.prototype.$axios = axios;
-
+Vue.prototype.backToTop = function(){
+    document.getElementsByClassName('content')[0].scrollTop = 0;
+}
 new Vue({
     router,
     store,

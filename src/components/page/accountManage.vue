@@ -60,21 +60,13 @@
                     <el-form-item label="手机号码" :label-width="formLabelWidth" prop="tel">
                         <el-input v-model="aform.tel" auto-complete="off" placeholder='请输入手机号码' :style='{width:inputLabelWidth}'></el-input>
                     </el-form-item>
-                    <!-- <el-form-item label="密码" prop="pwd" :label-width="formLabelWidth">
-                        <el-input type="password" v-model="aform.pwd" auto-complete="off" :style='{width:inputLabelWidth}'></el-input>
-                    </el-form-item> -->
                     <el-form-item label="所属校区" :label-width="formLabelWidth" prop="region" style='display:inline-block' required>
                         <el-select v-model="aform.region"  filterable :style='{width:inputLabelWidth}' @change='campusGet' clearable>
                          <el-option v-for="item in cities" :key="item.id" :label="item.city_name" :value="item.id">
                             </el-option>
-                           <!--  
-                            <el-option-group v-for="group in cities" :key="group.city_name" :label="group.city_name">
-                                <el-option v-for="item in group._child" :key="item.id" :label="item.city_name" :value="item.id">
-                                </el-option>
-                            </el-option-group> -->
                         </el-select>
                     </el-form-item>
-                    <el-form-item :label-width="formLabelWidth" prop="school" style='display:inline-block;margin-left: -100px'>
+                    <el-form-item :label-width="formLabelWidth" prop="school" style='display:inline-block;margin-left:-100px'>
                         <el-select v-model="aform.school"  multiple filterable remote placeholder="请输入关键词" :remote-method="remoteMethod" :loading="loading">
                             <el-option v-for="item in schools" :key="item.value" :label="item.label" :value="item.value">
                             </el-option>
@@ -193,13 +185,6 @@ export default {
                     callback();
                 }
             }
-            // var validatePass = (rule, value, callback) => {
-            //     if (value == '') {
-            //         callback(new Error('请输入密码'));
-            //     } else{
-            //         callback()
-            //     }
-            // };
             var isPhone1 = (rule, value, callback) => {
                 var myreg =  /^(((1[0-9]{1}))+\d{9})$/; 
                 if (value == '') {
@@ -210,29 +195,6 @@ export default {
                     callback();
                 }
             }
-            // var validatePass = (rule, value, callback) => {
-            //     if (value.length < 6) {
-            //         callback(new Error('请输入至少6位'));
-            //     } else {
-            //         var regex = new RegExp('(?=.*[0-9])(?=.*[a-zA-Z]).{6,30}');
-            //         if (!regex.test(value)) {
-            //             callback(new Error('密码中必须包含字母、数字，至少6个字符，最多30个字符'));
-            //         }
-            //         if (this.aform.checkPass !== '') {
-            //             this.$refs.aform.validateField('checkPass');
-            //         }
-            //         callback();
-            //     }
-            // };
-            // var validatePass2 = (rule, value, callback) => {
-            //     if (value === '') {
-            //         callback(new Error('请再次输入密码'));
-            //     } else if (value !== this.aform.pwd) {
-            //         callback(new Error('两次输入密码不一致!'));
-            //     } else {
-            //         callback();
-            //     }
-            // }
             return {
                 code:'',
                 currentPage: 1, //页数
@@ -545,7 +507,7 @@ export default {
 
             },
             handleCurrentChange: function(val) { //变更页数
-                this.currentPage = val;
+                this.currentPage = val;this.backToTop();
                 this.fetchData();
             },
         },
@@ -603,32 +565,6 @@ export default {
     background-color: #32a4d3;
     border-color: #32a4d3;
 }
-
-#tableAM .el-table td,
-#tableAM .el-table th:not(.gutter) {
-    padding: 5px 5px;
-    text-align: center
-}
-
-#tableAM .el-table th>div,
-#tableAM .el-table .cell {
-    padding-left: 0;
-    padding-right: 0;
-}
-
-/* .redwarn .el-message-box__header {
-    background-color: #e95c5c;
-    padding: 20px 20px 20px;
-}
-
-.redwarn .el-message-box__title {
-    color: white;
-}
-
-.redwarn .el-button--primary {
-    background-color: #e95c5c;
-    border-color: #e95c5c;
-} */
 
 .el-dialog .el-dialog__header {
     background-color: #1fb5ad;

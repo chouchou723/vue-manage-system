@@ -250,7 +250,7 @@ export default {
             },
 
             handleCurrentChange: function(val) {
-                this.currentPage = val;
+                this.currentPage = val;this.backToTop();
                 this.fetchData();
             }
 

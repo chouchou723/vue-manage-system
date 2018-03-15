@@ -1,11 +1,9 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import {
-    getAccess,getUserinfo
-} from '../api/api';
+import {getAccess} from '../api/api';
 Vue.use(Router);
 const router = new Router({
-    // mode:'history',
+    // mode:'history',0合同详细,1学员详细,2客户详细,10用户详细
     routes: [{
             path: '/',
             redirect: '/login'
@@ -556,8 +554,75 @@ const router = new Router({
                     meta: {
                         keepAlive: true // 不需要被缓存
                     },
-                    component: resolve => require(['../components/page/addContracts.vue'], resolve), //活动管理
+                    component: resolve => require(['../components/page/addContracts.vue'], resolve), //合同校正
+                },{
+                    path: '/reportMarket',
+                    meta: {
+                        keepAlive: true // 不需要被缓存
+                    },
+                    component: resolve => require(['../components/page/reportMarket.vue'], resolve), //市场报表
+                },{
+                    path: '/invoiceManage',
+                    meta: {
+                        keepAlive: true // 不需要被缓存
+                    },
+                    component: resolve => require(['../components/page/invoiceManage.vue'], resolve), //发票管理
+                },{
+                    path: '/signList',
+                    meta: {
+                        keepAlive: true // 不需要被缓存
+                    },
+                    component: resolve => require(['../components/page/signList.vue'], resolve), //签到列表
+                },{
+                    path: '/contractReview',
+                    meta: {
+                        keepAlive: true // 不需要被缓存
+                    },
+                    component: resolve => require(['../components/page/contractReview.vue'], resolve), //合同审核
+                },{
+                    path: '/reportDownload',
+                    meta: {
+                        keepAlive: true // 不需要被缓存
+                    },
+                    component: resolve => require(['../components/page/reportDownload.vue'], resolve), //财务下载
+                },{
+                    path: '/tmkResourcPool',
+                    meta: {
+                        keepAlive: true // 不需要被缓存
+                    },
+                    component: resolve => require(['../components/page/tmkResourcPool.vue'], resolve), //tmk资源认领
+                },{
+                    path: '/tobeResource',
+                    meta: {
+                        keepAlive: true // 不需要被缓存
+                    },
+                    component: resolve => require(['../components/page/tobeResource.vue'], resolve), //tmk待定资源
+                },{
+                    name:"marketRDetail",
+                    path: '/marketRDetail/:uid/:cid',
+                    meta: {
+                        keepAlive: true // 不需要被缓存
+                    },
+                    params: {
+                        cid: '0',
+                        uid: '0',
+                    },
+                    component: resolve => require(['../components/page/marketRDetail.vue'], resolve) // 市场客户详情
+
+                },{
+                    path: '/extraEducation',
+                    meta: {
+                        keepAlive: true // 不需要被缓存
+                    },
+                    component: resolve => require(['../components/page/extraEducation.vue'], resolve), //教学平台
+                },{
+                    path: '/frozenList',
+                    meta: {
+                        keepAlive: true // 不需要被缓存
+                    },
+                    component: resolve => require(['../components/page/frozenList.vue'], resolve), //冻结列表
                 },
+                
                 
                 
             ]

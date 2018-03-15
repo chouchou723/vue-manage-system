@@ -2,17 +2,17 @@
     <div class="tableUserDTSD">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item id="canHover" :to="{ path: '/teachStudentManage'}"><i class="el-icon-my-yonhu"></i> 学员管理</el-breadcrumb-item>
+                <el-breadcrumb-item id="canHover" :to="{ path: '/teachStudentManage'}"><i class="iconfont icon-yonhu"></i> 学员管理</el-breadcrumb-item>
                 <el-breadcrumb-item class='ss'>{{student.name}}</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <!-- 用户资料 -->
         <div style="float:left;width:30%;background-color:white;height:550px;border-radius:5px;margin-right:1%;position:relative">
-            <div class='UserDetailTitle'>
-                <!--  <i class=el-icon-my-tongxunlu style="font-size:31px"></i> -->
+            <div class='UserDetailTitleTSD'>
+                    <i class="iconfont icon-tongxunlu1 fz25"></i>
                 <span style="font-weight:600;font-size:22px">学员资料</span>
             </div>
-            <el-form id='customerDeatilForm' label-width="102px" label-position='left' style='border-top:1px solid #e8e8e8 ;padding-left:10px;position:relative;'>
+            <el-form id='customerDeatilFormTSD' label-width="102px" label-position='left' style='border-top:1px solid #e8e8e8 ;padding-left:10px;position:relative;'>
                 <el-form-item label="姓名:" prop='name'>
                     <span>{{student.name}}</span>
                 </el-form-item>
@@ -54,21 +54,21 @@
                 </el-form-item>
             </el-form>
             <div style="position:absolute;top:60px;right:15px">
-                <img :src='student.head_img' style='border-radius:50%' width="100" height="100" alt="">
+                <img :src='student.head_img' style='border-radius:50%;border: 1px solid gainsboro;' width="100" height="100" alt="">
             </div>
         </div>
         <!-- 考勤记录 -->
         <div style="float:left;width:69%;background-color:white;height:550px;border-radius:5px;position:relative">
-            <div class='AttRecord'>
+            <div class='AttRecordTSD'>
                 <!--  <i class=el-icon-my-tongxunlu style="font-size:31px"></i> -->
                 <i class='el-icon-my-richeng' style="font-size:24px"></i><span style="font-weight:600;font-size:22px">考勤记录</span>
-                <div class='studentDetailThreeNew'>
+                <div class='studentDetailThreeNewTSD'>
                     <el-select v-model="valueR" clearable placeholder="全部课程" @change="updateList">
                         <el-option v-for="item in allClass" :key="item.kcid" :label="item.title" :value="item.kcid">
                         </el-option>
                     </el-select>
                 </div>
-                <!-- <div class='studentDetailThreeNew'>
+                <!-- <div class='studentDetailThreeNewTSD'>
                     <el-select v-model="value1" clearable placeholder="选择老师" filterable @change="updateList">
                         <el-option v-for="item in teachersName" :key="item.aid" :label="item.uname" :value="item.aid">
                         </el-option>
@@ -76,7 +76,7 @@
                 </div> -->
             </div>
             <div id="table1TSD">
-                <el-table :data="tableData" border style="width: 100%">
+                <el-table :data="tableData" border  style="width: 95%;margin:10px auto 0">
                     <el-table-column prop="course_id" label="课程">
                     </el-table-column>
                     <el-table-column prop="course_time" label="上课时间">
@@ -87,6 +87,8 @@
                         <template scope="scope">
                             <span :style="scope.row.checkin_types=='出勤'?'color:#18c318': scope.row.checkin_types=='请假'? 'color:#e4a821' :'color:red' ">{{scope.row.checkin_types}}</span>
                         </template>
+                    </el-table-column>
+                    <el-table-column prop="class_hour" label="消耗课时">
                     </el-table-column>
                     <el-table-column prop="course_time" label="签到时间">
                     </el-table-column>
@@ -105,6 +107,7 @@
         <!-- 课耗奖励 -->
         <div class="giftfirst">
             <div class='GiftDetailTitle'>
+                    <i class="iconfont icon-kechengxiaohaoxiangqing fz25"></i>
                 <span style="font-weight:600;font-size:22px">课耗奖励</span>
             </div>
             <div>
@@ -139,14 +142,15 @@
         </div>
         <!-- 合同课程 -->
         <div style="float:left;width:100%;background-color:white;height:auto;border-radius:5px;position:relative;margin-top:20px;margin-bottom:20px">
-            <div class='contractClass'>
+            <div class='contractClassTSD'>
+                    <i class="iconfont icon-contract fz25"></i>
                 <!--  <i class=el-icon-my-tongxunlu style="font-size:31px"></i> -->
                 <span style="font-weight:600;font-size:22px">合同课程({{contractNumber}}个)</span>
 
             </div>
             <div id="table4TSD">
-                <div v-for="item in students" class='table4Title'>
-                    <div class='table4Div'>
+                <div v-for="item in students" class='table4TitleTSD'>
+                    <div class='table4DivTSD'>
                         <div style="display:flex;align-items:center;margin-left:10px">
                             <div style="font-size:16px;margin-left:10px">
                                 <span style='font-weight:bold;'>
@@ -159,7 +163,7 @@
                         </div>
                         <div style="margin-right:10px;color:grey;font-size:16px">
                             <!-- <span style="margin-right:5px">合同类型: {{item.order_type}}</span> -->
-                            <span class='table4Teacher'>试听老师: {{item.baoming_teach}}</span>
+                            <span class='table4TeacherTSD'>试听老师: {{item.baoming_teach}}</span>
                             <span style="margin-left:5px">签约时间: {{item.created}}</span></div>
                     </div>
                     <div style='display:flex;justify-content:space-between;'>
@@ -253,7 +257,7 @@
             claim(id, oid) {
                 this.$confirm('是否确定发放?', '发放', {
                     title: '发放',
-                    customClass: 'green',
+                    customClass: 'greenTSD',
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     // type: 'warning'
@@ -539,56 +543,61 @@
         top: 5px;
     }
 
-    .UserDetailTitle {
+    .UserDetailTitleTSD {
         position: relative;
-        background: url(../../../static/img/contact.png) left center/25px no-repeat;
-        padding: 10px 10px 10px 27px;
-        margin-left: 12px
+        /* background: url(../../../static/img/contact.png) left center/25px no-repeat; */
+        padding: 10px;
+        display: flex;
+        /* margin-left: 12px */
     }
 
-    .contractClass {
+    .contractClassTSD {
         position: relative;
-        background: url(../../../static/img/contract.png) left center/25px no-repeat;
-        padding: 10px 10px 10px 27px;
-        margin-left: 12px
+        display: flex;
+        /* background: url(../../../static/img/contract.png) left center/25px no-repeat; */
+        padding: 10px;
+        /* margin-left: 12px */
     }
 
     .GiftDetailTitle {
         position: relative;
-        background: url(../../../static/img/gift.png) left center/25px no-repeat;
-        padding: 10px 10px 10px 30px;
-        margin-left: 12px;
+        /* background: url(../../../static/img/gift.png) left center/25px no-repeat; */
+        padding: 10px;
+        /* margin-left: 12px; */
         border-bottom: 1px solid gainsboro;
     }
 
-    .contractClass .el-button--success {
+    .contractClassTSD .el-button--success {
         color: #fff;
         background-color: #13ce66;
         border-color: #13ce66;
     }
 
-    .contractClass .el-button--success:hover {
+    .contractClassTSD .el-button--success:hover {
         background: #42d885;
         border-color: #42d885;
         color: #fff;
     }
 
-    .AttRecord {
+    .AttRecordTSD {
         position: relative;
         /*background: url(../../../static/img/contact.png) left center/25px no-repeat;*/
-        padding: 10px 10px 10px 17px;
+        padding: 6px 10px 7px 17px;
+        border-bottom: 1px solid #e8e8e8;
+        display: flex;
+    align-items: center;
         /*margin-left: 12px*/
     }
 
-    #customerDeatilForm .el-form-item {
+    #customerDeatilFormTSD .el-form-item {
         margin-bottom: 8px
     }
 
-    #customerDeatilForm .el-form-item__label {
+    #customerDeatilFormTSD .el-form-item__label {
         padding: 8px 12px 5px 0;
     }
 
-    #customerDeatilForm .el-form-item__content {
+    #customerDeatilFormTSD .el-form-item__content {
         line-height: 30px
     }
 
@@ -610,16 +619,16 @@
     }
 
 
-    .green .el-message-box__header {
+    .greenTSD .el-message-box__header {
         background-color: #1fb5ad;
         padding: 20px 20px 20px;
     }
 
-    .green .el-message-box__title {
+    .greenTSD .el-message-box__title {
         color: white;
     }
 
-    #table1TSD .el-table td,
+    /* #table1TSD .el-table td,
     #table1TSD .el-table th:not(.gutter) {
         padding: 1px;
         text-align: center
@@ -629,13 +638,13 @@
     #table1TSD .el-table .cell {
         padding-left: 0;
         padding-right: 0;
-    }
+    } */
 
-    .studentDetailThreeNew {
+    .studentDetailThreeNewTSD {
         display: inline-block;
         width: 106px;
         /*margin-right: 10px;*/
-        margin-bottom: 10px;
+        /* margin-bottom: 10px; */
         margin-left: 10px
     }
 
@@ -643,12 +652,12 @@
         display: none
     }
 
-    .table4Title {
+    .table4TitleTSD {
         background: white;
         margin-bottom: 20px
     }
 
-    .table4Div {
+    .table4DivTSD {
         display: flex;
         justify-content: space-between;
         height: 50px;
@@ -657,14 +666,14 @@
         border-bottom: none
     }
 
-    .table4Teacher {
+    .table4TeacherTSD {
         padding-left: 10px;
         padding-right: 10px;
-        border-left: 1px solid rgb(223, 236, 235);
+        /* border-left: 1px solid rgb(223, 236, 235); */
         border-right: 1px solid rgb(223, 236, 235)
     }
 
-    #table4TSD .el-table td,
+    /* #table4TSD .el-table td,
     #table4TSD .el-table th:not(.gutter) {
         padding: 1px;
         text-align: center
@@ -674,10 +683,18 @@
     #table4TSD .el-table .cell {
         padding-left: 0;
         padding-right: 0;
-    }
+    } */
 
     #canHover .el-breadcrumb__item__inner:hover {
         cursor: pointer
     }
-
+    .fz30{
+        font-size: 30px;
+        line-height: 29px;        
+        /* vertical-align: sub; */
+    }
+    .fz25{
+        font-size: 25px;
+        line-height: 29px;
+    }
 </style>

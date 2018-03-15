@@ -81,11 +81,11 @@
                     <!-- </el-form-item> -->
                     <el-form-item label="上课时间" required>
                         <el-form-item prop="start_time" class='CTselect'>
-                            <el-date-picker v-model="classform.start_time" type="date" placeholder="选择日期" style="width:142px;" :picker-options="pickerOptions0">
+                            <el-date-picker v-model="classform.start_time" type="date" placeholder="选择日期" style="width:142px;" :picker-options="pickerOptions0" :editable="no" :clearable="no">
                             </el-date-picker>
                         </el-form-item>
                         <el-form-item prop="class_time" class='CTselect'>
-                            <el-time-picker v-model="classform.class_time" format="HH:mm" style="width:142px;" placeholder="请选择具体时间" popper-class='top55'>
+                            <el-time-picker v-model="classform.class_time" format="HH:mm" style="width:142px;" placeholder="请选择具体时间" popper-class='top55' :editable="no" :clearable="no">
                             </el-time-picker>
                         </el-form-item>
                     </el-form-item>
@@ -170,18 +170,20 @@
             </div>
         </div>
         <!-- 签到超时班级详情 -->
-        <el-dialog :title="classTitle" :visible.sync="dialogFormVisibleOverTime" :close-on-click-modal="no" top='10%' size='tiny' @close='clearNoSignStill'>
+        <el-dialog :title="classTitle" :visible.sync="dialogFormVisibleOverTime" :close-on-click-modal="no" top='14%'  @close='clearNoSignStill'>
 
             <div class="CTover">
                 <div class="CTover1">
                     <div>学生姓名</div>
                     <div>剩余课时</div>
                     <div>签到情况</div>
+                    <!-- <div>消耗课时</div> -->
                 </div>
                 <div class="CTover2" v-for='(s,index) in signStatusNo.students' v-if='signStatusNo.students.length!=0'>
                     <div style='flex:0 0 56px;text-align: center;'>{{s.child_name}}</div>
                     <div style='flex:0 0 56px;text-align: center;'>{{s.course_curr_num}}</div>
                     <div :style="s.checkin_types_name=='出勤'?'color:#13ce66;flex:0 0 56px;text-align: center;':s.checkin_types_name=='请假'?'color:#dba31c;flex:0 0 56px;text-align: center;':s.checkin_types_name=='旷课'?'color:#ff4949;flex:0 0 56px;text-align: center;':'color:#c1c2c2;flex:0 0 56px;text-align: center;'">{{s.checkin_types_name}}</div>
+                    <!-- <div style='flex:0 0 56px;text-align: center;'>{{s.class_hour}}</div> -->
                 </div>
                 <div v-if='signStatusNo.students.length==0' class="CTover3">暂无学生</div>
             </div>
@@ -196,23 +198,24 @@
             </div>
         </el-dialog>
         <!-- 老师点名 -->
-        <el-dialog :title="classTitle" :visible.sync="dialogFormVisibleClassSignup" :close-on-click-modal="no" top='10%' size='small' >
+        <el-dialog :title="classTitle" :visible.sync="dialogFormVisibleClassSignup" :close-on-click-modal="no" top='14%' size='small' @close="resetW">
 
             <div class="CTover">
                 <div class="CTover1">
                     <div>学生姓名</div>
                     <div>剩余课时</div>
                     <div>签到情况</div>
+                    <div>消耗课时</div>
                 </div>
                 <div class="CTsign" v-for='(s,index) in signStatusNo.students' v-if='signStatusNo.students.length!=0'>
                     <div class="CTsign1">{{s.child_name}}</div>
                     <div class="CTsign2">{{s.course_curr_num}}</div>
                     <div class="CTsign3">
-                        <el-switch v-model="s.checkin_types" on-text='出勤' :on-value='one' :off-value='three' off-text='旷课'  @click.native.prevent='signUpS(s,signStatusNo)' on-color="#13ce66" off-color="#ff4949"
-                            v-if='s.checkin_types_name=="出勤"'>
+                        <el-switch v-model="s.checkin_types"  v-if='s.checkin_types_name=="出勤"' on-color="#13ce66"  off-color="#50bfff"  on-text='出勤' :on-value='one' :off-value='three' off-text='旷课'  @click.native.prevent='signUpS(s,signStatusNo,index)' 
+                           >
                         </el-switch>
-                        <el-switch v-model="s.checkin_types" on-text='出勤' :on-value='one' :off-value='four' off-text='调课'  @click.native.prevent='signUpS1(s,signStatusNo)' on-color="#13ce66" off-color="#50bfff"
-                        v-if='s.checkin_types_name=="调课"'>
+                        <el-switch v-model="s.checkin_types" v-if='s.checkin_types_name=="调课"' on-color="#13ce66" off-color="#50bfff" on-text='出勤' :on-value='one' :off-value='four' off-text='调课'  @click.native.prevent='signUpS1(s,signStatusNo)'
+                        >
                     </el-switch>
                         <span v-if='s.checkin_types==2' class="CTsign4">请假</span>
                         <!-- <el-dropdown trigger="click" @command="handleCommand1" @click.native='signUpS(s)' menu-align='start' class='drophover'>
@@ -226,6 +229,17 @@
                             </el-dropdown-menu>
                         </el-dropdown> -->
                     </div>
+                    <div class="CTsign1"> 
+                        <el-select v-model="s.class_hour"  placeholder="消耗课时"  v-if='s.checkin_types==1' size="mini">
+                                <el-option v-for="(item,index) in s.course_curr_num<13?s.course_curr_num-0:12" :label="index+1" :value="index+1"></el-option>
+                                <!-- <el-option label="1" value="1"></el-option>
+                                <el-option label="2" value="2"></el-option>
+                                <el-option label="3" value="3"></el-option>
+                                <el-option label="4" value="4"></el-option> -->
+                    </el-select>
+                    <!-- <span v-else-if="s.checkin_types==2">0</span> -->
+                    <span v-else>1</span>
+                </div>
                     <!-- <div :style="s.sign=='出勤'?'color:#13ce66':s.sign=='请假'?'color:#dba31c':s.sign=='旷课'?'color:#ff4949':'color:#c1c2c2'">{{s.sign}}</div> -->
                 </div>
                 <div v-if='signStatusNo.students.length==0' class="CTover3">暂无学生</div>
@@ -238,7 +252,7 @@
             </div>
         </el-dialog>
         <!-- 代课审核状态 -->
-        <el-dialog title="代课审批" :visible.sync="dialogFormVisibleStatus" :close-on-click-modal="no" top='7%' show-close>
+        <el-dialog title="代课审批" :visible.sync="dialogFormVisibleStatus" :close-on-click-modal="no" top='14%' show-close>
             <el-form label-width="120px">
                 <el-form-item prop='time' label='申请人:'>
                     <div>{{approvalData.apply_teacher}}</div>
@@ -263,18 +277,20 @@
         </el-dialog>
         <!-- 班级详情已签到 -->
         <el-dialog :title="classTitle" :visible.sync="dialogFormVisibleClass" :close-on-click-modal="no" custom-class='classDetailDialog'
-            top='10%' size='tiny'>
+            top='14%' >
             <div class="CTover">
                 <div class="CTover1">
                     <div>学生姓名</div>
                     <div>剩余课时</div>
                     <div>签到情况</div>
+                    <div>消耗课时</div>
                 </div>
                 <div class="CTover2" v-for='s in signStatusNo.students' v-if='signStatusNo.students.length!=0'>
                         <div style='flex:0 0 56px;text-align: center;'>{{s.child_name}}</div>
                         <div style='flex:0 0 56px;text-align: center;'>{{s.course_curr_num}}</div>
                         <div :style="s.checkin_types_name=='出勤'?'color:#13ce66;flex:0 0 56px;text-align: center;':s.checkin_types_name=='请假'?'color:#dba31c;flex:0 0 56px;text-align: center;':s.checkin_types_name=='旷课'?'color:#ff4949;flex:0 0 56px;text-align: center;':'color:#c1c2c2;flex:0 0 56px;text-align: center;'">{{s.checkin_types_name}}</div>
-                </div>
+                        <div style='flex:0 0 56px;text-align: center;'>{{s.class_hour}}</div>
+                    </div>
                 <div v-if='signStatusNo.students.length==0' class="CTover3">暂无学生</div>
             </div>
             <div class="CTdetail" v-if='signStatusNo.students.length!=0'>
@@ -284,7 +300,7 @@
             </div>
         </el-dialog>
         <!-- 停课 -->
-        <el-dialog title="停课" :visible.sync="dialogFormVisibleStop" :close-on-click-modal="no" top='7%' show-close custom-class='stopClass'
+        <el-dialog title="停课" :visible.sync="dialogFormVisibleStop" :close-on-click-modal="no" top='14%' show-close custom-class='stopClass'
             @close="resetClass('suspendClass')">
             <el-form :model="suspendClass" ref="suspendClass" :rules='suspendClassRules' label-width="120px">
                 <el-form-item prop='school' label='选择校区' v-if="selectClass.length==0">
@@ -302,7 +318,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item prop='time' label='停课时间'>
-                    <el-date-picker v-model="suspendClass.time" type="daterange" :picker-options="pickerOptions0">
+                    <el-date-picker v-model="suspendClass.time" type="daterange" :picker-options="pickerOptions0" :editable="no" :clearable="no">
                     </el-date-picker>
                 </el-form-item>
             </el-form>
@@ -313,7 +329,7 @@
             </div>
         </el-dialog>
         <!-- 申请代课 -->
-        <el-dialog title="选择老师" :visible.sync="dialogFormVisibleSubstitute" :close-on-click-modal="no" top='7%' show-close custom-class='substituteClass'
+        <el-dialog title="选择老师" :visible.sync="dialogFormVisibleSubstitute" :close-on-click-modal="no" top='14%' show-close custom-class='substituteClass'
             @close="resetClass('substitute')">
             <el-form :model="substitute" ref="substitute" :rules='substituteRules' label-width="120px">
                 <el-form-item prop='school' label='选择校区'>
@@ -377,7 +393,7 @@
 
 
                 <el-form-item label="调入的班级日期" prop='time'>
-                    <el-date-picker v-model="arrange.time" type="date" @change='getClassRoomArrange(arrange.time)' :picker-options="pickerOptions0">
+                    <el-date-picker v-model="arrange.time" type="date" @change='getClassRoomArrange(arrange.time)' :picker-options="pickerOptions0" :editable="no" :clearable="no">
                     </el-date-picker>
                 </el-form-item>
 
@@ -452,7 +468,7 @@
                     }
                 },
                 one:1,
-                four:4,
+                four:5,
                 loading:true,
                 three:3,
                 checkDate:[{date:'2017-12-04',name:'s1'},{date:'2017-12-14',name:'s2'},{date:'2017-12-24',name:'s3'},{date:'2017-11-04',name:'s4'}],
@@ -537,7 +553,7 @@
                     }],
                 },
                 signStatusNo: {
-                    students: [],
+                    students: [{checkin_types_name:'出勤'}],
                     count: {
                         work: '',
                         vocation: '',
@@ -628,10 +644,18 @@
             }
         },
         methods: {
-            resetRecord(){},
-            getClassMonth(){
-                
+            resetW(){
+                this.writeL = false;
+                let a = document.getElementsByClassName('skyblue');
+                let b = [...new Set(a)];
+                b.map(item=>{     
+                    item.className = item.className.replace( new RegExp( "(\\s|^)" + 'skyblue' + "(\\s|$)" )," " );
+                })
             },
+            // resetRecord(){},
+            // getClassMonth(){
+                
+            // },
             openRecord(){
                 this.dialogFormVisibleRecord=true;
             },
@@ -685,7 +709,8 @@
                     let para = {
                         date: new Date(time).toLocaleDateString(), //日期
                         // aid: this.aid,
-                        id: this.selectClass[0].class_id
+                        id: this.selectClass[0].class_id,
+                        type:'tk'
                         // course_id: 17
                     }
                     getDateClass(token, para).then(res => {
@@ -768,12 +793,18 @@
             //     })
             //     this.signName = data;
             // },
-            signUpS(data,course) { //点按钮出勤
+            signUpS(data,course,index) { //点按钮出勤
+                let a = document.getElementsByClassName('CTsign')[index];
+                if(!a.className.includes('skyblue')){
+                    a.className+=' skyblue';
+                }
             if(course.courseType!=='short'){
                 if (data.checkin_types == 1) {
                     data.checkin_types = 3;
+                    data.class_hour = '1';
                 } else {
                     data.checkin_types = 1;
+                    data.class_hour = '1';
                 }
             }
             },
@@ -781,8 +812,10 @@
             if(course.courseType!=='short'){
                 if (data.checkin_types == 1) {
                     data.checkin_types = 5;
+                    data.class_hour = '1';
                 } else {
                     data.checkin_types = 1;
+                    data.class_hour = '1';
                 }
             }
             },
@@ -1797,7 +1830,7 @@
     .CTover {
         max-height: 500px;
         overflow-y: auto;
-        background: white
+        background: white;
     }
 
     .CTover1 {
@@ -1815,8 +1848,10 @@
         padding: 10px 0;
         /* margin-left: 20%;
         margin-right: 20% */
-        width: 244px;
-    margin: 0 auto;
+        /* width: 244px; */
+    /* margin: 0 auto; */
+    margin-left: 17%;
+    margin-right: 17%;
     }
 
     .CTover3 {
@@ -1837,22 +1872,21 @@
         display: flex;
         justify-content: space-between;
         padding: 10px 0;
-        margin-left: 20%;
+        margin-left: 17%;
         margin-right: 17%
     }
 
     .CTsign1 {
-        flex: 1 1 1px
+        /* flex: 1 1 1px; */
+        flex:0 0 56px;text-align: center;
     }
 
     .CTsign2 {
-        flex: 1 1 1px;
-        text-align: center
+        flex:0 0 56px;text-align: center;
     }
 
     .CTsign3 {
-        flex: 1 1 10px;
-        text-align: right
+        flex:0 0 56px;text-align: center;
     }
 
     .CTsign4 {
@@ -1931,5 +1965,13 @@ width:100%;text-align:center;line-height:82px;height:82px;border-right:1px solid
 }
 .top55  .el-time-panel__content::after,.top55 .el-time-panel__content::before{
         top:55%
+    }
+    .skyblue .el-switch__label--right{
+        background-color:#ff4949;
+        border-radius: 20px;
+        border-color:#ff4949;
+    }
+    .CTsign1 .el-input__icon+.el-input__inner{
+        padding-right: 26px;
     }
 </style>

@@ -35,9 +35,9 @@
                 <el-form-item prop='form_time' label='置顶时间' >
                         <!-- <el-date-picker v-model="resourceSchool.start_end_time" format="yyyy-MM-dd HH:mm" :clearable="no" range-separator=" ~ " type="datetimerange" placeholder="活动起止时间" style="width:285px" :picker-options="pickerOptions0">
                         </el-date-picker> -->
-                        <el-date-picker  v-model="resourceSchool.top_start" format="yyyy-MM-dd HH:mm" :clearable="no" type="datetime" placeholder="请选择开始时间" popper-class='top55'  :picker-options="pickerOptions0" style="width:170px;float:left;margin-right:10px;">
+                        <el-date-picker  v-model="resourceSchool.top_start" format="yyyy-MM-dd HH:mm" :clearable='no' :editable='no' type="datetime" placeholder="请选择开始时间" popper-class='top55'  :picker-options="pickerOptions0" style="width:170px;float:left;margin-right:10px;">
                             </el-date-picker>  
-                            <el-date-picker v-model="resourceSchool.top_end" format="yyyy-MM-dd HH:mm" :clearable="no" type="datetime" placeholder="请选择结束时间" popper-class='top55'  :picker-options="pickerOptions0" style="width:170px">
+                            <el-date-picker v-model="resourceSchool.top_end" format="yyyy-MM-dd HH:mm" :clearable='no' :editable='no' type="datetime" placeholder="请选择结束时间" popper-class='top55'  :picker-options="pickerOptions0" style="width:170px">
                                 </el-date-picker>   
                     </el-form-item>
             </el-form>
@@ -51,9 +51,9 @@
                     <el-form-item prop='form_time' label='置顶时间' >
                             <!-- <el-date-picker v-model="resourceSchool.start_end_time" format="yyyy-MM-dd HH:mm" :clearable="no" range-separator=" ~ " type="datetimerange" placeholder="活动起止时间" style="width:285px" :picker-options="pickerOptions0">
                             </el-date-picker> -->
-                            <el-date-picker  v-model="editTime.top_start" format="yyyy-MM-dd HH:mm" :clearable="no" type="datetime" placeholder="请选择开始时间" popper-class='top55'  :picker-options="pickerOptions0" style="width:170px;float:left;margin-right:10px;">
+                            <el-date-picker  v-model="editTime.top_start" format="yyyy-MM-dd HH:mm" :clearable='no' :editable='no' type="datetime" placeholder="请选择开始时间" popper-class='top55'  :picker-options="pickerOptions0" style="width:170px;float:left;margin-right:10px;">
                                 </el-date-picker>  
-                                <el-date-picker v-model="editTime.top_end" format="yyyy-MM-dd HH:mm" :clearable="no" type="datetime" placeholder="请选择结束时间" popper-class='top55'  :picker-options="pickerOptions0" style="width:170px">
+                                <el-date-picker v-model="editTime.top_end" format="yyyy-MM-dd HH:mm" :clearable='no' :editable='no' type="datetime" placeholder="请选择结束时间" popper-class='top55'  :picker-options="pickerOptions0" style="width:170px">
                                     </el-date-picker>   
                         </el-form-item>
                 </el-form>
@@ -68,7 +68,7 @@
                 </el-table-column>
                 <el-table-column prop="url" label="内容链接" >
                         <template scope="scope">
-                                <span @click="switchDetail(scope.row.url)" class='noticeMangeHover'>{{scope.row.url}}</span>
+                                <div @click="switchDetail(scope.row.url)" class='noticeMangeHover'>{{scope.row.url}}</div>
                             </template>
                 </el-table-column>
                 <el-table-column prop="age" label="置顶时间" >
@@ -293,7 +293,7 @@
                 this.dialogFormVisible = true
             },
             handleCurrentChange: function (val) { //换页
-                this.currentPage = val;
+                this.currentPage = val;this.backToTop();
                 this.fetchData();
             },
             switchDetail(url) { //点url
@@ -410,7 +410,8 @@
 
     .noticeMangeHover {
         font-weight: 600;
-        color:#1fb5ad
+        color:#1fb5ad;
+        text-align: left;
     }
 
     .noticeMangeBlock {

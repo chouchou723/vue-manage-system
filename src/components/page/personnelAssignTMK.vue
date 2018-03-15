@@ -124,7 +124,7 @@
                 this.fetchData();
             },
             handleCurrentChange: function (val) { //换页
-                this.currentPage = val;
+                this.currentPage = val;this.backToTop();
                 this.fetchData();
             },
             // switchDetail(row) { //点击名字

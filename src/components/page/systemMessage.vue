@@ -226,7 +226,7 @@
                 })
             },
             handleCurrentChange:function (val) {
-                this.currentPage = val;
+                this.currentPage = val;this.backToTop();
                 let para = {
                 page: this.currentPage
             }

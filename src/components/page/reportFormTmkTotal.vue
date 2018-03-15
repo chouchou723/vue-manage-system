@@ -15,41 +15,11 @@
                         </el-option>
                     </el-select>
                 </div>
-                <!-- <div style='margin-left:10px;width:100px;float:right;margin-right:5px' v-if='code.includes("_c")'>
-                    <el-select v-model="valueCM5" size='small' clearable placeholder="选择校区" @change="updateListCM">
-                        <el-option v-for="item in ccs" :key="item.aid" :label="item.uname" :value="item.aid">
-                        </el-option>
-                    </el-select>
-                </div> -->
                 <div style='float:left;'>
                     <h4 style='margin-bottom:10px;padding-top:5px;padding-left:10px'>
                         <span>工作量</span>
                     </h4>
                 </div>
-               
-                <!-- <div class='drop' style='float:left;width:111px;margin-top:4px;margin-left:4px'>
-                    <el-dropdown @command="handleCommandCM">
-                        <span class="el-dropdown-link">
-        [{{titleCM}}<i class="el-icon-caret-bottom el-icon--right"></i>]
-      </span>
-                        <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item command="最近一周">最近一周</el-dropdown-item>
-                            <el-dropdown-item command="最近一个月">最近一个月</el-dropdown-item>
-                        </el-dropdown-menu>
-                    </el-dropdown>
-                </div> -->
-                <!-- <div style='margin-left:10px;width:140px;float:left'>
-                        <el-select v-model="value6" size='small' clearable placeholder="选择校区" @change="updateList4">
-                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
-                            </el-option>
-                        </el-select>
-                    </div>
-                    <div style='width:140px;float:left;margin-left:10px'>
-                        <el-select v-model="value7" size='small' clearable placeholder="渠道来源" @change="updateList4">
-                            <el-option v-for="item in options1" :key="item.id" :label="item.names" :value="item.id">
-                            </el-option>
-                        </el-select>
-                    </div> -->
                     <div style="clear:both"></div>
                     <div style='margin-left:10px;width:110px;float:left'>
                             <el-select v-model="valueCM6" size='small'  placeholder="最近一周" @change="updateListCM(1)">
@@ -134,51 +104,13 @@
                             <span >新资源来源渠道统计</span>
                         </h4>
                     </div>
-                    <!-- <div class='drop' style='float:left;width:111px;margin-top:4px;margin-left:4px'>
-                        <el-dropdown @command="handleCommandCM">
-                            <span class="el-dropdown-link">
-            [{{titleCM}}<i class="el-icon-caret-bottom el-icon--right"></i>]
-          </span>
-                            <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item command="最近一周">最近一周</el-dropdown-item>
-                                <el-dropdown-item command="最近一个月">最近一个月</el-dropdown-item>
-                            </el-dropdown-menu>
-                        </el-dropdown>
-                    </div> -->
-                    <!-- <div style='margin-left:10px;width:140px;float:left'>
-                            <el-select v-model="value6" size='small' clearable placeholder="选择校区" @change="updateList4">
-                                <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
-                                </el-option>
-                            </el-select>
-                        </div>
-                        <div style='width:140px;float:left;margin-left:10px'>
-                            <el-select v-model="value7" size='small' clearable placeholder="渠道来源" @change="updateList4">
-                                <el-option v-for="item in options1" :key="item.id" :label="item.names" :value="item.id">
-                                </el-option>
-                            </el-select>
-                        </div> -->
                         <div style="clear:both"></div>
-                    <!-- <div style='float:left;margin-left:10px'>
-                        <el-date-picker v-model="valueRE1" type="week" size='small' :format="format" :clearable='backface' placeholder="周选择" :picker-options="dateRangeOptions1" @change="updateListRE(1)" style='width:190px'>
-                            </el-date-picker>
-                    </div>
-                    <div  style='float:left;margin-left:10px'>
-                        <el-date-picker v-model="valueRE2" type="month" size='small' :clearable='backface' placeholder="月选择" :picker-options="pickerOptions1" @change="updateListRE(2)" style='width:100px'>
-                        </el-date-picker>
-                    </div> -->
                     <div style='margin-left:10px;width:110px;float:left'>
                         <el-select v-model="valueRE1" size='small'  placeholder="最近一周" @change="updateListRE(1)">
                                 <el-option label="最近一周" value="lastweek"></el-option>
                                 <el-option label="最近一个月" value="lastmonth"></el-option>
                         </el-select>
                     </div>
-                    <!-- <div style='margin-left:10px;width:75px;float:left'>
-                        <el-select v-model="valueRE2" size='small' placeholder="切换日周月" style='width:75px'  @change="updateListRE(3)">
-                            <el-option label="按日" value="day"></el-option>
-                            <el-option label="按周" value="week"></el-option>
-                            <el-option label="按月" value="month"></el-option>
-                        </el-select>
-                    </div> -->
             <div class='dateReportT' style='float:left;margin-left:10px;'>  
                 <el-date-picker v-model="valueRE5" type="daterange" size='small' :clearable='backface' :picker-options="pickerOptions1" placeholder="选择日期范围" @change="updateListRE(2)">
                 </el-date-picker>
@@ -220,11 +152,6 @@
                                 <el-table-column prop="returnCall" label="学员回访">
                                 </el-table-column>
                             </el-table>
-            
-                            <!-- <div class="block">
-                                <el-pagination layout="prev, pager, next" :total="total" :current-page="currentPage" :page-size="pagesize" @current-change="handleCurrentChange">
-                                </el-pagination>
-                            </div> -->
                         </div>
     
             </div>
@@ -238,35 +165,6 @@
                 业绩排行榜
             </h4>
         </div>
-        <!-- <div class='drop' style='float:left;width:111px;margin-top:4px;margin-left:4px'>
-                    <el-dropdown @command="handleCommandCM">
-                        <span class="el-dropdown-link">
-    [{{titleSA}}<i class="el-icon-caret-bottom el-icon--right"></i>]
-  </span>
-                        <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item command="最近一周">最近一周</el-dropdown-item>
-                            <el-dropdown-item command="最近一个月">最近一个月</el-dropdown-item>
-                        </el-dropdown-menu>
-                    </el-dropdown>
-                </div> -->
-        <!-- <div style='margin-left:10px;width:140px;float:left'>
-                    <el-select v-model="value6" size='small' clearable placeholder="选择校区" @change="updateList4">
-                        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
-                        </el-option>
-                    </el-select>
-                </div>
-                <div style='width:140px;float:left;margin-left:10px'>
-                    <el-select v-model="value7" size='small' clearable placeholder="渠道来源" @change="updateList4">
-                        <el-option v-for="item in options1" :key="item.id" :label="item.names" :value="item.id">
-                        </el-option>
-                    </el-select>
-                </div> -->
-        <!-- <div style='width:140px;float:left;margin-left:10px'>
-                        <el-select v-model="valueCM4" size='small' clearable placeholder="课程选择" @change="updateList4">
-                            <el-option v-for="item in options1" :key="item.id" :label="item.names" :value="item.id">
-                            </el-option>
-                        </el-select>
-                    </div>  -->
         <div class='dateReportT' style='float:left;margin-left:10px'>
             <el-select v-model="valueSA1" size='small'  placeholder="切换日周月" style='width:115px' @change="updateListSA(1)">
                 <el-option label="本日" value="day"></el-option>
@@ -611,7 +509,7 @@
             //     }
             // },
             handleCurrentChange: function (val) { //变更页数
-                this.currentPage = val;
+                this.currentPage = val;this.backToTop();
                 this.getCM2Data()
                 // this.fetchData();
             },

@@ -2,7 +2,7 @@
     <div class="tableUserD">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-my-tongzhi"></i> 活动管理</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="icon-tongzhi iconfont"></i> 活动管理</el-breadcrumb-item>
                 <el-breadcrumb-item :to="{ path: '/api/v1/Travel/activityList'}">已发起活动</el-breadcrumb-item>
                 <el-breadcrumb-item class='ss'>{{this.$route.params.type!=='生日会'?activity.names:activityB.names}}</el-breadcrumb-item>
             </el-breadcrumb>
@@ -147,7 +147,7 @@
         },
         methods: {
             handleCurrentChange: function (val) { //变更页数
-                this.currentPage = val;
+                this.currentPage = val;this.backToTop();
                 let p = {
                     page: this.currentPage,
                     pid: this.$route.params.id,

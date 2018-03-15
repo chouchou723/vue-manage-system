@@ -265,7 +265,7 @@
                 })
             },
             handleCurrentChange: function (val) {
-                this.currentPage = val;
+                this.currentPage = val;this.backToTop();
                 this.updateList();
             },
             addStudent(i,e){
