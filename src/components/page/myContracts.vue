@@ -20,7 +20,7 @@
                     </el-select>
                 </div>
 
-                <div class='studentReturnThreeNewCon' v-if="code =='cc_m'||code.includes('_c')">
+                <div class='studentReturnThreeNewCon' v-if="code.includes('cc_m')||code.includes('_c')">
                     <el-select v-model="valueCC"  placeholder="选择CC" @change="updateList">
                         <el-option v-for="item in optionsCC" :key="item.aid" :label="item.uname" :value="item.aid">
                         </el-option>
@@ -367,7 +367,7 @@
         created() {
             this.code = JSON.parse(user).job ? JSON.parse(user).job.code : '';
             if (Object.keys(this.getmyContractS).length==0) {
-                if(this.code.includes('cc_c')){//销售经理 和 教务经理 默认进来全部CC
+                if(this.code.includes('_c')){//销售经理 和 教务经理 默认进来全部CC
                     let cam = {
                         simple: 1
                     }
@@ -381,7 +381,7 @@
                         this.valueR=0;
 
                     })
-                }else if(this.code=='cc_m'){
+                }else if(this.code.includes('cc_m')){
                     getAllCCList(token).then((res) => {
                         this.optionsCC = res.data;
                         this.optionsCC.unshift({

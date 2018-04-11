@@ -101,6 +101,7 @@
             <div class='aTitle'>
                 <!--  <i class=el-icon-my-tongxunlu style="font-size:31px"></i> -->
                 <span style="font-weight:600;font-size:22px">报名列表({{number}})</span>
+                <el-button type="info" size="mid"  @click="createCh" v-if="number!=0" style="float:right;margin-right:5px">导出</el-button>
             </div>
             <div id="tableact">
                 <el-table :data="noActData" style="width: 95%;margin:0 auto" >
@@ -126,7 +127,8 @@
     var token, user
     import {
         getActivityOrderList,
-        getBirthdayInfo
+        getBirthdayInfo,
+        userReport
     } from '../../api/api';
     import 'quill/dist/quill.core.css'
 // import 'quill/dist/quill.snow.css'
@@ -146,6 +148,16 @@
             }
         },
         methods: {
+            createCh(){
+                let para = {
+                    pid:this.$route.params.id
+                }
+                userReport(para,token).then(res=>{
+                    //   let a = 'http://pandatest.dfth.com/download/stream?name=';
+                     let a = '/download/stream?name=';
+                        window.open( a+res.data.name)
+                })
+            },
             handleCurrentChange: function (val) { //变更页数
                 this.currentPage = val;this.backToTop();
                 let p = {

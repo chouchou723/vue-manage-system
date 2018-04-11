@@ -24,7 +24,7 @@
         </div>
         <div id="table2AT">
             <el-table :data="publicData"  style="width: 100%">
-                <el-table-column prop="names" label="活动名称" width='140'>
+                <el-table-column prop="names" label="活动名称" >
                     <template scope="scope">
                         <span class='nicknameSpanAT' @click='showAct(scope.row.id,scope.row.type_id)'>{{scope.row.names}}</span>
                     </template>
@@ -1068,7 +1068,9 @@
         padding-left: 0;
         padding-right: 0;
     } */
-
+    .activityTem .ql-container{
+            height: 700px;
+        }
 
     .nicknameSpanAT {
         font-weight: 600;

@@ -21,6 +21,10 @@
             <div class="tmkRPH3">
                 <el-button type="success" @click="openResource" :disabled="this.multipleSelection==''" >认领</el-button>
             </div>
+                        <!-- <div class="tmkRPH34">
+                                <el-input placeholder="输入手机号或姓名" icon="search" v-model="input2" @keyup.enter.native="updateList" :on-icon-click="updateList">
+                                </el-input>
+                            </div> -->
         </div>
         <el-dialog title="资源认领" :visible.sync="dialogFormVisible" :close-on-click-modal="no" top='33%' size='tiny' show-close custom-class='tmkRPH5'>
             <!-- <el-form :model="resourceSchool" id='actSchool1'>
@@ -96,6 +100,7 @@
                 pagesize:50, //默认每页
                 sortName:'',
                 sortOrder:'',
+                input2:''
             }
         },
         methods: {
@@ -170,6 +175,7 @@
                     page: this.currentPage,
                     sortName:this.sortName,
                     sortOrder:this.sortOrder,
+                    input:this.input2
                     // pagesize:this.pagesize,
                 }
 
@@ -318,5 +324,8 @@
         text-align: center;
         margin-top: -24px
     }
-
+    .tmkRPH34{
+        float: right;
+        margin-right: 10px
+    }
 </style>

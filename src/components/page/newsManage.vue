@@ -91,9 +91,7 @@
     </template>
     <script>
         var user, token
-        import 'quill/dist/quill.core.css'
-    // import 'quill/dist/quill.snow.css'
-    // import 'quill/dist/quill.bubble.css'       
+import 'quill/dist/quill.core.css'
         import {
             getActivityList,
             newsList,
@@ -340,6 +338,9 @@
     
     </script>
     <style>
+       #NManageAdd .ql-container{
+            height: 700px;
+        }
         /* #table2AT .el-table td,
         #table2AT .el-table th:not(.gutter) {
             padding: 1px;

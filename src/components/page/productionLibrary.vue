@@ -14,7 +14,7 @@
                     <el-button type="primary" size="mid" class='buttonAdd1' @click="createCh('aform')">创建产品</el-button>
                     <!-- <el-button type="primary" size="mid" class='buttonAdd' @click="createCh('aform')">导出表格</el-button> -->
                 </div>
-                <!-- <el-dialog :title="alter" :visible.sync="dialogFormVisible" :close-on-click-modal="no" custom-class='productLibraryDD' top='25%' @close='resetD' size='tiny'>
+                <el-dialog :title="alter" :visible.sync="dialogFormVisible" :close-on-click-modal="no" custom-class='productLibraryDD' top='25%' @close='resetD' size='tiny'>
                     <el-form :model="aform" :rules="rules2" ref="aform" style='padding-right:70px'>
                         <el-form-item label="产品型号" :label-width="formLabelWidth" prop="sku">
                                 <el-input v-model="aform.sku" placeholder='请输入产品型号' :style='{width:inputLabelWidth}'></el-input>
@@ -39,8 +39,8 @@
                         <el-button type="primary" :loading='writeL' @click="addAccount('aform')">确 定</el-button>
                         <el-button @click="dialogFormVisible = false">取 消</el-button>
                     </div>
-                </el-dialog> -->
-                <el-dialog :title="alter" :visible.sync="dialogFormVisible" :close-on-click-modal="no" custom-class='productLibraryDD' top='25%' @close='resetD' >
+                </el-dialog>
+                <!-- <el-dialog :title="alter" :visible.sync="dialogFormVisible" :close-on-click-modal="no" custom-class='productLibraryDD' top='25%' @close='resetD' >
                     <el-form :model="aform" :rules="rules2" ref="aform" style='padding-right:70px'>
                         <el-form-item label="产品级别" :label-width="formLabelWidth" prop="level" v-if="this.in!=='update'">
                                 <el-select v-model="aform.level"  placeholder="产品级别" :style='{width:inputLabelWidth}'>
@@ -78,11 +78,6 @@
                     <el-table :data="accountData1" :show-header='no' style='width:100%' :row-style='rowstyle'>
                         <el-table-column prop="created" label="产品级别">
                             </el-table-column>
-                            <!-- <el-table-column prop="month" label="发货月份" width='80'>
-                                    <template scope="scope">
-                                            <span >{{scope.row.month}}月</span>
-                                        </template>
-                                </el-table-column> -->
                         <el-table-column prop="sku" label="产品型号" width='280'>
                             <template scope="scope">
                                 <span >{{scope.row.sku}}</span>
@@ -100,11 +95,7 @@
                         <el-pagination layout="prev, pager, next" :total="total1" :current-page="currentPage1" :page-size="pagesize" @current-change="handleCurrentChange1">
                         </el-pagination>
                     </div>
-                        <!-- <div slot="footer" class="dialog-footer" style="text-align:center;margin-top:40px">
-                            <el-button type="primary" :loading='writeL' @click="addAccount('aform')">确 定</el-button>
-                            <el-button @click="dialogFormVisible = false">取 消</el-button>
-                        </div> -->
-                    </el-dialog>
+                    </el-dialog> -->
             </div>
             <div>
                 <el-table :data="accountData" border style='width:100%'>
@@ -117,7 +108,8 @@
                             </el-table-column>
                     <el-table-column prop="sku" label="产品型号" width='280'>
                         <template scope="scope">
-                            <span @click="switchDetail(scope.row)" class='nicknameSpanN'>{{scope.row.sku}}</span>
+                                <span >{{scope.row.sku}}</span>
+                            <!-- <span @click="switchDetail(scope.row)" class='nicknameSpanN'>{{scope.row.sku}}</span> -->
                         </template>
                     </el-table-column>
                     <el-table-column prop="goods_name" label="产品名称">
@@ -130,7 +122,7 @@
                     <el-table-column label="操作" width='120'>
                         <template scope="scope">
                             <el-button type="text" size="small" @click="editCh(scope.$index, accountData,'edit')">修改</el-button>
-                            <el-button type="text" size="small" @click="editCh(scope.$index, accountData,'update')">更新</el-button>
+                            <!-- <el-button type="text" size="small" @click="editCh(scope.$index, accountData,'update')">更新</el-button> -->
                             <el-button type="text" size="small" @click="open2(scope.$index, accountData)" class='classDel'>删除</el-button>
                         </template>
                     </el-table-column>
@@ -185,7 +177,7 @@
                     number: '0',
                     aform: {
                         id: '',
-                        // sku:'',
+                        sku:'',
                         a: '',
                         n: '',
                         v: '', 
@@ -200,17 +192,16 @@
                     inputLabelWidth1: '90px',
                     dpid:'',
                     rules2: {
-                        // sku: [{
-                        //     required: true,
-                        //     message: '请输入产品型号',
-                        //     trigger: 'blur'
-                        // }],
                         sku: [{
                             required: true,
-                            validator: iscon1,
-                            // message: '请输入产品型号',
+                            message: '请输入产品型号',
                             trigger: 'blur'
                         }],
+                        // sku: [{
+                        //     required: true,
+                        //     validator: iscon1,
+                        //     trigger: 'blur'
+                        // }],
                         goods_name: [{
                             required: true,
                             message: '请输入产品名称',

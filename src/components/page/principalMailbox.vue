@@ -26,7 +26,7 @@
             <el-dialog title="信件处理" :visible.sync="dialogFormVisible" :close-on-click-modal="no" custom-class='prinMailboXDD' top='29%' @close='resetD' size='tiny'>
                 <el-form :model="aform" ref="aform" :rules="rules2">
                         <el-form-item label="" prop='contents'>
-                                <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 8}" placeholder="输入要回复给家长的内容" v-model="aform.contents">
+                                <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 8}" placeholder="输入要回复给家长的内容,最多500个字" v-model="aform.contents">
                                 </el-input>
                             </el-form-item>
                 </el-form>
@@ -46,7 +46,7 @@
                 </el-table-column>
                 <el-table-column prop="ask" label="内容">
                         <template scope="scope">
-                                <div style="text-align:left">{{scope.row.ask}}</div>
+                                <div :style="tal()">{{scope.row.ask}}</div>
                             </template>
                 </el-table-column>
                 <el-table-column prop="created" label="发送时间" width='150px'>
@@ -118,18 +118,19 @@ import {
 export default {
     data() {
         var isSpace = (rule, value, callback) => {
-            var myreg = /^.{1,100}$/;
+            var myreg = /^.{1,500}$/;
             var myreg1 = /^\s/;
             if(value==''){
-                callback('请输入要回复给家长的内容')
+                callback('请输入要回复给家长的内容,最多500个字')
             }else if (myreg1.test(value)) {
                 callback('请输入有效的内容')
-            } else {
+            }
+                else if (!myreg.test(value)) {
+                    callback('内容不得超过500字');
+                } 
+             else {
                 callback();
             }
-            // else if (!myreg.test(value)) {
-            //     callback('内容不得超过100字');
-            // } 
             
         }
             return {
@@ -162,6 +163,9 @@ export default {
             }
         },
         methods: {
+            tal(){
+                    return 'text-align:left;'
+            },
             switchDetail(data){//点击查看资料
                 let para = {
                     id:data.uid

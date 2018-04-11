@@ -90,7 +90,7 @@
                     </el-table-column>
                     <el-table-column prop="class_hour" label="消耗课时">
                     </el-table-column>
-                    <el-table-column prop="course_time" label="签到时间">
+                    <el-table-column prop="created" label="签到时间">
                     </el-table-column>
                 </el-table>
                 <div class="block">

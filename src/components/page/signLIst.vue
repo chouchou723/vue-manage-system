@@ -56,25 +56,28 @@
             <el-pagination layout="prev, pager, next" :total="total" :current-page="currentPage" :page-size="pagesize" @current-change="handleCurrentChange">
             </el-pagination>
         </div>
-        <el-dialog :title="classTitle" :visible.sync="dialogFormVisibleOverTime" :close-on-click-modal="no" top='14%' size='tiny' @close='clearNoSignStill'>
+        <el-dialog :title="classTitle" :visible.sync="dialogFormVisibleOverTime" :close-on-click-modal="no" top='14%'  @close='clearNoSignStill'>
 
                 <div class="SLctcover">
                     <div class="SLctcover1">
                         <div>学生姓名</div>
+                        <div>消耗课时</div>
                         <div>剩余课时</div>
                         <div>签到情况</div>
                     </div>
                     <div class="SLctcover2" v-for='(s,index) in sData' v-if='sData.length!=0'>
                         <div style='flex:0 0 56px;text-align: center;'>{{s.child_name}}</div>
+                        <div style='flex:0 0 56px;text-align: center;'>{{s.class_hour}}</div>
                         <div style='flex:0 0 56px;text-align: center;'>{{s.course_curr_num}}</div>
                         <div :style="s.checkin_types_name=='出勤'?'color:#13ce66;flex:0 0 56px;text-align: center;':s.checkin_types_name=='请假'?'color:#dba31c;flex:0 0 56px;text-align: center;':s.checkin_types_name=='旷课'?'color:#ff4949;flex:0 0 56px;text-align: center;':'color:#c1c2c2;flex:0 0 56px;text-align: center;'">{{s.checkin_types_name}}</div>
                     </div>
                     <div v-if='sData.length==0' class="SLctcover3">暂无学生</div>
                 </div>
                 <div class="SLctcover4" v-if='sData.length!=0'>
-                        <div class="SLctcover5">出勤:{{counts.work||0}}人</div>
-                        <div class="SLctcover7">请假:{{counts.vacation||0}}人</div>
-                        <div class="SLctcover6">旷课:{{counts.absent||0}}人</div>
+                        <div class="SLctcover5">出勤:{{counts.work||0}}人, {{counts.work_hour||0}}课时</div>
+                        <div class="SLctcover7">请假:{{counts.vacation||0}}人, 0课时</div>
+                        <div class="SLctcover6">旷课:{{counts.absent||0}}人, {{counts.absent||0}}课时</div>
+                        <div class="SLctcover8">共计消耗:{{counts.total_class_hour||0}}课时</div>
                     </div>
             </el-dialog>
     </div>
@@ -354,19 +357,31 @@
         justify-content: space-between;
         background: white;
         margin: 0 auto;
+        padding-left:17%;
+        padding-right:17%;
         line-height: 50px
     }
 
     .SLctcover5 {
-        margin-left: 50px;
+        flex:1;
+        text-align: left;
         color: #13ce66
     }
 
     .SLctcover6 {
-        margin-right: 50px;
-        color: #ff4949
+        flex:1;
+        text-align: center;
+        color: #ff4949;
+        padding-left: 30px;
+        
     }
     .SLctcover7 {
-        color: #f7ba2a
+        color: #f7ba2a;
+        flex:1;
+        text-align: center;
+    }
+    .SLctcover8 {
+        flex:1;
+        text-align: right;
     }
 </style>

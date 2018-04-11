@@ -104,7 +104,7 @@
             </el-table-column>
             <el-table-column prop="class_hour" label="消耗课时">
             </el-table-column>
-            <el-table-column prop="course_time" label="签到时间">
+            <el-table-column prop="created" label="签到时间">
             </el-table-column>
         </el-table>
         <div class="block">
@@ -264,23 +264,7 @@
                 <br>
             </div>
         </el-dialog>
-         <!-- 提前开课 -->
-         <el-dialog title="提前开课" :visible.sync="dialogFormVisibleAdv" :close-on-click-modal="no" top='33%' size='tiny' show-close @close='resetAdv'
-         class='advDialog'>
-         <el-form :model="advform"  ref="advform" :rules="advrule" label-width="80px">
-             <el-form-item prop='Ftime' label='开课时间'>
-                 <el-date-picker v-model="advform.Ftime" type="date" placeholder="开课时间" :editable="no" :clearable="no" :picker-options="pickerOptions3">
-                 </el-date-picker>
-             </el-form-item>
-         </el-form>
-         <div slot="footer" class="dialog-footer SDtuc">
-             <el-button type="primary" :loading='writeL' class="SDm30" @click='advSubmit'>确定</el-button>
-             <el-button @click="dialogFormVisibleFroze = false">取消</el-button>
-             <br>
-             <br>
-             <br>
-         </div>
-     </el-dialog>
+      
         <!-- 退费试算 -->
         <el-dialog :title="'退费试算清单(合同'+students[classIndex].sku +')'" :visible.sync="dialogFormVisibleRefund" :close-on-click-modal="no"
             top='10%' size='large' show-close class='refundDialog'>
@@ -394,11 +378,11 @@
                             </el-table-column>
                             <el-table-column prop="classTime" label="排班管理">
                                 <template scope="scope">
-                                    <!-- <img v-if="new Date(scope.row.expired[0])>new Date()&&!code.includes('_c')" class='imgEdit' src="../../../static/img/editClass.png" width='16' alt="" @click='advClass(scope.row)'> -->
                                     <span v-if="scope.row.classTime">{{scope.row.classTime}}</span>
                                     <span v-else-if="!scope.row.classTime&&scope.row.course_curr_num!=0&&code.includes('readonly')" class='arrangeClass22' >-</span>
                                     <span v-else-if="!scope.row.classTime&&scope.row.course_curr_num!=0" class='arrangeClass' @click='arrangeClass(item,scope.row)'>立即排班</span>
                                     <span v-else-if='!scope.row.classTime&&scope.row.course_curr_num==0'>无</span>
+                                    <!-- <img  class='imgEdit' src="../../../static/img/edit_h.png" width='16' alt="" @click='advClass(scope.row)'> -->
                                 </template>
                             </el-table-column>
                             <el-table-column prop="expired" label="有效期">
@@ -754,6 +738,33 @@
                 <br>
             </div>
         </el-dialog>
+           <!-- 提前开课 -->
+           <el-dialog :title="arrangeTitle" :visible.sync="dialogFormVisibleAdv" :close-on-click-modal="no" top='33%' show-close @close='resetAdv'
+           class='advDialog'>
+           <el-form :model="advform"  ref="advform" :rules="advrule" label-width="80px">
+               <el-form-item prop='Ftime' label='开课时间'>
+                   <el-date-picker v-model="advform.Ftime" type="date" placeholder="开课时间" :editable="no" :clearable="no" :picker-options="pickerOptions3" @change='getClassRoomArrange1(advform.Ftime)'>
+                   </el-date-picker>
+               </el-form-item>
+               <el-form-item prop='syllabus_id' class='selectClass SDselect'>
+                    <el-radio-group v-model="advform.syllabus_id"  @change='radioChange'>
+                        <el-radio :label="item.id" class="SDtu" v-for='item in selectionClassArrangeADV'>
+                            <span class="SDm30">{{item.week==1?'周一':item.week==2?'周二':item.week==3?'周三':item.week==4?'周四':item.week==5?'周五':item.week==6?'周六':'周日'}}  {{item.class_time}}
+                        </span>
+                            <span class="SDm30">{{item.teacher?item.teacher.uname:''}}</span><span>{{item.class_room.names+'(当前班级'+item.syllabus_person_num+'人)' }}
+                        </span>
+                        </el-radio>
+                    </el-radio-group>
+                </el-form-item>
+           </el-form>
+           <div slot="footer" class="dialog-footer SDtuc">
+               <el-button type="primary" :loading='writeL' class="SDm30" @click='advSubmit'>确定</el-button>
+               <el-button @click="dialogFormVisibleAdv = false">取消</el-button>
+               <br>
+               <br>
+               <br>
+           </div>
+       </el-dialog>
         <!-- 回访记录 -->
         <div id='communityTitle'>
             <div class='communityTitle'>
@@ -1392,9 +1403,11 @@
                 dialogFormVisiblechangtobuy: false,
                 dialogFormVisibleContinue: false,
                 dialogFormVisibleAdv:false,
+                selectionClassArrangeADV:[],
                 advform: {
                     // class: '',
                     Ftime: '',
+                    syllabus_id: ''
                 },
                 firstform: {
                     contract: ''
@@ -1411,6 +1424,7 @@
                 frozeform: {
                     // class: '',
                     Ftime: '',
+                    
                 },
                 frozeformrule: {
                     // class: [{
@@ -1522,14 +1536,24 @@
             //         }
             //      })
             // },
+            resetAdv(){
+                this.advform.Ftime = '';
+                this.advform.syllabus_id = '';
+                this.selectionClassArrangeADV = [];
+                this.arrangeTitle = '';
+                this.$refs['advform'].resetFields();
+
+            },
             advClass(data){//提前开课
                 this.dialogFormVisibleAdv = true;
-                this.pickerOptions3={
-                    disabledDate(time) {
-                        return new Date(data.expired[0])- 8.64e7<time.getTime()||time.getTime() < Date.now();
-                    }
-                }
+                // this.pickerOptions3={
+                //     disabledDate(time) {
+                //         return new Date(data.expired[0])- 8.64e7<time.getTime()||time.getTime() < Date.now();
+                //     }
+                // }
+                this.arrangeTitle = '调整开课日期'+'[' + data.title + ']';
                 this.advData = data.order_item_id
+                this.arrangeCourseId = data.course_id;
                 // console.log(data)
             },
             checkCou1(data){
@@ -1625,10 +1649,12 @@
             },
             advSubmit(){
                 this.$refs['advform'].validate((valid) => {
-                    if (valid) {
+                    if (valid&&this.advform.syllabus_id) {
                         let para = {
+                            uid: this.$route.params.uid,
                             order_item_id: this.advData,
-                            first_time:this.advform.Ftime
+                            first_time:this.advform.Ftime,
+                            syllabus_id:this.advform.syllabus_id, 
                         }
                         // console.log(para)
                         this.writeL = true;
@@ -1644,6 +1670,14 @@
 
                             }
                         })
+                    } else {
+                        if (this.advform.Ftime&&this.selectionClassArrangeADV==0) {
+                            this.$message.info('该日没有此课程班级,请重新选择')
+                        }
+                        if (this.advform.Ftime&&this.selectionClassArrangeADV!=0) {
+                            this.$message.info('请选择具体班级')
+                        }
+                        // this.activeName = b;
                     }
                 })
             },
@@ -1682,7 +1716,7 @@
                     if (valid && this.transferOrUpform.syllabus_id) {
                         let para = {
                             // order_id: this.students[this.classIndex].order_id,
-
+                            uid: this.$route.params.uid,
                             order_item_id: this.students[this.classIndex].dataTable[this.transferOrUpform.class]
                                 .order_item_id, //选择的课程名
                             trans_id: this.transferOrUpform.school, //转班的课程id
@@ -1962,6 +1996,33 @@
                 } else {
                     // this.art[index] = {time:'',class:''}
                     this.selectionClassArrange.splice(0, this.selectionClassArrange.length);
+                }
+            },
+            getClassRoomArrange1(time) {//立即排班按钮选班级 出时间表
+                // console.log(time)
+                // let that = this;
+                if (time != '') {
+                    let para = {
+                        date: new Date(time).toLocaleDateString(), //日期
+                        course_id: this.arrangeCourseId, //课程id
+                        uid: this.$route.params.uid
+                    }
+                    getDateClass(token, para).then(res => {
+                        if (res.data.length != 0) {
+
+                            this.selectionClassArrangeADV = res.data
+                            this.advform.syllabus_id = time
+                            this.advform.syllabus_id = ''
+                        } else {
+                            this.advform.syllabus_id = 999
+                            this.advform.syllabus_id = ''
+                            this.selectionClassArrangeADV = [];
+                            this.$message.info('该日没有此课程班级')
+                        }
+                    })
+                } else {
+                    // this.art[index] = {time:'',class:''}
+                    this.selectionClassArrangeADV.splice(0, this.selectionClassArrangeADV.length);
                 }
             },
             goToSelect(formName) { //合同选择dialog的确认
@@ -3292,9 +3353,13 @@
     .arrangeClass:hover {
         cursor: pointer;
     }
-
+    .imgEdit{
+        line-height: 24px;
+        vertical-align: text-bottom;
+    }
     .imgEdit:hover {
         cursor: pointer;
+       
     }
     /*::-webkit-scrollbar {
     display: none

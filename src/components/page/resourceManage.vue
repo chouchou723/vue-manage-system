@@ -115,8 +115,8 @@
                 </el-table-column> -->
                 <el-table-column prop="mobile" label="手机" :formatter="formatter" >
                 </el-table-column>
-                <!-- <el-table-column prop="school" label="校区" width='180'>
-                </el-table-column> -->
+                <el-table-column prop="address" label="所属区域" width='180'>
+                </el-table-column>
                 <el-table-column prop="tmk_name" label="TMK"  >
                 </el-table-column>
                 <el-table-column prop="created_at" label="录入时间" sortable='custom' >
@@ -125,7 +125,7 @@
                 </el-table-column>
                 <el-table-column prop="statu_code" label="资源状态" column-key='status' width='90'>
                     <template scope="scope">
-                        <span :style="scope.row.statu_code=='待认领'?'color:#1fb5ad': scope.row.statu_code=='待定'? 'color:#dba31c': scope.row.statu_code=='无意向'? 'color:#dba31c':  scope.row.statu_code=='无需求客户'? 'color:#dba31c': scope.row.statu_code=='暂不联系'? 'color:#dba31c':scope.row.statu_code=='CC已认领'? 'color:#dba31c' : scope.row.status=='已邀约'? 'color:#33c616' : scope.row.status=='已到访'? 'color:#4057e0': scope.row.status=='未到访'? 'color:#f79091': scope.row.status=='已签约'? 'color:#f79091':'color:#cecece' ">{{scope.row.statu_code}}</span>
+                        <span :style="scope.row.statu_code=='待认领'?'color:#1fb5ad': scope.row.statu_code=='待定'? 'color:#dba31c': scope.row.statu_code=='无意向'? 'color:#dba31c':  scope.row.statu_code=='无需求客户'? 'color:#dba31c': scope.row.statu_code=='暂不联系'? 'color:#dba31c':scope.row.statu_code=='CC已认领'? 'color:#dba31c' : scope.row.statu_code=='已邀约'? 'color:#33c616' : scope.row.statu_code=='已到访'? 'color:#2d20d6': scope.row.statu_code=='未到访'? 'color:#bfb5b5': scope.row.statu_code=='已签约'? 'color:#f79091':'color:#cecece' ">{{scope.row.statu_code}}</span>
                     </template>
                 </el-table-column>
             </el-table>

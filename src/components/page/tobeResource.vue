@@ -552,16 +552,14 @@
                 this.$refs[formName].validate((valid) => { //替换提交服务
                     if (valid) {
                         let para = {...this.signform};
-                        if (this.para.parent1) {
-                            this.para.familys = this.para.parent + '|' + this.para.con + '|' + this
-                                .para.phone +
-                                ',' + this.para.parent1 + '|' + this.para.con1 + '|' + this.para.phone1
+                        if (para.parent1) {
+                            para.familys =para.parent + '|' +para.con + '|' + para.phone +
+                                ',' + para.parent1 + '|' + para.con1 + '|' + para.phone1
                         } else {
-                            this.para.familys = this.para.parent + '|' + this.para.con + '|' + this
-                                .para.phone
+                            para.familys = para.parent + '|' + para.con + '|' + para.phone
                         }
-                        this.para.demoid = this.nuid;
-                        this.para.type = 'demo';
+                        para.demoid = this.nuid;
+                        para.type = 'demo';
                         this.writeL = true;
                         create_student(para, token).then(res => {//接口要换
                             if (res.code == 0) {

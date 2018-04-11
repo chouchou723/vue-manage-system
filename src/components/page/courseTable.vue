@@ -203,12 +203,20 @@
             <div class="CTover">
                 <div class="CTover1">
                     <div>学生姓名</div>
+                    <div>消耗课时</div>
                     <div>剩余课时</div>
                     <div>签到情况</div>
-                    <div>消耗课时</div>
                 </div>
                 <div class="CTsign" v-for='(s,index) in signStatusNo.students' v-if='signStatusNo.students.length!=0'>
                     <div class="CTsign1">{{s.child_name}}</div>
+                    <div class="CTsign1"> 
+                        <el-select v-model="s.class_hour"  placeholder="消耗课时"  v-if='s.checkin_types==1' size="mini">
+                                <el-option v-for="(item,index) in s.course_curr_num<13?s.course_curr_num-0:12" :label="index+1" :value="index+1"></el-option>
+                            
+                    </el-select>
+                    <span v-else-if="s.checkin_types==3">1</span>                    
+                    <span v-else>0</span>
+                </div>
                     <div class="CTsign2">{{s.course_curr_num}}</div>
                     <div class="CTsign3">
                         <el-switch v-model="s.checkin_types"  v-if='s.checkin_types_name=="出勤"' on-color="#13ce66"  off-color="#50bfff"  on-text='出勤' :on-value='one' :off-value='three' off-text='旷课'  @click.native.prevent='signUpS(s,signStatusNo,index)' 
@@ -229,17 +237,7 @@
                             </el-dropdown-menu>
                         </el-dropdown> -->
                     </div>
-                    <div class="CTsign1"> 
-                        <el-select v-model="s.class_hour"  placeholder="消耗课时"  v-if='s.checkin_types==1' size="mini">
-                                <el-option v-for="(item,index) in s.course_curr_num<13?s.course_curr_num-0:12" :label="index+1" :value="index+1"></el-option>
-                                <!-- <el-option label="1" value="1"></el-option>
-                                <el-option label="2" value="2"></el-option>
-                                <el-option label="3" value="3"></el-option>
-                                <el-option label="4" value="4"></el-option> -->
-                    </el-select>
-                    <!-- <span v-else-if="s.checkin_types==2">0</span> -->
-                    <span v-else>1</span>
-                </div>
+                   
                     <!-- <div :style="s.sign=='出勤'?'color:#13ce66':s.sign=='请假'?'color:#dba31c':s.sign=='旷课'?'color:#ff4949':'color:#c1c2c2'">{{s.sign}}</div> -->
                 </div>
                 <div v-if='signStatusNo.students.length==0' class="CTover3">暂无学生</div>
@@ -281,22 +279,24 @@
             <div class="CTover">
                 <div class="CTover1">
                     <div>学生姓名</div>
+                    <div>消耗课时</div>
                     <div>剩余课时</div>
                     <div>签到情况</div>
-                    <div>消耗课时</div>
                 </div>
                 <div class="CTover2" v-for='s in signStatusNo.students' v-if='signStatusNo.students.length!=0'>
                         <div style='flex:0 0 56px;text-align: center;'>{{s.child_name}}</div>
+                        <div style='flex:0 0 56px;text-align: center;'>{{s.class_hour}}</div>
                         <div style='flex:0 0 56px;text-align: center;'>{{s.course_curr_num}}</div>
                         <div :style="s.checkin_types_name=='出勤'?'color:#13ce66;flex:0 0 56px;text-align: center;':s.checkin_types_name=='请假'?'color:#dba31c;flex:0 0 56px;text-align: center;':s.checkin_types_name=='旷课'?'color:#ff4949;flex:0 0 56px;text-align: center;':'color:#c1c2c2;flex:0 0 56px;text-align: center;'">{{s.checkin_types_name}}</div>
-                        <div style='flex:0 0 56px;text-align: center;'>{{s.class_hour}}</div>
                     </div>
                 <div v-if='signStatusNo.students.length==0' class="CTover3">暂无学生</div>
             </div>
             <div class="CTdetail" v-if='signStatusNo.students.length!=0'>
-                <div class="CTdetail1">出勤:{{signStatusNo.count.work||0}}人</div>
-                <div class="CTsign4">请假:{{signStatusNo.count.vacation||0}}人</div>
-                <div class="CTdetail2">旷课:{{signStatusNo.count.absent||0}}人</div>
+                <div class="CTdetail1">出勤:{{signStatusNo.count.work||0}}人, {{signStatusNo.count.work_hour||0}}课时</div>
+                <div class="CTdetail3">请假:{{signStatusNo.count.vacation||0}}人, 0课时</div>
+                <div class="CTdetail2">旷课:{{signStatusNo.count.absent||0}}人, {{signStatusNo.count.absent||0}}课时</div>
+                <div class="CTdetail4">共计消耗:{{signStatusNo.count.total_class_hour||0}}课时</div>
+                
             </div>
         </el-dialog>
         <!-- 停课 -->
@@ -1903,19 +1903,37 @@
         justify-content: space-between;
         background: white;
         margin: 0 auto;
+        padding-left:17%;
+        padding-right:17%;
         line-height: 50px
     }
 
     .CTdetail1 {
-        margin-left: 50px;
-        color: #13ce66
+        /* margin-left: 50px; */
+        color: #13ce66;
+        flex:1;
+        text-align: left;
     }
-
+    .CTdetail3 {
+        color: #f7ba2a;
+        flex:1;
+        text-align: center;
+    }
     .CTdetail2 {
-        margin-right: 50px;
-        color: #ff4949
+        /* margin-right: 50px; */
+        color: #ff4949;
+        flex:1;
+        text-align: center;
+        padding-left: 30px;
+        
     }
-
+    .CTdetail4 {
+        /* margin-right: 50px; */
+        /* color: #13ce66; */
+        flex:1;
+        text-align: right;
+        
+    }
     .CTstop {
         margin-left: 10px
     }
