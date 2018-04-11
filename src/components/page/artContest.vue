@@ -7,7 +7,7 @@
         <div class='artContestH'>
             <h3 class="artContestH1">
 
-                绘画大赛报名1
+                绘画大赛报名
                 <span v-if="number==='0'" style="font-size:14px;color: #bdb8b8;">加载中...</span>
                 <span v-else>({{number}}人)</span>
             </h3>
