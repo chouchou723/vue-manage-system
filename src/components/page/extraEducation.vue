@@ -4,7 +4,7 @@
                     <img src="../../../static/img/zypt.png" class="eehimage">
                     <div style="padding: 14px;color:#1fb5ad">
                             <i class="iconfont icon-kechengxiaohaoxiangqing"></i>
-                            <span >阿特学院</span>
+                            <span >阿特学院1</span>
                       <div style='text-align:right;'>
                               <el-button type="text" class="button" style="color:gray" @click="gotoI">点击进入>></el-button>
                       </div>
@@ -57,6 +57,7 @@
     }
     /* .eeH1{
         height: 40%;
+        height: 50%;
         flex: 0 0 300px;
     }
     .eeH1 .el-card__body{
