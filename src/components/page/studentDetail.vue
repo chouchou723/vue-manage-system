@@ -382,7 +382,7 @@
                                     <span v-else-if="!scope.row.classTime&&scope.row.course_curr_num!=0&&code.includes('readonly')" class='arrangeClass22' >-</span>
                                     <span v-else-if="!scope.row.classTime&&scope.row.course_curr_num!=0" class='arrangeClass' @click='arrangeClass(item,scope.row)'>立即排班</span>
                                     <span v-else-if='!scope.row.classTime&&scope.row.course_curr_num==0'>无</span>
-                                    <img  class='imgEdit' src="../../../static/img/edit_h.png" width='16' alt="" @click='advClass(scope.row)'>
+                                    <!-- <img  class='imgEdit' src="../../../static/img/edit_h.png" width='16' alt="" @click='advClass(scope.row)'> -->
                                 </template>
                             </el-table-column>
                             <el-table-column prop="expired" label="有效期">
