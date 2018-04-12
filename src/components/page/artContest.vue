@@ -312,7 +312,7 @@
             
         }
             return {
-                audioS:'http://p6c1w0z8o.bkt.clouddn.com/jjyys.mp3',
+                audioS:'',
                 valueK:'',
                 valueT:'',
                 imgSrc:'',
