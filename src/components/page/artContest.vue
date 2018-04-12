@@ -59,7 +59,7 @@
                                                         </el-table-column>
                                                         <el-table-column prop="works_voice" label="语音" width='70'>
                                                                 <template scope="scope">
-                                                                    <span v-if='scope.row.works_voice'  class='artContestH6' @click='openAudio'>mp3</span>
+                                                                    <span v-if='scope.row.works_voice'  class='artContestH6' @click='openAudio(scope.row.works_voice)'>mp3</span>
                                                                     <span v-else>-</span>
                                                                 </template>
                                                             </el-table-column>
@@ -421,8 +421,8 @@
             resetAudio(){
                 this.audioS=''
             },
-            openAudio(){
-                this.audioS='http://p6c1w0z8o.bkt.clouddn.com/jjyys.mp3'                
+            openAudio(data){
+                this.audioS= data             
                 this.dialogFormVisibleA = true
             },
             open2(id) { //删除课程
