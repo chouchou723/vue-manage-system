@@ -301,7 +301,7 @@
                                 <el-input v-model="a.money" placeholder='请输入金额' @change='changeReset1("money")'></el-input>
                             </el-form-item>
                             <span @click='addPay' class='addPayC' v-if='index==0'>添加付款方式</span>
-                            <span @click='deletePay' class='deletePayC' v-else>删除</span>
+                            <span @click='deletePay(index)' class='deletePayC' v-else>删除</span>
                             <div style="clear:both"></div>
                         </div>
                     </el-form-item>
@@ -716,8 +716,8 @@
                     money: ''
                 })
             },
-            deletePay() {
-                this.actSchool.pay.pop();
+            deletePay(index) {
+                this.actSchool.pay.splice(index,1);
                 this.changeReset1('method');
                 this.changeReset1('money')
             },
