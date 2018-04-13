@@ -2,7 +2,7 @@
     <div class="login-wrap">
             <canvas id="canvas">Canvas is not supported in your browser.</canvas>
         <!-- <div class="ms-title">Panda System</div> -->
-        <div class="ms-login" v-if='!passD'>
+        <div class="ms-login" v-if='!passD&&!loading'>
             <img class='ms-title' src="../../../static/img/logo_03.png"  alt="">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px"  v-bind:class='{hidden:ruleForm.hidden}'>
                 <el-form-item prop="username">
@@ -46,7 +46,7 @@
                 </div>
             </div>
         </div>
-        <div class="pass-box" v-if='passD'>
+        <div class="pass-box" v-if='passD&&!loading'>
             <div class="forgetBack" @click='goToLogin'><img :src="forgetSrc" width='30'alt=""></div>
                 <el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2"  class="demo-ruleForm" >
                     <el-form-item  prop="mail">
@@ -71,6 +71,22 @@
                         <el-button type="primary" @click="handleSubmit2('ruleForm2')" class='forget100'>提交</el-button>
                     </el-form-item>
                 </el-form>
+            </div>
+            <div class='chooseC' v-if='loading'>
+                <el-card class="box-card">
+                    <div slot="header" class="clearfix" style='text-align:center;font-weight:600'>
+                      <span style="line-height: 36px;">选择角色</span>
+                    </div>
+                    <div style="display:flex;width:90%;margin:0 auto;flex-wrap:wrap;">
+                        <div v-for="o in 8" :key="o" style='width:25%;margin-bottom:15px;' >
+                            <el-button type="text" style='border:1px solid gainsboro;border-radius:5px;width:80%;padding:10px;text-align:center;color:black'>
+
+                                {{'列表内容 ' + o }}
+                            </el-button>
+                        </div>
+
+                    </div>
+                  </el-card>
             </div>
     </div>
 </template>
@@ -185,6 +201,7 @@ export default {
                 a: 60,
                 canClick: false,
             fullscreenLoading: false,
+            loading:false,
             uuid: '',
             loginAdd: '',
             add: '',
@@ -261,6 +278,7 @@ export default {
         }
     },
     computed: {
+       
         canButton() {
                 if (this.canClick == true) {
                     return  '重新获取:'+this.a + 's'
@@ -311,7 +329,7 @@ export default {
                 this.$refs['ruleForm2'].resetFields();
                 // this.$refs['ruleForm'].resetFields();
             },
-            handleSubmit2(formName) {
+            handleSubmit2(formName) {//忘记密码操作
                 this.$refs.ruleForm2.validate((valid) => {
                     if (valid) {
                         let para = {
@@ -386,6 +404,7 @@ export default {
             // this.$router.push('/forgetPassword')
         },
         submitForm(formName) {
+            // this.loading=true;
             const self = this;
             self.$refs[formName].validate((valid) => {
                 if (valid) {
@@ -690,7 +709,14 @@ width:100%
     border-radius: 5px;
     background: #fff;
 }
-
+.chooseC{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 600px;
+    /* min-height: 360px; */
+    transform: translate(-50%,-50%);
+}
 .login-btn {
     text-align: center;
 }

@@ -17,8 +17,8 @@ axios.interceptors.response.use(function (response) {
         }   
     return Promise.reject(error);
   });
-let base ='';
-// let base = 'http://pandatest.dfth.com';
+// let base ='';
+let base = 'http://pstest.dfth.com';
 // let base = 'http://panda.dfth.com';
 
 //登录页面

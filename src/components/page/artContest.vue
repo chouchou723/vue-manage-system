@@ -146,6 +146,9 @@
                                                 <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 8}" placeholder="输入作品简介,限100字以内" v-model="form.works_det">
                                                 </el-input>
                                             </el-form-item>
+                                            <el-form-item label="指导老师" prop='teacher'>
+                                                <el-input v-model="form.teacher" placeholder='请输入指导老师' style="width:217px"></el-input>
+                                            </el-form-item>
                                          <el-form-item label="参赛者照片" prop='head_img' style='height:180px;display:inline-block;width:300px;'>
                                                 <div style="position:absolute;top:-41px;left:129px;">
                                                          <i class="el-icon-circle-close" style="position:absolute;top:42px;right:-25px;z-index:1" v-if="imageUrl1" @click="handleRemove1"></i>
@@ -196,6 +199,9 @@
                         <el-form-item prop='time' label='作品简介:'>
                             <div>{{detailS.intro}}</div>
                         </el-form-item>
+                        <el-form-item prop='time' label='指导老师:'>
+                            <div>{{detailS.teacher}}</div>
+                        </el-form-item>
                         <el-form-item prop='time' label='参赛者照片:'>
                                 <img :src="detailS.head_img" alt="" style='width:auto'>
                         </el-form-item>
@@ -245,6 +251,17 @@
                     callback('请输入参赛者姓名')
                 } else if (myreg1.test(value)) {
                     callback('请输入有效的参赛者姓名');
+                } else {
+                    callback();
+                }
+            }
+            var isTeacher = (rule, value, callback) => {
+                // var myreg = /^[\u4e00-\u9fa5a-zA-Z]+$/;
+                var myreg1 = /^\s/;
+                if (value == '') {
+                    callback('请输入指导老师')
+                } else if (myreg1.test(value)) {
+                    callback('请输入有效的指导老师');
                 } else {
                     callback();
                 }
@@ -377,6 +394,11 @@
                         validator: isSpace100,
                         trigger: 'blur'
                     }],
+                    teacher: [{
+                        required: true,
+                        validator: isTeacher,
+                        trigger: 'blur'
+                    }],
                     works_img: [{
                         required: true,
                         validator: isImg,
@@ -399,6 +421,7 @@
                     organization:'',
                     works_name:'',
                     works_det:'',
+                    teacher:'',
                     works_img:'',
                     head_img:''
                 },
@@ -464,6 +487,7 @@
                 this.detailS = {
                     name:row.works_name,
                     intro:row.works_det,
+                    teacher:row.teacher,
                     head_img:row.head_img,
                     works_img:row.works_img
                 }
@@ -484,6 +508,7 @@
                     organization:row.organization,
                     works_name:row.works_name,
                     works_det:row.works_det,
+                    teacher:row.teacher,
                     head_img:'',
                     works_img:''                    
                 }
@@ -509,6 +534,7 @@
                     group_type:'',
                     province:'',
                     city:'',
+                    teacher:'',
                     organization:'',
                     works_name:'',
                     works_det:'',
