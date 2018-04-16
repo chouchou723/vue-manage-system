@@ -502,7 +502,7 @@
                     mobile:row.mobile,
                     age:row.age,
                     sex:row.sex==='男'?'1':'2',
-                    group_type:row.group_type,
+                    group_type:row.group_type_id,
                     province:row.province-0,
                     city:row.city-0,
                     organization:row.organization,
