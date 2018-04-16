@@ -9,7 +9,7 @@
         <div class='accou'>
             <div class="h1">
                 <h3 class='accountH2'>
-               账号管理1
+               账号管理
                <span v-if="number==='0'" style="font-size:14px;color: #bdb8b8;">加载中...</span>
                <span v-else>({{number}}人)</span>
                 </h3>
