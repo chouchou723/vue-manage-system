@@ -627,6 +627,12 @@ const router = new Router({
                         keepAlive: true // 不需要被缓存
                     },
                     component: resolve => require(['../components/page/artContest.vue'], resolve), //绘画大赛
+                },{
+                    path: '/specialArt',
+                    meta: {
+                        keepAlive: true // 不需要被缓存
+                    },
+                    component: resolve => require(['../components/page/specialArt.vue'], resolve), //绘画大赛
                 },
                 
                 
