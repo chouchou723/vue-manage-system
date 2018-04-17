@@ -96,7 +96,8 @@
                         </el-form-item>
                         <el-form-item label="年龄" prop='age'>
                             <el-select v-model="form.age" placeholder="选择" style="width:172px">
-                                <el-option label="2" value="2"></el-option>
+                                    <el-option v-for="item in 99" :label="item+''" :value="item+''"></el-option>     
+                                <!-- <el-option label="2" value="2"></el-option>
                                 <el-option label="3" value="3"></el-option>
                                 <el-option label="4" value="4"></el-option>
                                 <el-option label="5" value="5"></el-option>
@@ -112,7 +113,7 @@
                                 <el-option label="15" value="15"></el-option>
                                 <el-option label="16" value="16"></el-option>
                                 <el-option label="17" value="17"></el-option>
-                                <el-option label="18" value="18"></el-option>
+                                <el-option label="18" value="18"></el-option> -->
                             </el-select>
                         </el-form-item>
                         <el-form-item label="比赛组别" prop='group_type'>
