@@ -148,7 +148,7 @@
                                                 </el-input>
                                             </el-form-item>
                                             <el-form-item label="指导老师" prop='teacher'>
-                                                <el-input v-model="form.teacher" placeholder='请输入指导老师姓名' style="width:217px"></el-input>
+                                                <el-input v-model="form.teacher" placeholder='请输入指导老师姓名(选填)' style="width:217px"></el-input>
                                             </el-form-item>
                                          <el-form-item label="参赛者照片" prop='head_img' style='height:180px;display:inline-block;width:300px;'>
                                                 <div style="position:absolute;top:-41px;left:129px;">
@@ -260,7 +260,7 @@
                 // var myreg = /^[\u4e00-\u9fa5a-zA-Z]+$/;
                 var myreg1 = /^\s/;
                 if (value == '') {
-                    callback('请输入指导老师姓名')
+                    callback()
                 } else if (myreg1.test(value)) {
                     callback('请输入有效的指导老师姓名');
                 } else {
@@ -396,7 +396,7 @@
                         trigger: 'blur'
                     }],
                     teacher: [{
-                        required: true,
+                        // required: true,
                         validator: isTeacher,
                         trigger: 'blur'
                     }],
