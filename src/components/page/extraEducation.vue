@@ -21,7 +21,7 @@
     export default {
         data() {
             return {
-                shref:''
+                shref:'http://dfth.yifengke.com'
             }
         },
         methods: {
@@ -39,12 +39,12 @@
             token = JSON.parse(user).token;
         },
         created() {
-            this.code = JSON.parse(user).job ? JSON.parse(user).job.code : '';
-            yifengke(token).then(res=>{
-                    // let a = window.open();
-                //    a.location =`http://www.yifengke.com/user/i_courseList/0b60d0e0-fb71-11e7-9876-7dbb9503c064?${res.data}`
-                this.shref = `http://www.yifengke.com/user/i_courseList/0b60d0e0-fb71-11e7-9876-7dbb9503c064?${res.data}`
-                })
+            // this.code = JSON.parse(user).job ? JSON.parse(user).job.code : '';
+            // yifengke(token).then(res=>{
+            //         // let a = window.open();
+            //     //    a.location =`http://www.yifengke.com/user/i_courseList/0b60d0e0-fb71-11e7-9876-7dbb9503c064?${res.data}`
+            //     this.shref = `http://www.yifengke.com/user/i_courseList/0b60d0e0-fb71-11e7-9876-7dbb9503c064?${res.data}`
+            //     })
         },
     }
 
