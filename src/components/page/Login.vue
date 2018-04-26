@@ -6,7 +6,7 @@
             <img class='ms-title' src="../../../static/img/logo_03.png"  alt="">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px"  v-bind:class='{hidden:ruleForm.hidden}'>
                 <el-form-item prop="username">
-                    <el-input type='mail' v-model="ruleForm.username" placeholder="请输入手机号或者邮箱地址"></el-input>
+                    <el-input type='mail' v-model="ruleForm.username" placeholder="请输入手机号"></el-input>
                 </el-form-item>
                 <el-form-item prop="password">
                     <el-input type="password" placeholder="请输入密码" v-model="ruleForm.password" @keyup.enter.native="submitForm('ruleForm')"></el-input>
