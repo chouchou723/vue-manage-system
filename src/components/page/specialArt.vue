@@ -27,6 +27,17 @@
                     <el-option label="特别组" value="3"></el-option>
                 </el-select>
             </div>
+            <div class='artContestH2'>
+                <el-cascader
+                :options="cities"
+                :props="propsource"
+                v-model="value3"
+                 @change="updateList"
+                 clearable
+                 change-on-select
+                placeholder="选择城市" >
+              </el-cascader>
+            </div>
             <div style="float:right;margin-right:240px">
                 <el-button type="info" @click="createActivity">添加参赛者</el-button>
             </div>
@@ -330,6 +341,12 @@
             
         }
             return {
+                propsource:{
+              value: 'id',
+              label:'city_name',
+              children: '_child'
+            },
+            value3:[],
                 audioS:'',
                 valueK:'3',
                 valueT:'',
@@ -675,6 +692,7 @@
             fetchData() {
                 let para = {
                     // cc_id: this.valueT, //CC
+                    city:this.value3.length!==0?this.value3[this.value3.length-1]:'',
                     input:this.input2,
                     page: this.currentPage,
                     status:this.valueT,
