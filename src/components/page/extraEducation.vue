@@ -51,8 +51,9 @@
 </script>
 <style>
     .eeH{
-        display: flex;
-        justify-content: flex-start;
+        /* display: flex;
+        justify-content: flex-start; */
+        width:100%;
         height: 100%;
     }
     /* .eeH1{

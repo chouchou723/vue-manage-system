@@ -27,6 +27,7 @@
 .wflex{
     display: flex;
     flex-direction: column;
+    height: 100%;
     width:calc(100% - 188px);
 }
 .wflex1{
