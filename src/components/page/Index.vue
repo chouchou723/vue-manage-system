@@ -939,7 +939,8 @@
             updateListClass(){//教务获取班级课程
                 let para = {
                     date:new Date().toLocaleDateString(),
-                    aid:this.valueTeach2
+                    aid:this.valueTeach2,
+                    school_id:this.valueTeachR2
                 }
                 getDateClass(token,para).then(res=>{
                     this.ssData = res.data
@@ -1211,17 +1212,19 @@
                         this.changeChart(res)
                     })
                     }else if(this.code.includes('teach')){
-                        getTeachIndex(token).then(res=>{
-                    let da = res.data
-                    this.teachIndex = da;
-                    this.teachIndex1 = da;
-                    // console.log( this.teachIndex)
-                })
-                let para = {
-                    date:new Date().toLocaleDateString(),
-                    aid:this.aid
+                        let para = {
+                    school_id: this.valueTeachR1,
+                    aid:this.valueTeach1
                 }
-                getDateClass(token,para).then(res=>{
+                getTeachIndex(token,para).then(res=>{
+                    this.teachIndex1 = res.data
+                })
+                let para1 = {
+                    date:new Date().toLocaleDateString(),
+                    aid:this.aid,
+                    school_id:this.valueTeachR2
+                }
+                getDateClass(token,para1).then(res=>{
                     this.ssData = res.data
                 })
                     }
