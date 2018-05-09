@@ -331,11 +331,11 @@
             <div class='contractClassSD'>
                     <i class="iconfont icon-contract fz25"></i>
                 <span class="SDcon1">合同课程({{contractNumber}}个)</span>
-                <div class="SDconfloat" v-if="!code.includes('_c')">
-                    <el-button type="success" size="small" @click='continueClass'>
-                        续费</el-button>
+                <div class="SDconfloat" v-if="!code.includes('_c_c')&&!code.includes('_cr_c')">
+                    <!-- <el-button type="success" size="small" @click='continueClass'>
+                        续费</el-button> -->
                     <el-button type="success" size="small" @click='rebuy'>
-                        再购买</el-button>
+                        续费</el-button>
                     <el-button type="success" size="small" @click='changeToPay'>
                         转课补费</el-button>
                     <el-button type="primary" size="small" @click='upClass'>
@@ -378,11 +378,13 @@
                             </el-table-column>
                             <el-table-column prop="classTime" label="排班管理">
                                 <template scope="scope">
-                                    <span v-if="scope.row.classTime">{{scope.row.classTime}}</span>
+                                    <div v-if="scope.row.classTime">{{scope.row.classTime}}
+                                        <img v-if="scope.row.edit_item=='true'" class='imgEdit' src="../../../static/img/edit_h.png" width='16' alt="" @click='advClass(scope.row)' >
+                                    </div>
                                     <span v-else-if="!scope.row.classTime&&scope.row.course_curr_num!=0&&code.includes('readonly')" class='arrangeClass22' >-</span>
                                     <span v-else-if="!scope.row.classTime&&scope.row.course_curr_num!=0" class='arrangeClass' @click='arrangeClass(item,scope.row)'>立即排班</span>
                                     <span v-else-if='!scope.row.classTime&&scope.row.course_curr_num==0'>无</span>
-                                    <!-- <img  class='imgEdit' src="../../../static/img/edit_h.png" width='16' alt="" @click='advClass(scope.row)'> -->
+                                   
                                 </template>
                             </el-table-column>
                             <el-table-column prop="expired" label="有效期">
@@ -746,7 +748,7 @@
                    <el-date-picker v-model="advform.Ftime" type="date" placeholder="开课时间" :editable="no" :clearable="no" :picker-options="pickerOptions3" @change='getClassRoomArrange1(advform.Ftime)'>
                    </el-date-picker>
                </el-form-item>
-               <el-form-item prop='syllabus_id' class='selectClass SDselect'>
+               <el-form-item prop='syllabus_id' class='selectClass SDselect' v-if="selectionClassArrangeADV.length!=0">
                     <el-radio-group v-model="advform.syllabus_id"  @change='radioChange'>
                         <el-radio :label="item.id" class="SDtu" v-for='item in selectionClassArrangeADV'>
                             <span class="SDm30">{{item.week==1?'周一':item.week==2?'周二':item.week==3?'周三':item.week==4?'周四':item.week==5?'周五':item.week==6?'周六':'周日'}}  {{item.class_time}}
@@ -1071,6 +1073,9 @@
                     // disabledDate(time) {
                     //     return new Date(this.overTime)<time.getTime()||time.getTime() < Date.now();
                     //     // return new Date('2018-4-1')<time.getTime() < Date.now();
+                    // }
+                    // disabledDate(time) {
+                    //     return time.getTime() > Date.now() ;
                     // }
                 },
                 overTime:'',
@@ -1546,11 +1551,11 @@
             },
             advClass(data){//提前开课
                 this.dialogFormVisibleAdv = true;
-                // this.pickerOptions3={
-                //     disabledDate(time) {
-                //         return new Date(data.expired[0])- 8.64e7<time.getTime()||time.getTime() < Date.now();
-                //     }
-                // }
+                this.pickerOptions3={
+                    disabledDate(time) {
+                        return new Date(data.expired[0])- 8.64e7<time.getTime()||time.getTime() < Date.now()- 8.64e7;
+                    }
+                }
                 this.arrangeTitle = '调整开课日期'+'[' + data.title + ']';
                 this.advData = data.order_item_id
                 this.arrangeCourseId = data.course_id;
@@ -1647,18 +1652,22 @@
                     })
                 }
             },
-            advSubmit(){
+            advSubmit(){//提前开课提交
                 this.$refs['advform'].validate((valid) => {
                     if (valid&&this.advform.syllabus_id) {
-                        let para = {
+                        let para = {  
+                        }
+                        para.assigns = [{
+                            type:'advance',
                             uid: this.$route.params.uid,
                             order_item_id: this.advData,
-                            first_time:this.advform.Ftime,
-                            syllabus_id:this.advform.syllabus_id, 
-                        }
+                            time:new Date(this.advform.Ftime).toLocaleDateString(),
+                            syllabus_id:this.advform.syllabus_id
+                        }]
+                        para.assigns = JSON.stringify(para.assigns)
                         // console.log(para)
                         this.writeL = true;
-                        editCourseStartTime(para, token).then(res => {
+                        assignClass(para, token).then(res => {
                             if (res.code == 0) {
                                 this.$message.success('操作成功');
                                 this.getCon();
@@ -2003,6 +2012,7 @@
                 // let that = this;
                 if (time != '') {
                     let para = {
+                        type:'advance',
                         date: new Date(time).toLocaleDateString(), //日期
                         course_id: this.arrangeCourseId, //课程id
                         uid: this.$route.params.uid
