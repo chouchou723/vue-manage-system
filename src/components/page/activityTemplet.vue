@@ -18,8 +18,8 @@
                 </el-select>
             </div> -->
             <div style="float:right;margin-right:10px">
-                <el-button type="success" @click="createActivity" v-if='code.includes("_c")'>创建活动模板</el-button>
-                 <el-button type="success" @click="createBirthdayActivity" v-if='code.includes("_m")'>发起生日会活动</el-button>
+                <el-button type="success" @click="createActivity" v-if='code.includes("teach_c")'>创建活动模板</el-button>
+                 <el-button type="success" @click="createBirthdayActivity" v-if='code.includes("teach_m")'>发起生日会活动</el-button>
             </div>
         </div>
         <div id="table2AT">
@@ -58,9 +58,9 @@
                     </el-table-column>
                 <el-table-column label="操作" width='140'>
                     <template scope="scope">
-                          <el-button   type="text" size="small" v-if='code.includes("_c")&&scope.row.type_id!="生日会"'@click="claim(scope.row.id)" style="font-size:14px;">修改</el-button>
-                          <el-button  v-if='code.includes("_m")&&scope.row.type_id!="生日会"' type="text" size="small" @click="launch(scope.row.id)" style="font-size:14px">发起</el-button>                       
-                          <el-button  v-if='code.includes("_m")&&scope.row.type_id=="生日会"' type="text" size="small" @click="claimB(scope.row.id)" style="font-size:14px;color:#e4c318">修改</el-button>
+                          <el-button   type="text" size="small" v-if='code.includes("teach_c")&&scope.row.type_id!="生日会"'@click="claim(scope.row.id)" style="font-size:14px;">修改</el-button>
+                          <el-button  v-if='code.includes("teach_m")&&scope.row.type_id!="生日会"' type="text" size="small" @click="launch(scope.row.id)" style="font-size:14px">发起</el-button>                       
+                          <el-button  v-if='code.includes("teach_m")&&scope.row.type_id=="生日会"' type="text" size="small" @click="claimB(scope.row.id)" style="font-size:14px;color:#e4c318">修改</el-button>
                         <!--   <el-button type="text" size="small" @click="open2(scope.$index, accountData)">删除</el-button> -->
                     </template>
                 </el-table-column>

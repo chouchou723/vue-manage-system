@@ -240,7 +240,7 @@
                     this.optionsTMK.unshift({key:0,label:'全部TMK'})
                     this.valueT=JSON.parse(user).aid+''
                 })
-                    }else if(this.code.includes('_c')){
+                    }else if(this.code.includes('cc_c')){
                         getTMK(token).then((res) => {
                     this.optionsTMK = res.data
                     this.optionsTMK.unshift({key:'no',label:'无TMK'})                    

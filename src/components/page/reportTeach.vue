@@ -8,7 +8,7 @@
         <!-- 签到统计 -->
         <div style="width: 100%;float:left;background: white;position:relative;height:auto;border-radius:5px">
             <div class="newResourceAn" style="position:relative;padding-top:10px;height:45px;border-bottom:1px solid gainsboro;background:#fafafa">
-                <div style='margin-left:10px;width:100px;float:right;margin-right:5px' v-if='code.includes("_m")'>
+                <div style='margin-left:10px;width:100px;float:right;margin-right:5px' v-if='code.includes("_m")&&!code.includes("_c")'>
                     <el-select class="circleSelect" v-model="valueCM1" size='small' placeholder="选择老师" @change="updateListCM(4)">
                         <el-option v-for="item in teacherList" :key="item.aid" :label="item.uname" :value="item.aid">
                         </el-option>
@@ -254,7 +254,7 @@
         <!-- 业绩指标 -->
         <div style="width: 100%;float:left;background: white;margin-top:10px;position:relative;height:auto;border-radius:5px">
             <div class="newResourceAn" style="position:relative;padding-top:10px;height:45px;border-bottom:1px solid gainsboro;background:#fafafa">
-                <div style='margin-left:10px;width:100px;float:right;margin-right:5px' v-if='code.includes("_m")'>
+                <div style='margin-left:10px;width:100px;float:right;margin-right:5px' v-if='code.includes("_m")&&!code.includes("_c")'>
                     <el-select class="circleSelect" v-model="valueST1" size='small' placeholder="选择老师" @change="updateListST">
                         <el-option v-for="item in teacherList" :key="item.aid" :label="item.uname" :value="item.aid">
                         </el-option>
@@ -775,8 +775,8 @@
                     })
                     this.teacherList = a;
                 }).then(() => {
-                    this.valueCM1 = this.aid;
-                    this.valueST1 = this.aid;
+                    this.valueCM1 = this.aid-0;
+                    this.valueST1 = this.aid-0;
                 this.getSA1Data();                    
                 })
             }

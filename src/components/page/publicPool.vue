@@ -28,7 +28,7 @@
                 </el-table-column>
                 <el-table-column prop="created" label="录入时间" sortable='custom'>
                 </el-table-column>
-                <el-table-column label="操作" width='140' v-if='!code.includes("_c")'>
+                <el-table-column label="操作" width='140' v-if='!code.includes("_c_c")&&!code.includes("_cr_c")'>
                     <template scope="scope">
                         <el-button type="text" size="small" @click="claim(scope.$index, publicData)" class='PPc'>认领</el-button>
                     </template>

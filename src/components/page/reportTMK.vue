@@ -755,7 +755,7 @@
                 this.code = JSON.parse(user).job ? JSON.parse(user).job.code : '';
                 this.aid = JSON.parse(user).aid ? JSON.parse(user).aid : ''; //获取aid
                 this.uname = JSON.parse(user).uname ? JSON.parse(user).uname : '';
-                if(this.code==='tmk'){
+                if(this.code.includes('tmk')){
                     this.getCM1Data();
                     this.getCM2Data();
                     this.getRE1Data();
@@ -769,7 +769,7 @@
                 //     this.getRE2Data();                    
                 //     this.getSAData();
                 // }
-                if (this.code === 'tmk_m') {
+                if (this.code.includes('tmk_m')) {
                     getTMK(token).then((res) => {
                         this.ccs = res.data
                         this.ccs.unshift({key:'0',label:'全部TMK'})

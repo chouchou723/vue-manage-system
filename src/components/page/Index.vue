@@ -1200,14 +1200,31 @@
                     this.valueTeachR1 = 0;
                     this.valueTeachR = 0;
                     this.valueR = 0;
-                    let para = {
-                    school_id:this.valueR,
-                    cc_id: this.valueCC
-                }
-                getCCindex(token,para).then(res => {
-                    this.changeNumberCC(res)
-                    this.changeChart(res)
+                    if(this.code.includes('cc')){
+
+                        let para = {
+                        school_id:this.valueR,
+                        cc_id: this.valueCC
+                    }
+                    getCCindex(token,para).then(res => {
+                        this.changeNumberCC(res)
+                        this.changeChart(res)
+                    })
+                    }else if(this.code.includes('teach')){
+                        getTeachIndex(token).then(res=>{
+                    let da = res.data
+                    this.teachIndex = da;
+                    this.teachIndex1 = da;
+                    // console.log( this.teachIndex)
                 })
+                let para = {
+                    date:new Date().toLocaleDateString(),
+                    aid:this.aid
+                }
+                getDateClass(token,para).then(res=>{
+                    this.ssData = res.data
+                })
+                    }
                     })
                     }
             if (this.code=='tmk') {

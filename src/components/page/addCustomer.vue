@@ -100,12 +100,12 @@
                         <el-input v-model="form.address" placeholder='请输入具体地址'></el-input>
                     </el-form-item>
                 </el-form-item>
-                <el-form-item label="所属校区">
-                    <span>{{school_name}}</span>
-                    <!-- <el-select v-model="form.school_id" placeholder="请选择校区" style="width:142px" readonly>
+                <el-form-item label="所属校区" prop="school_id">
+                    <!-- <span>{{school_name}}</span> -->
+                    <el-select v-model="form.school_id" placeholder="请选择校区" style="width:142px">
                         <el-option v-for="item in schools" :key="item.id" :label="item.title" :value="item.id">
                         </el-option>
-                    </el-select> -->
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="来源渠道" required>
                     <el-form-item prop='sour_id' class='AC142float'>
@@ -286,6 +286,7 @@
                     city_id: '',
                     area_id: '',
                     address: '',
+                    school_id: '',
                     sour_id: [],
                     referral_uid: '',
                     familys_name: '',
@@ -358,6 +359,11 @@
                         trigger: 'change'
                     }, ],
                     area_id: [{
+                        required: true,
+                        validator: nan,
+                        trigger: 'change'
+                    }, ],
+                    school_id: [{
                         required: true,
                         validator: nan,
                         trigger: 'change'

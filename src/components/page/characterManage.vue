@@ -16,6 +16,9 @@
                     <el-form-item label="角色名称" :label-width="formLabelWidth" prop="name">
                         <el-input v-model="form.name" auto-complete="off" placeholder='请输入角色名称' class='CM200'></el-input>
                     </el-form-item>
+                    <el-form-item label="角色编码" :label-width="formLabelWidth" prop="code">
+                        <el-input v-model="form.code" auto-complete="off" placeholder='请输入角色编码' class='CM200'></el-input>
+                    </el-form-item>
                 </el-form>
                 <el-tree class='CMtree' :data="data2" show-checkbox="" check-strictly v-model="form.access" node-key="module_id" ref="tree" highlight-current :props="defaultProps" v-loading="loading2">
                 </el-tree>
@@ -69,7 +72,8 @@ export default {
             no: false,
             form: {
                 roleid: '',
-                name: ''
+                name: '',
+                code:''
             },
             rules2: {
                 name: [{
@@ -91,6 +95,7 @@ export default {
             this.in = '';
             this.form.name = '';
             this.form.role_id = '';
+            this.form.code = '';
             this.loading2 =  true;
              this.$refs.tree.setCheckedKeys([]);
         },
@@ -144,6 +149,8 @@ export default {
             })
             this.in = index;
             this.form.name = data[index].name;
+            this.form.code = data[index].code;
+            
             this.dialogFormVisible = true;
         },
         addChar() {//确定提交
@@ -151,14 +158,16 @@ export default {
             let a = s.join(',');
             let b = this.form.name;
             let c = this.in;
+            let d = this.form.code;
             this.$refs['form'].validate((valid) => {
                 if(valid){
 
-                    if (a && b && c === '') {
+                    if (a && b && d && c === '') {
         
                         let para = {
                                 name: b,
-                                module_id: a
+                                module_id: a,
+                                code:d
                             } //number要替换
                         create_character(para, token).then((res) => {
                             if(res.code==0){
@@ -169,11 +178,13 @@ export default {
                         this.dialogFormVisible = false;
                             }
                         });
-                    } else if (a && b && c !== '') {
+                    } else if (a && b && d && c !== '') {
                         let para = {
                                 role_id: this.form.roleid,
                                 name: b,
-                                module_id: a
+                                module_id: a,
+                                code:d
+                                
                             } 
                         put_character(para, token).then((res) => {
                             if(res.code==0){

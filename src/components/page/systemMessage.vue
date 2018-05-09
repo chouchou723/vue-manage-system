@@ -31,6 +31,9 @@
                     <div style="margin-left:5px" v-if='content.type=="转校"'>
                         学生:{{ content.content.child}}的转校申请,请您确认
                     </div>
+                    <div style="margin-left:5px" v-if='content.type=="提前开课申请"'>
+                        学生:{{ content.content.uname}}的提前开课申请,请及时处理
+                    </div>
                     <div style="margin-left:5px" v-if='content.type=="代课申请"'>
                         {{ content.content?content.content.teacher:''}}老师的代课申请,请您确认
                     </div>
@@ -78,6 +81,22 @@
                             <div style="margin-left: 120px;" v-if="detailData.action!=''">
                                 <el-button type="primary" size="small" @click="acceptStudent(detailData,1)">接收</el-button>
                                 <el-button type="danger" size="small" @click="acceptStudent(detailData,0)">拒绝</el-button>
+                            </div>
+                        </div>
+                        <div v-if='detailData.type=="提前开课申请"' style="width:92%;margin:0 auto">
+                            <el-form label-width="120px">
+                                <el-form-item prop='time' label='申请人:'>
+                                    <div>{{detailData.content.uname}}</div>
+                                </el-form-item>
+                                <el-form-item prop='time' label='申请课程:'>
+                                    <div>{{detailData.content.course_det}}</div>
+                                </el-form-item>
+                                <el-form-item prop='time' label='申请日期:'>
+                                    <div>{{detailData.content.apply_time}}</div>
+                                </el-form-item>
+                            </el-form>
+                            <div style="margin-left: 120px;" >
+                                <el-button type="primary" @click="gotoSSS(detailData)">查看</el-button>
                             </div>
                         </div>
                         <div v-if='detailData.type=="转校失败"' style="width:92%;margin:0 auto">
@@ -197,6 +216,9 @@
             ...mapActions([
                 'setMessNumber'
             ]),
+            gotoSSS(data){
+                this.$router.push('/studentDetail/' + data.content.uid);
+            },
             acceptStudent(data, agree) {
                 let para = {
                     message_id: data.id,

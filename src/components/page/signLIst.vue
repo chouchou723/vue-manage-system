@@ -22,7 +22,7 @@
                                 </el-option>
                             </el-select>
                         </div>
-                <div class='SLctcover9' v-if="code.includes('_c')||code.includes('_m')">
+                <div class='SLctcover9' v-if="code.includes('_c_c')||code.includes('_cr_c')||code.includes('_m')">
                         <el-select v-model="value1"  placeholder="选择老师" @change="updateList">
                                 <el-option v-for="item in teacherList" :key="item.aid" :label="item.uname" :value="item.aid">
                                 </el-option>
@@ -230,7 +230,7 @@
                             title: '全部校区'
                         })
                 this.valueR = 0
-            
+                this.fetchData(); 
             })
                 }else{
                         this.fetchData();                        
@@ -372,7 +372,7 @@
         flex:1;
         text-align: center;
         color: #ff4949;
-        padding-left: 30px;
+        /* padding-left: 30px; */
         
     }
     .SLctcover7 {
