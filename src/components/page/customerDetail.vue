@@ -136,7 +136,7 @@
                     <div class="CDEint3">
                         <div>到访设置: <span :style="item.fla == '已到访'?'color:#e9bd23':item.fla == '未到访'?'color:#e24545':'color:grey'">{{item.fla}}</span>
                         </div>
-                        <div class='editVisit' v-if='item.update_count-0<1&&!code.includes("_c")' @click='confirmVisit(item.id,item)'>
+                        <div class='editVisit' v-if='item.update_count-0<1&&!code.includes("_c_c")&&!code.includes("_cr_c")' @click='confirmVisit(item.id,item)'>
                                 <i class="iconfont icon-xiugai1  fzh fgrey"></i>
                         </div>
                         <div class='editVisitI' @click='editInvite(item.id,item,$event)' v-if="new Date().getTime()-new Date(item.created).getTime()<7200000&&userid==item.tmk_uid&&!code.includes('_c')&&item.update_count<1">
@@ -2038,6 +2038,7 @@
                                     cc_name: data.cc_name,
                                     channel: data.source_name,
                                     fullAddress: data.fullAddress,
+                                    school_id: data.school_id,                                    
                                     created: data.created,
                                     parent: data.customer_famliy[0].uname ? data.customer_famliy[
                                             0].uname + '(' + data.customer_famliy[0].relation +
@@ -2056,6 +2057,12 @@
                                         '',
                                     teach_name: data.referral ? data.referral.teach_name : ''
                                 }
+                                let para={
+                    school_id:this.student.school_id
+                }
+                getTeacherList(token,para).then((res) => { //获取老师
+                    this.teachersName = res.data;
+                })
             }).catch((res) => {
                 // console.log('No Data');
                 // this.$message.error('数据有误')
@@ -2187,11 +2194,9 @@
             this.getCL();
             this.getIL();
             getClassKind(token).then((res) => { //获取课程分类
-                this.classkind = res.data;console.log(1)
+                this.classkind = res.data;
             }).then(()=>{
-                getTeacherList(token).then((res) => { //获取老师
-                    this.teachersName = res.data;
-                })
+                
                 let si = {
                     simple: 1,
                 }
