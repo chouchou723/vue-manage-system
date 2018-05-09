@@ -14,7 +14,7 @@
       </h3>
         <div class="MRtitle">
             
-            <div class='studentReturnThreeNew' v-if="code =='tmk_m'||code.includes('cc_c')">
+            <div class='studentReturnThreeNew' v-if="code.includes('tmk_m')||code.includes('cc_c')">
                 <el-select v-model="valueT"  placeholder="选择TMK" @change="updateList" >
                     <el-option v-for="item in optionsTMK" :key="item.key" :label="item.label" :value="item.key">
                     </el-option>
@@ -264,7 +264,7 @@ export default {
             this.code = JSON.parse(user).job ? JSON.parse(user).job.code : ''; //获取职位code
             // if(this.code=='tmk'){
                 if(Object.keys(this.getMyResourceS).length==0){
-                    if(this.code == 'tmk_m'){
+                    if(this.code.includes('tmk_m')){
                         getTMK(token).then((res) => {
                     this.optionsTMK = res.data
                     this.optionsTMK.unshift({key:0,label:'全部TMK'})
