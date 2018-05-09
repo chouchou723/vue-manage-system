@@ -17,7 +17,7 @@
                         </el-option>
                     </el-select>
                 </div>
-                <div class='oneSelect' v-if="code.includes('_m')||code.includes('_c')">
+                <div class='oneSelect' v-if="code.includes('_m')||code.includes('_c_c')||code.includes('_cr_c')">
                     <el-select v-model="valueT" placeholder="老师选择" filterable @change="updateList">
                         <el-option v-for="item in teachersName" :key="item.aid" :label="item.uname" :value="item.aid">
                         </el-option>
@@ -46,7 +46,7 @@
                 <el-button type="success" size="mid" style='margin:0 10px;' class='buttonAdd1' @click="createCh('classform')" v-if="!code.includes('_c')">创建补课</el-button>
                 <el-button type="warning" size="mid" class='buttonAdd2' @click="openSubstitute" :disabled='isdisable2||(valueT!=aid&&code!="teach")' v-if="!code.includes('_c')">申请代课</el-button>
                 <el-button type="info" size="mid" class='buttonAdd3' @click="openChange" :disabled='isdisable||(valueT!=aid&&code!="teach")' v-if="!code.includes('_c')">调课</el-button>
-                <el-button type="danger" size="mid" class='buttonAdd4' @click="openStop" v-if="code.includes('teach_c')">停课</el-button>
+                <el-button type="danger" size="mid" class='buttonAdd4' @click="openStop" v-if="code.includes('teach_c_c')">停课</el-button>
             </div>
             <el-dialog title="创建补课" :visible.sync="dialogFormVisible" :close-on-click-modal="no" custom-class='classTableDialog' top='20%'
                 @close='resetD'>
@@ -1261,7 +1261,7 @@
                 getTeacherList(token).then((res) => {//获取老师
                     this.teachersName = res.data;
                 }).then(()=>{
-                    this.valueT =  this.aid
+                    this.valueT =  this.aid-0
                 })
                 }
             if(this.code.includes('_c')){
@@ -1271,7 +1271,8 @@
             }
             campusList(cam, token).then((res) => { //获取校区,筛选用,停课用
                 this.receiveSchool = [...res.data];
-                this.valueS = res.data[0].id
+                this.valueS = res.data[0].id;
+                this.fetchData()
                 this.receiveSchool2 = res.data
                 this.receiveSchool2.unshift({id:0,title:'全部校区'})
             })

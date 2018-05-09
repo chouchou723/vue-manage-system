@@ -23,7 +23,7 @@
                                 </el-option>
                             </el-select>
                         </div>
-                <div class='studentReturnThreeNewTSM' v-if="code.includes('_c')||code.includes('_m')">
+                <div class='studentReturnThreeNewTSM' v-if="code.includes('_c_c')||code.includes('_cr_c')||code.includes('_m')">
                         <el-select v-model="value1"  placeholder="选择老师" @change="updateList">
                                 <el-option v-for="item in teacherList" :key="item.aid" :label="item.uname" :value="item.aid">
                                 </el-option>
@@ -355,7 +355,7 @@
             }else if(this.code=='teach_m'){
                     getTeacherList(token).then((res) => { //获取老师
                     this.teacherList = res.data;
-                    this.value1 = JSON.parse(user).aid
+                    this.value1 = JSON.parse(user).aid-0
                     this.teacherList.unshift({
                             aid:0,
                             uname: '全部老师'
@@ -363,17 +363,17 @@
                 })
                 }else if(this.code.includes('_c')){
                     let cam = {
-                simple: 1
-            }
-            campusList(cam, token).then((res) => {//获取校区,筛选用,停课用
-                this.optionR = [...res.data];
-                this.optionR.unshift({
-                            id: 0,
-                            title: '全部校区'
-                        })
-                this.valueR = 0
-            
-            })
+                        simple: 1
+                    }
+                    campusList(cam, token).then((res) => {//获取校区,筛选用,停课用
+                        this.optionR = [...res.data];
+                        this.optionR.unshift({
+                                    id: 0,
+                                    title: '全部校区'
+                                })
+                        this.valueR = 0
+                        this.fetchData(); 
+                    })
                 }else{
  this.fetchData();                    
                 }

@@ -201,13 +201,13 @@
                     <h3 class="indexC2">
                         日数据对比统计
                     </h3>
-                    <div class="indexC3" v-if="code.includes('cc_c')">
+                    <div class="indexC3" v-if="code.includes('_c')">
                             <el-select v-model="valueR" size='small'  placeholder="选择校区" @change="updateListGetCC">
                                     <el-option v-for="item in optionR" :key="item.id" :label="item.title" :value="item.id">
                                         </el-option>
                             </el-select>
                         </div>
-                    <div class="indexC4" v-if="code =='cc_m'||code.includes('cc_c')">
+                    <div class="indexC4" v-if="code.includes('cc_m')||code.includes('_c_c')||code.includes('_cr_c')">
                             <el-select v-model="valueCC" size='small'  placeholder="选择CC" @change="updateListCC">
                                 <el-option v-for="item in ccs" :key="item.aid" :label="item.uname" :value="item.aid">
                                 </el-option>
@@ -396,13 +396,13 @@
                     <h3 class="indexC2">
                         签到统计
                     </h3>
-                    <div class="indexC6" v-if="code.includes('teach_c')">
+                    <div class="indexC6" v-if="code.includes('_c')">
                         <el-select v-model="valueTeachR" size='small'  placeholder="选择校区" @change="updateListGetTeach">
                                 <el-option v-for="item in optionR" :key="item.id" :label="item.title" :value="item.id">
                                     </el-option>
                         </el-select>
                     </div>
-                    <div class="indexC4" v-if="code.includes('teach_c')||code.includes('teach_m')">
+                    <div class="indexC4" v-if="code.includes('teach_cr_c')||code.includes('teach_c_c')||code.includes('teach_m')">
                         <el-select v-model="valueTeach" size='small'  placeholder="选择老师" @change="updateListTTT">
                             <el-option v-for="item in teachersName" :key="item.aid" :label="item.uname" :value="item.aid">
                             </el-option>
@@ -512,13 +512,13 @@
                     <h3 class="indexC2">
                         业绩统计
                     </h3>
-                    <div class="indexC6" v-if="code.includes('teach_c')">
+                    <div class="indexC6" v-if="code.includes('_c')">
                         <el-select v-model="valueTeachR1" size='small'  placeholder="选择校区" @change="updateListGetTeach1">
                                 <el-option v-for="item in optionR" :key="item.id" :label="item.title" :value="item.id">
                                     </el-option>
                         </el-select>
                     </div>
-                    <div class="indexC4" v-if="code.includes('teach_c')||code.includes('teach_m')">
+                    <div class="indexC4" v-if="code.includes('teach_c_c')||code.includes('teach_cr_c')||code.includes('teach_m')">
                         <el-select v-model="valueTeach1" size='small'  placeholder="选择老师" @change="updateListTTT1">
                             <el-option v-for="item in teachersName1" :key="item.aid" :label="item.uname" :value="item.aid">
                             </el-option>
@@ -741,6 +741,9 @@
                 <div  class="indexC25" v-if='content.type=="转校"'>
                     学生:{{ content.content.child}}的转校申请,请您确认
                 </div>
+                <div  class="indexC25" v-if='content.type=="提前开课申请"'>
+                    学生:{{ content.content.uname}}的提前开课申请,请及时处理
+                </div>
                 <div  class="indexC25" v-if='content.type=="转校失败"'>
                     {{ content.content.msg}}
                 </div>
@@ -791,13 +794,13 @@
                 <div>
                     <h3  class="indexC21">今日课表</h3>
                 </div>
-                <div  class="indexC28" v-if="code.includes('teach_c')">
+                <div  class="indexC28" v-if="code.includes('_c')">
                     <el-select v-model="valueTeachR2" size='small'  placeholder="选择校区" @change="updateListGetTeach2">
                             <el-option v-for="item in optionR1" :key="item.id" :label="item.title" :value="item.id">
                                 </el-option>
                     </el-select>
                 </div>
-                <div  class="indexC28" v-if="code.includes('_c')||code.includes('_m')">
+                <div  class="indexC28" v-if="code.includes('_c_c')||code.includes('_cr_c')||code.includes('_m')">
                     <el-select v-model="valueTeach2" size='small'  placeholder="选择老师" @change="updateListClass" >
                         <el-option v-for="item in teachersName2" :key="item.aid" :label="item.uname" :value="item.aid">
                         </el-option>
@@ -1193,10 +1196,18 @@
                         })
 
                     this.optionR1 = res.data;
-                    this.valueTeachR2 = res.data[0].id
-                    this.valueTeachR1 = 0
-                    this.valueTeachR = 0
-                    this.valueR = 0
+                    this.valueTeachR2 = res.data[0].id;
+                    this.valueTeachR1 = 0;
+                    this.valueTeachR = 0;
+                    this.valueR = 0;
+                    let para = {
+                    school_id:this.valueR,
+                    cc_id: this.valueCC
+                }
+                getCCindex(token,para).then(res => {
+                    this.changeNumberCC(res)
+                    this.changeChart(res)
+                })
                     })
                     }
             if (this.code=='tmk') {
@@ -1221,7 +1232,7 @@
                     this.changeNumberCC(res)
                     this.changeChart(res)
                 })
-            }else if(this.code=='cc_m'){
+            }else if(this.code.includes('cc_m')){
                 getAllCCList(token).then((res) => {//主管包括自己
                     this.ccs = res.data
                     this.ccs.unshift({
@@ -1275,9 +1286,9 @@
                     this.teachersName = a;
                     this.teachersName1 = a;
                 }).then(()=>{
-                    this.valueTeach = this.aid;
-                    this.valueTeach1 = this.aid;
-                    this.valueTeach2 = this.aid;
+                    this.valueTeach = this.aid-0;
+                    this.valueTeach1 = this.aid-0;
+                    this.valueTeach2 = this.aid-0;
                 })
             }
             this.contGet = setInterval(this.getM, 600000)

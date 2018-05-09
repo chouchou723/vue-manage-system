@@ -10,6 +10,12 @@
                 <span v-if="number==='0'" style="font-size:14px;color: #bdb8b8;">加载中...</span>
                <span v-else>({{number}}人)</span>
             </h3>
+            <div class='PACH1'  v-if="code.includes('_c')">
+                <el-select v-model="valueS"  placeholder="选择校区" @change="updateListCC">
+                    <el-option v-for="item in optionR" :key="item.id" :label="item.title" :value="item.id">
+                    </el-option>
+                </el-select>
+            </div>
             <div class='PACH1'>
                 <el-select v-model="valueT"  placeholder="选择CC" @change="updateList">
                     <el-option v-for="item in optionsCC" :key="item.aid" :label="item.uname" :value="item.aid">
@@ -34,7 +40,7 @@
             <div style='margin-bottom:20px;font-weight:bold'>请选择要接管的课程顾问:</div>
             <el-form :model="resourceAssign" id='actSchool1'>
                 <el-form-item prop='school'>
-                    <el-select v-model="resourceAssign.school"  placeholder="选择校区" filterable @change='getCC'>
+                    <el-select v-model="resourceAssign.school"  placeholder="选择校区" filterable @change='getCC' :disabled="code.includes('_c')">
                         <el-option v-for="item in receiveSchool" :key="item.value" :label="item.label" :value="item.value">
                         </el-option>
                     </el-select>
@@ -90,6 +96,8 @@
     export default {
         data() {
             return {
+                valueS:'',
+                optionR:[],
                 writeL:false,
                 listCC:[],
                 isDisabled: [],
@@ -122,6 +130,37 @@
             //         return row.mobile
             //     }
             // },
+            updateListCC() {
+                this.currentPage = 1;
+                // this.valueCC = '';
+                if (this.valueS != '') {
+                    let para = {
+                    school_id: this.valueS
+                }
+                getAllCCList(token, para).then((res) => {
+                    this.optionsCC = res.data;
+                    this.optionsCC.unshift({
+                        aid: 0,
+                        uname: '全部CC'
+                    })
+                }).then(()=>{
+                    if( this.valueT===0){
+                    this.updateList()
+                    }else{
+                        this.valueT=0
+                    }
+                    })
+                }else{
+                    if(this.valueT=== 0){//cc选择
+                    this.updateList()
+                    }
+                    this.optionsCC=[{
+                        aid: 0,
+                        uname: '全部CC'
+                    }]
+                    this.valueT= 0;
+                }
+            },
             getCC(){
                 this.resourceAssign.receiveCC = '';
                 if( this.resourceAssign.school !=''){
@@ -136,7 +175,18 @@
             
             },
             openResource() { //打开人员分配
-                this.resourceAssign.school = ''
+                if(this.code.includes("_c")){
+
+                    this.resourceAssign.school = this.valueS;
+                    let para = {
+                        school_id:this.resourceAssign.school
+                    }
+                    getAllCCList(token,para).then((res) => {
+                    this.listCC = res.data
+                })
+                }else{
+                    this.resourceAssign.school = "";                    
+                }
                 this.resourceAssign.receiveCC = '';
                 this.listCC=[]
                 this.dialogFormVisible = true
@@ -159,6 +209,7 @@
             },
             fetchData() {
                 let para = {
+                    school_id:this.valueS,
                     teach_id: this.valueT, //TMK
                     page: this.currentPage,
                     input:this.input2,
@@ -205,12 +256,32 @@
         },
         created() {
             this.code = JSON.parse(user).job ? JSON.parse(user).job.code : '';
-            this.valueT = JSON.parse(user).aid
-            let uname = JSON.parse(user).uname
+            // this.valueT = JSON.parse(user).aid
+            if (this.code.includes('_c')) {//经理以上
+                    let cam = {
+                        simple: 1
+                    }
+                    campusList(cam, token).then((res) => {//获取校区
+                        this.optionR = res.data
+                    this.optionR.unshift({
+                            id:0,
+                            title:'全部校区'
+                        })
+                    }).then(()=>{
+                        this.valueS=0;
+
+                    })
+                    // this.fetchData();
+                }else{
+
+                    getAllCCList(token).then((res) => {
+                        this.optionsCC = res.data
+                    })
             this.fetchData();
-            getAllCCList(token).then((res) => {
-                this.optionsCC = res.data
-            })
+                    
+                }
+            let uname = JSON.parse(user).uname
+            // this.fetchData();
             let si = {
                 simple: 1
             }

@@ -23,7 +23,7 @@
                         </el-option>
                     </el-select>
                 </div>
-                <el-button type="primary" size="mid" class='buttonAdd' @click="createCh('classform')" v-if="!code.includes('_c')">添加班级</el-button>
+                <el-button type="primary" size="mid" class='buttonAdd' @click="createCh('classform')" v-if="!code.includes('_c_c')&&!code.includes('_cr_c')">添加班级</el-button>
             </div>
             <el-dialog :title="alter" :visible.sync="dialogFormVisible" :close-on-click-modal="no" custom-class='classTableDialog' top='20%'
                 @close='resetD'>
@@ -111,7 +111,7 @@
                                 <span class="CTlesson73">{{i.class_room.names}}({{i.syllabus_person_num}}人)</span></div>
                             <div class='CTlessonC'><span class='CTlesson15'>{{i.course?i.course.title:i.title}}</span>
                                 <div class='CTlessonFlex'>
-                                    <img :src="src" width='20' alt="" class='classImg' @click='editClass(i,index)' v-if="!code.includes('_c')">
+                                    <img :src="src" width='20' alt="" class='classImg' @click='editClass(i,index)' v-if="!code.includes('_c_c')&&!code.includes('_cr_c')">
                                 </div>
                             </div>
                         </div>
@@ -353,6 +353,7 @@
             },
             createCh(formName) { //点击创建按钮
                 this.dialogFormVisible = true;
+                
             },
             resetD() {
                 this.canEdit = false;
@@ -374,6 +375,12 @@
             },
             editClass(data, index) { //点击就修改
                 // console.log(data)
+                let p = {
+                        school_id : this.valueR
+                    }
+                getTeacherList(token,p).then((res) => { //获取老师
+                    this.teachersName = res.data;
+                })
                 if(data.syllabus_person_num!=0){
                     this.canEdit = true;
                 }
@@ -515,8 +522,10 @@
                 this.classRoom = res.data;
             }).then(() => {
                 // if(this.code=='cc_m'){
-
-                getTeacherList(token).then((res) => { //获取老师
+                    let p = {
+                        school_id : this.valueR
+                    }
+                getTeacherList(token,p).then((res) => { //获取老师
                     this.teachersName = res.data;
                 })
                 getClassKind(token).then((res) => { //获取课程分类

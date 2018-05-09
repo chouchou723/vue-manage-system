@@ -20,7 +20,7 @@
                         </el-option>
                     </el-select>
                 </div>
-                <div class='studentReturnThreeNew' v-if="code.includes('cc_m')||code.includes('_c')">
+                <div class='studentReturnThreeNew' v-if="code.includes('cc_m')||code.includes('_c_c')||code.includes('_cr_c')">
                     <el-select v-model="valueCC"  placeholder="选择CC" @change="updateList">
                         <el-option v-for="item in optionsCC" :key="item.aid" :label="item.uname" :value="item.aid">
                         </el-option>
@@ -365,7 +365,7 @@
                             })
                         }).then(()=>{
                             this.valueR=0;
-
+                            this.fetchData();
                         })
                 }else if(this.code.includes('cc_m')){
                     getAllCCList(token).then((res) => {
