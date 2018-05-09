@@ -48,8 +48,8 @@
     </div>
     <div class='messageAmount'>
         <div style="display: inline-block;margin-right: 20px;position: relative;width:30px;height:32px;">
-                <!-- <div class="orangeC" v-if='affiche'></div>
-                <a href="javascript:;"><img src="../../../static/img/sys.png" width="25" alt=""  @click="goNotice" style='position: absolute;top:5px'></a> -->
+                <div class="orangeC" v-if='affiche'></div>
+                <a href="javascript:;"><img src="../../../static/img/sys.png" width="25" alt=""  @click="goNotice" style='position: absolute;top:5px'></a>
         </div>
         <el-dropdown @command="handleCommand" style="height:48px" @visible-change="getData">
             <div >
