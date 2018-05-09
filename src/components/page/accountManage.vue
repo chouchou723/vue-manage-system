@@ -20,6 +20,12 @@
                     </el-select>
                 </div>
                 <div class='twoSelect'>
+                        <el-select v-model="value1" clearable placeholder="选择角色" @change="updateJobList1" >
+                            <el-option v-for="item in charData" :key="item.roleid" :label="item.name" :value="item.roleid">
+                            </el-option>
+                        </el-select>
+                    </div>
+                <!-- <div class='twoSelect'>
                     <el-select v-model="value1" clearable placeholder="选择部门" @change="updateJobList1" >
                         <el-option v-for="item in options1" :key="item.value" :label="item.label" :value="item.value">
                         </el-option>
@@ -30,7 +36,7 @@
                         <el-option v-for="item in options2" :key="item.job_id" :label="item.full_name" :value="item.job_id">
                         </el-option>
                     </el-select>
-                </div>
+                </div> -->
                 <div class='threeSelect'>
                     <el-select v-model="value3"  placeholder="选择帐号类型" @change="updateList">
                         <el-option label="正常" value="0"></el-option>
@@ -43,7 +49,7 @@
                 </div>
                 <el-button type="primary" size="mid" class='buttonAdd' @click="createCh('aform')" v-if="!code.includes('school')">添加账号</el-button>
             </div>
-            <el-dialog :title="alter" :visible.sync="dialogFormVisible" :close-on-click-modal="no" custom-class='accountManageDialog' top='9%'  @close='resetD'>
+            <!-- <el-dialog :title="alter" :visible.sync="dialogFormVisible" :close-on-click-modal="no" custom-class='accountManageDialog' top='9%'  @close='resetD'>
                 <el-form :model="aform" :rules="rules2" ref="aform">
                     <el-form-item label="登录账号" :label-width="formLabelWidth" prop="name">
                         <el-input v-model="aform.name" placeholder='请输入邮箱地址' :style='{width:inputLabelWidth}'></el-input>
@@ -95,9 +101,9 @@
                     <el-button type="primary" @click="addAccount('aform')">确 定</el-button>
                     <el-button @click="dialogFormVisible = false">取 消</el-button>
                 </div>
-            </el-dialog>
+            </el-dialog> -->
             <!-- 新版 -->
-            <!-- <el-dialog :title="alter" :visible.sync="dialogFormVisible" :close-on-click-modal="no" custom-class='accountManageDialog' top='9%' size='large' @close='resetD'>
+            <el-dialog :title="alter" :visible.sync="dialogFormVisible" :close-on-click-modal="no" custom-class='accountManageDialog' top='9%' size='large' @close='resetD'>
                 <el-form :model="aform" :rules="rules2" ref="aform">
                     <el-form-item label="登录账号" :label-width="formLabelWidth" prop="name">
                         <el-input v-model="aform.name" placeholder='请输入邮箱地址' :style='{width:inputLabelWidth}'></el-input>
@@ -114,40 +120,41 @@
                     <el-form-item label="手机号码" :label-width="formLabelWidth" prop="tel">
                         <el-input v-model="aform.tel" auto-complete="off" placeholder='请输入手机号码' :style='{width:inputLabelWidth}'></el-input>
                     </el-form-item>
-                    <el-form-item label="部门" :label-width="formLabelWidth" prop="did">
-                        <el-select v-model="aform.did" :style='{width:inputLabelWidth}' @change="updateJobList">
+                    <el-form-item label="部门" :label-width="formLabelWidth" prop="department_id">
+                        <el-select v-model="aform.department_id" :style='{width:inputLabelWidth}' >
                             <el-option v-for="item in options1" :key="item.value" :label="item.label" :value="item.value">
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="职位" :label-width="formLabelWidth" prop="job_id">
+                    <!-- <el-form-item label="职位" :label-width="formLabelWidth" prop="job_id">
                         <el-select v-model="aform.job_id" :style='{width:inputLabelWidth}'>
                             <el-option v-for="item in jobs" :key="item.value" :label="item.label" :value="item.value">
                             </el-option>
                         </el-select>
-                    </el-form-item>
-                    <el-form-item label="角色" :label-width="formLabelWidth"  prop="char" style='display:inline-block;width:80%'>
+                    </el-form-item> -->
+                    <el-form-item label="拥有角色" :label-width="formLabelWidth"  required style='width:80%;'>
                             <div v-for="(a, index) in aform.char" :class="[index !=0?'male':'']">
-                                <el-form-item style='display:inline-block;width:120px'>
-                                    <el-select v-model="a.character" placeholder="请选择角色" @change='changeReset1("method")'>
+                                <el-form-item style='display:inline-block;width:200px' prop="char">
+                                    <el-select v-model="a.character" placeholder="请选择角色" @change='changeReset1("char")'>
                                         <el-option v-for="item in payMethods" :key="item.roleid" :label="item.name" :value="item.roleid">
                                         </el-option>
                                     </el-select>
                                 </el-form-item>
-                                <el-form-item label="所属校区"  prop="region" style='display:inline-block;width:290px'>
+                                <!-- <el-form-item label="所属校区"  prop="region" style='display:inline-block;width:290px'>
                                     <el-select v-model="a.region"  filterable :style='{width:inputLabelWidth}' @change='campusGet' clearable>
                                      <el-option v-for="item in cities" :key="item.id" :label="item.city_name" :value="item.id">
                                         </el-option>
                                     </el-select>
-                                </el-form-item>
-                                <el-form-item :label-width="formLabelWidth" prop="school" style='display:inline-block;'>
-                                    <el-select v-model="a.school"  multiple filterable remote placeholder="请输入关键词" :remote-method="remoteMethod" :loading="loading">
+                                </el-form-item> -->
+                                <el-form-item :label-width="formLabelWidth" prop="school" style='display:inline-block;' >
+                                    <el-select v-model="a.school"  multiple filterable remote placeholder="选择该角色对应的校区,多选" :remote-method="remoteMethod" :loading="loading"
+                                    @change='changeReset1("school")' style='width:220px'>
                                         <el-option v-for="item in schools" :key="item.value" :label="item.label" :value="item.value">
                                         </el-option>
                                     </el-select>
                                 </el-form-item>
                                 <span @click='addPay' class='addPay' v-if='index==0'>添加角色</span>
-                                <span @click='deletePay' class='deletePay' v-else>删除</span>
+                                <span @click='deletePay(index)' class='deletePay' v-else>删除</span>
                                 <div style="clear:both"></div>
                             </div>
                         </el-form-item>
@@ -163,7 +170,7 @@
                     <el-button type="primary" @click="addAccount('aform')">确 定</el-button>
                     <el-button @click="dialogFormVisible = false">取 消</el-button>
                 </div>
-            </el-dialog> -->
+            </el-dialog>
         </div>
         <div id="tableAM">
             <el-table :data="accountData"  style='width:100%'>
@@ -181,13 +188,33 @@
                 </el-table-column>
                 <el-table-column prop="tel" label="手机" width='120'>
                 </el-table-column>
-                <el-table-column prop="school" label="校区" :formatter='formatter'>
-                </el-table-column>
-                <el-table-column prop="job_name" label="职位" width='100'>
-                </el-table-column>
+                <!-- <el-table-column prop="school" label="校区" :formatter='formatter'>
+                </el-table-column> -->
+                <!-- <el-table-column prop="job_name" label="职位" width='100'>
+                </el-table-column> -->
                 <el-table-column prop="department_name" label="部门" width='80'>
                 </el-table-column>
-                <el-table-column prop="last_login_time" label="最近登录时间">
+                <el-table-column prop="roles" label="拥有角色" >
+                        <template scope="scope">
+                                <el-popover trigger="hover" placement="bottom" @mouseenter.native="getDe(scope.row.aid)" >
+                                    <div v-for="item in roleD">
+                                        <p style='font-size:16px;padding:5px;font-weight:600'>{{item.role}}</p>
+                                        <p style='font-size:14px;padding:5px;max-width:300px'>{{item.schools.join(', ')}}</p>
+                                    </div>
+                                        <div slot="reference" class="name-wrapper">
+                                                <span v-for="(item,index) in scope.row.roles" style='color:#1fb5ad' class="ssHover">
+                                                    {{item.name}}<span v-if="index!=scope.row.roles.length-1">,</span>
+                                                    </span>
+                                        </div>
+                                      </el-popover>
+                                        <!-- <span v-for="(item,index) in scope.row.roles" style='color:#1fb5ad'>{{item.name}}
+                                                <span v-if="index!=scope.row.roles.length-1">,</span>
+                                            </span> -->
+                              
+                                
+                            </template>
+                </el-table-column>
+                <el-table-column prop="last_login_time" label="最近登录时间" width='200'>
                 </el-table-column>
                 <el-table-column prop="login_count" label="登录次数" width='80'>
                 </el-table-column>
@@ -222,6 +249,7 @@ import {
     create_account,
     accountType,
     character,
+    getTeachAdminList,
     // list_account,
     // delete_account,
     department
@@ -236,22 +264,61 @@ export default {
                 }
             }
             var isArray = (rule, value, callback) => {
-                if (value.length==0) {
-                    callback('请选择校区')
-                } else if (value.length!=0) {
+                // if (value.length==0) {
+                //     callback('请选择校区')
+                // } else if (value.length!=0) {
+                //     callback();
+                // }else{
+                //     callback('请选择校区')
+                // }
+                let a = this.aform.char.every(item => {
+                    return item.school.length != 0
+                })
+                let b = this.aform.char.some(item => {
+                    return item.school.length != 0
+                })
+                if(this.canVal===1){
+                    if (!a) {
+                        callback('请选择角色')
+                    } else {
+                        callback();
+                    }
+                }
+                if(this.aform.char.length!=1&& b){
                     callback();
                 }else{
-                    callback('请选择校区')
+
+                    if (!a) {
+                        callback('请选择校区')
+                    } else {
+                        callback();
+                    }
                 }
             }
             var isChar = (rule, value, callback) => {
                 let a = this.aform.char.every(item => {
                     return item.character != ''
                 })
-                if (!a) {
-                    callback('请选择角色')
-                } else {
+                let b = this.aform.char.some(item => {
+                    return item.character != ''
+                })
+                if(this.canVal===1){
+                    if (!a) {
+                        callback('请选择角色')
+                    } else {
+                        callback();
+                    }
+                }
+                if(this.aform.char.length!=1&& b){
                     callback();
+                
+                }else{
+
+                    if (!a) {
+                        callback('请选择角色')
+                    } else {
+                        callback();
+                    }
                 }
                 // if (value.length==0) {
                 //     callback('请选择校区')
@@ -282,6 +349,8 @@ export default {
                 }
             }
             return {
+                roleD:[{role:'加载中...',schools:['请耐心等待']}],
+                canVal:0,
                 charData:[],
                 code:'',
                 currentPage: 1, //页数
@@ -305,13 +374,12 @@ export default {
                     name: '',
                     sex: '',
                     tel: '',
-                    char:[{character:'',region:'',school:[]}],
-
+                    char:[{character:'',school:[]}],
                     // pwd: '',
-                    region: '',
-                    school: [],
-                    did: '',
-                    job_id: '',
+                    // region: '',
+                    // school: [],
+                    department_id: '',
+                    // job_id: '',
                     fla: '0'
                 },
                 dialogFormVisible: false,
@@ -338,7 +406,7 @@ export default {
                     { required:true,validator: isPhone1,trigger: 'blur'}],
                     // pwd:[
                     // {required:true,trigger: 'blur'}],
-                    did: [{
+                    department_id: [{
                         required: true,
                         validator: nan,
                         trigger: 'change'
@@ -353,11 +421,11 @@ export default {
                         validator: nan,
                         trigger: 'change'
                     }],
-                    job_id: [{
-                        required: true,
-                        validator: nan,
-                        trigger: 'change'
-                    }],
+                    // job_id: [{
+                    //     required: true,
+                    //     validator: nan,
+                    //     trigger: 'change'
+                    // }],
                     school:[{
                         required: true,
                         validator: isArray,
@@ -366,24 +434,53 @@ export default {
                 },
                 schools: [], //选好城市之后的校区
                 loading: false,
+                d:0,
                 cities: [], //form中的城市
                 jobs: [] //部门 change之后更新
             }
         },
         methods: {
+            getDe(id){
+                let para ={
+                    aid:id
+                }
+                getTeachAdminList(para,token).then(res=>{
+                    this.roleD = res.data;
+                    // console.log(this.roleD)
+                })
+            },
             changeReset1(val){
-                if(val==='money'){
-                    this.$refs['aform'].validate((valid) => {})
+                let a = this.aform.char.some(item => {
+                    return item.character != ''
+                })
+                if(val==='school'){
+                    if(a){
+                        this.$refs['aform'].validateField(val);
+                    }
+                    let e = this.aform.char.every(i=>{return i.school != ''})
+                    if(e){
+                        this.$refs['aform'].validate((valid) => {})
+                    }
                 }else{
-                    this.$refs['aform'].validateField(val);
+                    if(this.d!==0){
+                        let d = this.aform.char.every(i=>{return i.character != ''&&i.school != ''})
+                        if(d){
+                            this.$refs['aform'].validate((valid) => {})
+                        }else{
+                            this.$refs['aform'].validateField(val);
+                        }
+                    }
+
                 }
             },
             addPay() {
-                this.aform.char.push({character:'',region:'',school:[]})
+                this.aform.char.push({character:'',school:[]})
             },
-            deletePay() {
-                this.aform.char.pop();
+            deletePay(index) {
+                this.aform.char.splice(index,1);
                 this.changeReset1('char');
+                this.changeReset1('school');
+                
             },
 
             formatter(row, column) {
@@ -403,23 +500,23 @@ export default {
                 this.currentPage = 1;
                 this.fetchData();
             },
-            updateJobList() {//部门变更后,刷新职位
-                // this.aform.job_id = ''
-                let para = {
-                    did: this.aform.did
-                };
-                departList(para, token).then((res) => {
-                    if(res.data[0]._child){
+            // updateJobList() {//部门变更后,刷新职位
+            //     // this.aform.job_id = ''
+            //     let para = {
+            //         did: this.aform.did
+            //     };
+            //     departList(para, token).then((res) => {
+            //         if(res.data[0]._child){
 
-                        this.jobs = res.data[0]._child.map(item => {
-                            return {
-                                value: item.job_id,
-                                label: item.full_name
-                            };
-                        });
-                    }
-                })
-            },
+            //             this.jobs = res.data[0]._child.map(item => {
+            //                 return {
+            //                     value: item.job_id,
+            //                     label: item.full_name
+            //                 };
+            //             });
+            //         }
+            //     })
+            // },
             updateJobList1() {//部门变更后,刷新职位
                 // this.aform.job_id = ''
                 this.value2=''
@@ -443,6 +540,7 @@ export default {
             },
             createCh(formName) { //点击创建按钮
                 this.dialogFormVisible = true;
+                this.d=2;
             },
             resetD(){
                 this.in = '';
@@ -452,45 +550,57 @@ export default {
                     name: '',
                     sex: '',
                     tel: '',
-                    checkPass: '',
-                    region: '',
-                    school: [],
-                    did: '',
+                    char:[{character:'',school:[]}],
+
+                    // pwd: '',
+                    // region: '',
+                    // school: [],
+                    department_id: '',
                     job_id: '',
                     fla: '0'
                 };
+                this.d= 0;
+                this.canVal = 0;
                 this.$refs['aform'].resetFields();
             },
             editCh(index, data) { //点击就修改
                 this.in = index;
-                if (data[index].did) {
-                    let para = {
-                        did: data[index].did
-                    };
-                    departList(para, token).then((res) => {
-                            this.jobs = res.data[0]._child.map(item => {
-                                return {
-                                    value: item.job_id,
-                                    label: item.full_name
-                                };
-                            });
-                        }) //假如有部门,必须刷新职位，方能更换同部门的不同职位
-                }
-                let schoolData = data[index].school.length == 0 ? [] : data[index].school.map(item=>{return item.id});
-                let citiId = data[index].school.length == 0 ?'':data[index].school[0].city_id.substring(0,2)
+                setTimeout(() => {//延迟载入支付方式
+                this.d = 2
+            }, 800);
+                // if (data[index].did) {
+                //     let para = {
+                //         did: data[index].did
+                //     };
+                //     departList(para, token).then((res) => {
+                //             this.jobs = res.data[0]._child.map(item => {
+                //                 return {
+                //                     value: item.job_id,
+                //                     label: item.full_name
+                //                 };
+                //             });
+                //         }) //假如有部门,必须刷新职位，方能更换同部门的不同职位
+                // }
+                // let schoolData = data[index].school.length == 0 ? [] : data[index].school.map(item=>{return item.id});
+                // let citiId = data[index].school.length == 0 ?'':data[index].school[0].city_id.substring(0,2)
+                let arr = data[index].roleschools.map(item=>{
+                    return {
+                        character:item.roleid-0,
+                        school:item.school.map(item=>{return item-0})
+                    }
+                })
                 this.aform = {
                     aid: data[index].aid,
                     uname: data[index].uname,
                     name: data[index].name,
                     sex: data[index].sex,
                     tel: data[index].tel,
-                    region:  citiId-0,
-                    school: schoolData,
-                    did: data[index].did - 0,
-                    job_id: data[index].job_id - 0,
+                    char:[...arr],
+                    department_id: data[index].department_id - 0,
                     fla: data[index].fla
                 };
-                 this.dialogFormVisible = true;
+                    // console.log(this.aform.char)
+                    this.dialogFormVisible = true;
 
             },
             // open2(index, data) { //删除账号
@@ -552,9 +662,14 @@ export default {
                 }
             },
             addAccount(formName) { //点确定后添加账号
+                let f = {...this.aform};
+                    f.role_schools = JSON.stringify(f.char)
+                    // console.log(f)
+                this.canVal = 1;
                 this.$refs[formName].validate((valid) => {
                     let f = {...this.aform};
-                    f.school_id = f.school.join(',');
+                    f.role_schools = JSON.stringify(f.char)
+                    // f.school_id = f.school.join(',');
                     let i = this.in;
                     if (valid) {
                         if (i !== '') {
@@ -600,8 +715,9 @@ export default {
                 let para = {
                     page: this.currentPage,
                     school_id: this.value,
-                    did: this.value1,
-                    job_id: this.value2,
+                    roles: this.value1,
+                    // did: this.value1,
+                    // job_id: this.value2,
                     status: this.value3,
                     input: this.input2
                 }
@@ -611,7 +727,6 @@ export default {
                     let c = res.last_page * this.pagesize;
                     this.total = parseInt(c);
                     this.accountData = a;
-                    let arr = [];
                 })
 
             },
@@ -652,7 +767,6 @@ export default {
             }).then(() => {
                 character(token).then((res) => {
             this.charData = res.data;
-            console.log(this.charData)
         })
                 sdjList(token).then((res) => {//获取职位
                     this.options2 = res.data.job
@@ -665,14 +779,18 @@ export default {
         },
         computed: {
             payMethods() {
-                let m = [...this.charData]
-                let l = this.aform.char.length
-                this.aform.char.map((item, index) => {
+                if (this.d > 1) {
+                    let m = [...this.charData]
+                    this.aform.char.map((item, index) => {
                     m = m.filter(i => {
                         return i.roleid != item.character
                     })
                 })
                 return m
+            }else{
+                let m = [...this.charData]
+                return m
+            }
             },
             alter: function() {
                 if (this.in === '') {
@@ -788,5 +906,9 @@ display: inline-block;
     .male {
         /* margin-left: 76px; */
         margin-top: 22px;
+    }
+    .ssHover:hover{
+        cursor: pointer;
+        
     }
 </style>

@@ -633,6 +633,18 @@ const router = new Router({
                         keepAlive: true // 不需要被缓存
                     },
                     component: resolve => require(['../components/page/specialArt.vue'], resolve), //绘画大赛
+                },{
+                    path: '/advanceOpen',
+                    meta: {
+                        keepAlive: true // 不需要被缓存
+                    },
+                    component: resolve => require(['../components/page/advanceOpen.vue'], resolve), //绘画大赛
+                },{
+                    path: '/systemNotice',
+                    meta: {
+                        keepAlive: true // 不需要被缓存
+                    },
+                    component: resolve => require(['../components/page/systemNotice.vue'], resolve), //绘画大赛
                 },
                 
                 

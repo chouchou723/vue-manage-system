@@ -1426,6 +1426,39 @@ export const  userReport = (params, token) => {
     axios.defaults.headers.common['Authorization'] = token.Authorization;
     return axios.post(`${base}/api/v1/Travel/userReport`, params).then(res => res.data);
 };
+//切换角色
+export const  setUserRoels = (params,token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/userinfo/setUserRoels`, params).then(res => res.data);
+};
+//获取角色范围
+export const  getTeachAdminList = (params,token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/account/getTeachAdminList`, params).then(res => res.data);
+};
+//绘画大赛报名列表
+export const  preCourseList = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/precourse/preCourseList`, { params: params }).then(res => res.data);
+};
+
+//公告列表
+export const  getAfficheList = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/public/getAfficheList`, { params: params }).then(res => res.data);
+};
+
+//添加系统公告
+export const  addAffiche = (params,token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/public/addAffiche`, params).then(res => res.data);
+};
+
+//删除公告列表
+export const  delAffiche = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/public/delAffiche`, { params: params }).then(res => res.data);
+};
 // //code字段说明
 //     tmk_m:  tmk主管
 //     tmk : tmk

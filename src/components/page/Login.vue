@@ -77,11 +77,11 @@
                     <div slot="header" class="clearfix" style='text-align:center;font-weight:600'>
                       <span style="line-height: 36px;">选择角色</span>
                     </div>
-                    <div style="display:flex;width:90%;margin:0 auto;flex-wrap:wrap;">
-                        <div v-for="o in 8" :key="o" style='width:25%;margin-bottom:15px;' >
-                            <el-button type="text" style='border:1px solid gainsboro;border-radius:5px;width:80%;padding:10px;text-align:center;color:black'>
+                    <div style="display:flex;width:90%;margin:0 auto;flex-wrap:wrap;justify-content: center;">
+                        <div v-for="(o,index) in cclist" :key="o" style='width:25%;margin-bottom:15px;' >
+                            <el-button  v-loading.fullscreen.lock="fullscreenLoading" @click="gotoI(o.role_id,index)"  type="text" style='border:1px solid gainsboro;border-radius:5px;width:80%;padding:10px;text-align:center;color:black'>
 
-                                {{'列表内容 ' + o }}
+                                {{ o.full_name }}
                             </el-button>
                         </div>
 
@@ -95,7 +95,7 @@ import {
     requestLogin,
     getUserinfo,
     qcodeLogin,
-    findPassword,findToEditPwd
+    findPassword,findToEditPwd,setUserRoels
 } from '../../api/api';
 // var i = 1;
 // var inter;
@@ -177,7 +177,7 @@ export default {
 
                     let myreg =  /^(((1[0-9]{1}))+\d{9})$/; 
                     if (value == '') {
-                        callback('请输入手机号或者邮箱地址')
+                        callback('请输入手机号')
                     } else if (!myreg.test(value)) {
                         callback('请输入有效手机号码');
                     }else{
@@ -186,7 +186,7 @@ export default {
                 }else{
                     let myreg1 = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
                     if (value == '') {
-                        callback('请输入手机号或者邮箱地址')
+                        callback('请输入手机号')
                     } else if (!myreg1.test(value)) {
                         callback('请输入正确的邮箱地址');
                     }else{
@@ -195,6 +195,7 @@ export default {
                 }
             }
         return {
+            cclist:[],
             i:0,
             inter:'',
             clock:'',
@@ -274,7 +275,8 @@ export default {
                         trigger: 'blur'
                     }]
                 },
-                passD:false
+                passD:false,
+                ttkoen:""
         }
     },
     computed: {
@@ -324,6 +326,55 @@ export default {
     },
 
     methods: {
+        gotoI(id,index){
+            this.cclist[index].select = true;
+            let para = {
+                job_id:id
+            }
+            let t  ={
+                'Authorization': this.ttkoen
+            }
+            setUserRoels(para,t).then(res=>{
+                this.fullscreenLoading = true;
+                if(res.code==0){
+                    getUserinfo(t).then(u => {
+                                        let {
+                                            data
+                                        } = u;
+                                        data.token = t;
+                                        data.roles = this.cclist;
+                                        sessionStorage.setItem('user', JSON.stringify(data));
+                                        if(!data.wechat){
+                                            this.$router.push('/wechat');
+                                        }else if(data.job.code.includes('hr')){
+                                            this.$router.push('/api/v1/admin');
+                                        }else if(data.job.code.includes('cc_c_c')){
+                                            this.$router.push('/reportFormTmkTotal');
+                                        }else if(data.job.code.includes('purchase')||data.job.code.includes('product')){
+                                            this.$router.push('/wechat');
+                                        }else{
+                                            this.$router.push('/Index');
+                                        }
+                                        // if(data.job && data.job.code.includes('hr')){
+                                        //      self.$router.push('/api/v1/admin');
+                                        // }else if(!data.wechat){
+                                        // self.$router.push('/wechat');
+                                        // }else if(data.job.code=='cc_c'){
+                                        // self.$router.push('/reportFormTmkTotal');
+                                        // }else{
+                                        //     self.$router.push('/Index');
+                                        // }
+                                    })
+                }else{
+                    this.fullscreenLoading = false;
+                    this.loading =false;
+                            this.$message.error(data.message);
+                            this.ruleForm.code = '';
+                        this.ruleForm.password = '';
+                        this.change();
+                }
+            })
+        },
         goToLogin(){
                 this.passD= false;
                 this.$refs['ruleForm2'].resetFields();
@@ -419,41 +470,51 @@ export default {
                     this.fullscreenLoading = true;
                     requestLogin(loginParams).then(data => {
                         if(data.message =='登录成功'){
+                            this.cclist = data.rules;
+                            if(data.rules.length>1){
+                                this.fullscreenLoading = false;
+                                this.loading =true;
+                                this.ttkoen = data.token_type + ' ' + data.access_token
+                            }else{
+                                let token = {
+                                    'Authorization': data.token_type + ' ' + data.access_token
+                                }
+                                getUserinfo(token).then(u => {
+                                    let {
+                                        data
+                                    } = u;
+                                    data.token = token;
+                                    data.roles = this.cclist;
+                                    data.roles[0].select = true;
+                                    sessionStorage.setItem('user', JSON.stringify(data));
+                                    if(!data.wechat){
+                                        self.$router.push('/wechat');
+                                    }else if(data.job.code.includes('hr')){
+                                        self.$router.push('/api/v1/admin');
+                                    }else if(data.job.code.includes('cc_c_c')){
+                                    self.$router.push('/reportFormTmkTotal');
+                                    }else if(data.job.code.includes('purchase')||data.job.code.includes('product')){
+                                        self.$router.push('/wechat');
+                                    }else{
+                                        self.$router.push('/Index');
+                                    }
+                                    // if(data.job && data.job.code.includes('hr')){
+                                    //      self.$router.push('/api/v1/admin');
+                                    // }else if(!data.wechat){
+                                    // self.$router.push('/wechat');
+                                    // }else if(data.job.code=='cc_c'){
+                                    // self.$router.push('/reportFormTmkTotal');
+                                    // }else{
+                                    //     self.$router.push('/Index');
+                                    // }
+                                })
+
+                            }
                         // let {
                         //     access_token,
                         //     status,
                         //     token_type
                         // } = data;
-                        let token = {
-                            'Authorization': data.token_type + ' ' + data.access_token
-                        }
-                        getUserinfo(token).then(u => {
-                            let {
-                                data
-                            } = u;
-                            data.token = token;
-                            sessionStorage.setItem('user', JSON.stringify(data));
-                            if(!data.wechat){
-                                self.$router.push('/wechat');
-                            }else if(data.job.code.includes('hr')){
-                                self.$router.push('/api/v1/admin');
-                            }else if(data.job.code=='cc_c'){
-                            self.$router.push('/reportFormTmkTotal');
-                            }else if(data.job.code.includes('purchase')||data.job.code.includes('product')){
-                                self.$router.push('/wechat');
-                            }else{
-                                self.$router.push('/Index');
-                            }
-                            // if(data.job && data.job.code.includes('hr')){
-                            //      self.$router.push('/api/v1/admin');
-                            // }else if(!data.wechat){
-                            // self.$router.push('/wechat');
-                            // }else if(data.job.code=='cc_c'){
-                            // self.$router.push('/reportFormTmkTotal');
-                            // }else{
-                            //     self.$router.push('/Index');
-                            // }
-                        })
                         }else{
                             this.fullscreenLoading = false;
                             this.$message.error(data.message);
@@ -500,39 +561,48 @@ export default {
             qcodeLogin(para).then(res => {
                 if (res.status == 'success') {
                     clearInterval(this.inter)
-                    // let {
-                    //     access_token,
-                    //     status,
-                    //     token_type
-                    // } = res;
-                    let token = {
-                        'Authorization': res.token_type + ' ' + res.access_token
+                    this.cclist = res.rules;
+                    if(res.rules.length>1){
+                        this.loading =true;
+                        this.ttkoen = res.token_type + ' ' + res.access_token
+                    }else{
+
+                        // let {
+                        //     access_token,
+                        //     status,
+                        //     token_type
+                        // } = res;
+                        let token = {
+                            'Authorization': res.token_type + ' ' + res.access_token
+                        }
+                        getUserinfo(token).then(u => {
+                            let {
+                                data
+                            } = u;
+                            data.token = token;
+                            data.roles = this.cclist;
+                                    data.roles[0].select = true;
+                            sessionStorage.setItem('user', JSON.stringify(data));
+                            if(!data.wechat){
+                                    this.$router.push('/wechat');
+                                }else if(data.job.code.includes('hr')){
+                                    this.$router.push('/api/v1/admin');
+                                }else if(data.job.code.includes('cc_c_c')){
+                                this.$router.push('/reportFormTmkTotal');
+                                }else if(data.job.code.includes('purchase')||data.job.code.includes('product')){
+                                    this.$router.push('/wechat');
+                                }else{
+                                    this.$router.push('/Index');
+                                }
+                            //  if(data.job && data.job.code.includes('hr')){
+                            //          this.$router.push('/api/v1/admin');
+                            //     }else if(data.job.code=='cc_c'){
+                            //     self.$router.push('/reportFormTmkTotal');
+                            //     }else{
+                            //         this.$router.push('/Index');
+                            //     }
+                        })
                     }
-                    getUserinfo(token).then(u => {
-                        let {
-                            data
-                        } = u;
-                        data.token = token;
-                        sessionStorage.setItem('user', JSON.stringify(data));
-                        if(!data.wechat){
-                                this.$router.push('/wechat');
-                            }else if(data.job.code.includes('hr')){
-                                this.$router.push('/api/v1/admin');
-                            }else if(data.job.code=='cc_c'){
-                            this.$router.push('/reportFormTmkTotal');
-                            }else if(data.job.code.includes('purchase')||data.job.code.includes('product')){
-                                this.$router.push('/wechat');
-                            }else{
-                                this.$router.push('/Index');
-                            }
-                        //  if(data.job && data.job.code.includes('hr')){
-                        //          this.$router.push('/api/v1/admin');
-                        //     }else if(data.job.code=='cc_c'){
-                        //     self.$router.push('/reportFormTmkTotal');
-                        //     }else{
-                        //         this.$router.push('/Index');
-                        //     }
-                    })
                 } else if (res.status == 0) {
                     this.i++
                     // console.log(this.i)

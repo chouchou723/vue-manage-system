@@ -7,33 +7,54 @@
                 </el-input>
             </div>
         </div>
-        <div class="hoverrt" v-if="code.includes('tmk')||code=='cc'||code.includes('cc_m')" @click="gotoAdd" >
+        <div class="hoverrt" v-if="code.includes('tmk')||code=='cc'||code.includes('cc_m')||code=='cc_c'" @click="gotoAdd" >
             <img id='addUser' src="../../../static/img/add.png" height="30" width="28" >
             </div>
         <div class="user-info">
-            <el-dropdown @command="handleCommand" >
-                <span class="el-dropdown-link">
-                    <img class="user-logo" :src="agetSrc" @click='gotoSetting'>
-                    <div class="Header-logo">
-                         <span class='Header-username'>
-                             {{username}}
-                             </span>
-                     <span class='duty_color'>[{{duty}}]</span>
-                    </div>
-                    <img src="../../../static/img/more.png" height="20" alt="" class='header-more'>
-        </span>
-        <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command='setting'>头像设置</el-dropdown-item>
-            <el-dropdown-item command='wechat'>微信绑定</el-dropdown-item>
-            <el-dropdown-item command='editCode'>修改密码</el-dropdown-item>
-            <!-- <el-dropdown-item command='message'>消息设置</el-dropdown-item> -->
-            <el-dropdown-item command="loginout">退出</el-dropdown-item>
-        </el-dropdown-menu>
-        </el-dropdown>
+                <div class="Header-logo">
+                        <!-- <span class='Header-username'>
+                            {{username}}
+                            </span> -->
+                            <el-dropdown @command="changecc" trigger='click' menu-align="end">
+                                   <span class="el-dropdown-link" style="color:#1fb5ad">
+                                           [{{duty[0].full_name}}]<i class="el-icon-caret-bottom el-icon--right" v-if="cclist.length!=0"></i>
+                                   </span>
+                                   <el-dropdown-menu slot="dropdown" v-if="cclist.length!=0">
+                                     <el-dropdown-item v-for="item in cclist" :command="item.role_id">{{item.full_name}}</el-dropdown-item>
+                                   </el-dropdown-menu>
+                                 </el-dropdown>
+                    <!-- <span class='duty_color'>[{{duty}}]</span> -->
+                   </div>
+                   <div>
+                       <el-dropdown @command="handleCommand" menu-align="start" >
+                           <span class="el-dropdown-link">
+                              
+                               <img class="user-logo" :src="agetSrc" @click='gotoSetting'>
+                               <!-- <img src="../../../static/img/more.png" height="20" alt="" class='header-more'> -->
+                   </span>
+                   <el-dropdown-menu slot="dropdown">
+                       <div style='border-bottom:1px solid gainsboro;padding-bottom:10px;text-align:center;font-weight:600'>
+                               {{username}}
+                       </div>
+                       <el-dropdown-item command='setting'>头像设置</el-dropdown-item>
+                       <el-dropdown-item command='wechat'>微信绑定</el-dropdown-item>
+                       <el-dropdown-item command='editCode'>修改密码</el-dropdown-item>
+                       <!-- <el-dropdown-item command='message'>消息设置</el-dropdown-item> -->
+                       <el-dropdown-item command="loginout">退出</el-dropdown-item>
+                   </el-dropdown-menu>
+                   </el-dropdown>
+
+                   </div>
     </div>
     <div class='messageAmount'>
+        <div style="display: inline-block;margin-right: 20px;position: relative;width:30px;height:32px;">
+                <div class="orangeC" v-if='affiche'></div>
+                <a href="javascript:;"><img src="../../../static/img/sys.png" width="25" alt=""  @click="goNotice" style='position: absolute;top:5px'></a>
+        </div>
         <el-dropdown @command="handleCommand" style="height:48px" @visible-change="getData">
             <div >
+                 
+                
                 <a href="javascript:;"><img src="../../../static/img/mess.png" width="30" alt="" style="padding-top:32%"  @click="goSystem" class='rotateInUpRight'></a>
             </div>
 
@@ -66,20 +87,23 @@
     } from 'vuex';
     import {
         searchResource,
-        getMessage
+        getMessage,setUserRoels,getUserinfo
     } from '../../api/api';
     export default {
         data() {
             return {
+                affiche:false,
                 code: '',
                 loading: false,
                 username: '',
                 agetSrc: '',
-                duty: '',
+                duty: [{full_name:''}],
                 input2: '',
                 messageAmount: 0,
                 notifyMessage: [],
-                contGet:''
+                contGet:'',
+                cclist:[],
+                newA:[]
                 // finalNumber:0
             }
         },
@@ -100,11 +124,66 @@
                     })
                 }
             },
+            goNotice() {
+                this.$router.push('/systemNotice');
+                this.affiche = false;
+            },
             goSystem() {
                 this.$router.push('/systemMessage')
             },
             gotoSetting(){
                 this.$router.push('/setting');
+            },
+            changecc(command){
+                let para = {
+                job_id:command
+            }
+            setUserRoels(para,token).then(res=>{
+                if(res.code==0){
+                    let rules = JSON.parse(user).roles;
+                    this.newA = rules.map(item=>{
+                        item.select = false;
+                        if(item.role_id ==command){
+                        item.select = true;
+                        }
+                        return {role_id:item.role_id,full_name:item.full_name,select:item.select}
+                    })
+                    getUserinfo(token).then((u,newA) => {
+                                        let {
+                                            data
+                                        } = u;
+                                        data.token = token;
+                                        data.roles =this.newA;
+                                        sessionStorage.setItem('user', JSON.stringify(data));
+                                        console.log(data)
+                                        if(!data.wechat){
+                                            this.$router.push('/wechat');
+                                        }else if(data.job.code.includes('hr')){
+                                            this.$router.push('/api/v1/admin');
+                                        }else if(data.job.code.includes('cc_c_c')){
+                                            this.$router.push('/reportFormTmkTotal');
+                                        }else if(data.job.code.includes('purchase')||data.job.code.includes('product')){
+                                            this.$router.push('/wechat');
+                                        }else{
+                                            this.$router.push('/Index');
+                                        }
+                                        setTimeout(() => {
+                                            this.$router.go();
+                                        }, 100);
+                                        // if(data.job && data.job.code.includes('hr')){
+                                        //      self.$router.push('/api/v1/admin');
+                                        // }else if(!data.wechat){
+                                        // self.$router.push('/wechat');
+                                        // }else if(data.job.code=='cc_c'){
+                                        // self.$router.push('/reportFormTmkTotal');
+                                        // }else{
+                                        //     self.$router.push('/Index');
+                                        // }
+                                    })
+                }else{
+                            this.$message.error(data.message);
+                }
+            })
             },
             handleCommand(command) {
                 if (command == 'loginout') {
@@ -179,7 +258,14 @@
             //     // console.log(user);
                 this.username = user1.uname || '';
                 this.agetSrc = user1.avatar || '';
-                this.duty = user1.department ? user1.department : ''//部门名称
+                let rules = JSON.parse(user).roles;
+                this.duty = rules.filter(item=>{
+                    return item.select;
+                })
+                this.cclist =  rules.filter(item=>{
+                    return !item.select;
+                })
+                
 
             // }
              this.contGet = setInterval(this.getM,600000)
@@ -188,6 +274,7 @@
             }
             getMessage(p, token).then(res => {
                 this.messageAmount = res.data.total;
+                this.affiche = res.data.affiche==1?true:false;
                 this.setMessNumber(this.messageAmount)
             })
 
@@ -262,6 +349,8 @@ width: 245px;height: 48px;float: left;
         padding-right: 37px;
         font-size: 16px;
         color: #fff;
+        display: flex;
+        height: 100%;
     }
 
     .duty_color {
@@ -291,23 +380,32 @@ width: 245px;height: 48px;float: left;
     .user-info .el-dropdown-link {
         position: relative;
         display: inline-block;
-        padding-left: 50px;
+        /* padding-right: 50px; */
         color: #959595;
         cursor: pointer;
         vertical-align: middle;
+        height: 100%;
+        display: flex;
+    align-items: center;
+       
     }
+    /* .Header-logo .el-dropdown-link {
+       margin-right:10px;
+    } */
     .user-info .el-dropdown{
-        padding-right: 13px;
+        /* padding-right: 13px; */
+        height: 100%;
+        margin-right:25px;
     }
     .user-info .user-logo {
-        position: absolute;
-        left: 0;
-        top: 2px;
+        /* position: absolute;
+        left: 60px;
+        top: 2px; */
         width: 40px;
         height: 40px;
-        border: 1px solid;
+        border: 1px solid gainsboro;
         border-radius: 20px;
-        animation: rotate 8s linear infinite;
+        /* animation: rotate 8s linear infinite; */
     }
 
     @keyframes rotate {
@@ -333,6 +431,16 @@ width: 245px;height: 48px;float: left;
     }
     .hidden {
         display: none
+    }
+    .orangeC{
+        background-color: #d08124;
+        border-radius: 50%;
+        position: absolute;
+        top: 9px;
+        right: 7px;
+        height: 7px;
+        width: 7px;
+        z-index: 1;
     }
     /* #addUser {
         margin-left: 13px;
