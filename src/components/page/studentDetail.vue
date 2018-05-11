@@ -237,7 +237,7 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer SDtuc">
-                <el-button type="primary" :loading='writeL' class="SDm30" @click='transferSchoolToCC'>确定</el-button>
+                <el-button type="primary"  class="SDm30" @click='transferSchoolToCC("transferSchoolform")'>确定</el-button>
                 <el-button @click="dialogFormVisibleTransferSchool = false">取消</el-button>
             </div>
         </el-dialog>
@@ -1762,8 +1762,9 @@
 
                 // console.log(para)
             },
-            transferSchoolToCC() { //转校提交
-                this.$refs['transferSchoolform'].validate((valid) => {
+            transferSchoolToCC(formName) {//转校提交
+                console.log(1)
+                this.$refs[formName].validate((valid) => {
                     if (valid) {
                         let para = {
                             uid: this.$route.params.uid,
@@ -1789,9 +1790,36 @@
                                 this.dialogFormVisibleTransferSchool = false;
                             }
                         })
+                    }else{
+                        return false;
                     }
                 })
-
+                if(this.transferSchoolform.school&&this.transferSchoolform.receiveCC){
+                    let para = {
+                            uid: this.$route.params.uid,
+                            school_id: this.transferSchoolform.school,
+                            cc_uid: this.transferSchoolform.receiveCC
+                        }
+                        this.writeL = true;
+                        transferSchool(para, token).then(res => {
+                            if (res.code == 0) {
+                                this.$message.success('成功提交转校');
+                            } else {
+                                this.$message.error(res.data);
+                            }
+                            return res
+                        }).then((res) => {
+                            if (res.code == 0) {
+                                this.dialogFormVisibleTransferSchool = false;
+                                this.writeL = false;
+                                this.$router.push('/myStudents');
+                            }else{
+                                this.$message.error(res.message);
+                                this.writeL = false;
+                                this.dialogFormVisibleTransferSchool = false;
+                            }
+                        })
+                }
                 // console.log(para)
             },
             getContClass() { //续费选合同change
