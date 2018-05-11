@@ -872,7 +872,7 @@
             //     }
             // }
             var nan = (rule, value, callback) => {
-                if (value === '') {
+                if (value == '') {
                     // console.log(1)
                     callback('请选择')
                 } else if (typeof value == 'number') {
@@ -1451,14 +1451,13 @@
                 transferSchoolformrule: {
                     school: [{
                         required: true,
-                        message: '请选择课程',
+                        message: '请选择校区',
                         validator: nan,
                         trigger: 'change'
                     }],
                     receiveCC: [{
                         required: true,
                         message: '请选择CC',
-                        validator: nan,
                         trigger: 'change'
                     }],
                 },
@@ -1763,7 +1762,7 @@
                 // console.log(para)
             },
             transferSchoolToCC(formName) {//转校提交
-                console.log(1)
+                // console.log(1)
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         let para = {
@@ -1785,42 +1784,15 @@
                                 this.writeL = false;
                                 this.$router.push('/myStudents');
                             }else{
-                                this.$message.error(res.data);
+                                this.$message.error(res.message);
                                 this.writeL = false;
-                                this.dialogFormVisibleTransferSchool = false;
+                                // this.dialogFormVisibleTransferSchool = false;
                             }
                         })
                     }else{
                         return false;
                     }
                 })
-                if(this.transferSchoolform.school&&this.transferSchoolform.receiveCC){
-                    let para = {
-                            uid: this.$route.params.uid,
-                            school_id: this.transferSchoolform.school,
-                            cc_uid: this.transferSchoolform.receiveCC
-                        }
-                        this.writeL = true;
-                        transferSchool(para, token).then(res => {
-                            if (res.code == 0) {
-                                this.$message.success('成功提交转校');
-                            } else {
-                                this.$message.error(res.data);
-                            }
-                            return res
-                        }).then((res) => {
-                            if (res.code == 0) {
-                                this.dialogFormVisibleTransferSchool = false;
-                                this.writeL = false;
-                                this.$router.push('/myStudents');
-                            }else{
-                                this.$message.error(res.message);
-                                this.writeL = false;
-                                this.dialogFormVisibleTransferSchool = false;
-                            }
-                        })
-                }
-                // console.log(para)
             },
             getContClass() { //续费选合同change
                 this.$refs['continueform'].validateField('contract');
