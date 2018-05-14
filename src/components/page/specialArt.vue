@@ -17,6 +17,8 @@
                     <el-option label="都未上传" value="2"></el-option>
                     <el-option label="未上传作品" value="3"></el-option>
                     <el-option label="未上传语音" value="4"></el-option>
+                    <el-option label="已上传作品" value="5"></el-option>
+                    <el-option label="已上传语音" value="6"></el-option>
                 </el-select>
             </div>
             <div class='artContestH2' >
