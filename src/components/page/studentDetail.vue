@@ -872,7 +872,7 @@
             //     }
             // }
             var nan = (rule, value, callback) => {
-                if (value == '') {
+                if (value === '') {
                     // console.log(1)
                     callback('请选择')
                 } else if (typeof value == 'number') {

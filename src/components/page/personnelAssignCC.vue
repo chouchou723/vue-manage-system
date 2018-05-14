@@ -229,24 +229,27 @@
                 let a = this.multipleSelection.map(item => {
                     return item.id
                 })
-                let para = {
-                    type:this.valueR,
-                    uids: a,
-                    new_teach_id: this.resourceAssign.receiveCC
-                }
-                this.writeL = true;
-                dispatchPerson(para, token).then(res => {
-                    if (res.code == 0) {
-
-                        this.fetchData();
-                        this.$message.success('分配成功')
-                        this.dialogFormVisible = false;
-                        this.writeL = false;
-                    } else {
-                        this.$message.error(res.message);
-                        this.writeL = false;
+                if(this.resourceAssign.receiveCC){
+                    
+                    let para = {
+                        type:this.valueR,
+                        uids: a,
+                        new_teach_id: this.resourceAssign.receiveCC
                     }
-                })
+                    this.writeL = true;
+                    dispatchPerson(para, token).then(res => {
+                        if (res.code == 0) {
+    
+                            this.fetchData();
+                            this.$message.success('分配成功')
+                            this.dialogFormVisible = false;
+                            this.writeL = false;
+                        } else {
+                            this.$message.error(res.message);
+                            this.writeL = false;
+                        }
+                    })
+                }
             }
         },
 
