@@ -1,6 +1,17 @@
 import axios from 'axios';
 import { Message } from 'element-ui';
 import {router} from '../router';
+// axios.interceptors.request.use(config => {
+//     // element ui Loading方法
+//     // loadinginstace = Loading.service({ fullscreen: true })
+//     return config
+//    }, error => {
+//     loadinginstace.close()
+//     Message.error({
+//     message: '加载超时'
+//     })
+//     return Promise.reject(error)
+//    })
 axios.interceptors.response.use(function (response) {
     return response;
   }, function (error) {
@@ -17,8 +28,8 @@ axios.interceptors.response.use(function (response) {
         }   
     return Promise.reject(error);
   });
-let base ='';
-// let base = 'http://pandatest.dfth.com';
+// let base ='';
+let base = 'http://pandatest.dfth.com';
 // let base = 'http://panda.dfth.com';
 
 //登录页面

@@ -85,6 +85,12 @@
                                 <el-form-item label="校区地址" :label-width="formLabelWidth" prop="addr">
                                         <el-input v-model="aform.addr" placeholder='输入校区详细地址' style='width:382px;'></el-input>
                                     </el-form-item>
+                                    <el-form-item label="签约人" :label-width="formLabelWidth" prop="signer">
+                                            <el-select v-model="aform.signer" clearable placeholder="选择签约人" >
+                                                    <el-option v-for="item in signerList" :key="item.id" :label="item.name" :value="item.id">
+                                                    </el-option>
+                                                </el-select>
+                                    </el-form-item>
                                     <el-form-item label="联系电话" :label-width="formLabelWidth" prop="tel">
                                             <el-input v-model="aform.tel" placeholder='输入联系电话' style='width:182px;'></el-input>
                                         </el-form-item>
@@ -128,6 +134,8 @@
                     <el-table-column prop="direct_store" label="校区类型" width='80'>
                         </el-table-column>
                         <el-table-column prop="accredit" label="授权考点" width='80'>
+                        </el-table-column>
+                        <el-table-column prop="signer_name" label="签约人" width='80'>
                         </el-table-column>
                         <el-table-column prop="tel" label="联系电话" width='120'>
                             </el-table-column>
@@ -218,6 +226,7 @@ export default {
             //     }
             // }
             return {
+                signerList:[],
                 map:{},
                 writeL:false,
                 direct_accredit:[],
@@ -240,6 +249,7 @@ export default {
                     addr:'',
                     rooms:'1',
                     maps:'',
+                    signer:'',
                     // fla: '1',
                     // address:'',
                     tel:'',
@@ -266,6 +276,8 @@ export default {
                         validator: isareaid,
                         trigger: 'change'
                     }],
+                    signer:[
+                    {required:true,message: '请输入签约人姓名',trigger: 'blur'}],
                     tel:[
                     {required:true,message: '请输入联系电话',trigger: 'blur'}],
                 },
@@ -366,6 +378,7 @@ export default {
                     addr:'',
                     rooms:'1',
                     maps:'',
+                    signer:'',
                     // fla: '1',
                     // address:'',
                     tel:'',
@@ -383,6 +396,7 @@ export default {
                         code:data.code,
                         areaid: cs.map(item=>item-0),
                         addr:data.addr,
+                        signer:data.signer,
                         rooms:data.rooms==0?'1':data.rooms,
                         tel: data.tel,
                         direct_accredit:data.direct_accredit.split(','),//data.direct_accredit
