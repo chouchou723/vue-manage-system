@@ -131,8 +131,8 @@
                         </el-form-item>
                         <el-form-item label="比赛组别" prop='group_type'>
                                 <el-select v-model="form.group_type" placeholder="请选择比赛组别" style="width:172px">
-                                    <el-option label="少儿组" value="0"></el-option>
-                                    <el-option label="幼儿组" value="1"></el-option>
+                                    <el-option label="幼儿组" value="0"></el-option>
+                                    <el-option label="少儿组" value="1"></el-option>
                                     <el-option label="特别组" value="2"></el-option>
                                 </el-select>
                             </el-form-item>

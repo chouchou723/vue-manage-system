@@ -86,8 +86,8 @@
                                         <el-input v-model="aform.addr" placeholder='输入校区详细地址' style='width:382px;'></el-input>
                                     </el-form-item>
                                     <el-form-item label="签约人" :label-width="formLabelWidth" prop="signer">
-                                            <el-select v-model="aform.signer" clearable placeholder="选择签约人" >
-                                                    <el-option v-for="item in signerList" :key="item.id" :label="item.name" :value="item.id">
+                                            <el-select v-model="aform.signer" filterable placeholder="选择签约人" >
+                                                    <el-option v-for="item in signerList" :key="item.id" :label="item.names" :value="item.id">
                                                     </el-option>
                                                 </el-select>
                                     </el-form-item>
@@ -163,7 +163,7 @@ import {
     schoolList,
     cityList,
     add_school,
-    hideSchool
+    hideSchool,schoolSign
 } from '../../api/api';
 import getmap from './getMap.vue';
 export default {
@@ -276,8 +276,8 @@ export default {
                         validator: isareaid,
                         trigger: 'change'
                     }],
-                    signer:[
-                    {required:true,message: '请输入签约人姓名',trigger: 'blur'}],
+                    // signer:[
+                    // {required:false,message: '请输入签约人姓名',trigger: 'blur'}],
                     tel:[
                     {required:true,message: '请输入联系电话',trigger: 'blur'}],
                 },
@@ -396,7 +396,7 @@ export default {
                         code:data.code,
                         areaid: cs.map(item=>item-0),
                         addr:data.addr,
-                        signer:data.signer,
+                        signer:data.signer!=='0'?data.signer-0:'',
                         rooms:data.rooms==0?'1':data.rooms,
                         tel: data.tel,
                         direct_accredit:data.direct_accredit.split(','),//data.direct_accredit
@@ -498,8 +498,13 @@ export default {
         created() { //创建组件时
             // console.log(this.getLC)
             this.fetchData();
-            cityList(token).then((res) => { //获取城市
+            cityList(token).then((res) => {//获取城市
                     this.cities = res.data
+                }).then(()=>{
+                    schoolSign(token).then(res=>{
+                        this.signerList = res.data;
+                        // console.log(res.data)
+                    })
                 })
             // let cam = {
             //     simple: '1'
