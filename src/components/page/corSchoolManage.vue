@@ -87,7 +87,7 @@
                                     </el-form-item>
                                     <el-form-item label="签约人" :label-width="formLabelWidth" prop="signer">
                                             <el-select v-model="aform.signer" filterable placeholder="选择签约人" >
-                                                    <el-option v-for="item in signerList" :key="item.id" :label="item.names" :value="item.id">
+                                                    <el-option v-for="item in signerList" :key="item.id" :label="item.names+'('+item.mobile+')'" :value="item.id">
                                                     </el-option>
                                                 </el-select>
                                     </el-form-item>

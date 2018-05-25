@@ -40,8 +40,10 @@
                 placeholder="选择城市" >
               </el-cascader>
             </div>
+          
             <div style="float:right;margin-right:240px">
-                <el-button type="info" @click="createActivity">添加参赛者</el-button>
+                    <el-button type="info" @click="importout">导出</el-button>
+                <el-button type="primary" @click="createActivity">添加参赛者</el-button>
             </div>
                         <div class='artContestH4'>
                             <el-input placeholder="请输入参赛者姓名或手机号" icon="search" v-model="input2" :on-icon-click="updateList" @keyup.enter.native="updateList">
@@ -238,16 +240,10 @@
     var user, token
     import {
         cityList,
-        getActivityList,
-        campusList,
-        addTpl,
-        teacherlist,
-        addTeacher,
-        delTeacher,
-        schoolArea,
         pictureSayList,
         pictureSayAdd,
-        pictureSayDet
+        pictureSayDet,
+        exportPictureSay
     } from '../../api/api';
     export default {
         data() {
@@ -461,6 +457,14 @@
             }
         },
         methods: {
+            importout(){
+                exportPictureSay(token).then(res=>{
+                    // console.log(res)
+                    //   let a = 'http://pandatest.dfth.com';
+                        let a = '';
+                        window.open( a+res)
+                    })
+            },
             resetAudio(){
                 this.audioS=''
             },
