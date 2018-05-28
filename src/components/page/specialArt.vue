@@ -550,6 +550,7 @@
                 // setTimeout(() => {
                 //     this.form.school_id = data.school_id-0
                 // }, 0);
+                this.getRegion();
                 this.imageUrl1 = row.head_img;
                 this.imageUrl = row.works_img;
                 this.dialogFormVisible = true;
