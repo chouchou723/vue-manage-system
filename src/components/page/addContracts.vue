@@ -100,12 +100,12 @@
                             <el-table-column prop="course_num" label="课时" >
                                
                             </el-table-column>
-                            <!-- <el-table-column prop="course_curr_num" label="剩余课时" >
+                            <el-table-column prop="course_curr_num" label="剩余课时" >
                                     <template scope="scope">
                                          <div  v-if="!scope.row.canEdit" >{{scope.row.course_curr_num}}</div>
                                          <el-input v-if="scope.row.canEdit"  :disabled='writeL' v-model='scope.row.course_curr_num' class='ACinput'></el-input> 
                                     </template>
-                                </el-table-column> -->
+                                </el-table-column>
                             <el-table-column prop="expData" label="有效期">
                                 <template scope="scope">
                                     <div  v-if="!scope.row.canEdit" >{{scope.row.expData[0]}}-{{scope.row.expData[1]}}</div>

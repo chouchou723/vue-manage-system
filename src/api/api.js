@@ -29,8 +29,8 @@ axios.interceptors.response.use(function (response) {
         }   
     return Promise.reject(error);
   });
-// let base ='';
-let base = 'http://pandatest.dfth.com';
+let base ='';
+// let base = 'http://pandatest.dfth.com';
 // let base = 'http://panda.dfth.com';
 
 //登录页面
@@ -1481,6 +1481,11 @@ export const  schoolSign = (token) => {
 export const  exportPictureSay = (token) => {
     axios.defaults.headers.common['Authorization'] = token.Authorization;
     return axios.get(`${base}/api/v1/active/exportPictureSay`).then(res => res.data);
+};
+//导出负债表
+export const  financeExp = (token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/finance/financeExp`).then(res => res.data);
 };
 // //code字段说明
 //     tmk_m:  tmk主管

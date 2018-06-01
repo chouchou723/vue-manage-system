@@ -583,12 +583,12 @@
             },
             beforeAvatarUploadaa(file, fileList){
                 const isJPG =  file.raw.type === 'image/jpeg' || file.raw.type === 'image/png';
-                const isLt2M = file.size / 1024 / 1024 < 10;
+                const isLt2M = file.size / 1024 / 1024 < 6;
 
                 if (!isJPG) {
                     this.$message.error('上传图片格式为.jpg或.jpeg或.png!');
                 }else if (!isLt2M) {
-                    this.$message.error('上传图片大小不能超过10MB!');
+                    this.$message.error('上传图片大小不能超过6MB!');
                 }else{
 
                 let that = this;                
@@ -607,12 +607,12 @@
             },
             beforeAvatarUpload1aa(file, fileList){
                 const isJPG = file.raw.type === 'image/jpeg' || file.raw.type === 'image/png';
-                const isLt2M = file.size / 1024 / 1024 < 10;
+                const isLt2M = file.size / 1024 / 1024 < 6;
 
                 if (!isJPG) {
                     this.$message.error('上传图片格式为.jpg或.jpeg或.png!');
                 }else if (!isLt2M) {
-                    this.$message.error('上传图片大小不能超过10MB!');
+                    this.$message.error('上传图片大小不能超过6MB!');
                 }else{
 
                 let that = this;
