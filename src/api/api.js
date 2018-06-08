@@ -29,8 +29,8 @@ axios.interceptors.response.use(function (response) {
         }   
     return Promise.reject(error);
   });
-let base ='';
-// let base = 'http://pandatest.dfth.com';
+// let base ='';
+let base = 'http://pandatest.dfth.com';
 // let base = 'http://panda.dfth.com';
 
 //登录页面
@@ -1486,6 +1486,16 @@ export const  exportPictureSay = (token) => {
 export const  financeExp = (token) => {
     axios.defaults.headers.common['Authorization'] = token.Authorization;
     return axios.get(`${base}/api/v1/finance/financeExp`).then(res => res.data);
+};
+//参展
+export const  pushHimOnWall = (params,token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.post(`${base}/api/v1/active/pushHimOnWall`, params).then(res => res.data);
+};
+//导出二维码
+export const  onWallCode = (params, token) => {
+    axios.defaults.headers.common['Authorization'] = token.Authorization;
+    return axios.get(`${base}/api/v1/active/onWallCode`, { params: params }).then(res => res.data);
 };
 // //code字段说明
 //     tmk_m:  tmk主管

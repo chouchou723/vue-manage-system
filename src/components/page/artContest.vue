@@ -5,54 +5,79 @@
             <el-breadcrumb-item class='ss'>活动模板</el-breadcrumb-item>
         </el-breadcrumb> -->
         <div class='artContestH'>
-            <h3 class="artContestH1">
+            <div>
+                <h3 class="artContestH1">
+    
+                    绘画大赛报名
+                    <span v-if="number==='0'" style="font-size:14px;color: #bdb8b8;">加载中...</span>
+                    <span v-else>({{number}}人)</span>
+                </h3>
+                <div class='artContestH2' >
+                    <el-select v-model="valueT" clearable placeholder="资料上传状态" @change="updateList">
+                        <el-option label="都已上传" value="1"></el-option>
+                        <el-option label="都未上传" value="2"></el-option>
+                        <el-option label="未上传作品" value="3"></el-option>
+                        <el-option label="未上传语音" value="4"></el-option>
+                        <el-option label="已上传作品" value="5"></el-option>
+                        <el-option label="已上传语音" value="6"></el-option>
+                    </el-select>
+                </div>
+                <div class='artContestH2' >
+                    <el-select v-model="valueK" clearable placeholder="比赛组别" @change="updateList">
+                        <!-- <el-option label="全部" value="1"></el-option> -->
+                        <el-option label="幼儿组" value="1"></el-option>
+                        <el-option label="少儿组" value="2"></el-option>
+                        <el-option label="特别组" value="3"></el-option>
+                    </el-select>
+                </div>
+                <div class='artContestH2'>
+                    <el-cascader
+                    :options="cities"
+                    :props="propsource"
+                    v-model="value3"
+                     @change="updateList"
+                     clearable
+                     change-on-select
+                    placeholder="选择城市" >
+                  </el-cascader>
+                </div>
+                <div class='artContestH2' >
+                    <el-select v-model="valueO" clearable placeholder="是否参展" @change="updateList">
+                        <!-- <el-option label="全部" value="1"></el-option> -->
+                        <el-option label="未参展" value="1"></el-option>
+                        <el-option label="已参展" value="2"></el-option>
+                    </el-select>
+                </div>
+                <div class='artContestH4'>
+                        <el-input placeholder="请输入参赛者姓名或手机号" icon="search" v-model="input2" :on-icon-click="updateList" @keyup.enter.native="updateList">
+                        </el-input>
+                    </div>
 
-                绘画大赛报名
-                <span v-if="number==='0'" style="font-size:14px;color: #bdb8b8;">加载中...</span>
-                <span v-else>({{number}}人)</span>
-            </h3>
-            <div class='artContestH2' >
-                <el-select v-model="valueT" clearable placeholder="资料上传状态" @change="updateList">
-                    <el-option label="都已上传" value="1"></el-option>
-                    <el-option label="都未上传" value="2"></el-option>
-                    <el-option label="未上传作品" value="3"></el-option>
-                    <el-option label="未上传语音" value="4"></el-option>
-                    <el-option label="已上传作品" value="5"></el-option>
-                    <el-option label="已上传语音" value="6"></el-option>
-                </el-select>
             </div>
-            <div class='artContestH2' >
-                <el-select v-model="valueK" clearable placeholder="比赛组别" @change="updateList">
-                    <!-- <el-option label="全部" value="1"></el-option> -->
-                    <el-option label="幼儿组" value="1"></el-option>
-                    <el-option label="少儿组" value="2"></el-option>
-                    <el-option label="特别组" value="3"></el-option>
-                </el-select>
+            <div style="display: flex;">
+                            <el-upload
+                            class="invoM6"
+                            :action="Iaction" :headers='headers' :show-file-list='no'
+                            name='file' :data="upData"
+                            :on-success='handleSuccess' :on-error='handleError'
+                            :before-upload="beforeAvatarUpload1e">
+                            <el-button type="success" :loading="writeL">导入</el-button>
+                          </el-upload>
+                    <el-button   :loading="loading"  class="invoM6" type="info" @click="importout">导出</el-button>
+                <el-button  class="invoM6" type="warning" @click="createActivity">添加参赛者</el-button>
+                <el-button   :loading="loading3"  class="invoM6" type="info" @click="importoutS">导出二维码</el-button>
+                
             </div>
-            <div class='artContestH2'>
-                <el-cascader
-                :options="cities"
-                :props="propsource"
-                v-model="value3"
-                 @change="updateList"
-                 clearable
-                 change-on-select
-                placeholder="选择城市" >
-              </el-cascader>
-            </div>
-          
-            <div style="float:right;margin-right:240px">
-                    <el-button type="info" @click="importout">导出</el-button>
-                <el-button type="primary" @click="createActivity">添加参赛者</el-button>
-            </div>
-                        <div class='artContestH4'>
-                            <el-input placeholder="请输入参赛者姓名或手机号" icon="search" v-model="input2" :on-icon-click="updateList" @keyup.enter.native="updateList">
-                            </el-input>
-                        </div>
+                      
         </div>
         <div id="artContestH5">
             <el-table :data="publicData"  style="width: 100%">
                         <el-table-column prop="childname" label="参赛者" width='90'>
+                            </el-table-column>
+                             <el-table-column prop="on_wall" label="参展状态" width='80'>
+                                    <template scope="scope">
+                                            <span>{{scope.row.on_wall==="1"?'未参展':'已参展'}}</span>
+                                        </template>
                             </el-table-column>
                             <el-table-column prop="mobile" label="手机号码" >
                                 </el-table-column>
@@ -84,6 +109,8 @@
                     <template scope="scope">
                           <el-button   type="text" size="small" @click="claim(scope.row)" >编辑</el-button>
                           <el-button type="text" size="small" @click="open2(scope.row.id)" style="color:red">删除</el-button>
+                          <el-button v-if="scope.row.on_wall==='1'" type="text" size="small" @click="join(scope.row.id)" style="color:#50bfff">参展</el-button>
+                          <el-button v-else type="text" size="small" @click="canceljoin(scope.row.id)" style="color:#27556f">取消参展</el-button>
                         <!--   <el-button type="text" size="small" @click="open2(scope.$index, accountData)">删除</el-button> -->
                     </template>
                 </el-table-column>
@@ -243,7 +270,9 @@
         pictureSayList,
         pictureSayAdd,
         pictureSayDet,
-        exportPictureSay
+        exportPictureSay,
+        pushHimOnWall,
+        onWallCode
     } from '../../api/api';
     export default {
         data() {
@@ -339,6 +368,11 @@
             
         }
             return {
+                // Iaction:'http://pandatest.dfth.com/api/v1/active/picImport',
+                Iaction:'/api/v1/active/picImport',
+                headers: {
+                        Authorization: token.Authorization
+                    },
                 propsource:{
               value: 'id',
               label:'city_name',
@@ -352,6 +386,7 @@
                 imgSrc1:'',                
                 imageUrl: '',
                 imageUrl1: '',
+                valueO:'',
                 countImg:0,
                 countImg1:0,                
                 cities:[],
@@ -362,6 +397,8 @@
                 in:'',
                 regions:[],
                 loading2:false,
+                loading:false,
+                loading3:false,
                 rule:{
                     childname: [{
                         required: true,
@@ -457,12 +494,107 @@
             }
         },
         methods: {
+            join(id) { //删除课程
+                    this.$confirm('确定要参展该作品?', '参展作品', {
+
+                        customClass: 'artContestB',
+                        cancelButtonText: '取消',
+                        confirmButtonText: '确定',
+                        // type: 'info'
+                    }).then(() => {
+                        let a = {
+                            id: id,
+                            on_wall:2
+                        }
+                        pushHimOnWall(a, token).then(() => {
+                            this.fetchData();
+                            this.$message({
+                            type: 'success',
+                            message: '参展成功!'
+                        })
+                        }).catch((res) => {
+                            // this.$message.error('该用户未授权')
+                        })
+                    })
+                
+            },
+            canceljoin(id) { //删除课程
+                    this.$confirm('确定要取消参展该参赛者?', '取消参展', {
+
+                        customClass: 'artContestH9',
+                        cancelButtonText: '取消',
+                        confirmButtonText: '确定',
+                        type: 'warning'
+                    }).then(() => {
+                        let a = {
+                            id: id,
+                            on_wall:1
+                        }
+                        pushHimOnWall(a, token).then(() => {
+                            this.fetchData();
+                            this.$message({
+                            type: 'success',
+                            message: '取消成功!'
+                        })
+                        }).catch((res) => {
+                            // this.$message.error('该用户未授权')
+                        })
+                    })
+                
+            },
+            handleSuccess(response, file, fileList) {//上传图片成功
+                    if(response.code==0){
+
+                        this.$message.success('导入成功');
+                        this.fetchData();
+                    this.writeL = false;                         
+                    }else{
+                        this.$message.error(response.data);
+                    this.writeL = false;                                                 
+                    }
+                    // this.dialogFormVisibleEdit = false; 
+                    // this.writeL = false;                
+                },
+                handleError(err, file, fileList) {
+                    this.$message.error(err.message);
+                    this.writeL = false;                                             
+                },
+                beforeAvatarUpload1e(file, fileList){
+                    this.writeL = true;                    
+                    const isJPG =  file.name.includes('.xl');
+                    if (!isJPG) {
+                        this.$message.error('必须上传excel文件');
+                        this.writeL = false;    
+                    }
+                    return isJPG;
+                },
             importout(){
+                this.loading = true;
                 exportPictureSay(token).then(res=>{
                     // console.log(res)
                     //   let a = 'http://pandatest.dfth.com';
+                this.loading = false;
+                    
                         let a = '';
                         window.open( a+res)
+                    })
+            },
+            importoutS(){
+                this.loading3 = true;
+                
+                let para = {
+                    city:this.value3.length!==0?this.value3[this.value3.length-1]:'',
+                    input:this.input2,
+                    status:this.valueT,
+                    group_type:this.valueK,
+                }
+                onWallCode(para,token).then(res=>{
+                this.loading3 = false;
+                    
+                    // console.log(res)
+                    //   let a = 'http://pandatest.dfth.com';
+                        let a = '';
+                        window.open( a+res.data)
                     })
             },
             resetAudio(){
@@ -703,7 +835,8 @@
                     input:this.input2,
                     page: this.currentPage,
                     status:this.valueT,
-                    group_type:this.valueK
+                    group_type:this.valueK,
+                    on_wall:this.valueO
                 }
                 pictureSayList(para,token).then((res) => { //
                     this.number = res.data.total;
@@ -791,12 +924,14 @@
     .artContestH {
         width: 100%;
         position: relative;
-        height: 46px;
+        /* height: 46px; */
         background-color: white;
         /* margin-top: 30px; */
         padding-top: 10px;
         margin-bottom: 5px;
         border-radius: 5px;
+        display: flex;
+        justify-content: space-between;
     }
 
     .artContest .el-dialog .el-dialog__header {
@@ -841,10 +976,14 @@
         top:55%
     } */
     .artContestH4{
-    position:absolute;
+    /* position:absolute;
     top:10px;
     right:10px;
-    width:220px
+    width:220px */
+    display: inline-block;
+    width:220px;
+    padding-bottom: 10px;
+    padding-left: 10px;
     }
     /* .artContestH3 {
         width: 122px;
@@ -854,6 +993,18 @@
     .artContestH8{
         width:750px;
     }
+    .artContestB .el-message-box__header {
+    background-color: #20a0ff;
+    padding: 20px 20px 20px;
+}
+.artContestB .el-message-box__title {
+    color: white;
+}
+.artContestB .el-button--primary {
+    background-color: #20a0ff;
+    border-color: #20a0ff;
+    text-align: center;
+}
     .artContestH9 .el-message-box__header {
     background-color: #e95c5c;
     padding: 20px 20px 20px;
@@ -875,10 +1026,24 @@
 .artContestH2{
     display: inline-block;
     width:140px;
+    padding-bottom: 10px;
+    
 }
 .artContestH3 {
         width: 142px;
         margin-right: 10px;
         float: left
     }
+    .artContest .invoM6 .el-upload--text{
+            height: 36px;
+        width: 65px;
+        margin-top:0;
+        margin-left: 0;
+        left:0;
+        }
+      .artContestH  .invoM6{
+            height: 36px;
+            display: inline-block;
+            margin-left:5px;
+        }
 </style>

@@ -248,7 +248,8 @@
         schoolArea,
         pictureSayList,
         pictureSayAdd,
-        pictureSayDet
+        pictureSayDet,
+        exportPictureSay
     } from '../../api/api';
     export default {
         data() {
